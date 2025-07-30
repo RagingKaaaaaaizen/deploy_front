@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <h2>Inventory Overview</h2>
+
+  <!-- Categories Section -->
+  <div class="mt-4">
+    <h4>Categories</h4>
+    <ul class="list-group">
+      <li *ngFor="let category of categories" class="list-group-item">
+        <a [routerLink]="['/add/category']">{{ category.name }}</a>
+      </li>
+    </ul>
+    <div class="mt-2">
+      <a routerLink="/add/category" class="btn btn-sm btn-link">View All Categories</a>
+    </div>
+  </div>
+
+  <!-- Items Section -->
+  <div class="mt-4">
+    <h4>Items</h4>
+    <ul class="list-group">
+      <li *ngFor="let item of items" class="list-group-item">
+        <a [routerLink]="['/add/item']">{{ item.name }}</a>
+      </li>
+    </ul>
+    <div class="mt-2">
+      <a routerLink="/add/item" class="btn btn-sm btn-link">View All Items</a>
+    </div>
+  </div>
+</div>

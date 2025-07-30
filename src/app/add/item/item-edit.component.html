@@ -1,0 +1,26 @@
+<div class="container mt-3">
+  <h3>{{ title }}</h3>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="mb-3">
+      <label>Name</label>
+      <input formControlName="name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label>Category</label>
+      <select formControlName="categoryId" class="form-control">
+        <option value="">Select Category</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Description</label>
+      <textarea formControlName="description" class="form-control"></textarea>
+    </div>
+
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Save</button>
+    <a routerLink="/add/item" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>

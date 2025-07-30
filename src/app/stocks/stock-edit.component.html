@@ -1,0 +1,43 @@
+<div class="container mt-3">
+  <h3>{{ isEdit ? 'Edit Stock' : 'Add Stock' }}</h3>
+
+  <form (ngSubmit)="save()" #stockForm="ngForm">
+    <!-- Item dropdown (with category name) -->
+    <div class="mb-3">
+      <label>Item</label>
+      <select class="form-control" [(ngModel)]="stock.itemId" name="itemId" required>
+        <option *ngFor="let item of items" [value]="item.id">{{ item.name }}</option>
+      </select>
+    </div>
+
+    <!-- Quantity -->
+    <div class="mb-3">
+      <label>Quantity</label>
+      <input type="number" class="form-control" [(ngModel)]="stock.quantity" name="quantity" required>
+    </div>
+
+    <!-- Type -->
+    <div class="mb-3">
+      <label>Type</label>
+      <select class="form-control" [(ngModel)]="stock.type" name="type" required>
+        <option value="ADD">Add</option>
+        <option value="DISPOSE">Dispose</option>
+      </select>
+    </div>
+
+    <!-- Location -->
+    <div class="mb-3">
+      <label>Location</label>
+      <input type="text" class="form-control" [(ngModel)]="stock.location" name="location" required>
+    </div>
+
+    <!-- Remarks -->
+    <div class="mb-3">
+      <label>Remarks</label>
+      <textarea class="form-control" [(ngModel)]="stock.remarks" name="remarks"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a routerLink="/stocks" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
