@@ -1,0 +1,27 @@
+<div class="container mt-4">
+  <h2>Storage Locations</h2>
+
+  <button class="btn btn-primary mb-3" (click)="addLocation()">Add Location</button>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let loc of locations">
+        <td>{{ loc.id }}</td>
+        <td>{{ loc.name }}</td>
+        <td>{{ loc.description }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" (click)="editLocation(loc.id)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteLocation(loc.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

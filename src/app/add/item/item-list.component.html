@@ -1,13 +1,14 @@
 <div class="container mt-3">
   <h3>Items</h3>
-  <a routerLink="/add/item/add" class="btn btn-primary mb-2">Add New Item</a>
+  <a routerLink="/add/item/add" class="btn btn-primary mb-3">Add Item</a>
 
-  <table class="table table-bordered">
+  <table class="table table-bordered table-striped">
     <thead>
       <tr>
         <th>Name</th>
         <th>Description</th>
         <th>Category</th>
+        <th>Brand</th> <!-- NEW -->
         <th>Actions</th>
       </tr>
     </thead>
@@ -16,9 +17,10 @@
         <td>{{ item.name }}</td>
         <td>{{ item.description }}</td>
         <td>{{ item.categoryName }}</td>
+        <td>{{ item.brandName }}</td> <!-- NEW -->
         <td>
           <a [routerLink]="['/add/item/edit', item.id]" class="btn btn-sm btn-warning">Edit</a>
-          <button (click)="deleteItem(item.id)" class="btn btn-sm btn-danger">Delete</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteItem(item.id)">Delete</button>
         </td>
       </tr>
     </tbody>

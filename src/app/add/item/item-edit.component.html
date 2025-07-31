@@ -2,11 +2,13 @@
   <h3>{{ title }}</h3>
 
   <form [formGroup]="form" (ngSubmit)="save()">
+    <!-- Name -->
     <div class="mb-3">
       <label>Name</label>
       <input formControlName="name" class="form-control" />
     </div>
 
+    <!-- Category -->
     <div class="mb-3">
       <label>Category</label>
       <select formControlName="categoryId" class="form-control">
@@ -15,11 +17,22 @@
       </select>
     </div>
 
+    <!-- Brand -->
+    <div class="mb-3">
+      <label>Brand</label>
+      <select formControlName="brandId" class="form-control">
+        <option value="">Select Brand</option>
+        <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+      </select>
+    </div>
+
+    <!-- Description -->
     <div class="mb-3">
       <label>Description</label>
       <textarea formControlName="description" class="form-control"></textarea>
     </div>
 
+    <!-- Buttons -->
     <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Save</button>
     <a routerLink="/add/item" class="btn btn-secondary">Cancel</a>
   </form>

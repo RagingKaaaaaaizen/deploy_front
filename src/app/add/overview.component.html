@@ -26,4 +26,30 @@
       <a routerLink="/add/item" class="btn btn-sm btn-link">View All Items</a>
     </div>
   </div>
+
+  <!-- Brands Section -->
+  <div class="mt-4">
+    <h4>Brands</h4>
+    <ul class="list-group">
+      <li *ngFor="let brand of brands" class="list-group-item">
+        <a [routerLink]="['/add/brand']">{{ brand.name }}</a>
+      </li>
+    </ul>
+    <div class="mt-2">
+      <a routerLink="/add/brand" class="btn btn-sm btn-link">View All Brands</a>
+    </div>
+  </div>
+
+  <!-- Storage Locations Section -->
+  <div class="mt-4">
+    <h4>Storage Locations</h4>
+    <ul class="list-group">
+      <li *ngFor="let location of storageLocations" class="list-group-item">
+        <a [routerLink]="['/add/storage-locations']">{{ location.name }}</a>
+      </li>
+    </ul>
+    <div class="mt-2">
+      <a routerLink="/add/storage-locations" class="btn btn-sm btn-link">View All Storage Locations</a>
+    </div>
+  </div>
 </div>

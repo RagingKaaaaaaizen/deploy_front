@@ -1,10 +1,11 @@
-import { Role } from './role';
-import { Category } from './category'
+import { Category } from './category';
+import { Brand } from './brand';
 export interface Item {
   id: number;
   name: string;
   description?: string;
   categoryId: number;
-  // Optionally, include category name when API expands it later
+  brandId: number;           // <-- ADD THIS
   categoryName?: string;
+  brandName?: string;     // optional, if API expands
 }

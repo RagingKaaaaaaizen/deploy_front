@@ -6,6 +6,7 @@
     <div class="mb-3">
       <label>Item</label>
       <select class="form-control" [(ngModel)]="stock.itemId" name="itemId" required>
+        <option value="" disabled>Select Item</option>
         <option *ngFor="let item of items" [value]="item.id">{{ item.name }}</option>
       </select>
     </div>
@@ -13,7 +14,36 @@
     <!-- Quantity -->
     <div class="mb-3">
       <label>Quantity</label>
-      <input type="number" class="form-control" [(ngModel)]="stock.quantity" name="quantity" required>
+      <input 
+        type="number" 
+        class="form-control" 
+        [(ngModel)]="stock.quantity" 
+        name="quantity" 
+        required
+        (input)="calculateTotalPrice()">
+    </div>
+
+    <!-- Price -->
+    <div class="mb-3">
+      <label>Price (per item)</label>
+      <input 
+        type="number" 
+        class="form-control" 
+        [(ngModel)]="stock.price" 
+        name="price" 
+        step="0.01"
+        required
+        (input)="calculateTotalPrice()">
+    </div>
+
+    <!-- Total Price (readonly) -->
+    <div class="mb-3">
+      <label>Total Price</label>
+      <input 
+        type="number" 
+        class="form-control" 
+        [value]="stock.totalPrice || 0" 
+        readonly>
     </div>
 
     <!-- Type -->
@@ -25,10 +55,13 @@
       </select>
     </div>
 
-    <!-- Location -->
+    <!-- Location (Dropdown) -->
     <div class="mb-3">
-      <label>Location</label>
-      <input type="text" class="form-control" [(ngModel)]="stock.location" name="location" required>
+      <label>Storage Location</label>
+      <select class="form-control" [(ngModel)]="stock.locationId" name="locationId" required>
+        <option value="" disabled>Select Location</option>
+        <option *ngFor="let loc of locations" [value]="loc.id">{{ loc.name }}</option>
+      </select>
     </div>
 
     <!-- Remarks -->

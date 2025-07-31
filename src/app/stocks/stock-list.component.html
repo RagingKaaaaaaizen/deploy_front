@@ -1,12 +1,22 @@
 <div class="container mt-3">
   <h3>Stock Logs</h3>
   <a routerLink="/stocks/add" class="btn btn-primary mb-3">Add Stock</a>
-  
+
+  <!-- Totals Summary -->
+  <div class="alert alert-info">
+    <strong>Total Items:</strong> {{ totalItems }} |
+    <strong>Total Inventory Price:</strong> {{ totalInventoryPrice | currency:'PHP':'symbol' }}
+  </div>
+
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
         <th>Item Name</th>
+        <th>Category</th>     <!-- NEW -->
+        <th>Brand</th>        <!-- NEW -->
         <th>Quantity</th>
+        <th>Price</th>
+        <th>Total Price</th>
         <th>Type</th>
         <th>Location</th>
         <th>Remarks</th>
@@ -17,9 +27,13 @@
     <tbody>
       <tr *ngFor="let stock of stocks">
         <td>{{ getItemName(stock.itemId) }}</td>
+        <td>{{ getCategoryName(stock) }}</td> <!-- NEW -->
+        <td>{{ getBrandName(stock) }}</td>    <!-- NEW -->
         <td>{{ stock.quantity }}</td>
+        <td>{{ stock.price | currency:'PHP':'symbol' }}</td>
+        <td>{{ (stock.price * stock.quantity) | currency:'PHP':'symbol' }}</td>
         <td>{{ stock.type }}</td>
-        <td>{{ stock.location }}</td>
+        <td>{{ stock.location?.name || 'No Location' }}</td>
         <td>{{ stock.remarks }}</td>
         <td>{{ stock.createdAt | date: 'short' }}</td>
         <td>

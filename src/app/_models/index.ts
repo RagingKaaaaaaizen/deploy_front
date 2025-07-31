@@ -6,3 +6,5 @@ export * from './department';
 export * from './category';
 export * from './item';
 export * from './stock';
+export * from './brand';
+export * from './storagelocation';
