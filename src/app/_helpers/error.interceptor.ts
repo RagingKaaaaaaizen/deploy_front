@@ -16,8 +16,19 @@ export class ErrorInterceptor implements HttpInterceptor {
                 this.accountService.logout();
             }
 
-            const error = (err && err.error && err.error.message) || err.statusText;
-            console.error(err);
+            // Better error message extraction
+            let error = '';
+            if (err.error && err.error.message) {
+                error = err.error.message;
+            } else if (err.message) {
+                error = err.message;
+            } else if (err.statusText) {
+                error = err.statusText;
+            } else {
+                error = 'An unexpected error occurred';
+            }
+            
+            console.error('HTTP Error:', err);
             return throwError(error);
         }))
     }

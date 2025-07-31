@@ -1,0 +1,108 @@
+<div class="container mt-3">
+  <h3>Dispose Items</h3>
+
+  <!-- Available Stock Alert -->
+  <div class="alert alert-info" *ngIf="availableStock > 0">
+    <strong>Available Stock:</strong> {{ availableStock }} items
+  </div>
+
+  <!-- No Stock Available Alert -->
+  <div class="alert alert-warning" *ngIf="availableStock === 0 && form.value.itemId">
+    <strong>No stock available</strong> for the selected item.
+  </div>
+
+  <!-- Error Alert -->
+  <div class="alert alert-danger" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Item Selection -->
+    <div class="mb-3">
+      <label class="form-label">Item</label>
+      <select formControlName="itemId" class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && f.itemId.errors }"
+              [disabled]="loading">
+        <option value="">Select Item</option>
+        <option *ngFor="let item of items" [value]="item.id">
+          {{ item.name }}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.itemId.errors" class="invalid-feedback">
+        <div *ngIf="f.itemId.errors.required">Item is required</div>
+      </div>
+    </div>
+
+    <!-- Quantity -->
+    <div class="mb-3">
+      <label class="form-label">Quantity to Dispose</label>
+      <input type="number" formControlName="quantity" class="form-control" 
+             [ngClass]="{ 'is-invalid': submitted && f.quantity.errors }"
+             min="1"
+             [disabled]="loading">
+      <div *ngIf="submitted && f.quantity.errors" class="invalid-feedback">
+        <div *ngIf="f.quantity.errors.required">Quantity is required</div>
+        <div *ngIf="f.quantity.errors.min">Quantity must be at least 1</div>
+      </div>
+      <small class="form-text text-muted" *ngIf="availableStock > 0">
+        Maximum available: {{ availableStock }} items
+      </small>
+    </div>
+
+    <!-- Location -->
+    <div class="mb-3">
+      <label class="form-label">Storage Location</label>
+      <select formControlName="locationId" class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && f.locationId.errors }"
+              [disabled]="loading">
+        <option value="">Select Location</option>
+        <option *ngFor="let location of locations" [value]="location.id">
+          {{ location.name }}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.locationId.errors" class="invalid-feedback">
+        <div *ngIf="f.locationId.errors.required">Location is required</div>
+      </div>
+    </div>
+
+    <!-- Disposal Value -->
+    <div class="mb-3">
+      <label class="form-label">Disposal Value (per item)</label>
+      <input type="number" formControlName="disposalValue" class="form-control" 
+             [ngClass]="{ 'is-invalid': submitted && f.disposalValue.errors }"
+             step="0.01" min="0"
+             [disabled]="loading">
+      <div *ngIf="submitted && f.disposalValue.errors" class="invalid-feedback">
+        <div *ngIf="f.disposalValue.errors.required">Disposal value is required</div>
+        <div *ngIf="f.disposalValue.errors.min">Disposal value must be at least 0</div>
+      </div>
+      <small class="form-text text-muted">
+        Enter the value per item being disposed (can be 0 for worthless items)
+      </small>
+    </div>
+
+    <!-- Reason -->
+    <div class="mb-3">
+      <label class="form-label">Reason</label>
+      <textarea formControlName="reason" class="form-control" rows="3"
+                placeholder="Reason for disposal, condition, etc."
+                [disabled]="loading"></textarea>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mb-3">
+      <button type="submit" class="btn btn-danger" 
+              [disabled]="loading || form.invalid">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+        Dispose Items
+      </button>
+      <button type="button" class="btn btn-warning ms-2" 
+              (click)="disposeAll()" 
+              [disabled]="loading || availableStock === 0 || !form.value.itemId">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+        Dispose All Available
+      </button>
+      <a routerLink="/stocks" class="btn btn-secondary ms-2" [class.disabled]="loading">Cancel</a>
+    </div>
+  </form>
+</div> 

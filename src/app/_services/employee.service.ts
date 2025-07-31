@@ -6,7 +6,7 @@ import { Employee } from '../_models/employee'
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { AlertService } from './alert.service';
 
-const baseUrl = `${environment.apiUrl}/employees`;
+const baseUrl = `${environment.apiUrl}/api/employees`;
 
 @Injectable({ providedIn: 'root'})
 export class EmployeeService{

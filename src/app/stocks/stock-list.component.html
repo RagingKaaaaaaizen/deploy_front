@@ -1,46 +1,232 @@
-<div class="container mt-3">
-  <h3>Stock Logs</h3>
-  <a routerLink="/stocks/add" class="btn btn-primary mb-3">Add Stock</a>
+<div class="list-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="fas fa-boxes"></i>
+                    <div>
+                        <h1 class="page-title">Stock Management</h1>
+                        <p class="page-subtitle">Manage and track your inventory stock levels</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a routerLink="/dispose" class="btn btn-info" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+                        <i class="fas fa-trash-alt"></i>
+                        View Disposals
+                    </a>
+                    <a routerLink="/stocks/add" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Stock
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <!-- Totals Summary -->
-  <div class="alert alert-info">
-    <strong>Total Items:</strong> {{ totalItems }} |
-    <strong>Total Inventory Price:</strong> {{ totalInventoryPrice | currency:'PHP':'symbol' }}
-  </div>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-number">{{ stocks.length }}</div>
+                <div class="stat-label">Total Stock Entries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="stat-number">{{ getAdditionsCount() }}</div>
+                <div class="stat-label">Stock Additions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-minus-circle"></i>
+                </div>
+                <div class="stat-number">{{ getDisposalsCount() }}</div>
+                <div class="stat-label">Stock Disposals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-number">${{ getTotalValue() | number:'1.0-0' }}</div>
+                <div class="stat-label">Total Value</div>
+            </div>
+        </div>
 
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Item Name</th>
-        <th>Category</th>     <!-- NEW -->
-        <th>Brand</th>        <!-- NEW -->
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total Price</th>
-        <th>Type</th>
-        <th>Location</th>
-        <th>Remarks</th>
-        <th>Date</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let stock of stocks">
-        <td>{{ getItemName(stock.itemId) }}</td>
-        <td>{{ getCategoryName(stock) }}</td> <!-- NEW -->
-        <td>{{ getBrandName(stock) }}</td>    <!-- NEW -->
-        <td>{{ stock.quantity }}</td>
-        <td>{{ stock.price | currency:'PHP':'symbol' }}</td>
-        <td>{{ (stock.price * stock.quantity) | currency:'PHP':'symbol' }}</td>
-        <td>{{ stock.type }}</td>
-        <td>{{ stock.location?.name || 'No Location' }}</td>
-        <td>{{ stock.remarks }}</td>
-        <td>{{ stock.createdAt | date: 'short' }}</td>
-        <td>
-          <button class="btn btn-sm btn-warning" (click)="editStock(stock.id!)">Edit</button>
-          <button class="btn btn-sm btn-danger" (click)="deleteStock(stock.id!)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        <!-- Filters and Search -->
+        <div class="filters-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Search stocks..."
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearch()"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="filter-controls">
+                        <select class="form-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
+                            <option value="">All Types</option>
+                            <option value="ADD">Additions</option>
+                            <option value="DISPOSE">Disposals</option>
+                        </select>
+                        <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+                            <option value="">All Categories</option>
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-list"></i> Stock Entries</h5>
+                <div class="table-actions">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-box"></i> Item</th>
+                                <th><i class="fas fa-tag"></i> Category</th>
+                                <th><i class="fas fa-trademark"></i> Brand</th>
+                                <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
+                                <th><i class="fas fa-dollar-sign"></i> Price</th>
+                                <th><i class="fas fa-calculator"></i> Total</th>
+                                <th><i class="fas fa-info-circle"></i> Type</th>
+                                <th><i class="fas fa-cogs"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let stock of filteredStocks" [attr.data-item-id]="stock.itemId" class="stock-row">
+                                <td>
+                                    <div class="item-info">
+                                        <strong>{{ getItemName(stock.itemId) }}</strong>
+                                        <small class="d-block text-muted" *ngIf="stock.disposeId">
+                                            Disposal: {{ stock.remarks }}
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="category-badge">
+                                        {{ getCategoryName(stock) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="brand-badge">
+                                        {{ getBrandName(stock) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="location-badge">
+                                        {{ getLocationName(stock) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="quantity-badge" [ngClass]="{
+                                        'badge-success': !stock.disposeId,
+                                        'badge-danger': stock.disposeId
+                                    }">
+                                        {{ stock.quantity }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="price-value">
+                                        ${{ stock.price | number:'1.2-2' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="total-value">
+                                        ${{ (stock.price * stock.quantity) | number:'1.2-2' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="stock.disposeId" class="badge badge-danger">
+                                        <i class="fas fa-trash-alt"></i> Disposal
+                                    </span>
+                                    <span *ngIf="!stock.disposeId" class="badge badge-success">
+                                        <i class="fas fa-plus"></i> Addition
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                (click)="viewStock(stock.id)" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-warning"
+                                                (click)="editStock(stock.id)" title="Edit Stock"
+                                                *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                (click)="deleteStock(stock.id)" title="Delete Stock"
+                                                *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-info"
+                                                (click)="disposeStock(stock)" title="Dispose Stock"
+                                                *ngIf="!stock.disposeId && hasRole([Role.SuperAdmin, Role.Admin])">
+                                            <i class="fas fa-recycle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="filteredStocks.length === 0">
+                                <td colspan="9" class="text-center py-4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-box-open"></i>
+                                        <h4>No stock entries found</h4>
+                                        <p>Try adjusting your search or filters</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="filteredStocks.length > 0">
+            <div class="pagination-info">
+                Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredStocks.length) }} of {{ filteredStocks.length }} entries
+            </div>
+            <nav aria-label="Stock pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" (click)="previousPage()">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+                        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" (click)="nextPage()">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>

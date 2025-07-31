@@ -5,14 +5,17 @@ import { first } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '@app/_services';
 import { MustMatch } from '@app/_helpers';
+import { Role } from '@app/_models';
 
 @Component({ templateUrl: 'add-edit.component.html' })
 export class AddEditComponent implements OnInit {
     form: UntypedFormGroup;
     id: string;
     isAddMode: boolean;
+    isViewMode = false;
     loading = false;
     submitted = false;
+    Role = Role;
 
     constructor(
         private formBuilder: UntypedFormBuilder,
@@ -25,14 +28,15 @@ export class AddEditComponent implements OnInit {
     ngOnInit() {
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
+        this.isViewMode = this.router.url.includes('/view/');
 
         this.form = this.formBuilder.group({
             title: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            role: ['User', Validators.required],    
-            isActive: [true, Validators.required], 
+            role: [Role.Viewer, Validators.required],    
+            status: ['Active', Validators.required], 
             password: ['', [Validators.minLength(6), this.isAddMode ? Validators.required : Validators.nullValidator]],
             confirmPassword: ['']
         }, {
@@ -43,6 +47,11 @@ export class AddEditComponent implements OnInit {
             this.accountService.getById(this.id)
                 .pipe(first())
                 .subscribe(x => this.form.patchValue(x));
+        }
+
+        // Disable form in view mode
+        if (this.isViewMode) {
+            this.form.disable();
         }
     }
 

@@ -6,7 +6,7 @@ import { StorageLocation } from '../_models/storagelocation';
 
 @Injectable({ providedIn: 'root' })
 export class StorageLocationService {
-  private baseUrl = `${environment.apiUrl}/storage-locations`;
+  private baseUrl = `${environment.apiUrl}/api/storage-locations`;
 
   constructor(private http: HttpClient) {}
 

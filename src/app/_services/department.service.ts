@@ -8,13 +8,13 @@ import { environment } from '@environments/environment';
 import { Department } from "../_models/department";
 import { AccountService } from "./account.service";
 
-const baseUrl = `${environment.apiUrl}/departments`;
+const baseUrl = `${environment.apiUrl}/api/departments`;
 
 
 @Injectable({ providedIn: 'root' })
 export class DepartmentService{
-  private departmentSubject: BehaviorSubject<Department>
-  public department: Observable<Department>
+  private departmentSubject: BehaviorSubject<Department>;
+  public department: Observable<Department>;
 
   constructor(
     // private router: Router,
@@ -25,15 +25,15 @@ export class DepartmentService{
   }
 
   public get departmentValue(): Department {
-    return this.departmentSubject.value
+    return this.departmentSubject.value;
   }
 
   getAll() {
-    return this.http.get<Department[]>(baseUrl)
+    return this.http.get<Department[]>(baseUrl);
   }
   
   create(params){
-    return this.http.post(baseUrl, params)
+    return this.http.post(baseUrl, params);
   }
 
   update(id, params){
@@ -48,11 +48,11 @@ export class DepartmentService{
   }
 
   getById(id: string){
-    return this.http.get<Department>(`${baseUrl}/${id}`)
+    return this.http.get<Department>(`${baseUrl}/${id}`);
   }
 
   delete(id: string){
-    return this.http.delete(`${baseUrl}/${id}`)
+    return this.http.delete(`${baseUrl}/${id}`);
   }
 
 }

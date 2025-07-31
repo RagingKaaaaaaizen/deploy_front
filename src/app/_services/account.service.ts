@@ -7,8 +7,7 @@ import { map, finalize } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { Account } from '@app/_models';
 
-const baseUrl = `${environment.apiUrl}/accounts`;
-console.log(baseUrl)
+const baseUrl = `${environment.apiUrl}/api/accounts`;
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -28,7 +27,6 @@ export class AccountService {
     }
 
     login(email: string, password: string) {
-        console.log('Attempting login with:', { email });
         return this.http.post<any>(`${baseUrl}/authenticate`, { email, password }, { 
             withCredentials: true,
             headers: {
@@ -37,7 +35,6 @@ export class AccountService {
         })
         .pipe(
             map(account => {
-                console.log('Login successful:', account);
                 this.accountSubject.next(account);
                 this.startRefreshTokenTimer();
                 return account;
@@ -87,12 +84,7 @@ export class AccountService {
     map((accounts: any[]) =>
       accounts.map(acc => ({
         ...acc,
-        isActive:
-          acc.isActive !== undefined
-            ? acc.isActive
-            : acc.active !== undefined
-              ? acc.active
-              : acc.status === 'active'
+        isActive: acc.status === 'Active'
       }))
     )
   );

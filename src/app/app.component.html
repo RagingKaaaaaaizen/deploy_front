@@ -1,23 +1,21 @@
 ﻿<div class="app-container" [ngClass]="{ 'bg-light': account }">
-    <!-- main nav -->
-    <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="account">
-        <div class="navbar-nav">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item nav-link">Home</a>
-           <a routerLink="/stocks" routerLinkActive="active" class="nav-item nav-link">Stock</a>
+    <!-- Mobile Menu Button -->
+    <div class="mobile-menu-btn" *ngIf="account" (click)="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
 
-            <a routerLink="/add" routerLinkActive="active" class="nav-item nav-link">Add</a>
-            <a *ngIf="account.role === Role.Admin" routerLink="/admin" routerLinkActive="active" class="nav-item nav-link">Admin</a>
-            <a routerLink="/profile" routerLinkActive="active" class="nav-item nav-link">Profile</a>
-            <a (click)="logout()" class="nav-item nav-link">Logout</a>
-        </div>
-    </nav>
+    <!-- Sidebar Navigation -->
+    <app-nav *ngIf="account"></app-nav>
 
-    <!-- subnav router outlet -->
-    <router-outlet name="subnav"></router-outlet>
+    <!-- Main Content Area -->
+    <div class="main-content" [ngClass]="{ 'with-sidebar': account }">
+        <!-- subnav router outlet -->
+        <router-outlet name="subnav"></router-outlet>
 
-    <!-- global alert -->
-    <alert></alert>
+        <!-- global alert -->
+        <alert></alert>
 
-    <!-- main router outlet -->
-    <router-outlet></router-outlet>
+        <!-- main router outlet -->
+        <router-outlet></router-outlet>
+    </div>
 </div>

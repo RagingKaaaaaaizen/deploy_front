@@ -17,3 +17,16 @@ a { cursor: pointer; }
     text-align: center;
     box-sizing: content-box;
 }
+
+// Highlight effect for stock rows
+.highlight-row {
+    background-color: #fff3cd !important;
+    border: 2px solid #ffc107 !important;
+    animation: highlight-pulse 2s ease-in-out;
+}
+
+@keyframes highlight-pulse {
+    0% { background-color: #fff3cd; }
+    50% { background-color: #ffeaa7; }
+    100% { background-color: #fff3cd; }
+}

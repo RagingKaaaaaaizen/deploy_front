@@ -1,0 +1,240 @@
+<div class="list-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="fas fa-trash-alt"></i>
+                    <div>
+                        <h1 class="page-title">Disposal Records</h1>
+                        <p class="page-subtitle">Track and manage inventory disposal activities</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a routerLink="/dispose/add" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Disposal
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <div class="stat-number">{{ disposals.length }}</div>
+                <div class="stat-label">Total Disposals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-number">{{ getTotalDisposedItems() }}</div>
+                <div class="stat-label">Items Disposed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-number">{{ getTotalDisposalValue() | currency:'PHP':'symbol':'1.0-0' }}</div>
+                <div class="stat-label">Total Value</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-number">{{ getThisMonthDisposals() }}</div>
+                <div class="stat-label">This Month</div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="filters-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Search disposals..."
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearch()"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="filter-controls">
+                        <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+                            <option value="">All Categories</option>
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                        <select class="form-select" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
+                            <option value="">All Locations</option>
+                            <option *ngFor="let location of locations" [value]="location.id">
+                                {{ location.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disposal Records Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-list"></i> Disposal Records</h5>
+                <div class="table-actions">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Loading -->
+                <div *ngIf="loading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading disposal records...</p>
+                </div>
+
+                <!-- Table -->
+                <div *ngIf="!loading" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-box"></i> Item</th>
+                                <th><i class="fas fa-tag"></i> Category</th>
+                                <th><i class="fas fa-trademark"></i> Brand</th>
+                                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
+                                <th><i class="fas fa-dollar-sign"></i> Disposal Value</th>
+                                <th><i class="fas fa-calculator"></i> Total Value</th>
+                                <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                                <th><i class="fas fa-comment"></i> Reason</th>
+                                <th><i class="fas fa-user"></i> Disposed By</th>
+                                <th><i class="fas fa-calendar"></i> Date</th>
+                                <th><i class="fas fa-cogs"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let disposal of filteredDisposals" class="disposal-row">
+                                <td>
+                                    <div class="item-info">
+                                        <strong>{{ disposal.item?.name || 'Unknown Item' }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="category-badge">
+                                        {{ disposal.item?.category?.name || 'No Category' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="brand-badge">
+                                        {{ disposal.item?.brand?.name || 'No Brand' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="quantity-badge badge-danger">
+                                        {{ disposal.quantity }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="price-value">
+                                        {{ disposal.disposalValue | currency:'PHP':'symbol' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="total-value">
+                                        {{ disposal.totalValue | currency:'PHP':'symbol' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="location-badge">
+                                        {{ disposal.location?.name || 'No Location' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="reason-text" [title]="disposal.reason || 'No reason provided'">
+                                        {{ (disposal.reason || 'No reason provided') | slice:0:30 }}{{ (disposal.reason || '').length > 30 ? '...' : '' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="user-badge">
+                                        {{ disposal.user?.firstName }} {{ disposal.user?.lastName }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="date-badge">
+                                        {{ disposal.disposalDate | date: 'MMM dd, yyyy' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                                (click)="viewDisposal(disposal.id!)" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
+                                                class="btn btn-sm btn-outline-warning"
+                                                (click)="editDisposal(disposal.id!)" title="Edit Disposal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
+                                                class="btn btn-sm btn-outline-danger"
+                                                (click)="deleteDisposal(disposal.id!)" title="Delete Disposal">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info"
+                                                (click)="viewStockInfo(disposal.itemId)" title="Stock Info">
+                                            <i class="fas fa-boxes"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="filteredDisposals.length === 0">
+                                <td colspan="11" class="text-center py-4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <h4>No disposal records found</h4>
+                                        <p>Try adjusting your search or filters</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="filteredDisposals.length > 0">
+            <div class="pagination-info">
+                Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredDisposals.length) }} of {{ filteredDisposals.length }} entries
+            </div>
+            <nav aria-label="Disposal pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" (click)="previousPage()">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+                        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" (click)="nextPage()">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div> 

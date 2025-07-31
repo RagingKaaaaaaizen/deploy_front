@@ -1,55 +1,234 @@
-<div class="container mt-4">
-  <h2>Inventory Overview</h2>
+<div class="overview-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="fas fa-chart-pie"></i>
+                    <div>
+                        <h1 class="page-title">Inventory Overview</h1>
+                        <p class="page-subtitle">Quick overview of your inventory management system</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a routerLink="/add/category" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Category
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <!-- Categories Section -->
-  <div class="mt-4">
-    <h4>Categories</h4>
-    <ul class="list-group">
-      <li *ngFor="let category of categories" class="list-group-item">
-        <a [routerLink]="['/add/category']">{{ category.name }}</a>
-      </li>
-    </ul>
-    <div class="mt-2">
-      <a routerLink="/add/category" class="btn btn-sm btn-link">View All Categories</a>
-    </div>
-  </div>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="stat-number">{{ categories.length }}</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-number">{{ items.length }}</div>
+                <div class="stat-label">Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-trademark"></i>
+                </div>
+                <div class="stat-number">{{ brands.length }}</div>
+                <div class="stat-label">Brands</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="stat-number">{{ storageLocations.length }}</div>
+                <div class="stat-label">Storage Locations</div>
+            </div>
+        </div>
 
-  <!-- Items Section -->
-  <div class="mt-4">
-    <h4>Items</h4>
-    <ul class="list-group">
-      <li *ngFor="let item of items" class="list-group-item">
-        <a [routerLink]="['/add/item']">{{ item.name }}</a>
-      </li>
-    </ul>
-    <div class="mt-2">
-      <a routerLink="/add/item" class="btn btn-sm btn-link">View All Items</a>
-    </div>
-  </div>
+        <!-- Overview Sections -->
+        <div class="overview-sections">
+            <!-- Categories Section -->
+            <div class="overview-card">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-folder"></i> Recent Categories</h5>
+                        <div class="card-actions">
+                            <a routerLink="/add/category" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus"></i>
+                                Add New
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div *ngFor="let category of categories" class="list-group-item category-item">
+                                <div class="item-content">
+                                    <i class="fas fa-folder text-primary"></i>
+                                    <span class="item-name">{{ category.name }}</span>
+                                </div>
+                                <div class="item-actions">
+                                    <a [routerLink]="['/add/category/edit', category.id]" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a [routerLink]="['/add/category/view', category.id]" class="btn btn-sm btn-outline-info" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div *ngIf="categories.length === 0" class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <p>No categories found</p>
+                            </div>
+                        </div>
+                        <div class="view-all-link">
+                            <a routerLink="/add/category" class="btn btn-link">
+                                <i class="fas fa-list"></i>
+                                View All Categories
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <!-- Brands Section -->
-  <div class="mt-4">
-    <h4>Brands</h4>
-    <ul class="list-group">
-      <li *ngFor="let brand of brands" class="list-group-item">
-        <a [routerLink]="['/add/brand']">{{ brand.name }}</a>
-      </li>
-    </ul>
-    <div class="mt-2">
-      <a routerLink="/add/brand" class="btn btn-sm btn-link">View All Brands</a>
-    </div>
-  </div>
+            <!-- Items Section -->
+            <div class="overview-card">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-box"></i> Recent Items</h5>
+                        <div class="card-actions">
+                            <a routerLink="/add/item/add" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus"></i>
+                                Add New
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div *ngFor="let item of items" class="list-group-item item-item">
+                                <div class="item-content">
+                                    <i class="fas fa-box text-success"></i>
+                                    <div class="item-details">
+                                        <span class="item-name">{{ item.name }}</span>
+                                        <small class="item-category" *ngIf="item.category">
+                                            {{ item.category.name }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <a [routerLink]="['/add/item/edit', item.id]" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a [routerLink]="['/add/item/view', item.id]" class="btn btn-sm btn-outline-info" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div *ngIf="items.length === 0" class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <p>No items found</p>
+                            </div>
+                        </div>
+                        <div class="view-all-link">
+                            <a routerLink="/add/item" class="btn btn-link">
+                                <i class="fas fa-list"></i>
+                                View All Items
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <!-- Storage Locations Section -->
-  <div class="mt-4">
-    <h4>Storage Locations</h4>
-    <ul class="list-group">
-      <li *ngFor="let location of storageLocations" class="list-group-item">
-        <a [routerLink]="['/add/storage-locations']">{{ location.name }}</a>
-      </li>
-    </ul>
-    <div class="mt-2">
-      <a routerLink="/add/storage-locations" class="btn btn-sm btn-link">View All Storage Locations</a>
+            <!-- Brands Section -->
+            <div class="overview-card">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-trademark"></i> Recent Brands</h5>
+                        <div class="card-actions">
+                            <a routerLink="/add/brand/add" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus"></i>
+                                Add New
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div *ngFor="let brand of brands" class="list-group-item brand-item">
+                                <div class="item-content">
+                                    <i class="fas fa-trademark text-info"></i>
+                                    <span class="item-name">{{ brand.name }}</span>
+                                </div>
+                                <div class="item-actions">
+                                    <a [routerLink]="['/add/brand/edit', brand.id]" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a [routerLink]="['/add/brand/view', brand.id]" class="btn btn-sm btn-outline-info" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div *ngIf="brands.length === 0" class="empty-state">
+                                <i class="fas fa-trademark"></i>
+                                <p>No brands found</p>
+                            </div>
+                        </div>
+                        <div class="view-all-link">
+                            <a routerLink="/add/brand" class="btn btn-link">
+                                <i class="fas fa-list"></i>
+                                View All Brands
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Locations Section -->
+            <div class="overview-card">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-map-marker-alt"></i> Recent Storage Locations</h5>
+                        <div class="card-actions">
+                            <a routerLink="/add/storage-locations/add" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus"></i>
+                                Add New
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <div *ngFor="let location of storageLocations" class="list-group-item location-item">
+                                <div class="item-content">
+                                    <i class="fas fa-map-marker-alt text-danger"></i>
+                                    <span class="item-name">{{ location.name }}</span>
+                                </div>
+                                <div class="item-actions">
+                                    <a [routerLink]="['/add/storage-locations/edit', location.id]" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a [routerLink]="['/add/storage-locations/view', location.id]" class="btn btn-sm btn-outline-info" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div *ngIf="storageLocations.length === 0" class="empty-state">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <p>No storage locations found</p>
+                            </div>
+                        </div>
+                        <div class="view-all-link">
+                            <a routerLink="/add/storage-locations" class="btn btn-link">
+                                <i class="fas fa-list"></i>
+                                View All Storage Locations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

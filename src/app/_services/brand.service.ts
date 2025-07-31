@@ -4,7 +4,7 @@ import { environment } from '@environments/environment';
 import { Observable } from 'rxjs';
 import { Brand } from '../_models/brand';
 
-const baseUrl = `${environment.apiUrl}/brand`;
+const baseUrl = `${environment.apiUrl}/api/brands`;
 
 @Injectable({ providedIn: 'root' })
 export class BrandService {

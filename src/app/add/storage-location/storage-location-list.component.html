@@ -1,27 +1,196 @@
-<div class="container mt-4">
-  <h2>Storage Locations</h2>
+<div class="list-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h1 class="page-title">Storage Locations</h1>
+                        <p class="page-subtitle">Manage inventory storage locations</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a routerLink="/add/storage-locations/add" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Location
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <button class="btn btn-primary mb-3" (click)="addLocation()">Add Location</button>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="stat-number">{{ locations.length }}</div>
+                <div class="stat-label">Total Locations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-number">{{ getTotalItems() }}</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <div class="stat-number">{{ getAverageItemsPerLocation() }}</div>
+                <div class="stat-label">Avg Items/Location</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-number">{{ getMostUsedLocation() }}</div>
+                <div class="stat-label">Most Used</div>
+            </div>
+        </div>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let loc of locations">
-        <td>{{ loc.id }}</td>
-        <td>{{ loc.name }}</td>
-        <td>{{ loc.description }}</td>
-        <td>
-          <button class="btn btn-sm btn-warning me-2" (click)="editLocation(loc.id)">Edit</button>
-          <button class="btn btn-sm btn-danger" (click)="deleteLocation(loc.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        <!-- Filters and Search -->
+        <div class="filters-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Search locations..."
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearch()"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="filter-controls">
+                        <select class="form-select" [(ngModel)]="selectedSort" (change)="onSortChange()">
+                            <option value="name">Sort by Name</option>
+                            <option value="items">Sort by Items Count</option>
+                            <option value="created">Sort by Created Date</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Storage Locations Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-list"></i> Storage Locations</h5>
+                <div class="table-actions">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Loading -->
+                <div *ngIf="loading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading storage locations...</p>
+                </div>
+
+                <!-- Table -->
+                <div *ngIf="!loading" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> ID</th>
+                                <th><i class="fas fa-tag"></i> Name</th>
+                                <th><i class="fas fa-align-left"></i> Description</th>
+                                <th><i class="fas fa-box"></i> Items Count</th>
+                                <th><i class="fas fa-calendar"></i> Created</th>
+                                <th><i class="fas fa-cogs"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let loc of filteredLocations" class="location-row">
+                                <td>
+                                    <span class="id-badge">{{ loc.id }}</span>
+                                </td>
+                                <td>
+                                    <div class="location-info">
+                                        <i class="fas fa-map-marker-alt text-danger"></i>
+                                        <strong>{{ loc.name }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="description-text" [title]="loc.description || 'No description'">
+                                        {{ (loc.description || 'No description') | slice:0:50 }}{{ (loc.description || '').length > 50 ? '...' : '' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="items-count-badge">
+                                        {{ getLocationItemCount(loc.id) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="date-badge">
+                                        {{ loc.createdAt | date: 'MMM dd, yyyy' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                                (click)="viewLocation(loc.id)" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a [routerLink]="['/add/storage-locations/edit', loc.id]" 
+                                            class="btn btn-sm btn-outline-warning" title="Edit Location">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                (click)="deleteLocation(loc.id)" title="Delete Location">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="filteredLocations.length === 0">
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <h4>No storage locations found</h4>
+                                        <p>Try adjusting your search or create a new location</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="filteredLocations.length > 0">
+            <div class="pagination-info">
+                Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredLocations.length) }} of {{ filteredLocations.length }} entries
+            </div>
+            <nav aria-label="Storage locations pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" (click)="previousPage()">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+                        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" (click)="nextPage()">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>

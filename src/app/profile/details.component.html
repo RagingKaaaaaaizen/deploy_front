@@ -1,8 +1,201 @@
-﻿<h1>My Profile</h1>
-<p>
-    <strong>Name: </strong> {{account.title}} {{account.firstName}} {{account.lastName}}<br />
-    <strong>Email: </strong> {{account.email}}<br />
-    <strong>Role: </strong> {{account.role}}<br />
-    <strong>Status: </strong> {{account.isActive ? 'Active' : 'Inactive'}}
-</p>
-<p><a routerLink="update">Update Profile</a></p>
+﻿<div class="profile-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <h1 class="page-title">My Profile</h1>
+                        <p class="page-subtitle">View and manage your account information</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a routerLink="update" class="btn btn-primary">
+                        <i class="fas fa-edit"></i>
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user-circle"></i> Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="profile-info">
+                        <!-- Profile Avatar -->
+                        <div class="profile-avatar">
+                            <div class="avatar-circle">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+
+                        <!-- Profile Details -->
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-id-badge"></i>
+                                    Full Name
+                                </div>
+                                <div class="detail-value">
+                                    {{account.title}} {{account.firstName}} {{account.lastName}}
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Address
+                                </div>
+                                <div class="detail-value">
+                                    {{account.email}}
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-user-tag"></i>
+                                    Role
+                                </div>
+                                <div class="detail-value">
+                                    <span class="badge badge-primary">{{account.role || 'No Role'}}</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-circle"></i>
+                                    Account Status
+                                </div>
+                                <div class="detail-value">
+                                    <span *ngIf="account.isActive === true" class="badge badge-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Active
+                                    </span>
+                                    <span *ngIf="account.isActive === false" class="badge badge-danger">
+                                        <i class="fas fa-times-circle me-1"></i>
+                                        Inactive
+                                    </span>
+                                    <span *ngIf="account.isActive === null || account.isActive === undefined" class="badge badge-warning">
+                                        <i class="fas fa-question-circle me-1"></i>
+                                        Unknown Status
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row" *ngIf="account.verified">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar-check"></i>
+                                    Email Verified
+                                </div>
+                                <div class="detail-value">
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        {{account.verified | date:'mediumDate'}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row" *ngIf="!account.verified">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar-times"></i>
+                                    Email Verification
+                                </div>
+                                <div class="detail-value">
+                                    <span class="badge badge-warning">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        Not Verified
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row" *ngIf="account.employee">
+                                <div class="detail-label">
+                                    <i class="fas fa-briefcase"></i>
+                                    Employee Info
+                                </div>
+                                <div class="detail-value">
+                                    {{account.employee.department?.name || 'No Department'}}
+                                </div>
+                            </div>
+
+                            <div class="detail-row" *ngIf="account.status">
+                                <div class="detail-label">
+                                    <i class="fas fa-info-circle"></i>
+                                    Account Status
+                                </div>
+                                <div class="detail-value">
+                                    <span class="badge badge-info">{{account.status}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <div class="action-buttons">
+                            <a routerLink="update" class="btn btn-outline-primary">
+                                <i class="fas fa-edit me-2"></i>
+                                Edit Profile
+                            </a>
+                            <button class="btn btn-outline-secondary">
+                                <i class="fas fa-key me-2"></i>
+                                Change Password
+                            </button>
+                            <button class="btn btn-outline-info">
+                                <i class="fas fa-download me-2"></i>
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Statistics -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Account Status</h3>
+                            <p *ngIf="account.isActive === true">Active Account</p>
+                            <p *ngIf="account.isActive === false">Inactive Account</p>
+                            <p *ngIf="account.isActive === null || account.isActive === undefined">Status Unknown</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Account Security</h3>
+                            <p *ngIf="account.verified">Email Verified</p>
+                            <p *ngIf="!account.verified">Email Not Verified</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>User Role</h3>
+                            <p>{{account.role || 'No Role Assigned'}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

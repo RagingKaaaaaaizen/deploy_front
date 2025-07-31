@@ -242,7 +242,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 account.role = Role.Admin;
                 account.isVerified = true
             } else {
-                account.role = Role.User;
+                account.role = Role.Viewer;
                 account.isVerified = false
             }
             account.isActive = true

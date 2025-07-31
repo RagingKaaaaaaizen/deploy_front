@@ -12,8 +12,12 @@ import { Stock } from '../_models/stock';
 export class StockEditComponent implements OnInit {
   stock: Stock = new Stock();
   isEdit = false;
+  isViewMode = false;
   items: any[] = [];
   locations: any[] = [];
+  loading = false;
+  error = '';
+  submitted = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,6 +28,8 @@ export class StockEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isViewMode = this.router.url.includes('/view/');
+    
     // Load items
     this.itemService.getAll().subscribe(items => {
       this.items = items.map((i: any) => ({
@@ -49,6 +55,12 @@ export class StockEditComponent implements OnInit {
           this.calculateTotalPrice();
         }
       });
+    } else {
+      // Initialize new stock with default values
+      this.stock = new Stock();
+      this.stock.quantity = 1;
+      this.stock.price = 0;
+      this.stock.totalPrice = 0;
     }
   }
 
@@ -60,16 +72,53 @@ export class StockEditComponent implements OnInit {
   }
 
   save() {
+    this.submitted = true;
+    
+    // Validate required fields
+    if (!this.stock.itemId) {
+      this.error = 'Please select an item';
+      return;
+    }
+    if (!this.stock.locationId) {
+      this.error = 'Please select a storage location';
+      return;
+    }
+    if (!this.stock.quantity || this.stock.quantity <= 0) {
+      this.error = 'Quantity must be greater than 0';
+      return;
+    }
+    if (!this.stock.price || this.stock.price < 0) {
+      this.error = 'Price must be 0 or greater';
+      return;
+    }
+
     // Auto-calculate before saving
     this.calculateTotalPrice();
 
+    this.loading = true;
+    this.error = '';
+
     if (this.isEdit) {
-      this.stockService.update(this.stock.id!, this.stock).subscribe(() => {
-        this.router.navigate(['/stocks']);
+      this.stockService.update(this.stock.id!, this.stock).subscribe({
+        next: () => {
+          this.loading = false;
+          this.router.navigate(['/stocks']);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.error = 'Error updating stock: ' + (error.error?.message || error.message || 'Unknown error');
+        }
       });
     } else {
-      this.stockService.create(this.stock).subscribe(() => {
-        this.router.navigate(['/stocks']);
+      this.stockService.create(this.stock).subscribe({
+        next: (result) => {
+          this.loading = false;
+          this.router.navigate(['/stocks']);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.error = 'Error creating stock: ' + (error.error?.message || error.message || 'Unknown error');
+        }
       });
     }
   }

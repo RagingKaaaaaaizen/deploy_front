@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from '@environments/environment';
 import { Observable } from 'rxjs';
 import { Stock } from '../_models/stock';
 
-const baseUrl = `${environment.apiUrl}/stock`;
+const baseUrl = `${environment.apiUrl}/api/stocks`;
 
 @Injectable({ providedIn: 'root' })
 export class StockService {
@@ -28,5 +28,9 @@ export class StockService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${baseUrl}/${id}`);
+  }
+
+  getAvailableStock(itemId: number): Observable<any> {
+    return this.http.get<any>(`${baseUrl}/available/${itemId}`);
   }
 }

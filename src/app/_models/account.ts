@@ -8,7 +8,9 @@ export class Account {
     lastName: string;
     email: string;
     role: Role;
-    isActive: boolean
+    isActive: boolean;
+    status?: string;
     jwtToken?: string;
-    employee?: Employee
+    verified?: Date;
+    employee?: Employee;
 }

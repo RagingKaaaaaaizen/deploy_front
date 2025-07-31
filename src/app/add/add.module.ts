@@ -7,6 +7,7 @@ import { CategoryListComponent } from './category/category-list.component';
 import { CategoryEditComponent } from './category/category-edit.component';
 import { ItemListComponent } from './item/item-list.component';
 import { ItemEditComponent } from './item/item-edit.component';
+import { ItemAddComponent } from './item/item-add.component';
 import { BrandListComponent } from './brand/brand-list.component';
 import { BrandEditComponent } from './brand/brand-edit.component';
 
@@ -23,11 +24,12 @@ import { OverviewComponent } from './overview.component';
     CategoryEditComponent,
     ItemListComponent,
     ItemEditComponent,
+    ItemAddComponent,
     BrandListComponent,
     BrandEditComponent,
     StorageLocationListComponent,
     StorageLocationEditComponent,
-    StorageLocationAddComponent   // <-- ADD THIS
+    StorageLocationAddComponent
   ],
   imports: [
     CommonModule,

@@ -15,11 +15,12 @@
         <tr *ngFor="let account of accounts">
             <td>{{account.title}} {{account.firstName}} {{account.lastName}}</td>
             <td>{{account.email}}</td>
-            <td [class.text-primary]="account.isActive" [class.text-danger]="!account.isActive">
-                {{ account.isActive ? 'Active' : 'InActive' }}
+            <td [class.text-primary]="account.status === 'Active'" [class.text-danger]="account.status !== 'Active'">
+                {{ account.status }}
             </td>
             <td>{{account.role}}</td>
             <td style="white-space: nowrap">
+                <button (click)="viewAccount(account.id)" class="btn btn-sm btn-info mr-1">View</button>
                 <a routerLink="edit/{{account.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
                 <button (click)="deleteAccount(account.id)" class="btn btn-sm btn-danger btn-delete-account" [disabled]="account.isDeleting">
                     <span *ngIf="account.isDeleting" class="spinner-border spinner-border-sm"></span>

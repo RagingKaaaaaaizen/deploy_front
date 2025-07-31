@@ -8,3 +8,4 @@ export * from './item';
 export * from './stock';
 export * from './brand';
 export * from './storagelocation';
+export * from './pc';
