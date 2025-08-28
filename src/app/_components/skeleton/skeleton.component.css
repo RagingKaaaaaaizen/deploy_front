@@ -1,0 +1,161 @@
+/* Skeleton Loading Animation */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-container {
+  display: inline-block;
+  width: 100%;
+}
+
+/* Base skeleton styles */
+.skeleton-text,
+.skeleton-title,
+.skeleton-avatar,
+.skeleton-button {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Title skeleton */
+.skeleton-title {
+  background: linear-gradient(90deg, #e0e0e0 25%, #d0d0d0 50%, #e0e0e0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Avatar skeleton */
+.skeleton-avatar {
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Button skeleton */
+.skeleton-button {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Card skeleton */
+.skeleton-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-card-header {
+  height: 60px;
+  background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.skeleton-card-body {
+  padding: 1rem;
+}
+
+/* Table skeleton */
+.skeleton-table {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+.skeleton-table-header {
+  display: flex;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  gap: 1rem;
+}
+
+.skeleton-table-row {
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 1rem;
+}
+
+.skeleton-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Form skeleton */
+.skeleton-form {
+  padding: 1rem;
+}
+
+.skeleton-form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .skeleton-table-header,
+  .skeleton-table-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .skeleton-table-header > div,
+  .skeleton-table-row > div {
+    width: 100% !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .skeleton-text,
+  .skeleton-title,
+  .skeleton-avatar,
+  .skeleton-button {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+    background-size: 200px 100%;
+  }
+  
+  .skeleton-title {
+    background: linear-gradient(90deg, #3a3a3a 25%, #4a4a4a 50%, #3a3a3a 75%);
+    background-size: 200px 100%;
+  }
+  
+  .skeleton-card {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+  
+  .skeleton-card-header {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+    background-size: 200px 100%;
+    border-color: #333;
+  }
+  
+  .skeleton-table {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+  
+  .skeleton-table-header {
+    background: #2a2a2a;
+    border-color: #333;
+  }
+  
+  .skeleton-table-row {
+    border-color: #333;
+  }
+}

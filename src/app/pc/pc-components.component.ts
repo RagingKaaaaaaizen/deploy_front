@@ -124,8 +124,13 @@ export class PCComponentsComponent implements OnInit {
 
   ngOnInit() {
     const pcId = this.route.snapshot.params['id'];
-    this.loadPC(pcId);
+    
+    // Set loading state
+    this.loading = true;
+    
+    // Load data first, then PC
     this.loadData();
+    this.loadPC(pcId);
     
     // Listen for stock data changes from other components
     window.addEventListener('stockDataChanged', this.handleStockDataChange.bind(this));
@@ -750,6 +755,7 @@ export class PCComponentsComponent implements OnInit {
             // If stocks not loaded yet, wait for them
             this.loadStocksForFiltering();
           }
+          this.loading = false; // Set loading to false after PC is loaded
         },
         error: error => {
           this.alertService.error('Error loading PC: ' + error);

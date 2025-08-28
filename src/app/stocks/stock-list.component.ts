@@ -1325,6 +1325,7 @@ export class StockListComponent implements OnInit {
   itemsPerPage = 10;
   Math = Math;
   showAddStockModal = false;
+  loading = false; // Added loading state
 
   // Highlight tracking
   highlightedItemId: number | null = null;
@@ -1373,6 +1374,9 @@ export class StockListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Set loading state
+    this.loading = true;
+    
     this.loadData();
     
     // Check for query parameters to highlight specific items
@@ -1775,6 +1779,7 @@ export class StockListComponent implements OnInit {
   }
 
   loadData() {
+    this.loading = true; // Set loading to true before fetching data
     this.loadStocks();
     this.loadItems();
     this.loadCategories();
@@ -1823,12 +1828,14 @@ export class StockListComponent implements OnInit {
           
           this.stocks = stocks;
           this.applyFilters();
+          this.loading = false; // Set loading to false after data is loaded
           
           console.log('=== END STOCK DATA DEBUG ===');
         },
         error: error => {
           console.error('Error loading stocks:', error);
           this.alertService.error(error);
+          this.loading = false; // Set loading to false on error
         }
       });
   }

@@ -1,230 +1,225 @@
-<div class="overview-container">
+<div class="add-overview-container">
     <div class="container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="header-content">
-                <div class="header-title">
-                    <i class="fas fa-chart-pie"></i>
-                    <div>
-                        <h1 class="page-title">Inventory Overview</h1>
-                        <p class="page-subtitle">Quick overview of your inventory management system</p>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <a routerLink="/add/item/add" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Add Item
-                    </a>
+        <!-- Loading Skeleton -->
+        <div *ngIf="loading" class="loading-skeleton">
+            <!-- Header Skeleton -->
+            <div class="mb-4">
+                <app-skeleton type="title" width="300px" height="2.5rem" className="mb-2"></app-skeleton>
+                <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
+            </div>
+
+            <!-- Cards Grid Skeleton -->
+            <div class="row">
+                <div class="col-md-4 mb-4" *ngFor="let i of [1,2,3,4,5,6]">
+                    <app-skeleton type="card" className="h-100"></app-skeleton>
                 </div>
             </div>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-folder"></i>
-                </div>
-                <div class="stat-number">{{ categories.length }}</div>
-                <div class="stat-label">Categories</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-box"></i>
-                </div>
-                <div class="stat-number">{{ items.length }}</div>
-                <div class="stat-label">Items</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-trademark"></i>
-                </div>
-                <div class="stat-number">{{ brands.length }}</div>
-                <div class="stat-label">Brands</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <div class="stat-number">{{ storageLocations.length }}</div>
-                <div class="stat-label">Storage Locations</div>
-            </div>
-        </div>
-
-        <!-- Overview Sections -->
-        <div class="overview-sections">
-            <!-- Categories Section -->
-            <div class="overview-card">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-folder"></i> Recent Categories</h5>
-                        <div class="card-actions">
-                            <a routerLink="/add/category" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-plus"></i>
-                                Add New
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group">
-                            <div *ngFor="let category of categories" class="list-group-item category-item">
-                                <div class="item-content">
-                                    <i class="fas fa-folder text-primary"></i>
-                                    <span class="item-name">{{ category.name }}</span>
-                                </div>
-                                <div class="item-actions">
-                                    <a [routerLink]="['/add/category/edit', category.id]" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a [routerLink]="['/add/category/view', category.id]" class="btn btn-sm btn-outline-info" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div *ngIf="categories.length === 0" class="empty-state">
-                                <i class="fas fa-folder-open"></i>
-                                <p>No categories found</p>
-                            </div>
-                        </div>
-                        <div class="view-all-link">
-                            <a routerLink="/add/category" class="btn btn-link">
-                                <i class="fas fa-list"></i>
-                                View All Categories
-                            </a>
-                        </div>
-                    </div>
-                </div>
+        <!-- Actual Content -->
+        <div *ngIf="!loading">
+            <!-- Header -->
+            <div class="header-section mb-4">
+                <h1 class="main-title">
+                    <i class="fas fa-plus-circle text-primary me-3"></i>
+                    Add New Items
+                </h1>
+                <p class="subtitle text-muted">
+                    Choose what type of item you want to add to the inventory system
+                </p>
             </div>
 
-            <!-- Items Section -->
-            <div class="overview-card">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-box"></i> Recent Items</h5>
-                        <div class="card-actions">
-                            <a routerLink="/add/item/add" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-plus"></i>
-                                Add New
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group">
-                            <div *ngFor="let item of items" class="list-group-item item-item">
-                                <div class="item-content">
-                                    <i class="fas fa-box text-success"></i>
-                                    <div class="item-details">
-                                        <span class="item-name">{{ item.name }}</span>
-                                        <small class="item-category" *ngIf="item.category">
-                                            {{ item.category.name }}
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="item-actions">
-                                    <a [routerLink]="['/add/item/edit', item.id]" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a [routerLink]="['/add/item/view', item.id]" class="btn btn-sm btn-outline-info" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+            <!-- Add Options Grid -->
+            <div class="add-options-grid">
+                <div class="row">
+                    <!-- Stock Items -->
+                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="add-option-card" routerLink="/add/item">
+                            <div class="card-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Stock Items</h3>
+                                <p>Add new inventory items to the stock</p>
+                                <div class="card-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-cube"></i>
+                                        {{stats?.totalItems || 0}} Items
+                                    </span>
                                 </div>
                             </div>
-                            <div *ngIf="items.length === 0" class="empty-state">
-                                <i class="fas fa-box-open"></i>
-                                <p>No items found</p>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>
-                        <div class="view-all-link">
-                            <a routerLink="/add/item" class="btn btn-link">
-                                <i class="fas fa-list"></i>
-                                View All Items
-                            </a>
-                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Brands Section -->
-            <div class="overview-card">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-trademark"></i> Recent Brands</h5>
-                        <div class="card-actions">
-                            <a routerLink="/add/brand/add" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-plus"></i>
-                                Add New
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group">
-                            <div *ngFor="let brand of brands" class="list-group-item brand-item">
-                                <div class="item-content">
-                                    <i class="fas fa-trademark text-info"></i>
-                                    <span class="item-name">{{ brand.name }}</span>
-                                </div>
-                                <div class="item-actions">
-                                    <a [routerLink]="['/add/brand/edit', brand.id]" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a [routerLink]="['/add/brand/view', brand.id]" class="btn btn-sm btn-outline-info" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                    <!-- Categories -->
+                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="add-option-card" routerLink="/add/category">
+                            <div class="card-icon">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Categories</h3>
+                                <p>Create new item categories</p>
+                                <div class="card-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-tag"></i>
+                                        {{stats?.totalCategories || 0}} Categories
+                                    </span>
                                 </div>
                             </div>
-                            <div *ngIf="brands.length === 0" class="empty-state">
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brands -->
+                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="add-option-card" routerLink="/add/brand">
+                            <div class="card-icon">
                                 <i class="fas fa-trademark"></i>
-                                <p>No brands found</p>
+                            </div>
+                            <div class="card-content">
+                                <h3>Brands</h3>
+                                <p>Add new product brands</p>
+                                <div class="card-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-star"></i>
+                                        {{stats?.totalBrands || 0}} Brands
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>
-                        <div class="view-all-link">
-                            <a routerLink="/add/brand" class="btn btn-link">
-                                <i class="fas fa-list"></i>
-                                View All Brands
-                            </a>
+                    </div>
+
+                    <!-- Storage Locations -->
+                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="add-option-card" routerLink="/add/storage-location">
+                            <div class="card-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Storage Locations</h3>
+                                <p>Define new storage areas</p>
+                                <div class="card-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        {{stats?.totalStorageLocations || 0}} Locations
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employees -->
+                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="add-option-card" routerLink="/admin/employees">
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Employees</h3>
+                                <p>Add new employees to the system</p>
+                                <div class="card-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-user"></i>
+                                        {{stats?.totalEmployees || 0}} Employees
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Departments -->
+                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="add-option-card" routerLink="/admin/departments">
+                            <div class="card-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Departments</h3>
+                                <p>Create new departments</p>
+                                <div class="card-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-sitemap"></i>
+                                        {{stats?.totalDepartments || 0}} Departments
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Storage Locations Section -->
-            <div class="overview-card">
+            <!-- Quick Stats -->
+            <div class="quick-stats-section mt-5" *ngIf="stats">
                 <div class="card">
                     <div class="card-header">
-                        <h5><i class="fas fa-map-marker-alt"></i> Recent Storage Locations</h5>
-                        <div class="card-actions">
-                            <a routerLink="/add/storage-locations/add" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-plus"></i>
-                                Add New
-                            </a>
-                        </div>
+                        <h5><i class="fas fa-chart-bar text-primary me-2"></i> System Overview</h5>
                     </div>
                     <div class="card-body">
-                        <div class="list-group">
-                            <div *ngFor="let location of storageLocations" class="list-group-item location-item">
-                                <div class="item-content">
-                                    <i class="fas fa-map-marker-alt text-danger"></i>
-                                    <span class="item-name">{{ location.name }}</span>
-                                </div>
-                                <div class="item-actions">
-                                    <a [routerLink]="['/add/storage-locations/edit', location.id]" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a [routerLink]="['/add/storage-locations/view', location.id]" class="btn btn-sm btn-outline-info" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                        <div class="row text-center">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">{{stats.totalItems || 0}}</div>
+                                    <div class="stat-label">Total Items</div>
                                 </div>
                             </div>
-                            <div *ngIf="storageLocations.length === 0" class="empty-state">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <p>No storage locations found</p>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">{{stats.totalStock || 0}}</div>
+                                    <div class="stat-label">Total Stock</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">{{stats.totalCategories || 0}}</div>
+                                    <div class="stat-label">Categories</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">{{stats.totalBrands || 0}}</div>
+                                    <div class="stat-label">Brands</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="view-all-link">
-                            <a routerLink="/add/storage-locations" class="btn btn-link">
-                                <i class="fas fa-list"></i>
-                                View All Storage Locations
-                            </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity-section mt-4" *ngIf="recentActivity?.length">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clock text-info me-2"></i> Recent Additions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-list">
+                            <div class="activity-item" *ngFor="let activity of recentActivity">
+                                <div class="activity-icon">
+                                    <i [class]="activity.icon"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-message">{{activity.message}}</div>
+                                    <div class="activity-time">{{activity.timestamp | date:'medium'}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

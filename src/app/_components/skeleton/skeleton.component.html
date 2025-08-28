@@ -1,0 +1,51 @@
+<div class="skeleton-container" [ngClass]="className">
+  <!-- Text skeleton -->
+  <div *ngIf="type === 'text'" class="skeleton-text" [style.width]="width" [style.height]="height"></div>
+  
+  <!-- Title skeleton -->
+  <div *ngIf="type === 'title'" class="skeleton-title" [style.width]="width" [style.height]="height"></div>
+  
+  <!-- Avatar skeleton -->
+  <div *ngIf="type === 'avatar'" class="skeleton-avatar" [style.width]="width" [style.height]="height"></div>
+  
+  <!-- Button skeleton -->
+  <div *ngIf="type === 'button'" class="skeleton-button" [style.width]="width" [style.height]="height"></div>
+  
+  <!-- Card skeleton -->
+  <div *ngIf="type === 'card'" class="skeleton-card">
+    <div class="skeleton-card-header"></div>
+    <div class="skeleton-card-body">
+      <div class="skeleton-text" style="width: 80%; height: 1rem; margin-bottom: 0.5rem;"></div>
+      <div class="skeleton-text" style="width: 60%; height: 1rem; margin-bottom: 0.5rem;"></div>
+      <div class="skeleton-text" style="width: 90%; height: 1rem;"></div>
+    </div>
+  </div>
+  
+  <!-- Table skeleton -->
+  <div *ngIf="type === 'table'" class="skeleton-table">
+    <div class="skeleton-table-header">
+      <div class="skeleton-text" style="width: 20%; height: 1.5rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1.5rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1.5rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1.5rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1.5rem;"></div>
+      <div class="skeleton-text" style="width: 20%; height: 1.5rem;"></div>
+    </div>
+    <div class="skeleton-table-row" *ngFor="let line of linesArray">
+      <div class="skeleton-text" style="width: 20%; height: 1rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1rem;"></div>
+      <div class="skeleton-text" style="width: 15%; height: 1rem;"></div>
+      <div class="skeleton-text" style="width: 20%; height: 1rem;"></div>
+    </div>
+  </div>
+  
+  <!-- Form skeleton -->
+  <div *ngIf="type === 'form'" class="skeleton-form">
+    <div class="skeleton-form-group" *ngFor="let line of linesArray">
+      <div class="skeleton-text" style="width: 30%; height: 1rem; margin-bottom: 0.5rem;"></div>
+      <div class="skeleton-text" style="width: 100%; height: 2.5rem; border-radius: 0.375rem;"></div>
+    </div>
+  </div>
+</div>

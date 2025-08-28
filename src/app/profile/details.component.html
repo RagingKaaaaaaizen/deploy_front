@@ -1,197 +1,217 @@
-﻿<div class="profile-container">
+﻿<div class="profile-details-container">
     <div class="container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="header-content">
-                <div class="header-title">
-                    <i class="fas fa-user"></i>
-                    <div>
-                        <h1 class="page-title">My Profile</h1>
-                        <p class="page-subtitle">View and manage your account information</p>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <a routerLink="update" class="btn btn-primary">
-                        <i class="fas fa-edit"></i>
-                        Edit Profile
-                    </a>
-                </div>
+        <!-- Loading Skeleton -->
+        <div *ngIf="loading" class="loading-skeleton">
+            <!-- Header Skeleton -->
+            <div class="mb-4">
+                <app-skeleton type="title" width="300px" height="2.5rem" className="mb-2"></app-skeleton>
+                <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
             </div>
-        </div>
 
-        <!-- Profile Card -->
-        <div class="profile-card">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-user-circle"></i> Account Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="profile-info">
-                        <!-- Profile Avatar -->
-                        <div class="profile-avatar">
-                            <div class="avatar-circle">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        </div>
-
-                        <!-- Profile Details -->
-                        <div class="profile-details">
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-id-badge"></i>
-                                    Full Name
-                                </div>
-                                <div class="detail-value">
-                                    {{account.title}} {{account.firstName}} {{account.lastName}}
-                                </div>
-                            </div>
-
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Email Address
-                                </div>
-                                <div class="detail-value">
-                                    {{account.email}}
-                                </div>
-                            </div>
-
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-user-tag"></i>
-                                    Role
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-primary">{{account.role || 'No Role'}}</span>
-                                </div>
-                            </div>
-
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-circle"></i>
-                                    Account Status
-                                </div>
-                                <div class="detail-value">
-                                    <span *ngIf="account.isActive === true" class="badge badge-success">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        Active
-                                    </span>
-                                    <span *ngIf="account.isActive === false" class="badge badge-danger">
-                                        <i class="fas fa-times-circle me-1"></i>
-                                        Inactive
-                                    </span>
-                                    <span *ngIf="account.isActive === null || account.isActive === undefined" class="badge badge-warning">
-                                        <i class="fas fa-question-circle me-1"></i>
-                                        Unknown Status
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="detail-row" *ngIf="account.verified">
-                                <div class="detail-label">
-                                    <i class="fas fa-calendar-check"></i>
-                                    Email Verified
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-success">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        {{account.verified | date:'mediumDate'}}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="detail-row" *ngIf="!account.verified">
-                                <div class="detail-label">
-                                    <i class="fas fa-calendar-times"></i>
-                                    Email Verification
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-warning">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        Not Verified
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="detail-row" *ngIf="account.employee">
-                                <div class="detail-label">
-                                    <i class="fas fa-briefcase"></i>
-                                    Employee Info
-                                </div>
-                                <div class="detail-value">
-                                    {{account.employee.department?.name || 'No Department'}}
-                                </div>
-                            </div>
-
-                            <div class="detail-row" *ngIf="account.status">
-                                <div class="detail-label">
-                                    <i class="fas fa-info-circle"></i>
-                                    Account Status
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-info">{{account.status}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="quick-actions">
-                        <div class="action-buttons">
-                            <a routerLink="update" class="btn btn-outline-primary">
-                                <i class="fas fa-edit me-2"></i>
-                                Edit Profile
-                            </a>
-                            <button class="btn btn-outline-secondary">
-                                <i class="fas fa-key me-2"></i>
-                                Change Password
-                            </button>
-                            <button class="btn btn-outline-info">
-                                <i class="fas fa-download me-2"></i>
-                                Export Data
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Account Statistics -->
-        <div class="stats-section">
+            <!-- Profile Card Skeleton -->
             <div class="row">
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-alt"></i>
+                <div class="col-md-4 mb-4">
+                    <app-skeleton type="card" className="h-100"></app-skeleton>
+                </div>
+                <div class="col-md-8 mb-4">
+                    <app-skeleton type="card" className="h-100"></app-skeleton>
+                </div>
+            </div>
+
+            <!-- Stats Cards Skeleton -->
+            <div class="row">
+                <div class="col-md-3 mb-4" *ngFor="let i of [1,2,3,4]">
+                    <app-skeleton type="card" className="h-100"></app-skeleton>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actual Content -->
+        <div *ngIf="!loading">
+            <!-- Header -->
+            <div class="header-section mb-4">
+                <h1 class="main-title">
+                    <i class="fas fa-user-circle text-primary me-3"></i>
+                    My Profile
+                </h1>
+                <p class="subtitle text-muted">
+                    View and manage your account information
+                </p>
+            </div>
+
+            <!-- Profile Information -->
+            <div class="profile-section">
+                <div class="row">
+                    <!-- Profile Card -->
+                    <div class="col-md-4 mb-4">
+                        <div class="profile-card">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h3>{{account.firstName}} {{account.lastName}}</h3>
+                                <p class="profile-role">{{account.role}}</p>
+                                <p class="profile-email">{{account.email}}</p>
+                            </div>
+                            <div class="profile-actions">
+                                <button class="btn btn-primary btn-sm" (click)="editProfile()">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </button>
+                            </div>
                         </div>
-                        <div class="stat-content">
-                            <h3>Account Status</h3>
-                            <p *ngIf="account.isActive === true">Active Account</p>
-                            <p *ngIf="account.isActive === false">Inactive Account</p>
-                            <p *ngIf="account.isActive === null || account.isActive === undefined">Status Unknown</p>
+                    </div>
+
+                    <!-- Account Details -->
+                    <div class="col-md-8 mb-4">
+                        <div class="account-details-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-info-circle text-primary me-2"></i> Account Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <label>First Name</label>
+                                            <p>{{account.firstName}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <label>Last Name</label>
+                                            <p>{{account.lastName}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <label>Email</label>
+                                            <p>{{account.email}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <label>Role</label>
+                                            <p><span class="badge badge-primary">{{account.role}}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <label>Status</label>
+                                            <p><span class="badge badge-success">{{account.status}}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="detail-item">
+                                            <label>Created</label>
+                                            <p>{{account.created | date:'medium'}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-shield-alt"></i>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-section mt-4">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{stats?.totalItems || 0}}</h3>
+                                <p>Items Managed</p>
+                            </div>
                         </div>
-                        <div class="stat-content">
-                            <h3>Account Security</h3>
-                            <p *ngIf="account.verified">Email Verified</p>
-                            <p *ngIf="!account.verified">Email Not Verified</p>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{stats?.totalDisposals || 0}}</h3>
+                                <p>Disposals Made</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{stats?.totalActivities || 0}}</h3>
+                                <p>Activities</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{stats?.daysActive || 0}}</h3>
+                                <p>Days Active</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-user-tie"></i>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section mt-4" *ngIf="recentActivity?.length">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-history text-primary me-2"></i> Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-list">
+                            <div class="activity-item" *ngFor="let activity of recentActivity">
+                                <div class="activity-icon">
+                                    <i [class]="activity.icon"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-message">{{activity.message}}</div>
+                                    <div class="activity-time">{{activity.timestamp | date:'medium'}}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-content">
-                            <h3>User Role</h3>
-                            <p>{{account.role || 'No Role Assigned'}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="permissions-section mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-key text-primary me-2"></i> Your Permissions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="permissions-grid">
+                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+                                <i class="fas fa-eye"></i>
+                                <span>View inventory and stock information</span>
+                            </div>
+                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                                <i class="fas fa-edit"></i>
+                                <span>Add, edit, and manage inventory items</span>
+                            </div>
+                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                                <i class="fas fa-users-cog"></i>
+                                <span>Manage employees and departments</span>
+                            </div>
+                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+                                <i class="fas fa-desktop"></i>
+                                <span>View PC management and components</span>
+                            </div>
+                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
+                                <i class="fas fa-cogs"></i>
+                                <span>Manage user accounts and system administration</span>
+                            </div>
                         </div>
                     </div>
                 </div>
