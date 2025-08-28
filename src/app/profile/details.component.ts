@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 
 import { AccountService } from '@app/_services';
 
@@ -98,20 +98,16 @@ import { AccountService } from '@app/_services';
         }
 
         .profile-avatar {
-            flex-shrink: 0;
-        }
-
-        .avatar-circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
             color: white;
             font-size: 2.5rem;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            flex-shrink: 0;
         }
 
         .profile-details {
@@ -121,72 +117,42 @@ import { AccountService } from '@app/_services';
         .detail-row {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
         }
 
         .detail-label {
-            flex: 0 0 150px;
+            flex: 0 0 200px;
             font-weight: 600;
             color: #333;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .detail-label i {
             color: #667eea;
-            width: 16px;
+            width: 20px;
         }
 
         .detail-value {
             flex: 1;
-            color: #555;
-            font-size: 1rem;
+            color: #666;
         }
 
-        .badge {
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .badge-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .badge-success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-
-        .badge-danger {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-        }
-
-        .badge-warning {
-            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-            color: #212529;
-        }
-
-        .badge-info {
-            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-            color: white;
+        .detail-value .badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
         }
 
         .quick-actions {
             margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e9ecef;
+            padding-top: 30px;
+            border-top: 1px solid #f0f0f0;
         }
 
         .action-buttons {
@@ -196,37 +162,23 @@ import { AccountService } from '@app/_services';
         }
 
         .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
             text-decoration: none;
         }
 
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: transparent;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-            color: white;
         }
 
         .btn-outline-primary {
-            border-color: #667eea;
+            border: 2px solid #667eea;
             color: #667eea;
             background: transparent;
         }
@@ -237,7 +189,7 @@ import { AccountService } from '@app/_services';
         }
 
         .btn-outline-secondary {
-            border-color: #6c757d;
+            border: 2px solid #6c757d;
             color: #6c757d;
             background: transparent;
         }
@@ -248,7 +200,7 @@ import { AccountService } from '@app/_services';
         }
 
         .btn-outline-info {
-            border-color: #17a2b8;
+            border: 2px solid #17a2b8;
             color: #17a2b8;
             background: transparent;
         }
@@ -269,9 +221,6 @@ import { AccountService } from '@app/_services';
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 20px;
         }
 
         .stat-card:hover {
@@ -279,17 +228,30 @@ import { AccountService } from '@app/_services';
             transform: translateY(-2px);
         }
 
+        .stat-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+
+        .stat-card p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
             color: white;
             font-size: 1.5rem;
-            flex-shrink: 0;
+            margin-bottom: 15px;
         }
 
         .stat-content {
@@ -374,10 +336,21 @@ import { AccountService } from '@app/_services';
         }
     `]
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit {
     account = this.accountService.accountValue;
+    loading = false;
 
     constructor(private accountService: AccountService) { }
+
+    ngOnInit() {
+        // Set loading state
+        this.loading = true;
+        
+        // Simulate loading time
+        setTimeout(() => {
+            this.loading = false;
+        }, 1000);
+    }
 
     // Check if current user is an admin
     get isAdmin(): boolean {
