@@ -59,7 +59,17 @@ export class AccountService {
     }           
 
     register(account: Account) {
-        return this.http.post(`${baseUrl}/register`, account);
+        return this.http.post<any>(`${baseUrl}/register`, account, { withCredentials: true })
+            .pipe(
+                map(response => {
+                    // If registration includes tokens, set up the account
+                    if (response && response.jwtToken && response.account) {
+                        this.accountSubject.next(response.account);
+                        this.startRefreshTokenTimer();
+                    }
+                    return response;
+                })
+            );
     }
 
     verifyEmail(token: string) {
