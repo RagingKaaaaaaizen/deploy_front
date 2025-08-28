@@ -8,27 +8,31 @@
         <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
       </div>
 
-      <!-- Stats Cards Skeleton -->
+      <!-- Stats Cards Skeleton - Facebook style -->
       <div class="stats-grid mb-4">
-        <div class="stat-card" *ngFor="let i of [1,2,3,4,5,6]">
-          <app-skeleton type="card" className="h-100"></app-skeleton>
-        </div>
+        <app-skeleton type="stats" lines="6" className="mb-4"></app-skeleton>
       </div>
 
       <!-- Filters Skeleton -->
       <div class="filters-section mb-4">
         <div class="row">
-          <div class="col-md-6 mb-3">
+          <div class="col-md-3 mb-3">
             <app-skeleton type="text" width="100%" height="2.5rem"></app-skeleton>
           </div>
-          <div class="col-md-6 mb-3">
+          <div class="col-md-3 mb-3">
             <app-skeleton type="text" width="100%" height="2.5rem"></app-skeleton>
+          </div>
+          <div class="col-md-3 mb-3">
+            <app-skeleton type="text" width="100%" height="2.5rem"></app-skeleton>
+          </div>
+          <div class="col-md-3 mb-3">
+            <app-skeleton type="button" width="100%" height="2.5rem"></app-skeleton>
           </div>
         </div>
       </div>
 
-      <!-- Table Skeleton -->
-      <div class="stock-table-container">
+      <!-- Table Skeleton - Facebook style -->
+      <div class="table-section">
         <app-skeleton type="table" lines="8" className="mb-4"></app-skeleton>
       </div>
     </div>

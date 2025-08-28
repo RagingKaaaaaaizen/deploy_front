@@ -8,21 +8,14 @@
                 <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
             </div>
 
-            <!-- Profile Card Skeleton -->
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <app-skeleton type="card" className="h-100"></app-skeleton>
-                </div>
-                <div class="col-md-8 mb-4">
-                    <app-skeleton type="card" className="h-100"></app-skeleton>
-                </div>
+            <!-- Profile Card Skeleton - Facebook style -->
+            <div class="profile-card-section mb-4">
+                <app-skeleton type="card" className="mb-4"></app-skeleton>
             </div>
 
-            <!-- Stats Cards Skeleton -->
-            <div class="row">
-                <div class="col-md-3 mb-4" *ngFor="let i of [1,2,3,4]">
-                    <app-skeleton type="card" className="h-100"></app-skeleton>
-                </div>
+            <!-- Stats Cards Skeleton - Facebook style -->
+            <div class="stats-section">
+                <app-skeleton type="stats" lines="4" className="mb-4"></app-skeleton>
             </div>
         </div>
 

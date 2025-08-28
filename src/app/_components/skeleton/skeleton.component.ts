@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./skeleton.component.css']
 })
 export class SkeletonComponent {
-  @Input() type: 'text' | 'title' | 'avatar' | 'button' | 'card' | 'table' | 'form' = 'text';
+  @Input() type: 'text' | 'title' | 'avatar' | 'button' | 'card' | 'table' | 'form' | 'list' | 'stats' | 'nav' | 'sidebar' | 'overlay' = 'text';
   @Input() lines: number = 1;
   @Input() width: string = '100%';
   @Input() height: string = '1rem';

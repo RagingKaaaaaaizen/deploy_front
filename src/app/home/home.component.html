@@ -2,27 +2,20 @@
     <div class="container">
         <!-- Loading Skeleton -->
         <div *ngIf="loading" class="loading-skeleton">
-            <!-- Welcome Section Skeleton -->
+            <!-- Header Skeleton -->
             <div class="mb-4">
-                <app-skeleton type="card" className="mb-4"></app-skeleton>
+                <app-skeleton type="title" width="300px" height="2.5rem" className="mb-2"></app-skeleton>
+                <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
             </div>
 
-            <!-- Stats Section Skeleton -->
+            <!-- Stats Section Skeleton - Facebook style -->
             <div class="stats-section mb-4">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6 mb-3" *ngFor="let i of [1,2,3,4]">
-                        <app-skeleton type="card" className="h-100"></app-skeleton>
-                    </div>
-                </div>
+                <app-skeleton type="stats" lines="4" className="mb-4"></app-skeleton>
             </div>
 
-            <!-- Summary Metrics Skeleton -->
+            <!-- Summary Metrics Skeleton - Facebook style -->
             <div class="summary-metrics-section mb-4">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6 mb-3" *ngFor="let i of [1,2,3,4]">
-                        <app-skeleton type="card" className="h-100"></app-skeleton>
-                    </div>
-                </div>
+                <app-skeleton type="stats" lines="4" className="mb-4"></app-skeleton>
             </div>
 
             <!-- Analytics Section Skeleton -->
