@@ -12,8 +12,7 @@
     "lint": "ng lint",
     "clean": "rm -rf dist node_modules/.cache",
     "clean:all": "rm -rf dist node_modules package-lock.json && npm install",
-    "clean:install": "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps",
-    "postinstall": "npm run clean"
+    "clean:install": "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps"
   },
   "private": true,
   "overrides": {
@@ -21,14 +20,17 @@
     "https-proxy-agent": "7.0.4",
     "agent-base": "6.0.2",
     "ms": "2.1.3",
-    "supports-color": "9.4.0",
+    "supports-color": "8.1.1",
     "inherits": "2.0.4",
-    "readable-stream": "3.6.2"
+    "readable-stream": "3.6.2",
+    "chalk": "4.1.2"
   },
   "resolutions": {
     "debug": "4.3.4",
     "https-proxy-agent": "7.0.4",
-    "agent-base": "6.0.2"
+    "agent-base": "6.0.2",
+    "supports-color": "8.1.1",
+    "chalk": "4.1.2"
   },
   "dependencies": {
     "@angular/animations": "^17.3.2",
