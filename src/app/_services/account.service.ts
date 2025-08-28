@@ -67,6 +67,8 @@ export class AccountService {
                         this.accountSubject.next(response.account);
                         this.startRefreshTokenTimer();
                     }
+                    // If no tokens but successful registration, don't set up account
+                    // User will need to verify email or contact admin
                     return response;
                 })
             );

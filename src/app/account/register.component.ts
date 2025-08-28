@@ -324,7 +324,15 @@ export class RegisterComponent implements OnInit {
             .subscribe({
                 next: (response: any) => {
                     this.alertService.success(response.message || 'Registration successful', { keepAfterRouteChange: true });
-                    this.router.navigate(['../login'], { relativeTo: this.route });
+                    
+                    // If registration includes tokens, user is automatically logged in
+                    if (response && response.jwtToken && response.account) {
+                        // User is logged in, redirect to home
+                        this.router.navigate(['/']);
+                    } else {
+                        // User needs to verify email or contact admin, redirect to login
+                        this.router.navigate(['../login'], { relativeTo: this.route });
+                    }
                 },
                 error: error => {
                     this.error = error;
