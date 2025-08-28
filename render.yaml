@@ -1,5 +1,5 @@
 services:
-  - type: web
+  - type: static
     name: computer-lab-inventory-frontend
     env: static
     plan: free
