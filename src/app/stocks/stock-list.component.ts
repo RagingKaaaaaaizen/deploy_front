@@ -2024,8 +2024,21 @@ export class StockListComponent implements OnInit {
   isItemEffectivelyAvailable(stock: any): boolean {
     // An item is effectively available if:
     // 1. It was never disposed (no disposeId)
-    // 2. It was disposed but returned to stock (disposeId exists but returnedToStock is true)
-    return !stock.disposeId || (stock.disposeId && stock.disposal && stock.disposal.returnedToStock);
+    // 2. It was disposed but returned to stock (disposeId exists but disposal.returnedToStock is true)
+    // 3. It was disposed but the disposal record shows it was returned to stock
+    if (!stock.disposeId) {
+      return true; // Never disposed
+    }
+    
+    // If it has a disposeId, check if it was returned to stock
+    if (stock.disposal && stock.disposal.returnedToStock) {
+      return true; // Disposed but returned to stock
+    }
+    
+    // If no disposal data is available but it has a disposeId, 
+    // we need to check if this is a return entry (has disposeId but should be treated as available)
+    // This happens when the backend creates a new stock entry for returned items
+    return false; // Currently disposed
   }
 
   getInUseCount(itemId: number): number {
