@@ -126,8 +126,14 @@ export class PCComponentsComponent implements OnInit {
 
   ngOnInit() {
     const pcId = this.route.snapshot.params['id'];
-    this.loadPC(pcId);
+    console.log('PC Components Component initialized with PC ID:', pcId);
+    
+    // Set loading state
+    this.loading = true;
+    
+    // Load data first, then PC
     this.loadData();
+    this.loadPC(pcId);
     
     // Listen for stock data changes from other components
     window.addEventListener('stockDataChanged', this.handleStockDataChange.bind(this));
