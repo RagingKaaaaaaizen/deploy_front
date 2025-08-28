@@ -12,8 +12,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "clean": "rm -rf dist node_modules/.cache",
-    "clean:all": "rm -rf dist node_modules package-lock.json && npm install",
-    "postinstall": "npm run build"
+    "clean:all": "rm -rf dist node_modules package-lock.json && npm install"
   },
   "private": true,
   "dependencies": {
@@ -36,7 +35,6 @@
     "zone.js": "^0.14.4"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^17.0.2",
     "@angular-devkit/build-angular": "^17.3.2",
     "@angular-eslint/builder": "^17.3.2",
     "@angular-eslint/eslint-plugin": "^17.3.2",
