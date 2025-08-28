@@ -2,7 +2,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgChartsModule } from 'ng2-charts';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BaseChartDirective } from 'ng2-charts';
 
 // used to create fake backend
 // import { fakeBackendProvider } from './_helpers/fake-backend';
@@ -20,15 +22,17 @@ import { HomeComponent } from './home';
         ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
-        AppRoutingModule,
-        NgChartsModule
+        CommonModule,
+        RouterModule,
+        AppRoutingModule
     ],
     declarations: [
         AppComponent,
         AlertComponent,
         NavComponent,
         ProfessionalTableComponent,
-        HomeComponent       
+        HomeComponent,
+        BaseChartDirective
     ],
     providers: [
         { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AccountService] },

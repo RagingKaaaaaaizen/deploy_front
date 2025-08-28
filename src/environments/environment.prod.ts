@@ -1,4 +1,8 @@
+declare const process: any;
+
 export const environment = {
   production: true,
-  apiUrl: process.env['API_URL'] || 'https://computer-lab-inventory-backend.onrender.com'
+  apiUrl: (typeof process !== 'undefined' && process.env && process.env['API_URL']) 
+    ? process.env['API_URL'] 
+    : 'https://computer-lab-inventory-backend.onrender.com'
 };

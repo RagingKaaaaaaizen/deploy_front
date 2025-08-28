@@ -12,7 +12,6 @@ export interface TimelineChartData {
   value: number;
 }
 import { Role } from '@app/_models';
-import { NgChartsModule } from 'ng2-charts';
 import { Subscription, interval } from 'rxjs';
 
 @Component({ 
