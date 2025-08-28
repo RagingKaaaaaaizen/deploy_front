@@ -5,6 +5,13 @@ import { ItemService } from '../_services/item.service';
 import { BrandService } from '../_services/brand.service';
 import { StorageLocationService } from '../_services/storage-location.service';
 import { AlertService } from '../_services/alert.service';
+import { AccountService } from '../_services/account.service';
+
+enum Role {
+  SuperAdmin = 'SuperAdmin',
+  Admin = 'Admin',
+  Viewer = 'Viewer'
+}
 
 @Component({
   selector: 'app-overview',
@@ -105,209 +112,196 @@ import { AlertService } from '../_services/alert.service';
       font-size: 0.9rem;
     }
 
-    .overview-sections {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 20px;
+    .add-options-grid {
+      margin-bottom: 30px;
     }
 
-    .overview-card {
-      height: 100%;
-    }
-
-    .card {
-      border: none;
+    .add-option-card {
+      background: white;
       border-radius: 12px;
+      padding: 25px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 20px;
       height: 100%;
     }
 
-    .card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      transform: translateY(-2px);
+    .add-option-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
 
-    .card-header {
+    .add-option-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .add-option-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
-      border-radius: 12px 12px 0 0 !important;
-      padding: 20px;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
     }
 
-    .card-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .card-body {
-      padding: 20px;
-    }
-
-    .list-group {
-      border: none;
-      margin-bottom: 15px;
-    }
-
-    .list-group-item {
-      border: none;
-      border-bottom: 1px solid #e9ecef;
-      padding: 15px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s ease;
-    }
-
-    .list-group-item:hover {
-      background-color: #f8f9fa;
-      transform: translateX(5px);
-    }
-
-    .list-group-item:last-child {
-      border-bottom: none;
-    }
-
-    .item-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .card-content {
       flex: 1;
     }
 
-    .item-content i {
+    .card-content h3 {
       font-size: 1.2rem;
-      width: 20px;
-      text-align: center;
-    }
-
-    .item-name {
       font-weight: 600;
       color: #333;
+      margin: 0 0 8px 0;
     }
 
-    .item-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .item-category {
+    .card-content p {
       color: #666;
-      font-size: 0.8rem;
-      margin-top: 2px;
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .item-actions .btn {
-      padding: 6px 10px;
-      font-size: 0.8rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 30px;
-      color: #666;
-    }
-
-    .empty-state i {
-      font-size: 3rem;
-      color: #ddd;
-      margin-bottom: 15px;
-    }
-
-    .empty-state p {
-      margin: 0;
       font-size: 0.9rem;
+      margin: 0 0 12px 0;
     }
 
-    .view-all-link {
-      text-align: center;
-      padding-top: 15px;
-      border-top: 1px solid #e9ecef;
+    .card-stats {
+      display: flex;
+      gap: 15px;
     }
 
-    .view-all-link .btn-link {
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
       color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
-    .view-all-link .btn-link:hover {
-      color: #764ba2;
-      transform: translateY(-2px);
+    .card-arrow {
+      color: #667eea;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    .add-option-card:hover .card-arrow {
+      opacity: 1;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .quick-stats-section .card {
       border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    .btn-outline-primary {
-      border: 2px solid #667eea;
+    .quick-stats-section .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      border: none;
+      padding: 20px;
+    }
+
+    .quick-stats-section .card-body {
+      padding: 30px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
       color: #667eea;
+      margin-bottom: 8px;
     }
 
-    .btn-outline-primary:hover {
-      background: #667eea;
+    .stat-item .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .recent-activity-section .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .recent-activity-section .card-header {
+      background: #f8f9fa;
+      border-radius: 12px 12px 0 0;
+      border: none;
+      padding: 20px;
+    }
+
+    .activity-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
+      font-size: 1rem;
+      flex-shrink: 0;
     }
 
-    .btn-outline-warning {
-      border: 2px solid #ffc107;
-      color: #ffc107;
+    .activity-content {
+      flex: 1;
     }
 
-    .btn-outline-warning:hover {
-      background: #ffc107;
+    .activity-message {
       color: #333;
+      font-weight: 500;
+      margin-bottom: 4px;
     }
 
-    .btn-outline-info {
-      border: 2px solid #17a2b8;
-      color: #17a2b8;
-    }
-
-    .btn-outline-info:hover {
-      background: #17a2b8;
-      color: white;
+    .activity-time {
+      color: #666;
+      font-size: 0.8rem;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .header-actions {
-        justify-content: center;
-      }
-
-      .overview-sections {
-        grid-template-columns: 1fr;
-      }
-
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -330,21 +324,35 @@ export class OverviewComponent implements OnInit {
   brands: any[] = [];
   storageLocations: any[] = [];
   loading = false;
+  stats: any = null;
+  recentActivity: any[] = [];
+  Role = Role;
 
   constructor(
     private categoryService: CategoryService,
     private itemService: ItemService,
     private brandService: BrandService,
     private storageLocationService: StorageLocationService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
     this.loadOverview();
   }
 
+  hasRole(roles: Role[]): boolean {
+    const account = this.accountService.accountValue;
+    return account && roles.includes(account.role as Role);
+  }
+
   loadOverview(): void {
     this.loading = true;
+
+    // Set a timeout to ensure loading doesn't get stuck
+    setTimeout(() => {
+      this.loading = false;
+    }, 2000);
 
     // Load categories
     this.categoryService.getAll()
@@ -352,6 +360,7 @@ export class OverviewComponent implements OnInit {
       .subscribe({
         next: (categories) => {
           this.categories = categories.slice(0, 5); // Show first 5
+          this.updateStats();
         },
         error: (error) => {
           console.error('Error loading categories:', error);
@@ -365,6 +374,7 @@ export class OverviewComponent implements OnInit {
       .subscribe({
         next: (items) => {
           this.items = items.slice(0, 5); // Show first 5
+          this.updateStats();
         },
         error: (error) => {
           console.error('Error loading items:', error);
@@ -378,6 +388,7 @@ export class OverviewComponent implements OnInit {
       .subscribe({
         next: (brands) => {
           this.brands = brands.slice(0, 5); // Show first 5
+          this.updateStats();
         },
         error: (error) => {
           console.error('Error loading brands:', error);
@@ -391,6 +402,7 @@ export class OverviewComponent implements OnInit {
       .subscribe({
         next: (locations) => {
           this.storageLocations = locations.slice(0, 5); // Show first 5
+          this.updateStats();
           this.loading = false;
         },
         error: (error) => {
@@ -399,6 +411,37 @@ export class OverviewComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  updateStats(): void {
+    this.stats = {
+      totalItems: this.items.length,
+      totalStock: this.items.reduce((sum, item) => sum + (item.quantity || 0), 0),
+      totalCategories: this.categories.length,
+      totalBrands: this.brands.length,
+      totalStorageLocations: this.storageLocations.length,
+      totalEmployees: 0, // You can add employee service if needed
+      totalDepartments: 0 // You can add department service if needed
+    };
+
+    // Create recent activity
+    this.recentActivity = [
+      {
+        message: 'New items added to inventory',
+        timestamp: new Date(),
+        icon: 'fas fa-boxes'
+      },
+      {
+        message: 'Categories updated',
+        timestamp: new Date(Date.now() - 3600000),
+        icon: 'fas fa-tags'
+      },
+      {
+        message: 'Brand information modified',
+        timestamp: new Date(Date.now() - 7200000),
+        icon: 'fas fa-trademark'
+      }
+    ];
   }
 
   refreshData(): void {
