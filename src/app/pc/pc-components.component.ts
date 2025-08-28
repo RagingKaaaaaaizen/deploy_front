@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { PCService, PCComponentService, StockService, ItemService, CategoryService, BrandService, AlertService, AccountService } from '@app/_services';
+import { PCService, PCComponentService, StockService, ItemService, CategoryService, BrandService, AlertService, AccountService, StorageLocationService } from '@app/_services';
 import { PCComponent, Role } from '@app/_models';
 
 @Component({
@@ -18,6 +18,7 @@ export class PCComponentsComponent implements OnInit {
   categories: any[] = [];
   brands: any[] = [];
   allStocks: any[] = [];
+  storageLocations: any[] = [];
   
   // Add component form properties
   showAddForm = false;
@@ -35,6 +36,11 @@ export class PCComponentsComponent implements OnInit {
   categoryError = '';
   submitted = false;
   loading = false;
+
+  // Modal properties
+  stockSearchTerm = '';
+  selectedStockEntry: any = null;
+  filteredStockEntries: any[] = [];
 
   // Computed property for available stocks count
   get availableStocksCount(): number {
@@ -990,7 +996,7 @@ export class PCComponentsComponent implements OnInit {
   }
 
   editComponent(id: number) {
-    this.router.navigate(['/stocks', id, 'edit']);
+    this.router.navigate(['/stocks', 'edit', id]);
   }
 
   removeComponent(id: number) {
@@ -1186,5 +1192,75 @@ export class PCComponentsComponent implements OnInit {
     
     const userRole = account.role;
     return roles.some(role => role === userRole);
+  }
+
+  // Modal methods for stock selection
+  openStockSelectionModal() {
+    this.stockSearchTerm = '';
+    this.selectedStockEntry = null;
+    this.filteredStockEntries = this.allStocks.filter(stock => stock.quantity > 0);
+    
+    // Show the modal using Bootstrap
+    const modal = new (window as any).bootstrap.Modal(document.getElementById('stockSelectionModal'));
+    modal.show();
+  }
+
+  filterStockEntries() {
+    if (!this.stockSearchTerm.trim()) {
+      this.filteredStockEntries = this.allStocks.filter(stock => stock.quantity > 0);
+    } else {
+      const searchTerm = this.stockSearchTerm.toLowerCase();
+      this.filteredStockEntries = this.allStocks.filter(stock => {
+        const itemName = this.getItemName(stock.itemId).toLowerCase();
+        const categoryName = this.getCategoryName({ itemId: stock.itemId }).toLowerCase();
+        const locationName = this.getLocationName(stock.locationId).toLowerCase();
+        
+        return stock.quantity > 0 && (
+          itemName.includes(searchTerm) ||
+          categoryName.includes(searchTerm) ||
+          locationName.includes(searchTerm) ||
+          stock.quantity.toString().includes(searchTerm) ||
+          stock.price.toString().includes(searchTerm)
+        );
+      });
+    }
+  }
+
+  selectStockEntry(stock: any) {
+    this.selectedStockEntry = stock;
+  }
+
+  confirmStockSelection() {
+    if (this.selectedStockEntry) {
+      this.newComponent.itemId = this.selectedStockEntry.itemId;
+      this.newComponent.stockId = this.selectedStockEntry.id;
+      this.newComponent.price = this.selectedStockEntry.price;
+      this.newComponent.quantity = 1; // Reset to 1
+      this.onQuantityChange(); // Recalculate total price
+      
+      // Close the modal
+      const modal = (window as any).bootstrap.Modal.getInstance(document.getElementById('stockSelectionModal'));
+      if (modal) {
+        modal.hide();
+      }
+      
+      this.alertService.success(`Selected: ${this.getItemName(this.selectedStockEntry.itemId)}`);
+    }
+  }
+
+  getSelectedItemDisplay(): string {
+    if (this.newComponent.itemId && this.newComponent.stockId) {
+      const stock = this.allStocks.find(s => s.id === this.newComponent.stockId);
+      if (stock) {
+        return `${this.getItemName(stock.itemId)} (${this.getCategoryName({ itemId: stock.itemId })}) - ${stock.quantity} units available`;
+      }
+    }
+    return '';
+  }
+
+  getLocationName(locationId: number): string {
+    // You might need to load locations or get them from a service
+    // For now, return a placeholder
+    return `Location ${locationId}`;
   }
 } 

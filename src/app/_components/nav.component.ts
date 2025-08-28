@@ -114,19 +114,31 @@ import { Role } from '@app/_models';
             </a>
           </li>
 
-          <!-- Admin Panel -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin])">
-            <a class="nav-link" 
-               routerLink="/admin" 
-               routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-              <i class="fas fa-cogs"></i>
-              <span *ngIf="!isCollapsed || isMobile">Admin Panel</span>
-              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Admin Panel</span>
-            </a>
-          </li>
+                     <!-- Activity Logs -->
+           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+             <a class="nav-link" 
+                routerLink="/activity" 
+                routerLinkActive="active"
+                (click)="closeMobileSidebar()">
+               <i class="fas fa-history"></i>
+               <span *ngIf="!isCollapsed || isMobile">Activity Logs</span>
+               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Activity Logs</span>
+             </a>
+           </li>
 
-          <!-- Manage Accounts -->
+           <!-- Archive Reports -->
+           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+             <a class="nav-link" 
+                routerLink="/archive" 
+                routerLinkActive="active"
+                (click)="closeMobileSidebar()">
+               <i class="fas fa-archive"></i>
+               <span *ngIf="!isCollapsed || isMobile">Archive Reports</span>
+               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Archive Reports</span>
+             </a>
+           </li>
+
+           <!-- Manage Accounts -->
           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin])">
             <a class="nav-link" 
                routerLink="/admin/accounts" 
@@ -332,6 +344,8 @@ import { Role } from '@app/_models';
       border-left: 3px solid transparent;
       position: relative;
     }
+
+
 
     .nav-link:hover {
       background: rgba(255,255,255,0.1);

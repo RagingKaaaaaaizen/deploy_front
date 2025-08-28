@@ -8,7 +8,6 @@ import { DisposeListComponent } from './dispose-list.component';
 
 const routes: Routes = [
   { path: '', component: DisposeListComponent },
-  { path: 'add', component: DisposeComponent },
   { path: 'edit/:id', component: DisposeComponent },
   { path: 'view/:id', component: DisposeComponent }
 ];

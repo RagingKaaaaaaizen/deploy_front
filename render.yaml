@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: computer-lab-inventory-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist/angular-signup-verification-boilerplate
+    envVars:
+      - key: API_URL
+        value: https://computer-lab-inventory-backend.onrender.com

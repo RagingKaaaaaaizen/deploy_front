@@ -13,6 +13,7 @@ const addModule = () => import('./add/add.module').then(x => x.AddModule);
 const stocksModule = () => import('./stocks/stocks.module').then(x => x.StocksModule);
 const pcModule = () => import('./pc/pc.module').then(x => x.PCModule);
 const disposeModule = () => import('./dispose/dispose.module').then(x => x.DisposeModule);
+const archiveModule = () => import('./archive/archive.module').then(x => x.ArchiveModule);
 
 const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -25,6 +26,8 @@ const routes: Routes = [
     
     { path: 'pc', loadChildren: pcModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
     
+    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
 
     { path: '**', redirectTo: '' }
 ];

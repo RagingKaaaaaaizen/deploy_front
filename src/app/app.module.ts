@@ -2,6 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgChartsModule } from 'ng2-charts';
 
 // used to create fake backend
 // import { fakeBackendProvider } from './_helpers/fake-backend';
@@ -19,7 +20,8 @@ import { HomeComponent } from './home';
         ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
-        AppRoutingModule
+        AppRoutingModule,
+        NgChartsModule
     ],
     declarations: [
         AppComponent,

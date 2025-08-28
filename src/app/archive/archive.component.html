@@ -1,0 +1,416 @@
+<div class="archive-container">
+  <!-- Header Section -->
+  <div class="archive-header">
+    <div class="archive-title">
+      <i class="fas fa-archive"></i>
+      Archive Reports
+    </div>
+    <div class="archive-subtitle">
+      Generate professional PDF reports for inventory management
+    </div>
+  </div>
+
+  <!-- Statistics Section -->
+  <div class="statistics-section" *ngIf="reportStatistics">
+    <div class="statistics-grid">
+      <div class="statistic-card">
+        <div class="statistic-number">{{ reportStatistics.totalReports }}</div>
+        <div class="statistic-label">Total Reports</div>
+      </div>
+      <div class="statistic-card">
+        <div class="statistic-number">${{ reportStatistics.totalValue.toFixed(0) }}</div>
+        <div class="statistic-label">Total Value</div>
+      </div>
+      <div class="statistic-card">
+        <div class="statistic-number">{{ reportStatistics.mostRecentReport?.generatedDate | date:'MMM dd' || 'N/A' }}</div>
+        <div class="statistic-label">Latest Report</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Generation Cards -->
+  <div class="report-cards">
+    <!-- Weekly Report Card -->
+    <div class="report-card">
+      <div class="report-card-header">
+        <div class="report-icon weekly-icon">
+          <i class="fas fa-calendar-week"></i>
+        </div>
+        <div>
+          <h3 class="report-title">Weekly Report</h3>
+          <p class="report-description">Generate a comprehensive weekly report</p>
+        </div>
+      </div>
+
+      <div class="report-form">
+        <!-- Period Selection -->
+        <div class="form-group">
+          <label class="form-label">Select Period:</label>
+          <div class="period-selector">
+            <select 
+              class="period-dropdown" 
+              (change)="onWeeklyPeriodChange($event)"
+              [value]="selectedWeeklyPeriod?.weekNumber || ''">
+              <option value="">Choose a week...</option>
+              <option 
+                *ngFor="let week of availableWeeks" 
+                [value]="week.weekNumber"
+                [disabled]="week.exists">
+                {{ formatWeekLabel(week) }}{{ week.exists ? ' (Already Generated)' : '' }}
+              </option>
+              <option value="custom">Custom Date Range</option>
+            </select>
+          </div>
+          
+          <!-- Custom Date Range (Hidden by default) -->
+          <div class="custom-date-range" *ngIf="showCustomWeeklyPeriod">
+            <div class="date-inputs">
+              <div class="date-input-group">
+                <label>From:</label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="customWeeklyStartDate"
+                  (change)="onCustomWeeklyDateChange()"
+                  class="date-input">
+              </div>
+              <div class="date-input-group">
+                <label>To:</label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="customWeeklyEndDate"
+                  (change)="onCustomWeeklyDateChange()"
+                  class="date-input">
+              </div>
+            </div>
+            <div class="custom-period-info" *ngIf="customWeeklyPeriod">
+              <span class="selected-period">{{ formatWeekLabel(customWeeklyPeriod) }}</span>
+              <span class="exists-badge" *ngIf="customWeeklyPeriod.exists">Already exists</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Options -->
+        <div class="form-group">
+          <label class="form-label">Include in Report:</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="weekly-stocks" formControlName="includeStocks">
+              <label for="weekly-stocks">Stocks</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="weekly-disposals" formControlName="includeDisposals">
+              <label for="weekly-disposals">Disposals</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="weekly-pcs" formControlName="includePCs">
+              <label for="weekly-pcs">PC Management</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="weekly-detailed" formControlName="detailedAnalysis">
+              <label for="weekly-detailed">Detailed Analysis</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button 
+            class="btn btn-primary" 
+            (click)="generateWeeklyReport()"
+            [disabled]="loading || (!selectedWeeklyPeriod && !customWeeklyPeriod) || (selectedWeeklyPeriod?.exists || customWeeklyPeriod?.exists)">
+            <i class="fas fa-sync-alt" *ngIf="loading"></i>
+            <i class="fas fa-chart-line" *ngIf="!loading"></i>
+            {{ loading ? 'Generating...' : 'Generate Report' }}
+          </button>
+
+          <button 
+            class="btn btn-success" 
+            (click)="downloadWeeklyPDF()"
+            [disabled]="!hasWeeklyData || loading">
+            <i class="fas fa-download"></i>
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Report Card -->
+    <div class="report-card">
+      <div class="report-card-header">
+        <div class="report-icon monthly-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div>
+          <h3 class="report-title">Monthly Report</h3>
+          <p class="report-description">Generate a comprehensive monthly report</p>
+        </div>
+      </div>
+
+      <div class="report-form">
+        <!-- Period Selection -->
+        <div class="form-group">
+          <label class="form-label">Select Period:</label>
+          <div class="period-selector">
+            <select 
+              class="period-dropdown" 
+              (change)="onMonthlyPeriodChange($event)"
+              [value]="selectedMonthlyPeriod?.monthYear || ''">
+              <option value="">Choose a month...</option>
+              <option 
+                *ngFor="let month of availableMonths" 
+                [value]="month.monthYear"
+                [disabled]="month.exists">
+                {{ formatMonthLabel(month) }}{{ month.exists ? ' (Already Generated)' : '' }}
+              </option>
+              <option value="custom">Custom Date Range</option>
+            </select>
+          </div>
+          
+          <!-- Custom Date Range (Hidden by default) -->
+          <div class="custom-date-range" *ngIf="showCustomMonthlyPeriod">
+            <div class="date-inputs">
+              <div class="date-input-group">
+                <label>From:</label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="customMonthlyStartDate"
+                  (change)="onCustomMonthlyDateChange()"
+                  class="date-input">
+              </div>
+              <div class="date-input-group">
+                <label>To:</label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="customMonthlyEndDate"
+                  (change)="onCustomMonthlyDateChange()"
+                  class="date-input">
+              </div>
+            </div>
+            <div class="custom-period-info" *ngIf="customMonthlyPeriod">
+              <span class="selected-period">{{ formatMonthLabel(customMonthlyPeriod) }}</span>
+              <span class="exists-badge" *ngIf="customMonthlyPeriod.exists">Already exists</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Options -->
+        <div class="form-group">
+          <label class="form-label">Include in Report:</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="monthly-stocks" formControlName="includeStocks">
+              <label for="monthly-stocks">Stocks</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="monthly-disposals" formControlName="includeDisposals">
+              <label for="monthly-disposals">Disposals</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="monthly-pcs" formControlName="includePCs">
+              <label for="monthly-pcs">PC Management</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="monthly-detailed" formControlName="detailedAnalysis">
+              <label for="monthly-detailed">Detailed Analysis</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button 
+            class="btn btn-primary" 
+            (click)="generateMonthlyReport()"
+            [disabled]="loading || (!selectedMonthlyPeriod && !customMonthlyPeriod) || (selectedMonthlyPeriod?.exists || customMonthlyPeriod?.exists)">
+            <i class="fas fa-sync-alt" *ngIf="loading"></i>
+            <i class="fas fa-chart-bar" *ngIf="!loading"></i>
+            {{ loading ? 'Generating...' : 'Generate Report' }}
+          </button>
+
+          <button 
+            class="btn btn-success" 
+            (click)="downloadMonthlyPDF()"
+            [disabled]="!hasMonthlyData || loading">
+            <i class="fas fa-download"></i>
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <span>Generating report...</span>
+  </div>
+
+  <!-- Report Preview -->
+  <div class="preview-section" *ngIf="(hasWeeklyData || hasMonthlyData) && !loading">
+    <div class="preview-header">
+      <h3 class="preview-title">Report Preview</h3>
+    </div>
+
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-number">{{ (weeklyData || monthlyData)?.summary.totalStocks || 0 }}</div>
+        <div class="summary-label">Total Stocks</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">{{ (weeklyData || monthlyData)?.summary.totalDisposals || 0 }}</div>
+        <div class="summary-label">Total Disposals</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">{{ (weeklyData || monthlyData)?.summary.totalPCs || 0 }}</div>
+        <div class="summary-label">Total PCs</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">${{ ((weeklyData || monthlyData)?.summary.totalValue || 0).toFixed(2) }}</div>
+        <div class="summary-label">Total Value</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stored Reports Section -->
+  <div class="stored-reports-section" *ngIf="hasStoredReports">
+    <div class="stored-reports-header">
+      <h3 class="stored-reports-title">Previous Reports</h3>
+      <div class="search-box">
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Search reports..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()">
+        <i class="fas fa-search"></i>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <div 
+        class="filter-tab" 
+        [class.active]="activeFilter === 'all'"
+        (click)="onFilterChange('all')">
+        All ({{ storedReports.length }})
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="activeFilter === 'weekly'"
+        (click)="onFilterChange('weekly')">
+        Weekly ({{ getReportsByType('weekly').length }})
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="activeFilter === 'monthly'"
+        (click)="onFilterChange('monthly')">
+        Monthly ({{ getReportsByType('monthly').length }})
+      </div>
+    </div>
+
+    <!-- Stored Reports Grid -->
+    <div class="stored-reports-grid">
+      <div 
+        class="stored-report-card" 
+        *ngFor="let report of filteredReports">
+        <div class="stored-report-header">
+          <h4 class="stored-report-title">{{ report.title }}</h4>
+          <span class="stored-report-type" [class]="report.type">{{ report.type }}</span>
+        </div>
+        
+        <div class="stored-report-details">
+          <div class="stored-report-date">
+            <i class="fas fa-calendar-alt"></i>
+            {{ report.generatedDate | date:'medium' }}
+          </div>
+          <div class="stored-report-period">
+            <i class="fas fa-clock"></i>
+            {{ report.period.startDate | date:'shortDate' }} - {{ report.period.endDate | date:'shortDate' }}
+          </div>
+        </div>
+
+        <div class="stored-report-summary">
+          <div class="stored-summary-item">
+            <div class="stored-summary-number">{{ report.summary.totalStocks }}</div>
+            <div class="stored-summary-label">Stocks</div>
+          </div>
+          <div class="stored-summary-item">
+            <div class="stored-summary-number">{{ report.summary.totalDisposals }}</div>
+            <div class="stored-summary-label">Disposals</div>
+          </div>
+          <div class="stored-summary-item">
+            <div class="stored-summary-number">{{ report.summary.totalPCs }}</div>
+            <div class="stored-summary-label">PCs</div>
+          </div>
+          <div class="stored-summary-item">
+            <div class="stored-summary-number">${{ report.summary.totalValue.toFixed(0) }}</div>
+            <div class="stored-summary-label">Value</div>
+          </div>
+        </div>
+
+        <div class="stored-report-actions">
+          <button 
+            class="btn btn-warning" 
+            (click)="previewStoredReport(report)"
+            title="Preview PDF">
+            <i class="fas fa-eye"></i>
+            Preview
+          </button>
+          <button 
+            class="btn btn-success" 
+            (click)="downloadStoredReport(report)"
+            title="Download PDF">
+            <i class="fas fa-download"></i>
+            Download
+          </button>
+          <button 
+            class="btn btn-danger" 
+            (click)="deleteStoredReport(report)"
+            title="Delete Report">
+            <i class="fas fa-trash"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="no-data" *ngIf="filteredReports.length === 0 && searchQuery.trim()">
+      <i class="fas fa-search"></i>
+      <h3>No Reports Found</h3>
+      <p>No reports match your search criteria.</p>
+    </div>
+  </div>
+
+  <!-- Export/Import Section -->
+  <div class="export-import-section" *ngIf="hasStoredReports">
+    <div class="export-import-header">
+      <h3 class="export-import-title">Data Management</h3>
+      <div class="export-import-actions">
+        <button 
+          class="btn btn-info" 
+          (click)="exportAllReports()"
+          title="Export all reports as JSON">
+          <i class="fas fa-download"></i>
+          Export All Reports
+        </button>
+        <label class="btn btn-warning">
+          <i class="fas fa-upload"></i>
+          Import Reports
+          <input 
+            type="file" 
+            accept=".json"
+            (change)="importReports($event)"
+            style="display: none;">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Reports Generated -->
+  <div class="no-data" *ngIf="!hasWeeklyData && !hasMonthlyData && !hasStoredReports && !loading">
+    <i class="fas fa-file-alt"></i>
+    <h3>No Reports Generated</h3>
+    <p>Select a period above to generate your first report.</p>
+  </div>
+</div>

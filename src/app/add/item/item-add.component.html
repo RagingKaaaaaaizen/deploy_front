@@ -1,159 +1,176 @@
-<div class="form-container">
-    <div class="container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="header-content">
-                <div class="header-title">
-                    <i class="fas fa-plus-circle"></i>
-                    <div>
-                        <h1 class="page-title">Add New Item</h1>
-                        <p class="page-subtitle">Create a new inventory item</p>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <a routerLink="/add/item" class="btn btn-outline-secondary">
-                        <i class="fas fa-list"></i>
-                        View Items
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Form Card -->
-        <div class="form-card">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-edit"></i> Item Information</h5>
-                </div>
-                <div class="card-body">
-                    <form (ngSubmit)="saveItem()" #itemForm="ngForm" class="item-form">
-                        <!-- Item Name -->
-                        <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-tag"></i>
-                                Item Name
-                            </label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                [(ngModel)]="model.name"
-                                name="name"
-                                placeholder="Enter item name"
-                                required
-                                [ngClass]="{ 'is-invalid': submitted && !model.name }"
-                            />
-                            <div class="invalid-feedback" *ngIf="submitted && !model.name">
-                                Item name is required
-                            </div>
-                        </div>
-
-                        <!-- Category and Brand Row -->
-                        <div class="form-row">
-                            <!-- Category Input with Search -->
-                            <div class="form-group col-md-6">
-                                <label class="form-label">
-                                    <i class="fas fa-folder"></i>
-                                    Category
-                                </label>
-                                <div class="search-input-container">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        [(ngModel)]="model.categoryName"
-                                        name="categoryName"
-                                        placeholder="Type category name or select from list"
-                                        autocomplete="off"
-                                        required
-                                        (input)="searchCategories($event)"
-                                        (focus)="showCategoryResults = true"
-                                        (blur)="onCategoryBlur()"
-                                        [ngClass]="{ 'is-invalid': submitted && !model.categoryId && !model.categoryName }"
-                                    />
-                                    <!-- Category Search Results -->
-                                    <div class="search-results" *ngIf="showCategoryResults && filteredCategories.length > 0">
-                                        <div 
-                                            class="search-result-item" 
-                                            *ngFor="let category of filteredCategories"
-                                            (mousedown)="$event.preventDefault(); selectCategory(category)"
-                                        >
-                                            <i class="fas fa-folder text-primary"></i>
-                                            {{ category.name }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="invalid-feedback" *ngIf="submitted && !model.categoryId && !model.categoryName">
-                                    Category is required
-                                </div>
-                            </div>
-
-                            <!-- Brand Input with Search -->
-                            <div class="form-group col-md-6">
-                                <label class="form-label">
-                                    <i class="fas fa-trademark"></i>
-                                    Brand
-                                </label>
-                                <div class="search-input-container">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        [(ngModel)]="model.brandName"
-                                        name="brandName"
-                                        placeholder="Type brand name or select from list"
-                                        autocomplete="off"
-                                        required
-                                        (input)="searchBrands($event)"
-                                        (focus)="showBrandResults = true"
-                                        (blur)="onBrandBlur()"
-                                        [ngClass]="{ 'is-invalid': submitted && !model.brandId && !model.brandName }"
-                                    />
-                                    <!-- Brand Search Results -->
-                                    <div class="search-results" *ngIf="showBrandResults && filteredBrands.length > 0">
-                                        <div 
-                                            class="search-result-item" 
-                                            *ngFor="let brand of filteredBrands"
-                                            (mousedown)="$event.preventDefault(); selectBrand(brand)"
-                                        >
-                                            <i class="fas fa-trademark text-info"></i>
-                                            {{ brand.name }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="invalid-feedback" *ngIf="submitted && !model.brandId && !model.brandName">
-                                    Brand is required
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-align-left"></i>
-                                Description
-                            </label>
-                            <textarea
-                                class="form-control"
-                                [(ngModel)]="model.description"
-                                name="description"
-                                placeholder="Enter item description (optional)"
-                                rows="4"
-                            ></textarea>
-                        </div>
-
-                        <!-- Form Actions -->
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-outline-secondary" routerLink="/add/item">
-                                <i class="fas fa-times"></i>
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary" [disabled]="loading || itemForm.invalid">
-                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-                                <i *ngIf="!loading" class="fas fa-save me-2"></i>
-                                {{ loading ? 'Saving...' : 'Save Item' }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<!-- Add Item Modal Trigger Button -->
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-primary btn-lg" (click)="openAddItemModal()">
+        <i class="fas fa-plus-circle"></i>
+        Add New Item
+      </button>
     </div>
+  </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal-overlay" *ngIf="showAddItemModal" (click)="closeAddItemModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="header-content">
+        <div class="header-title">
+          <i class="fas fa-plus-circle"></i>
+          <div>
+            <h1 class="page-title">Add New Item</h1>
+            <p class="page-subtitle">Create a new inventory item</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a routerLink="/add/item" class="btn btn-outline-secondary">
+            <i class="fas fa-list"></i>
+            View Items
+          </a>
+          <button class="btn btn-close" (click)="closeAddItemModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <!-- Form Card -->
+      <div class="form-card">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-edit"></i> Item Information</h5>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="saveItem()" #itemForm="ngForm" class="item-form">
+              <!-- Item Name -->
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-tag"></i>
+                  Item Name
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="model.name"
+                  name="name"
+                  placeholder="Enter item name"
+                  required
+                  [ngClass]="{ 'is-invalid': submitted && !model.name }"
+                />
+                <div class="invalid-feedback" *ngIf="submitted && !model.name">
+                  Item name is required
+                </div>
+              </div>
+
+              <!-- Category and Brand Row -->
+              <div class="form-row">
+                <!-- Category Input with Search -->
+                <div class="form-group col-md-6">
+                  <label class="form-label">
+                    <i class="fas fa-folder"></i>
+                    Category
+                  </label>
+                  <div class="search-input-container">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="model.categoryName"
+                      name="categoryName"
+                      placeholder="Type category name or select from list"
+                      autocomplete="off"
+                      required
+                      (input)="searchCategories($event)"
+                      (focus)="showCategoryResults = true"
+                      (blur)="onCategoryBlur()"
+                      [ngClass]="{ 'is-invalid': submitted && !model.categoryId && !model.categoryName }"
+                    />
+                    <!-- Category Search Results -->
+                    <div class="search-results" *ngIf="showCategoryResults && filteredCategories.length > 0">
+                      <div 
+                        class="search-result-item" 
+                        *ngFor="let category of filteredCategories"
+                        (mousedown)="$event.preventDefault(); selectCategory(category)"
+                      >
+                        <i class="fas fa-folder text-primary"></i>
+                        {{ category.name }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="submitted && !model.categoryId && !model.categoryName">
+                    Category is required
+                  </div>
+                </div>
+
+                <!-- Brand Input with Search -->
+                <div class="form-group col-md-6">
+                  <label class="form-label">
+                    <i class="fas fa-trademark"></i>
+                    Brand
+                  </label>
+                  <div class="search-input-container">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="model.brandName"
+                      name="brandName"
+                      placeholder="Type brand name or select from list"
+                      autocomplete="off"
+                      required
+                      (input)="searchBrands($event)"
+                      (focus)="showBrandResults = true"
+                      (blur)="onBrandBlur()"
+                      [ngClass]="{ 'is-invalid': submitted && !model.brandId && !model.brandName }"
+                    />
+                    <!-- Brand Search Results -->
+                    <div class="search-results" *ngIf="showBrandResults && filteredBrands.length > 0">
+                      <div 
+                        class="search-result-item" 
+                        *ngFor="let brand of filteredBrands"
+                        (mousedown)="$event.preventDefault(); selectBrand(brand)"
+                      >
+                        <i class="fas fa-trademark text-info"></i>
+                        {{ brand.name }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="submitted && !model.brandId && !model.brandName">
+                    Brand is required
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-align-left"></i>
+                  Description
+                </label>
+                <textarea
+                  class="form-control"
+                  [(ngModel)]="model.description"
+                  name="description"
+                  placeholder="Enter item description (optional)"
+                  rows="4"
+                ></textarea>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline-secondary" (click)="closeAddItemModal()">
+                  <i class="fas fa-times"></i>
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="loading || itemForm.invalid">
+                  <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                  <i *ngIf="!loading" class="fas fa-save me-2"></i>
+                  {{ loading ? 'Saving...' : 'Save Item' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

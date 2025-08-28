@@ -13,3 +13,4 @@ export * from './pc-component.service';
 export * from './room-location.service';
 export * from './dispose.service';
 export * from './activity-log.service';
+export * from './analytics.service';

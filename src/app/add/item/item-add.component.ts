@@ -249,6 +249,160 @@ import { AlertService } from '../../_services/alert.service';
     .search-result-item i {
       font-size: 14px;
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(128, 128, 128, 0.3);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index: 1050;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      max-width: 95%;
+      max-height: 95%;
+      width: 800px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 16px 16px 0 0;
+      position: relative;
+    }
+
+    .modal-header .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .modal-header .header-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .modal-header .header-title i {
+      font-size: 2rem;
+      color: white;
+    }
+
+    .modal-header .page-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0 0 5px 0;
+    }
+
+    .modal-header .page-subtitle {
+      font-size: 1rem;
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .modal-header .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .modal-header .btn-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .modal-header .btn-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 25px;
+      background: #f8f9fa;
+    }
+
+    .modal-body .form-card {
+      margin-bottom: 0;
+    }
+
+    /* Responsive Modal */
+    @media (max-width: 768px) {
+      .modal-overlay {
+        padding: 10px;
+      }
+
+      .modal-container {
+        width: 100%;
+        max-height: 100%;
+        border-radius: 12px;
+      }
+
+      .modal-header {
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .modal-header .page-title {
+        font-size: 1.5rem;
+      }
+
+      .modal-header .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .modal-header .header-actions {
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .modal-body {
+        padding: 15px;
+      }
+    }
   `]
 })
 export class ItemAddComponent implements OnInit {
@@ -263,6 +417,7 @@ export class ItemAddComponent implements OnInit {
   brandExists = false;
   loading = false;
   submitted = false;
+  showAddItemModal = false;
 
   constructor(
     private itemService: ItemService,
@@ -275,6 +430,32 @@ export class ItemAddComponent implements OnInit {
   ngOnInit() {
     this.loadCategories();
     this.loadBrands();
+  }
+
+  // Modal control methods
+  openAddItemModal() {
+    this.showAddItemModal = true;
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+
+  closeAddItemModal() {
+    this.showAddItemModal = false;
+    document.body.style.overflow = 'auto'; // Restore scrolling
+    // Reset form when closing modal
+    this.resetForm();
+  }
+
+  private resetForm() {
+    this.model = {
+      name: '',
+      description: '',
+      categoryId: undefined,
+      categoryName: '',
+      brandId: undefined,
+      brandName: ''
+    };
+    this.submitted = false;
+    this.loading = false;
   }
 
   loadCategories() {
@@ -377,51 +558,38 @@ export class ItemAddComponent implements OnInit {
     }, 200);
   }
 
-  async saveItem() {
+  saveItem() {
     this.submitted = true;
-    this.loading = true;
 
-    console.log('Submitting payload:', this.model);
-
+    // stop here if form is invalid
     if (!this.model.name || (!this.model.categoryId && !this.model.categoryName) || (!this.model.brandId && !this.model.brandName)) {
-      this.alertService.error('Item name, category, and brand are required');
-      this.loading = false;
       return;
     }
 
-    try {
-      // Handle category creation if needed
-      if (!this.model.categoryId && this.model.categoryName) {
-        const newCategory = await this.createCategory(this.model.categoryName);
-        this.model.categoryId = newCategory.id;
-      }
+    this.loading = true;
 
-      // Handle brand creation if needed
-      if (!this.model.brandId && this.model.brandName) {
-        const newBrand = await this.createBrand(this.model.brandName);
-        this.model.brandId = newBrand.id;
-      }
+    // Create the item object
+    const itemData = {
+      name: this.model.name,
+      description: this.model.description,
+      categoryId: this.model.categoryId,
+      categoryName: this.model.categoryName,
+      brandId: this.model.brandId,
+      brandName: this.model.brandName
+    };
 
-      // Now save the item
-      this.itemService.create(this.model)
-        .pipe(first())
-        .subscribe({
-          next: () => {
-            this.alertService.success('Item saved successfully!');
-            this.router.navigate(['/add/item']);
-          },
-          error: (err) => {
-            console.error(err);
-            this.alertService.error('Failed to save item');
-            this.loading = false;
-          }
-        });
-
-    } catch (error) {
-      console.error('Error creating category or brand:', error);
-      this.alertService.error('Failed to create category or brand');
-      this.loading = false;
-    }
+    this.itemService.create(itemData)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.alertService.success('Item created successfully');
+          this.closeAddItemModal(); // Close modal on success
+        },
+        error: error => {
+          this.alertService.error(error);
+          this.loading = false;
+        }
+      });
   }
 
   private createCategory(name: string): Promise<any> {

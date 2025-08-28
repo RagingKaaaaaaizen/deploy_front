@@ -27,6 +27,15 @@ export class DisposeService {
   }
 
   create(dispose: Dispose): Observable<Dispose> {
+    console.log('=== DISPOSE SERVICE: CREATE ===');
+    console.log('URL:', baseUrl);
+    console.log('Data being sent:', dispose);
+    console.log('Data types:', {
+      stockEntryId: typeof dispose.stockEntryId,
+      quantity: typeof dispose.quantity,
+      locationId: typeof dispose.locationId,
+      reason: typeof dispose.reason
+    });
     return this.http.post<Dispose>(baseUrl, dispose);
   }
 
@@ -52,5 +61,13 @@ export class DisposeService {
 
   getStockWithDisposal(itemId: number): Observable<any[]> {
     return this.http.get<any[]>(`${baseUrl}/stock-with-disposal/${itemId}`);
+  }
+
+  returnToStock(disposalId: number): Observable<any> {
+    return this.http.post<any>(`${baseUrl}/${disposalId}/return-to-stock`, {});
+  }
+
+  returnToStockPartial(disposalId: number, quantity: number, remarks?: string): Observable<any> {
+    return this.http.post<any>(`${baseUrl}/${disposalId}/return-to-stock-partial`, { quantity, remarks });
   }
 } 

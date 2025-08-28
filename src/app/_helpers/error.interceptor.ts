@@ -3,6 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+import { environment } from '@environments/environment';
 import { AccountService } from '@app/_services';
 
 @Injectable()
@@ -28,7 +29,19 @@ export class ErrorInterceptor implements HttpInterceptor {
                 error = 'An unexpected error occurred';
             }
             
-            console.error('HTTP Error:', err);
+            // Production-specific error logging
+            if (environment.production) {
+                console.error('HTTP Error in Production:', {
+                    url: request.url,
+                    method: request.method,
+                    status: err.status,
+                    statusText: err.statusText,
+                    timestamp: new Date().toISOString()
+                });
+            } else {
+                console.error('HTTP Error:', err);
+            }
+            
             return throwError(error);
         }))
     }

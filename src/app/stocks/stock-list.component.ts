@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { AccountService, AlertService, StockService, ItemService, CategoryService, BrandService, StorageLocationService, PCService, PCComponentService } from '@app/_services';
-import { Role } from '@app/_models';
+import { StockService } from '../_services/stock.service';
+import { ItemService } from '../_services/item.service';
+import { CategoryService } from '../_services/category.service';
+import { BrandService } from '../_services/brand.service';
+import { StorageLocationService } from '../_services/storage-location.service';
+import { PCService } from '../_services/pc.service';
+import { PCComponentService } from '../_services/pc-component.service';
+import { AccountService, AlertService } from '@app/_services';
+import { Role } from '../_models';
 
 @Component({
   selector: 'app-stock-list',
@@ -73,10 +80,23 @@ import { Role } from '@app/_models';
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    .header-actions .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
+    .header-actions      .btn:hover {
+       transform: translateY(-2px);
+       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+     }
+
+     /* Highlighted item effect */
+     .highlighted-item {
+       animation: highlightPulse 2s ease-in-out;
+       border: 3px solid #667eea !important;
+       box-shadow: 0 0 20px rgba(102, 126, 234, 0.5) !important;
+     }
+
+     @keyframes highlightPulse {
+       0% { transform: scale(1); }
+       50% { transform: scale(1.02); }
+       100% { transform: scale(1); }
+     }
 
     .stats-grid {
       display: grid;
@@ -432,7 +452,7 @@ import { Role } from '@app/_models';
       cursor: not-allowed;
     }
 
-    /* Mobile Responsive */
+    /* Responsive Design */
     @media (max-width: 768px) {
       .list-container {
         padding: 10px 0;
@@ -469,7 +489,7 @@ import { Role } from '@app/_models';
       }
 
       .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
       }
 
@@ -478,11 +498,11 @@ import { Role } from '@app/_models';
       }
 
       .stat-icon {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
 
       .stat-number {
-        font-size: 1.8rem;
+        font-size: 2rem;
       }
 
       .filters-section {
@@ -554,34 +574,635 @@ import { Role } from '@app/_models';
       }
     }
 
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .header-title i {
+        font-size: 2rem;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-icon {
+        font-size: 2rem;
+      }
+
+      .stat-number {
+        font-size: 1.8rem;
+      }
+
+      .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
     /* Tablet Responsive */
     @media (min-width: 769px) and (max-width: 1024px) {
-      .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-
-      .header-actions {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .filter-controls {
-        flex-direction: column;
-        gap: 10px;
+      .container {
+        max-width: 100%;
+        padding: 0 20px;
       }
     }
 
     /* Large Desktop */
     @media (min-width: 1200px) {
-      .stats-grid {
-        grid-template-columns: repeat(5, 1fr);
-      }
-
       .container {
         max-width: 1400px;
       }
     }
-  `]
+
+         /* Enhanced Modal Styles */
+     .modal-overlay {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       background: rgba(0, 0, 0, 0.5);
+       backdrop-filter: blur(8px);
+       -webkit-backdrop-filter: blur(8px);
+       z-index: 1050;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       padding: 20px;
+       animation: fadeIn 0.3s ease-out;
+     }
+
+     @keyframes fadeIn {
+       from {
+         opacity: 0;
+       }
+       to {
+         opacity: 1;
+       }
+     }
+
+         .modal-container {
+       background: white;
+       border-radius: 20px;
+       box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+       max-width: 95%;
+       max-height: 95%;
+       width: 900px;
+       overflow: hidden;
+       display: flex;
+       flex-direction: column;
+       animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       border: 1px solid rgba(255, 255, 255, 0.1);
+     }
+
+         @keyframes modalSlideIn {
+       from {
+         opacity: 0;
+         transform: translateY(-30px) scale(0.96);
+       }
+       to {
+         opacity: 1;
+         transform: translateY(0) scale(1);
+       }
+     }
+
+         .modal-header {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       color: white;
+       padding: 30px;
+       border-radius: 20px 20px 0 0;
+       position: relative;
+       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+     }
+
+    .modal-header .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .modal-header .header-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .modal-header .header-title i {
+      font-size: 2.5rem;
+      color: white;
+    }
+
+    .modal-header .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 0 0 5px 0;
+    }
+
+    .modal-header .page-subtitle {
+      font-size: 1.1rem;
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .modal-header .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+         .modal-header .btn-close {
+       background: rgba(255, 255, 255, 0.15);
+       border: 2px solid rgba(255, 255, 255, 0.2);
+       color: white;
+       border-radius: 50%;
+       width: 45px;
+       height: 45px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       font-size: 1.3rem;
+       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       backdrop-filter: blur(10px);
+     }
+
+     .modal-header .btn-close:hover {
+       background: rgba(255, 255, 255, 0.25);
+       border-color: rgba(255, 255, 255, 0.4);
+       transform: scale(1.1) rotate(90deg);
+       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+     }
+
+         .modal-body {
+       flex: 1;
+       overflow-y: auto;
+       padding: 30px;
+       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+     }
+
+    /* Responsive Modal */
+    @media (max-width: 768px) {
+      .modal-overlay {
+        padding: 10px;
+      }
+
+      .modal-container {
+        width: 100%;
+        max-height: 100%;
+        border-radius: 12px;
+      }
+
+      .modal-header {
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .modal-header .page-title {
+        font-size: 1.8rem;
+      }
+
+      .modal-header .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .modal-header .header-actions {
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .modal-body {
+        padding: 15px;
+      }
+    }
+
+         /* Enhanced Form Styles */
+     .form-card {
+       background: white;
+       border-radius: 16px;
+       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+       border: 1px solid rgba(255, 255, 255, 0.2);
+       overflow: hidden;
+     }
+
+    .form-card .card {
+      border: none;
+      border-radius: 12px;
+    }
+
+         .form-card .card-header {
+       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+       border-bottom: 1px solid #dee2e6;
+       border-radius: 16px 16px 0 0;
+       padding: 25px;
+       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+     }
+
+    .form-card .card-header h5 {
+      margin: 0;
+      color: #495057;
+      font-weight: 600;
+    }
+
+         .form-card .card-body {
+       padding: 35px;
+     }
+
+    .stock-form .form-group {
+      margin-bottom: 25px;
+    }
+
+    .stock-form .form-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stock-form .form-label i {
+      color: #007bff;
+    }
+
+         .stock-form .form-control {
+       border-radius: 12px;
+       border: 2px solid #e9ecef;
+       padding: 14px 18px;
+       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       font-size: 0.95rem;
+       background: white;
+       color: #495057;
+     }
+
+     .stock-form .form-control:focus {
+       border-color: #667eea;
+       box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+       background: white;
+       transform: translateY(-1px);
+       color: #495057;
+     }
+
+     .stock-form .form-control:hover {
+       border-color: #667eea;
+       background: white;
+       color: #495057;
+     }
+
+     /* Enhanced Dropdown Styles */
+     .stock-form .form-select {
+       border-radius: 12px;
+       border: 2px solid #e9ecef;
+       padding: 14px 18px;
+       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       font-size: 0.95rem;
+       background: white;
+       color: #495057;
+       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+       background-repeat: no-repeat;
+       background-position: right 12px center;
+       background-size: 16px 12px;
+       padding-right: 40px;
+       cursor: pointer;
+     }
+
+     .stock-form .form-select:focus {
+       border-color: #667eea;
+       box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+       background-color: white;
+       transform: translateY(-1px);
+       color: #495057;
+     }
+
+     .stock-form .form-select:hover {
+       border-color: #667eea;
+       background-color: white;
+       color: #495057;
+     }
+
+     .stock-form .form-select option {
+       background: white;
+       color: #495057;
+       padding: 12px;
+       font-size: 0.95rem;
+     }
+
+     .stock-form .form-select option:hover {
+       background: #f8f9fa;
+       color: #667eea;
+     }
+
+     .stock-form .form-select option:checked {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       color: white;
+     }
+
+     /* Placeholder text styling */
+     .stock-form .form-select:invalid,
+     .stock-form .form-select option[value=""] {
+       color: #6c757d;
+     }
+
+     .stock-form .form-select option:not([value=""]) {
+       color: #495057;
+     }
+
+    .stock-form .form-control.is-invalid {
+      border-color: #dc3545;
+    }
+
+    .stock-form .invalid-feedback {
+      font-size: 0.875rem;
+      color: #dc3545;
+      margin-top: 5px;
+    }
+
+    .form-row {
+      display: flex;
+      margin-left: -10px;
+      margin-right: -10px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .search-input-container {
+      position: relative;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 1000;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .search-result-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f8f9fa;
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item:hover {
+      background-color: #f8f9fa;
+    }
+
+         .form-actions {
+       display: flex;
+       justify-content: flex-end;
+       gap: 15px;
+       margin-top: 35px;
+       padding-top: 25px;
+       border-top: 2px solid #f1f3f4;
+     }
+
+     .form-actions .btn {
+       border-radius: 25px;
+       padding: 14px 28px;
+       font-weight: 600;
+       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       border: 2px solid transparent;
+       font-size: 0.95rem;
+       min-width: 120px;
+     }
+
+     .form-actions .btn:hover {
+       transform: translateY(-2px);
+       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+     }
+
+     .form-actions .btn-primary {
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       border-color: #667eea;
+     }
+
+     .form-actions .btn-primary:hover {
+       background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+       border-color: #5a6fd8;
+     }
+
+     .form-actions .btn-secondary {
+       background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+       border-color: #6c757d;
+     }
+
+     .form-actions .btn-secondary:hover {
+       background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+       border-color: #5a6268;
+     }
+
+     /* View Stock Modal Styles */
+     .info-buttons-section {
+       border-top: 1px solid #dee2e6;
+       padding-top: 20px;
+     }
+
+     .section-title {
+       color: #495057;
+       font-weight: 600;
+       margin-bottom: 15px;
+       display: flex;
+       align-items: center;
+       gap: 8px;
+     }
+
+           .info-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 15px;
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        font-weight: 600;
+        border: 2px solid transparent;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100px;
+        justify-content: center;
+      }
+
+      .info-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border-color: rgba(102, 126, 234, 0.3);
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      }
+
+           .info-btn i {
+        font-size: 2rem;
+        margin-bottom: 5px;
+      }
+
+      .info-btn span {
+        font-size: 0.95rem;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+           .info-display-area {
+        border-top: 2px solid #f1f3f4;
+        padding-top: 25px;
+        margin-top: 25px;
+      }
+
+      .info-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+        padding: 15px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+      }
+
+      .info-header i {
+        font-size: 1.4rem;
+        color: #667eea;
+      }
+
+     .info-content {
+       line-height: 1.6;
+       color: #495057;
+     }
+
+     .info-content ul {
+       margin-bottom: 0;
+       padding-left: 20px;
+     }
+
+     .info-content li {
+       margin-bottom: 8px;
+       color: #495057;
+     }
+
+     .info-content .badge {
+       margin-left: 5px;
+       font-weight: 600;
+       padding: 6px 12px;
+       border-radius: 20px;
+     }
+
+     .info-content .text-success {
+       color: #28a745 !important;
+       font-weight: 600;
+     }
+
+     .info-content .text-warning {
+       color: #ffc107 !important;
+       font-weight: 600;
+     }
+
+     .info-content .text-danger {
+       color: #dc3545 !important;
+       font-weight: 600;
+     }
+
+     .info-content .text-info {
+       color: #17a2b8 !important;
+       font-weight: 600;
+     }
+
+     .info-content .text-muted {
+       color: #6c757d !important;
+     }
+
+     /* Enhanced Modal Content Styles */
+     .stock-details-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+       gap: 20px;
+       margin-bottom: 25px;
+     }
+
+     .detail-item {
+       background: white;
+       padding: 20px;
+       border-radius: 12px;
+       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+       border: 1px solid #f1f3f4;
+       transition: all 0.3s ease;
+     }
+
+     .detail-item:hover {
+       transform: translateY(-2px);
+       box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+     }
+
+     .detail-label {
+       font-size: 0.85rem;
+       color: #6c757d;
+       font-weight: 500;
+       text-transform: uppercase;
+       letter-spacing: 0.5px;
+       margin-bottom: 8px;
+     }
+
+     .detail-value {
+       font-size: 1.1rem;
+       color: #495057;
+       font-weight: 600;
+       margin-bottom: 0;
+     }
+
+     .detail-value.highlight {
+       color: #667eea;
+       font-size: 1.2rem;
+     }
+
+     .detail-value.success {
+       color: #28a745;
+     }
+
+     .detail-value.warning {
+       color: #ffc107;
+     }
+
+     .detail-value.danger {
+       color: #dc3545;
+     }
+
+     /* Modal text color fixes */
+     .modal-body {
+       color: #495057;
+     }
+
+     .modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4, .modal-body h5, .modal-body h6 {
+       color: #333;
+     }
+
+     .modal-body p {
+       color: #495057;
+     }
+
+     .modal-body strong {
+       color: #333;
+       font-weight: 600;
+     }
+   `]
 })
 export class StockListComponent implements OnInit {
   Role = Role;
@@ -594,14 +1215,45 @@ export class StockListComponent implements OnInit {
   pcComponents: any[] = [];
   filteredStocks: any[] = [];
   searchTerm = '';
-  selectedType = '';
   selectedCategory = '';
   currentPage = 1;
   itemsPerPage = 10;
   Math = Math;
+  showAddStockModal = false;
+
+  // Highlight tracking
+  highlightedItemId: number | null = null;
+  showViewStockModal = false;
+  showEditStockModal = false;
+  selectedStock: any = null;
+  currentInfoType: string = '';
+
+  // Add Stock Form Properties
+  stockModel = {
+    itemId: undefined as number | undefined,
+    quantity: undefined as number | undefined,
+    price: undefined as number | undefined,
+    locationId: undefined as number | undefined,
+    remarks: ''
+  };
+  stockSubmitted = false;
+  stockLoading = false;
+  totalPrice = 0;
+
+  // Edit Stock Form Properties
+  editStockModel = {
+    id: undefined as number | undefined,
+    itemId: undefined as number | undefined,
+    quantity: undefined as number | undefined,
+    price: undefined as number | undefined,
+    locationId: undefined as number | undefined,
+    remarks: ''
+  };
+  editStockSubmitted = false;
+  editStockLoading = false;
+  editTotalPrice = 0;
 
   constructor(
-    private router: Router,
     private stockService: StockService,
     private itemService: ItemService,
     private categoryService: CategoryService,
@@ -609,15 +1261,407 @@ export class StockListComponent implements OnInit {
     private locationService: StorageLocationService,
     private pcService: PCService,
     private pcComponentService: PCComponentService,
+    private router: Router,
+    private accountService: AccountService,
     private alertService: AlertService,
-    public accountService: AccountService
-  ) { }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.loadData();
     
+    // Check for query parameters to highlight specific items
+    this.route.queryParams.subscribe(params => {
+      if (params['highlightItem']) {
+        this.highlightedItemId = Number(params['highlightItem']);
+        // Scroll to the highlighted item after data loads
+        setTimeout(() => {
+          this.scrollToHighlightedItem();
+        }, 1000);
+      }
+    });
+    
     // Listen for stock data changes from PC components
     window.addEventListener('stockDataChanged', this.handleStockDataChange.bind(this));
+  }
+
+  // Modal control methods
+  openAddStockModal() {
+    this.showAddStockModal = true;
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+
+  closeAddStockModal() {
+    this.showAddStockModal = false;
+    document.body.style.overflow = 'auto'; // Restore scrolling
+    this.resetStockForm();
+  }
+
+  // View Stock Modal methods
+  openViewStockModal(stock: any) {
+    this.selectedStock = stock;
+    this.showViewStockModal = true;
+    this.currentInfoType = '';
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeViewStockModal() {
+    this.showViewStockModal = false;
+    this.selectedStock = null;
+    this.currentInfoType = '';
+    document.body.style.overflow = 'auto';
+  }
+
+  // Edit Stock Modal methods
+  openEditStockModal(stock: any) {
+    this.editStockModel = {
+      id: stock.id,
+      itemId: stock.itemId,
+      quantity: stock.quantity,
+      price: stock.price,
+      locationId: stock.locationId,
+      remarks: stock.remarks || ''
+    };
+    this.editTotalPrice = stock.quantity * stock.price;
+    this.showEditStockModal = true;
+    this.editStockSubmitted = false;
+    this.editStockLoading = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeEditStockModal() {
+    this.showEditStockModal = false;
+    this.editStockModel = {
+      id: undefined,
+      itemId: undefined,
+      quantity: undefined,
+      price: undefined,
+      locationId: undefined,
+      remarks: ''
+    };
+    this.editStockSubmitted = false;
+    this.editStockLoading = false;
+    this.editTotalPrice = 0;
+    document.body.style.overflow = 'auto';
+  }
+
+  // Info display methods
+  showAvailabilityInfo() {
+    this.currentInfoType = 'availability';
+  }
+
+  showDisposeInfo() {
+    this.currentInfoType = 'dispose';
+  }
+
+  showInUseInfo() {
+    this.currentInfoType = 'inuse';
+  }
+
+  getInfoAlertClass(): string {
+    switch (this.currentInfoType) {
+      case 'availability': return 'alert-info';
+      case 'dispose': return 'alert-warning';
+      case 'inuse': return 'alert-success';
+      default: return 'alert-info';
+    }
+  }
+
+  getInfoIcon(): string {
+    switch (this.currentInfoType) {
+      case 'availability': return 'fas fa-boxes';
+      case 'dispose': return 'fas fa-recycle';
+      case 'inuse': return 'fas fa-desktop';
+      default: return 'fas fa-info-circle';
+    }
+  }
+
+  scrollToHighlightedItem() {
+    if (this.highlightedItemId) {
+      const element = document.querySelector(`[data-item-id="${this.highlightedItemId}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Add a temporary highlight effect
+        element.classList.add('highlighted-item');
+        setTimeout(() => {
+          element.classList.remove('highlighted-item');
+          // Clear the highlight after animation
+          this.highlightedItemId = null;
+        }, 3000);
+      }
+    }
+  }
+
+  // Method to navigate to dispose page for a specific stock
+  navigateToDispose(stock: any) {
+    this.router.navigate(['/dispose'], { 
+      queryParams: { 
+        stockEntryId: stock.id,
+        autoOpenModal: 'true'
+      } 
+    });
+  }
+
+  getInfoTitle(): string {
+    switch (this.currentInfoType) {
+      case 'availability': return 'Stock Availability Information';
+      case 'dispose': return 'Disposal Information';
+      case 'inuse': return 'In-Use Components Information';
+      default: return 'Information';
+    }
+  }
+
+  getInfoContent(): string {
+    if (!this.selectedStock) return '';
+
+    switch (this.currentInfoType) {
+      case 'availability':
+        return this.getAvailabilityContent();
+      case 'dispose':
+        return this.getDisposeContent();
+      case 'inuse':
+        return this.getInUseContent();
+      default:
+        return '';
+    }
+  }
+
+  getAvailabilityContent(): string {
+    const itemId = this.selectedStock.itemId;
+    const summary = this.getStockSummary(itemId);
+    const totalStock = this.getAvailableStock(itemId);
+    const inUseQuantity = this.getInUseCount(itemId);
+    const availableQuantity = Math.max(0, totalStock - inUseQuantity);
+
+    return `
+      <div class="availability-details">
+        <ul>
+          <li><strong>Total Stock:</strong> <span class="badge badge-primary">${summary.total} units</span></li>
+          <li><strong>Available for Use:</strong> <span class="badge badge-success">${summary.available} units</span></li>
+          <li><strong>Currently In Use:</strong> <span class="badge badge-warning">${summary.inUse} units</span></li>
+          <li><strong>Used in PCs:</strong> <span class="badge badge-info">${summary.usedInPCs} PC(s)</span></li>
+        </ul>
+        <div class="mt-3">
+          <small class="text-muted">
+            <i class="fas fa-info-circle"></i> 
+            Availability is calculated as: Total Stock - Items Currently In Use
+          </small>
+        </div>
+      </div>
+    `;
+  }
+
+  getDisposeContent(): string {
+    if (this.selectedStock.disposeId && this.selectedStock.disposal) {
+      const disposal = this.selectedStock.disposal;
+      return `
+        <div class="disposal-details">
+          <ul>
+            <li><strong>Disposal Status:</strong> 
+              <span class="badge badge-danger">Disposed</span>
+            </li>
+            <li><strong>Disposal Date:</strong> 
+              <span class="text-info">${new Date(disposal.disposalDate).toLocaleDateString()}</span>
+            </li>
+            <li><strong>Disposal Value:</strong> 
+              <span class="text-warning">php${disposal.disposalValue?.toFixed(2) || '0.00'}</span>
+            </li>
+            <li><strong>Total Disposal Value:</strong> 
+              <span class="text-warning">php${((disposal.disposalValue || 0) * this.selectedStock.quantity).toFixed(2)}</span>
+            </li>
+            <li><strong>Reason:</strong> 
+              <span class="text-muted">${disposal.reason || 'No reason provided'}</span>
+            </li>
+            <li><strong>Returned to Stock:</strong> 
+              ${disposal.returnedToStock ? 
+                '<span class="badge badge-success">Yes</span>' : 
+                '<span class="badge badge-secondary">No</span>'}
+            </li>
+          </ul>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="disposal-details">
+          <div class="text-center">
+            <i class="fas fa-check-circle text-success" style="font-size: 2rem;"></i>
+            <p class="mt-2"><strong>This stock item has not been disposed.</strong></p>
+            <p class="text-muted">The item is currently available in inventory.</p>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  getInUseContent(): string {
+    const itemId = this.selectedStock.itemId;
+    const components = this.pcComponents.filter(component => component.itemId === itemId);
+    
+    if (components.length === 0) {
+      return `
+        <div class="inuse-details">
+          <div class="text-center">
+            <i class="fas fa-box text-muted" style="font-size: 2rem;"></i>
+            <p class="mt-2"><strong>This item is not currently in use.</strong></p>
+            <p class="text-muted">The item is available for allocation to PCs.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    const totalQuantity = components.reduce((total, component) => total + component.quantity, 0);
+    const pcCount = components.length;
+
+    let content = `
+      <div class="inuse-details">
+        <div class="summary mb-3">
+          <ul>
+            <li><strong>Total Quantity In Use:</strong> <span class="badge badge-warning">${totalQuantity} units</span></li>
+            <li><strong>Number of PCs Using This Item:</strong> <span class="badge badge-info">${pcCount} PC(s)</span></li>
+          </ul>
+        </div>
+    `;
+
+    // Group by PC for better organization
+    const pcGroups = new Map();
+    components.forEach(component => {
+      const pcId = component.pcId;
+      if (!pcGroups.has(pcId)) {
+        pcGroups.set(pcId, []);
+      }
+      pcGroups.get(pcId).push(component);
+    });
+
+    content += '<div class="pc-details"><strong>PC Details:</strong><ul>';
+    pcGroups.forEach((components, pcId) => {
+      const pc = this.pcs.find(p => p.id === pcId);
+      const pcName = pc ? pc.name : `PC ${pcId}`;
+      const totalQty = components.reduce((sum, comp) => sum + comp.quantity, 0);
+      
+      content += `
+        <li><strong>${pcName}:</strong> <span class="badge badge-secondary">${totalQty} units</span></li>
+      `;
+    });
+    content += '</ul></div></div>';
+
+    return content;
+  }
+
+  // Add Stock Form Methods
+  resetStockForm() {
+    this.stockModel = {
+      itemId: undefined,
+      quantity: undefined,
+      price: undefined,
+      locationId: undefined,
+      remarks: ''
+    };
+    this.stockSubmitted = false;
+    this.stockLoading = false;
+    this.totalPrice = 0;
+  }
+
+  saveStock() {
+    this.stockSubmitted = true;
+
+    // stop here if form is invalid
+    if (!this.stockModel.itemId || !this.stockModel.quantity || !this.stockModel.price || !this.stockModel.locationId) {
+      return;
+    }
+
+    this.stockLoading = true;
+
+    // Create the stock object
+    const stockData = {
+      itemId: this.stockModel.itemId,
+      quantity: this.stockModel.quantity,
+      price: this.stockModel.price,
+      locationId: this.stockModel.locationId,
+      remarks: this.stockModel.remarks
+    };
+
+    this.stockService.create(stockData)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.alertService.success('Stock added successfully');
+          this.closeAddStockModal();
+          this.loadData(); // Refresh the stock list
+        },
+        error: error => {
+          this.alertService.error(error);
+          this.stockLoading = false;
+        }
+      });
+  }
+
+  onItemChange() {
+    // Reset total price when item changes
+    this.calculateTotalPrice();
+  }
+
+  onQuantityChange() {
+    // Recalculate total price when quantity changes
+    this.calculateTotalPrice();
+  }
+
+  calculateTotalPrice() {
+    if (this.stockModel.quantity && this.stockModel.price) {
+      this.totalPrice = this.stockModel.quantity * this.stockModel.price;
+    } else {
+      this.totalPrice = 0;
+    }
+  }
+
+  // Edit Stock Form Methods
+  onEditQuantityChange() {
+    this.calculateEditTotalPrice();
+  }
+
+  onEditPriceChange() {
+    this.calculateEditTotalPrice();
+  }
+
+  calculateEditTotalPrice() {
+    if (this.editStockModel.quantity && this.editStockModel.price) {
+      this.editTotalPrice = this.editStockModel.quantity * this.editStockModel.price;
+    } else {
+      this.editTotalPrice = 0;
+    }
+  }
+
+  saveEditStock() {
+    this.editStockSubmitted = true;
+
+    // stop here if form is invalid
+    if (!this.editStockModel.locationId || !this.editStockModel.quantity || !this.editStockModel.price) {
+      return;
+    }
+
+    this.editStockLoading = true;
+
+    // Create the stock update object
+    const stockData = {
+      itemId: this.editStockModel.itemId,
+      quantity: this.editStockModel.quantity,
+      price: this.editStockModel.price,
+      locationId: this.editStockModel.locationId,
+      remarks: this.editStockModel.remarks
+    };
+
+    this.stockService.update(this.editStockModel.id!, stockData)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.alertService.success('Stock updated successfully');
+          this.closeEditStockModal();
+          this.loadData(); // Refresh the stock list
+        },
+        error: error => {
+          this.alertService.error(error);
+          this.editStockLoading = false;
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -640,10 +1684,45 @@ export class StockListComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (stocks) => {
+          console.log('=== STOCK DATA DEBUG ===');
+          console.log('Raw stock entries loaded:', stocks);
+          console.log('Total stocks received:', stocks.length);
+          
+          // Log each stock entry structure
+          stocks.forEach((stock, index) => {
+            console.log(`Stock ${index + 1}:`, {
+              id: stock.id,
+              itemId: stock.itemId,
+              quantity: stock.quantity,
+              disposeId: stock.disposeId,
+              hasDisposal: !!stock.disposal,
+              itemName: stock.item?.name
+            });
+          });
+          
+          // Log returned items specifically
+          const returnedItems = stocks.filter(s => s.disposeId === null);
+          console.log('Returned items (disposeId: null):', returnedItems.length);
+          returnedItems.forEach(item => {
+            console.log('Returned item:', {
+              id: item.id,
+              name: item.item?.name,
+              quantity: item.quantity,
+              disposeId: item.disposeId
+            });
+          });
+          
+          // Log disposal items
+          const disposalItems = stocks.filter(s => s.disposeId !== null);
+          console.log('Disposal items (disposeId not null):', disposalItems.length);
+          
           this.stocks = stocks;
           this.applyFilters();
+          
+          console.log('=== END STOCK DATA DEBUG ===');
         },
         error: error => {
+          console.error('Error loading stocks:', error);
           this.alertService.error(error);
         }
       });
@@ -740,15 +1819,6 @@ export class StockListComponent implements OnInit {
       });
     }
 
-    // Type filter
-    if (this.selectedType) {
-      if (this.selectedType === 'ADD') {
-        filtered = filtered.filter(stock => !stock.disposeId);
-      } else if (this.selectedType === 'DISPOSE') {
-        filtered = filtered.filter(stock => stock.disposeId);
-      }
-    }
-
     // Category filter
     if (this.selectedCategory) {
       filtered = filtered.filter(stock => {
@@ -779,12 +1849,22 @@ export class StockListComponent implements OnInit {
   }
 
   getDisposalsCount(): number {
-    return this.stocks.filter(stock => stock.disposeId).length;
+    return this.stocks.filter(stock => stock.disposeId && stock.disposal).length;
+  }
+
+  getReturnedDisposalsCount(): number {
+    return this.stocks.filter(stock => stock.disposeId && stock.disposal && stock.disposal.returnedToStock).length;
   }
 
   getTotalValue(): number {
     return this.stocks.reduce((total, stock) => {
-      return total + (stock.price * stock.quantity);
+      if (stock.disposeId && stock.disposal) {
+        // For disposal entries, use disposal value
+        return total + (stock.disposal.disposalValue * stock.quantity);
+      } else {
+        // For addition entries, use regular price
+        return total + (stock.price * stock.quantity);
+      }
     }, 0);
   }
 
@@ -816,6 +1896,19 @@ export class StockListComponent implements OnInit {
   getLocationName(stock: any): string {
     const location = this.locations.find(l => l.id === stock.locationId);
     return location ? location.name : 'Unknown Location';
+  }
+
+  getDisposalInfo(stock: any): any {
+    if (stock.disposal) {
+      return {
+        reason: stock.disposal.reason || 'No reason provided',
+        date: stock.disposal.disposalDate,
+        value: stock.disposal.disposalValue,
+        returned: stock.disposal.returnedToStock,
+        user: stock.disposal.user ? `${stock.disposal.user.firstName} ${stock.disposal.user.lastName}` : 'Unknown'
+      };
+    }
+    return null;
   }
 
   isItemInUse(itemId: number): boolean {
@@ -850,36 +1943,22 @@ export class StockListComponent implements OnInit {
     return roles.some(role => role === userRole);
   }
 
-  viewStock(id: number) {
-    console.log('View stock clicked for ID:', id);
-    this.router.navigate(['/stocks', id]);
+  // Debug method to check stock display conditions
+  debugStockDisplay(stock: any): any {
+    const debug = {
+      id: stock.id,
+      itemName: stock.item?.name,
+      quantity: stock.quantity,
+      disposeId: stock.disposeId,
+      shouldShowGreenBadge: !stock.disposeId && stock.quantity > 0,
+      shouldShowStockSummary: !stock.disposeId,
+      shouldShowDisposeButton: !stock.disposeId && this.hasRole([this.Role.SuperAdmin, this.Role.Admin]),
+      hasDisposal: !!stock.disposal
+    };
+    console.log('Stock display debug:', debug);
+    return debug;
   }
 
-  editStock(id: number) {
-    console.log('Edit stock clicked for ID:', id);
-    this.router.navigate(['/stocks', id, 'edit']);
-  }
-
-  deleteStock(id: number) {
-    console.log('Delete stock clicked for ID:', id);
-    if (confirm('Are you sure you want to delete this stock entry?')) {
-      this.stockService.delete(id)
-        .pipe(first())
-        .subscribe({
-          next: () => {
-            this.alertService.success('Stock deleted successfully');
-            this.loadStocks();
-            
-            // Notify other components about stock data change
-            this.notifyStockDataChange();
-          },
-          error: error => {
-            console.error('Error deleting stock:', error);
-            this.alertService.error(error);
-          }
-        });
-    }
-  }
 
   disposeStock(stock: any) {
     console.log('Dispose stock clicked for stock:', stock);

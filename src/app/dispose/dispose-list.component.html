@@ -1,240 +1,521 @@
 <div class="list-container">
-    <div class="container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="header-content">
-                <div class="header-title">
-                    <i class="fas fa-trash-alt"></i>
-                    <div>
-                        <h1 class="page-title">Disposal Records</h1>
-                        <p class="page-subtitle">Track and manage inventory disposal activities</p>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <a routerLink="/dispose/add" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Add Disposal
-                    </a>
-                </div>
-            </div>
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <div class="header-title">
+          <i class="fas fa-trash-alt"></i>
+          <div>
+            <h1 class="page-title">Disposal Records</h1>
+            <p class="page-subtitle">Track and manage inventory disposal activities</p>
+          </div>
         </div>
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-trash-alt"></i>
-                </div>
-                <div class="stat-number">{{ disposals.length }}</div>
-                <div class="stat-label">Total Disposals</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-boxes"></i>
-                </div>
-                <div class="stat-number">{{ getTotalDisposedItems() }}</div>
-                <div class="stat-label">Items Disposed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="stat-number">{{ getTotalDisposalValue() | currency:'PHP':'symbol':'1.0-0' }}</div>
-                <div class="stat-label">Total Value</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <div class="stat-number">{{ getThisMonthDisposals() }}</div>
-                <div class="stat-label">This Month</div>
-            </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="addNewDisposal()">
+            <i class="fas fa-plus"></i>
+            Add Disposal
+          </button>
+          <button class="btn btn-info" (click)="refreshStockData()" title="Refresh Stock Data">
+            <i class="fas fa-sync-alt"></i>
+            Refresh Stock
+          </button>
         </div>
-
-        <!-- Filters and Search -->
-        <div class="filters-section">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            placeholder="Search disposals..."
-                            [(ngModel)]="searchTerm"
-                            (input)="onSearch()"
-                        >
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="filter-controls">
-                        <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
-                            <option value="">All Categories</option>
-                            <option *ngFor="let category of categories" [value]="category.id">
-                                {{ category.name }}
-                            </option>
-                        </select>
-                        <select class="form-select" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
-                            <option value="">All Locations</option>
-                            <option *ngFor="let location of locations" [value]="location.id">
-                                {{ location.name }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Disposal Records Table -->
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="fas fa-list"></i> Disposal Records</h5>
-                <div class="table-actions">
-                    <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
-                        <i class="fas fa-sync-alt"></i>
-                        Refresh
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <!-- Loading -->
-                <div *ngIf="loading" class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2">Loading disposal records...</p>
-                </div>
-
-                <!-- Table -->
-                <div *ngIf="!loading" class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th><i class="fas fa-box"></i> Item</th>
-                                <th><i class="fas fa-tag"></i> Category</th>
-                                <th><i class="fas fa-trademark"></i> Brand</th>
-                                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
-                                <th><i class="fas fa-dollar-sign"></i> Disposal Value</th>
-                                <th><i class="fas fa-calculator"></i> Total Value</th>
-                                <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                                <th><i class="fas fa-comment"></i> Reason</th>
-                                <th><i class="fas fa-user"></i> Disposed By</th>
-                                <th><i class="fas fa-calendar"></i> Date</th>
-                                <th><i class="fas fa-cogs"></i> Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let disposal of filteredDisposals" class="disposal-row">
-                                <td>
-                                    <div class="item-info">
-                                        <strong>{{ disposal.item?.name || 'Unknown Item' }}</strong>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="category-badge">
-                                        {{ disposal.item?.category?.name || 'No Category' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="brand-badge">
-                                        {{ disposal.item?.brand?.name || 'No Brand' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="quantity-badge badge-danger">
-                                        {{ disposal.quantity }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="price-value">
-                                        {{ disposal.disposalValue | currency:'PHP':'symbol' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="total-value">
-                                        {{ disposal.totalValue | currency:'PHP':'symbol' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="location-badge">
-                                        {{ disposal.location?.name || 'No Location' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="reason-text" [title]="disposal.reason || 'No reason provided'">
-                                        {{ (disposal.reason || 'No reason provided') | slice:0:30 }}{{ (disposal.reason || '').length > 30 ? '...' : '' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="user-badge">
-                                        {{ disposal.user?.firstName }} {{ disposal.user?.lastName }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="date-badge">
-                                        {{ disposal.disposalDate | date: 'MMM dd, yyyy' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-sm btn-outline-primary"
-                                                (click)="viewDisposal(disposal.id!)" title="View Details">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
-                                                class="btn btn-sm btn-outline-warning"
-                                                (click)="editDisposal(disposal.id!)" title="Edit Disposal">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
-                                                class="btn btn-sm btn-outline-danger"
-                                                (click)="deleteDisposal(disposal.id!)" title="Delete Disposal">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info"
-                                                (click)="viewStockInfo(disposal.itemId)" title="Stock Info">
-                                            <i class="fas fa-boxes"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr *ngIf="filteredDisposals.length === 0">
-                                <td colspan="11" class="text-center py-4">
-                                    <div class="empty-state">
-                                        <i class="fas fa-trash-alt"></i>
-                                        <h4>No disposal records found</h4>
-                                        <p>Try adjusting your search or filters</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination-section" *ngIf="filteredDisposals.length > 0">
-            <div class="pagination-info">
-                Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredDisposals.length) }} of {{ filteredDisposals.length }} entries
-            </div>
-            <nav aria-label="Disposal pagination">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" [class.disabled]="currentPage === 1">
-                        <a class="page-link" (click)="previousPage()">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
-                        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
-                    </li>
-                    <li class="page-item" [class.disabled]="currentPage === totalPages">
-                        <a class="page-link" (click)="nextPage()">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+      </div>
     </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class="stat-number">{{ disposals.length }}</div>
+        <div class="stat-label">Total Disposals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-boxes"></i>
+        </div>
+        <div class="stat-number">{{ getTotalDisposedItems() }}</div>
+        <div class="stat-label">Items Disposed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-number">{{ getTotalDisposalValue() | currency:'PHP':'symbol':'1.0-0' }}</div>
+        <div class="stat-label">Total Value</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="stat-number">{{ getThisMonthDisposals() }}</div>
+        <div class="stat-label">This Month</div>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="filters-section">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Search disposals..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearch()"
+            >
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="filter-controls">
+            <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+              <option value="">All Categories</option>
+              <option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+            <select class="form-select" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
+              <option value="">All Locations</option>
+              <option *ngFor="let location of locations" [value]="location.id">
+                {{ location.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disposal Records Table -->
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-list"></i> Disposal Records</h5>
+        <div class="table-actions">
+          <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2">Loading disposal records...</p>
+        </div>
+
+        <!-- Table -->
+        <div *ngIf="!loading" class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th><i class="fas fa-box"></i> Item</th>
+                <th><i class="fas fa-tag"></i> Category</th>
+                <th><i class="fas fa-trademark"></i> Brand</th>
+                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
+                <th><i class="fas fa-dollar-sign"></i> Price</th>
+                <th><i class="fas fa-calculator"></i> Total Value</th>
+                <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                <th><i class="fas fa-comment"></i> Reason</th>
+                <th><i class="fas fa-user"></i> Disposed By</th>
+                <th><i class="fas fa-calendar"></i> Date</th>
+                <th><i class="fas fa-cogs"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let disposal of paginatedDisposals" class="disposal-row">
+                <td>
+                  <div class="item-info">
+                    <strong>{{ disposal.item?.name || 'Unknown Item' }}</strong>
+                    <small class="d-block text-muted" *ngIf="disposal.item?.description">
+                      {{ disposal.item.description }}
+                    </small>
+                  </div>
+                </td>
+                <td>
+                  <span class="category-badge">
+                    {{ disposal.item?.category?.name || 'No Category' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="brand-badge">
+                    {{ disposal.item?.brand?.name || 'No Brand' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="quantity-badge badge-danger">
+                    {{ disposal.quantity }}
+                  </span>
+                  <span *ngIf="disposal.returnedToStock" class="badge badge-success ms-1">
+                    <i class="fas fa-check"></i> Returned
+                  </span>
+                  <span *ngIf="disposal.quantity < disposal.originalQuantity" class="badge badge-warning ms-1">
+                    <i class="fas fa-undo"></i> Partially Returned
+                  </span>
+                </td>
+                <td>
+                  <span class="price-value">
+                    {{ getDisposalValueForItem(disposal) | currency:'PHP':'symbol' }}
+                  </span>
+                </td>
+                <td>
+                                     <span class="total-value">
+                     {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
+                   </span>
+                </td>
+                <td>
+                  <span class="location-badge">
+                    {{ disposal.location?.name || 'No Location' }}
+                    <small class="d-block text-muted" *ngIf="disposal.location?.description">
+                      {{ disposal.location.description }}
+                    </small>
+                  </span>
+                </td>
+                <td>
+                  <span class="reason-text" [title]="disposal.reason || 'No reason provided'">
+                    {{ (disposal.reason || 'No reason provided') | slice:0:30 }}{{ (disposal.reason || '').length > 30 ? '...' : '' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="user-badge">
+                    {{ disposal.user?.firstName }} {{ disposal.user?.lastName }}
+                    <small class="d-block text-muted" *ngIf="disposal.user?.email">
+                      {{ disposal.user.email }}
+                    </small>
+                  </span>
+                </td>
+                <td>
+                  <span class="date-badge">
+                    {{ disposal.disposalDate | date: 'MMM dd, yyyy' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn btn-sm btn-outline-primary"
+                            (click)="viewDisposal(disposal.id!)" title="View Details">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
+                            class="btn btn-sm btn-outline-warning"
+                            (click)="editDisposal(disposal.id!)" title="Edit Disposal">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
+                            class="btn btn-sm btn-outline-danger"
+                            (click)="deleteDisposal(disposal.id!)" title="Delete Disposal">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-info"
+                            (click)="viewStockInfo(disposal.itemId)" title="Stock Info">
+                      <i class="fas fa-boxes"></i>
+                    </button>
+                    <button *ngIf="disposal.quantity > 0" 
+                            class="btn btn-sm btn-outline-success"
+                            (click)="returnToStock(disposal)" title="Return to Stock">
+                      <i class="fas fa-undo"></i>
+                    </button>
+
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="filteredDisposals?.length === 0">
+                <td colspan="11" class="text-center py-4">
+                  <div class="empty-state">
+                    <i class="fas fa-trash-alt"></i>
+                    <h4>No disposal records found</h4>
+                    <p>Try adjusting your search or filters</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section" *ngIf="filteredDisposals?.length > 0">
+      <div class="pagination-info">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredDisposals.length) }} of {{ filteredDisposals.length }} entries
+      </div>
+      <nav aria-label="Disposal pagination">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="previousPage()">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          </li>
+          <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+            <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="nextPage()">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Add Disposal Modal -->
+  <div class="modal-overlay" *ngIf="showAddDisposalModal" (click)="closeAddDisposalModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-content">
+          <div class="header-title">
+            <i class="fas fa-trash-alt"></i>
+            <div>
+              <h1 class="page-title">Dispose Items</h1>
+              <p class="page-subtitle">Manage inventory disposal records</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-close" (click)="closeAddDisposalModal()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+                                   <!-- Available Stock Alert -->
+          <div class="alert alert-info" *ngIf="availableStock > 0">
+            <strong>Available Stock:</strong> {{ availableStock }} units
+            <button type="button" class="btn btn-sm btn-outline-info ms-2" (click)="refreshStockData()" title="Refresh Stock Data">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+
+          <!-- Debug Info -->
+          <div class="alert alert-secondary">
+            <strong>Debug Info:</strong><br>
+            Available Stock Entries: {{ availableStockEntries.length }}<br>
+            Selected Stock Entry ID: {{ form.value.stockEntryId || 'None' }}<br>
+            Available Stock: {{ availableStock }}<br>
+            Selected Item Price: {{ selectedItemPrice }}<br>
+            <button type="button" class="btn btn-sm btn-outline-secondary mt-2" (click)="debugStockData()" title="Debug Stock Data">
+              <i class="fas fa-bug"></i> Debug Data
+            </button>
+          </div>
+
+                                       <!-- No Stock Available Alert -->
+          <div class="alert alert-warning" *ngIf="availableStock === 0 && form.value.stockEntryId">
+            <strong>No stock available</strong> for the selected stock entry.
+          </div>
+
+          <!-- Selected Stock Summary -->
+          <div class="alert alert-info" *ngIf="form.value.stockEntryId && availableStock > 0">
+            <div class="row">
+              <div class="col-md-6">
+                <strong>Selected Stock Entry:</strong><br>
+                <span *ngIf="getSelectedStock()">
+                  <strong>Item:</strong> {{ getSelectedStock()?.item?.name }}<br>
+                  <strong>Category:</strong> {{ getSelectedStock()?.item?.category?.name }}<br>
+                  <strong>Brand:</strong> {{ getSelectedStock()?.item?.brand?.name }}<br>
+                  <strong>Available:</strong> {{ availableStock }} units<br>
+                  <strong>Price:</strong> ₱{{ selectedItemPrice | number:'1.2-2' }} per unit
+                </span>
+              </div>
+              <div class="col-md-6">
+                <strong>Disposal Summary:</strong><br>
+                <strong>Quantity to Dispose:</strong> {{ form.value.quantity || 0 }} units<br>
+                <strong>Total Value:</strong> ₱{{ getTotalValue() | number:'1.2-2' }}<br>
+                <strong>Location:</strong> {{ getSelectedStockLocation() }}
+              </div>
+            </div>
+          </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                     <!-- Stock Selection -->
+           <div class="mb-3">
+                           <label class="form-label">
+                <i class="fas fa-boxes"></i> Select Stock Entry
+              </label>
+                                         <select formControlName="stockEntryId" class="form-control" 
+                      [ngClass]="{ 'is-invalid': submitted && f.stockEntryId.errors }"
+                      [disabled]="loading">
+                <option value="">Select Stock Entry</option>
+                <option *ngFor="let stock of availableStockEntries" [value]="stock.id">
+                  {{ stock.item?.name || 'Unknown Item' }} ({{ stock.item?.category?.name }}) - {{ stock.quantity }} units - ₱{{ stock.price | number:'1.2-2' }} each - {{ stock.location?.name }} - {{ stock.createdAt | date:'MMM dd, yyyy HH:mm' }}
+                </option>
+              </select>
+              <div *ngIf="submitted && f.stockEntryId.errors" class="invalid-feedback">
+                <div *ngIf="f.stockEntryId.errors.required">Stock entry is required</div>
+              </div>
+              <small class="form-text text-muted">
+                Shows: Item Name (Category) - Available Quantity - Price per unit - Location - Date Added
+              </small>
+           </div>
+
+                     <!-- Quantity -->
+           <div class="mb-3">
+             <label class="form-label">
+               <i class="fas fa-sort-numeric-up"></i> Quantity to Dispose
+             </label>
+                                         <input type="number" formControlName="quantity" class="form-control" 
+                      [ngClass]="{ 'is-invalid': submitted && f.quantity.errors }"
+                      min="1"
+                      [max]="availableStock"
+                      [disabled]="loading || !form.value.stockEntryId"
+                      placeholder="Enter quantity to dispose">
+             <div *ngIf="submitted && f.quantity.errors" class="invalid-feedback">
+               <div *ngIf="f.quantity.errors.required">Quantity is required</div>
+               <div *ngIf="f.quantity.errors.min">Quantity must be at least 1</div>
+               <div *ngIf="f.quantity.errors.maxQuantity">Quantity cannot exceed available stock ({{ f.quantity.errors.maxQuantity.max }} units)</div>
+             </div>
+             <small class="form-text text-muted" *ngIf="availableStock > 0">
+               <i class="fas fa-info-circle"></i> Maximum available: {{ availableStock }} units | 
+               <strong>Total Value:</strong> ₱{{ getTotalValue() | number:'1.2-2' }}
+             </small>
+                           <small class="form-text text-warning" *ngIf="availableStock === 0 && form.value.stockEntryId">
+                <i class="fas fa-exclamation-circle"></i> No stock available for disposal
+              </small>
+           </div>
+
+          <!-- Location (Auto-populated) -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="fas fa-map-marker-alt"></i> Storage Location
+            </label>
+            <input type="text" class="form-control" 
+                   [value]="getSelectedStockLocation()" 
+                   readonly 
+                   style="background-color: #f8f9fa;">
+            <small class="form-text text-muted">
+              <i class="fas fa-info-circle"></i> Location is automatically set from the selected stock entry
+            </small>
+          </div>
+
+
+
+          <!-- Reason -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="fas fa-comment"></i> Reason
+            </label>
+                         <textarea formControlName="reason" class="form-control" rows="3"
+                       placeholder="Reason for disposal, condition, etc."
+                       [disabled]="loading"></textarea>
+          </div>
+
+          <!-- Buttons -->
+          <div class="mb-3">
+                         <button type="submit" class="btn btn-danger" 
+                     [disabled]="loading || form.invalid">
+               <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+               Dispose Units
+             </button>
+                         <button type="button" class="btn btn-warning ms-2" 
+                     (click)="disposeAll()" 
+                     [disabled]="loading || availableStock === 0 || !form.value.stockEntryId">
+               <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+               Dispose All Available Units
+             </button>
+            <button type="button" class="btn btn-secondary ms-2" (click)="closeAddDisposalModal()" [class.disabled]="loading">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return to Stock Modal -->
+  <div class="modal-overlay" *ngIf="showReturnToStockModal" (click)="closeReturnToStockModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-content">
+          <div class="header-title">
+            <i class="fas fa-undo"></i>
+            <div>
+              <h1 class="page-title">Return to Stock</h1>
+              <p class="page-subtitle">Return disposed items back to inventory</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-close" (click)="closeReturnToStockModal()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Item Information -->
+        <div class="alert alert-info">
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Item:</strong> {{ selectedDisposal?.item?.name || 'Unknown Item' }}<br>
+              <strong>Category:</strong> {{ selectedDisposal?.item?.category?.name || 'No Category' }}<br>
+              <strong>Brand:</strong> {{ selectedDisposal?.item?.brand?.name || 'No Brand' }}
+            </div>
+            <div class="col-md-6">
+              <strong>Current Disposed:</strong> {{ selectedDisposal?.quantity || 0 }} units<br>
+              <strong>Disposal Value:</strong> {{ getDisposalValue() | currency:'PHP':'symbol' }}<br>
+              <strong>Location:</strong> {{ selectedDisposal?.location?.name || 'No Location' }}
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="returnForm" (ngSubmit)="onReturnSubmit()">
+          <!-- Quantity to Return -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="fas fa-sort-numeric-up"></i> Quantity to Return
+            </label>
+            <input type="number" formControlName="quantity" class="form-control" 
+                   [ngClass]="{ 'is-invalid': returnSubmitted && returnForm.get('quantity')?.errors }"
+                   min="1"
+                   [max]="selectedDisposal?.quantity || 1"
+                   placeholder="Enter quantity to return to stock">
+            <div *ngIf="returnSubmitted && returnForm.get('quantity')?.errors" class="invalid-feedback">
+              <div *ngIf="returnForm.get('quantity')?.errors?.['required']">Quantity is required</div>
+              <div *ngIf="returnForm.get('quantity')?.errors?.['min']">Quantity must be at least 1</div>
+              <div *ngIf="returnForm.get('quantity')?.errors?.['max']">Quantity cannot exceed disposed amount</div>
+            </div>
+            <small class="form-text text-muted">
+              <i class="fas fa-info-circle"></i> Maximum: {{ selectedDisposal?.quantity || 0 }} units | 
+              <strong>Total Value:</strong> ₱{{ getReturnTotalValue() | number:'1.2-2' }}
+            </small>
+          </div>
+
+          <!-- Remarks -->
+          <div class="mb-3">
+            <label class="form-label">
+              <i class="fas fa-comment"></i> Remarks
+            </label>
+            <textarea formControlName="remarks" class="form-control" rows="3"
+                      placeholder="Reason for returning to stock, condition, etc."></textarea>
+            <small class="form-text text-muted">
+              <i class="fas fa-info-circle"></i> Optional: Add notes about the return
+            </small>
+          </div>
+
+          <!-- Buttons -->
+          <div class="mb-3">
+            <button type="submit" class="btn btn-success" 
+                    [disabled]="loading || returnForm.invalid">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+              Return to Stock
+            </button>
+            <button type="button" class="btn btn-warning ms-2" 
+                    (click)="returnAll()" 
+                    [disabled]="loading || !selectedDisposal?.quantity">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+              Return All Units
+            </button>
+            <button type="button" class="btn btn-secondary ms-2" (click)="closeReturnToStockModal()" [class.disabled]="loading">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div> 

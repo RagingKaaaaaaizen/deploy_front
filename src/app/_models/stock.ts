@@ -10,8 +10,32 @@ export class Stock {
   createdAt?: Date;
   createdBy?: number;         // User ID
 
-  // Optional joined data from backend (for display only)
-  item?: { id?: number; name: string };
-  location?: { id?: number; name: string };
-  disposal?: { id?: number; quantity: number; disposalValue: number; reason: string; disposalDate: Date };
+  // Complete joined data from backend (for display and functionality)
+  item?: { 
+    id?: number; 
+    name: string; 
+    description?: string;
+    category?: { id?: number; name: string };
+    brand?: { id?: number; name: string };
+  };
+  location?: { 
+    id?: number; 
+    name: string; 
+    description?: string;
+  };
+  user?: { 
+    id?: number; 
+    firstName: string; 
+    lastName: string; 
+    email?: string;
+  };
+  disposal?: { 
+    id?: number; 
+    quantity: number; 
+    disposalValue: number; 
+    reason: string; 
+    disposalDate: Date;
+    returnedToStock?: boolean;
+    user?: { firstName: string; lastName: string };
+  };
 }
