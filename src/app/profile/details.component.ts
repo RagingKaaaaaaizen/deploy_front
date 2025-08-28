@@ -1,8 +1,8 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component } from '@angular/core';
 
 import { AccountService } from '@app/_services';
 
-@Component({ 
+@Component({
     templateUrl: 'details.component.html',
     styles: [`
         .profile-container {
@@ -336,21 +336,32 @@ import { AccountService } from '@app/_services';
         }
     `]
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent {
     account = this.accountService.accountValue;
-    loading = false;
+    profileStats = [
+        {
+            value: 0,
+            label: 'Items Managed',
+            icon: 'fas fa-boxes'
+        },
+        {
+            value: 0,
+            label: 'Disposals Made',
+            icon: 'fas fa-trash-alt'
+        },
+        {
+            value: 0,
+            label: 'Activities',
+            icon: 'fas fa-clock'
+        },
+        {
+            value: 0,
+            label: 'Days Active',
+            icon: 'fas fa-calendar'
+        }
+    ];
 
     constructor(private accountService: AccountService) { }
-
-    ngOnInit() {
-        // Set loading state
-        this.loading = true;
-        
-        // Simulate loading time
-        setTimeout(() => {
-            this.loading = false;
-        }, 1000);
-    }
 
     // Check if current user is an admin
     get isAdmin(): boolean {

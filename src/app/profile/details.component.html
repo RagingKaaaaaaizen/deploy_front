@@ -1,102 +1,68 @@
 ﻿<div class="profile-details-container">
     <div class="container">
-        <!-- Loading Skeleton -->
-        <div *ngIf="loading" class="loading-skeleton">
-            <!-- Header Skeleton -->
-            <div class="mb-4">
-                <app-skeleton type="title" width="300px" height="2.5rem" className="mb-2"></app-skeleton>
-                <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
-            </div>
-
-            <!-- Profile Card Skeleton - Facebook style -->
-            <div class="profile-card-section mb-4">
-                <app-skeleton type="card" className="mb-4"></app-skeleton>
-            </div>
-
-            <!-- Stats Cards Skeleton - Facebook style -->
-            <div class="stats-section">
-                <app-skeleton type="stats" lines="4" className="mb-4"></app-skeleton>
-            </div>
-        </div>
-
-        <!-- Actual Content -->
-        <div *ngIf="!loading">
+        <!-- Profile Content -->
+        <div class="profile-content">
             <!-- Header -->
             <div class="header-section mb-4">
-                <h1 class="main-title">
-                    <i class="fas fa-user-circle text-primary me-3"></i>
-                    My Profile
-                </h1>
-                <p class="subtitle text-muted">
-                    View and manage your account information
-                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="main-title">
+                            <i class="fas fa-user text-primary me-3"></i>
+                            Profile Details
+                        </h1>
+                        <p class="subtitle text-muted">
+                            View and manage your account information
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Profile Information -->
-            <div class="profile-section">
-                <div class="row">
-                    <!-- Profile Card -->
-                    <div class="col-md-4 mb-4">
-                        <div class="profile-card">
+            <!-- Profile Card -->
+            <div class="profile-card-section mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-user-circle text-primary me-2"></i> Account Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="profile-info">
                             <div class="profile-avatar">
-                                <i class="fas fa-user-circle"></i>
+                                <i class="fas fa-user"></i>
                             </div>
-                            <div class="profile-info">
-                                <h3>{{account.firstName}} {{account.lastName}}</h3>
-                                <p class="profile-role">{{account.role}}</p>
-                                <p class="profile-email">{{account.email}}</p>
-                            </div>
-                            <div class="profile-actions">
-                                <button class="btn btn-primary btn-sm" (click)="editProfile()">
-                                    <i class="fas fa-edit"></i> Edit Profile
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Account Details -->
-                    <div class="col-md-8 mb-4">
-                        <div class="account-details-card">
-                            <div class="card-header">
-                                <h5><i class="fas fa-info-circle text-primary me-2"></i> Account Details</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="detail-item">
-                                            <label>First Name</label>
-                                            <p>{{account.firstName}}</p>
-                                        </div>
+                            <div class="profile-details">
+                                <div class="detail-row">
+                                    <div class="detail-label">
+                                        <i class="fas fa-user"></i>
+                                        Name
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-item">
-                                            <label>Last Name</label>
-                                            <p>{{account.lastName}}</p>
-                                        </div>
+                                    <div class="detail-value">
+                                        {{account?.firstName}} {{account?.lastName}}
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-item">
-                                            <label>Email</label>
-                                            <p>{{account.email}}</p>
-                                        </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">
+                                        <i class="fas fa-envelope"></i>
+                                        Email
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-item">
-                                            <label>Role</label>
-                                            <p><span class="badge badge-primary">{{account.role}}</span></p>
-                                        </div>
+                                    <div class="detail-value">
+                                        {{account?.email}}
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-item">
-                                            <label>Status</label>
-                                            <p><span class="badge badge-success">{{account.status}}</span></p>
-                                        </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">
+                                        <i class="fas fa-shield-alt"></i>
+                                        Role
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-item">
-                                            <label>Created</label>
-                                            <p>{{account.created | date:'medium'}}</p>
-                                        </div>
+                                    <div class="detail-value">
+                                        <span class="badge badge-primary">{{account?.role}}</span>
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">
+                                        <i class="fas fa-calendar"></i>
+                                        Created
+                                    </div>
+                                    <div class="detail-value">
+                                        {{account?.createdAt | date:'medium'}}
                                     </div>
                                 </div>
                             </div>
@@ -105,105 +71,17 @@
                 </div>
             </div>
 
-            <!-- Statistics -->
-            <div class="stats-section mt-4">
+            <!-- Stats Cards -->
+            <div class="stats-section">
                 <div class="row">
-                    <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="col-md-3 col-sm-6 mb-3" *ngFor="let stat of profileStats">
                         <div class="stat-card">
                             <div class="stat-icon">
-                                <i class="fas fa-boxes"></i>
+                                <i [class]="stat.icon"></i>
                             </div>
                             <div class="stat-content">
-                                <h3>{{stats?.totalItems || 0}}</h3>
-                                <p>Items Managed</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>{{stats?.totalDisposals || 0}}</h3>
-                                <p>Disposals Made</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>{{stats?.totalActivities || 0}}</h3>
-                                <p>Activities</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-calendar"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>{{stats?.daysActive || 0}}</h3>
-                                <p>Days Active</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="activity-section mt-4" *ngIf="recentActivity?.length">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-history text-primary me-2"></i> Recent Activity</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="activity-list">
-                            <div class="activity-item" *ngFor="let activity of recentActivity">
-                                <div class="activity-icon">
-                                    <i [class]="activity.icon"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-message">{{activity.message}}</div>
-                                    <div class="activity-time">{{activity.timestamp | date:'medium'}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Permissions -->
-            <div class="permissions-section mt-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-key text-primary me-2"></i> Your Permissions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="permissions-grid">
-                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                                <i class="fas fa-eye"></i>
-                                <span>View inventory and stock information</span>
-                            </div>
-                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                                <i class="fas fa-edit"></i>
-                                <span>Add, edit, and manage inventory items</span>
-                            </div>
-                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                                <i class="fas fa-users-cog"></i>
-                                <span>Manage employees and departments</span>
-                            </div>
-                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                                <i class="fas fa-desktop"></i>
-                                <span>View PC management and components</span>
-                            </div>
-                            <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
-                                <i class="fas fa-cogs"></i>
-                                <span>Manage user accounts and system administration</span>
+                                <div class="stat-number">{{stat.value}}</div>
+                                <div class="stat-label">{{stat.label}}</div>
                             </div>
                         </div>
                     </div>

@@ -1,208 +1,36 @@
 ﻿<div class="admin-overview-container">
     <div class="container">
-        <!-- Loading Skeleton -->
-        <div *ngIf="loading" class="loading-skeleton">
-            <!-- Header Skeleton -->
-            <div class="mb-4">
-                <app-skeleton type="title" width="300px" height="2.5rem" className="mb-2"></app-skeleton>
-                <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
-            </div>
-
-            <!-- Admin Cards Grid Skeleton - Facebook style -->
-            <div class="admin-cards-section">
-                <app-skeleton type="stats" lines="8" className="mb-4"></app-skeleton>
-            </div>
-        </div>
-
-        <!-- Actual Content -->
-        <div *ngIf="!loading">
+        <!-- Admin Content -->
+        <div class="admin-content">
             <!-- Header -->
             <div class="header-section mb-4">
-                <h1 class="main-title">
-                    <i class="fas fa-cogs text-primary me-3"></i>
-                    Admin Panel
-                </h1>
-                <p class="subtitle text-muted">
-                    Manage system settings, users, and administrative functions
-                </p>
-            </div>
-
-            <!-- Admin Options Grid -->
-            <div class="admin-options-grid">
-                <div class="row">
-                    <!-- Accounts Management -->
-                    <div class="col-md-4 mb-4">
-                        <div class="admin-option-card" routerLink="/admin/accounts">
-                            <div class="card-icon">
-                                <i class="fas fa-users-cog"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Accounts</h3>
-                                <p>Manage user accounts and permissions</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-user"></i>
-                                        Manage Users
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Employees Management -->
-                    <div class="col-md-4 mb-4">
-                        <div class="admin-option-card" routerLink="/admin/employees">
-                            <div class="card-icon">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Employees</h3>
-                                <p>Manage employee information and assignments</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-id-card"></i>
-                                        Employee Records
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Departments Management -->
-                    <div class="col-md-4 mb-4">
-                        <div class="admin-option-card" routerLink="/admin/departments">
-                            <div class="card-icon">
-                                <i class="fas fa-building"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Departments</h3>
-                                <p>Organize departments and structure</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-sitemap"></i>
-                                        Department Structure
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Requests Management -->
-                    <div class="col-md-4 mb-4">
-                        <div class="admin-option-card" routerLink="/admin/requests">
-                            <div class="card-icon">
-                                <i class="fas fa-clipboard-list"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Requests</h3>
-                                <p>Review and manage system requests</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-tasks"></i>
-                                        Pending Requests
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Workflows Management -->
-                    <div class="col-md-4 mb-4">
-                        <div class="admin-option-card" routerLink="/admin/workflows">
-                            <div class="card-icon">
-                                <i class="fas fa-project-diagram"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Workflows</h3>
-                                <p>Configure system workflows and processes</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-cogs"></i>
-                                        Process Management
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Employee Transfer -->
-                    <div class="col-md-4 mb-4">
-                        <div class="admin-option-card" routerLink="/admin/employee-transfer">
-                            <div class="card-icon">
-                                <i class="fas fa-exchange-alt"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Employee Transfer</h3>
-                                <p>Manage employee transfers between departments</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-random"></i>
-                                        Transfer Management
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="main-title">
+                            <i class="fas fa-cogs text-primary me-3"></i>
+                            Admin Panel
+                        </h1>
+                        <p class="subtitle text-muted">
+                            Manage system settings and user accounts
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <!-- System Status -->
-            <div class="system-status-section mt-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-server text-primary me-2"></i> System Status</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="status-item">
-                                    <div class="status-icon text-success">
-                                        <i class="fas fa-check-circle"></i>
-                                    </div>
-                                    <div class="status-label">System Online</div>
-                                </div>
+            <!-- Admin Cards Grid -->
+            <div class="admin-cards-section">
+                <div class="row">
+                    <div class="col-md-4 mb-4" *ngFor="let card of adminCards">
+                        <div class="admin-card" [routerLink]="card.route">
+                            <div class="card-icon">
+                                <i [class]="card.icon"></i>
                             </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="status-item">
-                                    <div class="status-icon text-info">
-                                        <i class="fas fa-database"></i>
-                                    </div>
-                                    <div class="status-label">Database Connected</div>
-                                </div>
+                            <div class="card-content">
+                                <h3>{{card.title}}</h3>
+                                <p>{{card.description}}</p>
                             </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="status-item">
-                                    <div class="status-icon text-warning">
-                                        <i class="fas fa-shield-alt"></i>
-                                    </div>
-                                    <div class="status-label">Security Active</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="status-item">
-                                    <div class="status-icon text-primary">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </div>
-                                    <div class="status-label">Auto Backup</div>
-                                </div>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>
                     </div>

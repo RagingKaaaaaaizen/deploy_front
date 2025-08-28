@@ -1,222 +1,205 @@
 <div class="add-overview-container">
     <div class="container">
-        <!-- Loading Skeleton -->
-        <div *ngIf="loading" class="loading-skeleton">
-            <!-- Header Skeleton -->
-            <div class="mb-4">
-                <app-skeleton type="title" width="300px" height="2.5rem" className="mb-2"></app-skeleton>
-                <app-skeleton type="text" width="200px" height="1rem"></app-skeleton>
-            </div>
+        <!-- Header -->
+        <div class="header-section mb-4">
+            <h1 class="main-title">
+                <i class="fas fa-plus-circle text-primary me-3"></i>
+                Add New Items
+            </h1>
+            <p class="subtitle text-muted">
+                Choose what type of item you want to add to the inventory system
+            </p>
+        </div>
 
-            <!-- Add Options Grid Skeleton - Facebook style -->
-            <div class="add-options-section">
-                <app-skeleton type="stats" lines="6" className="mb-4"></app-skeleton>
+        <!-- Add Options Grid -->
+        <div class="add-options-grid">
+            <div class="row">
+                <!-- Stock Items -->
+                <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="add-option-card" routerLink="/add/item">
+                        <div class="card-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Stock Items</h3>
+                            <p>Add new inventory items to the stock</p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-cube"></i>
+                                    {{stats?.totalItems || 0}} Items
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="add-option-card" routerLink="/add/category">
+                        <div class="card-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Categories</h3>
+                            <p>Create new item categories</p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-tag"></i>
+                                    {{stats?.totalCategories || 0}} Categories
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brands -->
+                <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="add-option-card" routerLink="/add/brand">
+                        <div class="card-icon">
+                            <i class="fas fa-trademark"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Brands</h3>
+                            <p>Add new product brands</p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-star"></i>
+                                    {{stats?.totalBrands || 0}} Brands
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storage Locations -->
+                <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="add-option-card" routerLink="/add/storage-location">
+                        <div class="card-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Storage Locations</h3>
+                            <p>Define new storage areas</p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{stats?.totalStorageLocations || 0}} Locations
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employees -->
+                <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="add-option-card" routerLink="/admin/employees">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Employees</h3>
+                            <p>Add new employees to the system</p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-user"></i>
+                                    {{stats?.totalEmployees || 0}} Employees
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Departments -->
+                <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="add-option-card" routerLink="/admin/departments">
+                        <div class="card-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Departments</h3>
+                            <p>Create new departments</p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-sitemap"></i>
+                                    {{stats?.totalDepartments || 0}} Departments
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Actual Content -->
-        <div *ngIf="!loading">
-            <!-- Header -->
-            <div class="header-section mb-4">
-                <h1 class="main-title">
-                    <i class="fas fa-plus-circle text-primary me-3"></i>
-                    Add New Items
-                </h1>
-                <p class="subtitle text-muted">
-                    Choose what type of item you want to add to the inventory system
-                </p>
-            </div>
-
-            <!-- Add Options Grid -->
-            <div class="add-options-grid">
-                <div class="row">
-                    <!-- Stock Items -->
-                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                        <div class="add-option-card" routerLink="/add/item">
-                            <div class="card-icon">
-                                <i class="fas fa-boxes"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Stock Items</h3>
-                                <p>Add new inventory items to the stock</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-cube"></i>
-                                        {{stats?.totalItems || 0}} Items
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
+        <!-- Quick Stats -->
+        <div class="quick-stats-section mt-5" *ngIf="stats">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar text-primary me-2"></i> System Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number">{{stats.totalItems || 0}}</div>
+                                <div class="stat-label">Total Items</div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Categories -->
-                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                        <div class="add-option-card" routerLink="/add/category">
-                            <div class="card-icon">
-                                <i class="fas fa-tags"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Categories</h3>
-                                <p>Create new item categories</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-tag"></i>
-                                        {{stats?.totalCategories || 0}} Categories
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number">{{stats.totalStock || 0}}</div>
+                                <div class="stat-label">Total Stock</div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Brands -->
-                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                        <div class="add-option-card" routerLink="/add/brand">
-                            <div class="card-icon">
-                                <i class="fas fa-trademark"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Brands</h3>
-                                <p>Add new product brands</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-star"></i>
-                                        {{stats?.totalBrands || 0}} Brands
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number">{{stats.totalCategories || 0}}</div>
+                                <div class="stat-label">Categories</div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Storage Locations -->
-                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                        <div class="add-option-card" routerLink="/add/storage-location">
-                            <div class="card-icon">
-                                <i class="fas fa-warehouse"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Storage Locations</h3>
-                                <p>Define new storage areas</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        {{stats?.totalStorageLocations || 0}} Locations
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Employees -->
-                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                        <div class="add-option-card" routerLink="/admin/employees">
-                            <div class="card-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Employees</h3>
-                                <p>Add new employees to the system</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-user"></i>
-                                        {{stats?.totalEmployees || 0}} Employees
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Departments -->
-                    <div class="col-md-4 mb-4" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                        <div class="add-option-card" routerLink="/admin/departments">
-                            <div class="card-icon">
-                                <i class="fas fa-building"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Departments</h3>
-                                <p>Create new departments</p>
-                                <div class="card-stats">
-                                    <span class="stat">
-                                        <i class="fas fa-sitemap"></i>
-                                        {{stats?.totalDepartments || 0}} Departments
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-arrow">
-                                <i class="fas fa-arrow-right"></i>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number">{{stats.totalBrands || 0}}</div>
+                                <div class="stat-label">Brands</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Quick Stats -->
-            <div class="quick-stats-section mt-5" *ngIf="stats">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-chart-bar text-primary me-2"></i> System Overview</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="stat-item">
-                                    <div class="stat-number">{{stats.totalItems || 0}}</div>
-                                    <div class="stat-label">Total Items</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="stat-item">
-                                    <div class="stat-number">{{stats.totalStock || 0}}</div>
-                                    <div class="stat-label">Total Stock</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="stat-item">
-                                    <div class="stat-number">{{stats.totalCategories || 0}}</div>
-                                    <div class="stat-label">Categories</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <div class="stat-item">
-                                    <div class="stat-number">{{stats.totalBrands || 0}}</div>
-                                    <div class="stat-label">Brands</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Recent Activity -->
+        <div class="recent-activity-section mt-4" *ngIf="recentActivity?.length">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-clock text-info me-2"></i> Recent Additions</h5>
                 </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="recent-activity-section mt-4" *ngIf="recentActivity?.length">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-clock text-info me-2"></i> Recent Additions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="activity-list">
-                            <div class="activity-item" *ngFor="let activity of recentActivity">
-                                <div class="activity-icon">
-                                    <i [class]="activity.icon"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-message">{{activity.message}}</div>
-                                    <div class="activity-time">{{activity.timestamp | date:'medium'}}</div>
-                                </div>
+                <div class="card-body">
+                    <div class="activity-list">
+                        <div class="activity-item" *ngFor="let activity of recentActivity">
+                            <div class="activity-icon">
+                                <i [class]="activity.icon"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-message">{{activity.message}}</div>
+                                <div class="activity-time">{{activity.timestamp | date:'medium'}}</div>
                             </div>
                         </div>
                     </div>
