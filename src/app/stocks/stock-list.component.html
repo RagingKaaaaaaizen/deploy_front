@@ -177,13 +177,18 @@
                     }">
                       {{ stock.quantity }}
                     </span>
-                    <small class="d-block text-muted mt-1" *ngIf="!stock.disposeId">
+                    <div class="stock-summary" *ngIf="!stock.disposeId">
                       <strong>Stock Summary:</strong><br>
                       Total: {{ getStockSummary(stock.itemId).total }} | 
                       Available: {{ getStockSummary(stock.itemId).available }} | 
                       In Use: {{ getStockSummary(stock.itemId).inUse }}
+                    </div>
+                    <small class="d-block text-muted mt-1" *ngIf="stock.disposal && stock.disposal.returnedToStock">
+                      <span class="badge badge-success">
+                        <i class="fas fa-undo"></i> Returned {{ stock.quantity }} from disposal
+                      </span>
                     </small>
-                    <small class="d-block text-muted mt-1" *ngIf="stock.disposal">
+                    <small class="d-block text-muted mt-1" *ngIf="stock.disposal && !stock.disposal.returnedToStock">
                       <strong>Disposal Value:</strong> php{{ stock.disposal.disposalValue | number:'1.2-2' }}<br>
                       <strong>Total Value:</strong> php{{ (stock.disposal.disposalValue * stock.quantity) | number:'1.2-2' }}
                     </small>
@@ -242,16 +247,15 @@
                 </td>
                 <td data-label="Actions">
                   <div class="action-buttons">
-                                         <button type="button" class="btn btn-sm btn-outline-primary"
-                             (click)="openViewStockModal(stock)" title="View Details">
-                       <i class="fas fa-eye"></i>
-                     </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            (click)="openViewStockModal(stock)" title="View Details">
+                      <i class="fas fa-eye"></i>
+                    </button>
                     <button type="button" class="btn btn-sm btn-outline-warning"
                             (click)="openEditStockModal(stock)" title="Edit Stock"
                             *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
                       <i class="fas fa-edit"></i>
                     </button>
-
                     <button type="button" class="btn btn-sm btn-outline-info"
                             (click)="navigateToDispose(stock)" title="Dispose Stock"
                             *ngIf="!stock.disposeId && hasRole([Role.SuperAdmin, Role.Admin])">

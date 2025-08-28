@@ -290,60 +290,90 @@ import { Role } from '../_models';
 
     .category-badge {
       display: inline-block;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      background: rgba(102, 126, 234, 0.1);
-      color: #667eea;
-      border: 1px solid rgba(102, 126, 234, 0.2);
-    }
-
-    .brand-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      background: rgba(255, 193, 7, 0.1);
-      color: #ffc107;
-      border: 1px solid rgba(255, 193, 7, 0.2);
-    }
-
-    .location-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      background: rgba(40, 167, 69, 0.1);
-      color: #28a745;
-      border: 1px solid rgba(40, 167, 69, 0.2);
-    }
-
-    .quantity-badge {
       padding: 8px 16px;
       border-radius: 25px;
       font-size: 0.85rem;
       font-weight: 600;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .location-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quantity-badge {
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
       display: inline-block;
       text-align: center;
-      min-width: 80px;
+      min-width: 100px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .quantity-positive {
       background: linear-gradient(135deg, #28a745, #20c997);
       color: white;
+      border: 2px solid #28a745;
     }
 
     .quantity-negative {
       background: linear-gradient(135deg, #dc3545, #e83e8c);
       color: white;
+      border: 2px solid #dc3545;
     }
 
     .quantity-zero {
       background: linear-gradient(135deg, #6c757d, #495057);
       color: white;
+      border: 2px solid #6c757d;
+    }
+
+    .stock-summary {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid #dee2e6;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .stock-summary strong {
+      color: #667eea;
     }
 
     .price-value,
@@ -365,22 +395,62 @@ import { Role } from '../_models';
 
     .action-buttons {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
     }
 
     .action-buttons .btn {
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-      min-width: 40px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      border-radius: 25px;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      min-width: 45px;
+      border: 2px solid transparent;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .action-buttons .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .action-buttons .btn-outline-primary {
+      color: #007bff;
+      border-color: #007bff;
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.05) 100%);
+    }
+
+    .action-buttons .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: white;
+      border-color: #007bff;
+    }
+
+    .action-buttons .btn-outline-warning {
+      color: #ffc107;
+      border-color: #ffc107;
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+    }
+
+    .action-buttons .btn-outline-warning:hover {
+      background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+      color: white;
+      border-color: #ffc107;
+    }
+
+    .action-buttons .btn-outline-info {
+      color: #17a2b8;
+      border-color: #17a2b8;
+      background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(23, 162, 184, 0.05) 100%);
+    }
+
+    .action-buttons .btn-outline-info:hover {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+      color: white;
+      border-color: #17a2b8;
     }
 
     .empty-state {
@@ -1121,14 +1191,49 @@ import { Role } from '../_models';
        font-weight: 600;
      }
 
-     .info-content .text-info {
-       color: #17a2b8 !important;
-       font-weight: 600;
-     }
+         .info-content .text-info {
+      color: #17a2b8 !important;
+      font-weight: 600;
+    }
 
-     .info-content .text-muted {
-       color: #6c757d !important;
-     }
+    .info-content .text-muted {
+      color: #6c757d !important;
+    }
+
+    .in-use-info .badge {
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .in-use-info .badge-warning {
+      background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+      color: white;
+      border: 2px solid #ffc107;
+    }
+
+    .in-use-info .badge-secondary {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      color: white;
+      border: 2px solid #6c757d;
+    }
+
+    .badge-success {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: 2px solid #28a745;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
 
      /* Enhanced Modal Content Styles */
      .stock-details-grid {
