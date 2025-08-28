@@ -51,12 +51,14 @@ export class AccountService {
 
     refreshToken() {
         return this.http.post<any>(`${baseUrl}/refresh-token`, {}, { withCredentials: true })
-            .pipe(map((account) => {
-                this.accountSubject.next(account);
-                this.startRefreshTokenTimer();
-                return account;
-            }));            
-    }           
+            .pipe(
+                map((account) => {
+                    this.accountSubject.next(account);
+                    this.startRefreshTokenTimer();
+                    return account;
+                })
+            );            
+    }
 
     register(account: Account) {
         return this.http.post<any>(`${baseUrl}/register`, account, { withCredentials: true })
