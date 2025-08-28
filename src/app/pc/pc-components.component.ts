@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
@@ -118,7 +118,8 @@ export class PCComponentsComponent implements OnInit {
     private categoryService: CategoryService,
     private brandService: BrandService,
     private alertService: AlertService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -361,7 +362,21 @@ export class PCComponentsComponent implements OnInit {
     }
   }
 
+  // Cache for available stock calculations
+  private availableStockCache: { [itemId: number]: number } = {};
+
   getAvailableQuantity(itemId: number): number {
+    if (!itemId) {
+      return 0;
+    }
+
+    // Return cached value if available
+    if (this.availableStockCache[itemId] !== undefined) {
+      return this.availableStockCache[itemId];
+    }
+
+    // For now, return total stock from local calculation
+    // The cache will be updated when we fetch from backend
     if (this.allStocks.length === 0) {
       console.log('No stocks loaded yet for getAvailableQuantity');
       return 0;
@@ -389,17 +404,11 @@ export class PCComponentsComponent implements OnInit {
       }
     });
     
-    // Calculate how much is already used in PC components globally
-    // We need to get this from the backend to get accurate global usage
-    const usedInPCComponents = this.getGlobalPCComponentUsage(numericItemId);
-    
-    // Available quantity = total stock - used in PC components globally
-    const availableQuantity = Math.max(0, totalStock - usedInPCComponents);
+    // Cache the result
+    this.availableStockCache[itemId] = totalStock;
     
     console.log('Stock calculation for item', itemId, ':', {
       totalStock,
-      usedInPCComponents,
-      availableQuantity,
       stockEntries: itemStocks.map(s => ({
         id: s.id,
         itemId: s.itemId,
@@ -408,7 +417,26 @@ export class PCComponentsComponent implements OnInit {
       }))
     });
     
-    return availableQuantity;
+    // Also fetch accurate stock from backend and update cache
+    this.updateAccurateStockFromBackend(itemId);
+    
+    return totalStock;
+  }
+
+  // Method to update accurate stock from backend
+  private updateAccurateStockFromBackend(itemId: number): void {
+    this.pcComponentService.getAccurateAvailableStock(itemId).subscribe({
+      next: (response) => {
+        console.log('Backend accurate stock for item', itemId, ':', response);
+        this.availableStockCache[itemId] = response.availableStock;
+        // Trigger change detection
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error getting accurate stock for item', itemId, ':', error);
+        // Keep the local calculation as fallback
+      }
+    });
   }
 
   // Get global PC component usage for an item (from all PCs, not just current PC)

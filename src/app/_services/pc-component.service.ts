@@ -41,4 +41,8 @@ export class PCComponentService {
   returnToStock(id: number): Observable<void> {
     return this.http.post<void>(`${baseUrl}/${id}/return-to-stock`, {});
   }
+
+  getAccurateAvailableStock(itemId: number): Observable<{ itemId: number; availableStock: number }> {
+    return this.http.get<{ itemId: number; availableStock: number }>(`${baseUrl}/available-stock/${itemId}`);
+  }
 } 
