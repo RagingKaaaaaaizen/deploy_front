@@ -143,18 +143,6 @@
               "src/**/*.html"
             ]
           }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "angular-signup-verification-boilerplate:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "angular-signup-verification-boilerplate:serve:production"
-            }
-          }
         }
       }
     }

@@ -10,11 +10,14 @@
     "build:dev": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration=development",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "clean": "rm -rf dist node_modules/.cache",
     "clean:all": "rm -rf dist node_modules package-lock.json && npm install"
   },
   "private": true,
+  "overrides": {
+    "debug": "4.3.4",
+    "https-proxy-agent": "7.0.4"
+  },
   "dependencies": {
     "@angular/animations": "^17.3.2",
     "@angular/common": "^17.3.2",
@@ -54,8 +57,7 @@
     "karma-coverage-istanbul-reporter": "^3.0.2",
     "karma-jasmine": "^3.3.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "protractor": "^7.0.0",
     "ts-node": "^8.3.0",
-    "typescript": "^5.4.3"
+    "typescript": "~5.4.3"
   }
 }

@@ -12,11 +12,11 @@ import { ArchiveService } from '../_services/archive.service';
         CommonModule,
         ReactiveFormsModule,
         FormsModule,
-        ArchiveRoutingModule
+        ArchiveRoutingModule,
+        BaseChartDirective
     ],
     declarations: [
-        ArchiveComponent,
-        BaseChartDirective
+        ArchiveComponent
     ],
     providers: [
         ArchiveService

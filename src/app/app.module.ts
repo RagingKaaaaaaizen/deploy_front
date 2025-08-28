@@ -24,15 +24,15 @@ import { HomeComponent } from './home';
         HttpClientModule,
         CommonModule,
         RouterModule,
-        AppRoutingModule
+        AppRoutingModule,
+        BaseChartDirective
     ],
     declarations: [
         AppComponent,
         AlertComponent,
         NavComponent,
         ProfessionalTableComponent,
-        HomeComponent,
-        BaseChartDirective
+        HomeComponent
     ],
     providers: [
         { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AccountService] },
