@@ -1,6 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { PCService, PCComponentService, StockService, ItemService, CategoryService, BrandService, AlertService, AccountService, StorageLocationService } from '@app/_services';
 import { PCComponent, Role } from '@app/_models';
@@ -132,64 +134,58 @@ export class PCComponentsComponent implements OnInit {
   }
 
   loadData() {
-    this.loadItems();
-    this.loadCategories();
-    this.loadBrands();
-    this.loadStocksForFiltering();
-  }
-
-  loadStocksForFiltering() {
-    console.log('Loading stocks from API...');
-    this.stockService.getAll()
-      .pipe(first())
-      .subscribe({
-        next: (stocks) => {
-          this.allStocks = stocks;
-          console.log('Loaded stocks for filtering:', stocks.length);
-          
-          // Debug stock data structure
-          if (stocks.length > 0) {
-            const sampleStock = stocks[0];
-            console.log('Sample stock structure:', {
-              id: sampleStock.id,
-              itemId: sampleStock.itemId,
-              locationId: sampleStock.locationId,
-              quantity: sampleStock.quantity,
-              price: sampleStock.price,
-              totalPrice: sampleStock.totalPrice,
-              remarks: sampleStock.remarks,
-              createdAt: sampleStock.createdAt,
-              item: sampleStock.item,
-              location: sampleStock.location
-            });
-            
-            // Log all stock entries for debugging
-            console.log('All stock entries:', stocks.map(s => ({
-              id: s.id,
-              itemId: s.itemId,
-              itemName: s.item?.name || 'No item',
-              locationId: s.locationId,
-              locationName: s.location?.name || 'No location',
-              quantity: s.quantity,
-              price: s.price
-            })));
-          } else {
-            console.log('No stock entries found in database');
-          }
-          
-          // Filter available items if items are already loaded
-          if (this.items.length > 0) {
-            this.filterAvailableItems();
-          } else {
-            console.log('Items not loaded yet, stocks will be used when items are loaded');
-          }
-        },
-        error: error => {
-          this.alertService.error('Error loading stocks: ' + error);
-          console.error('Error loading stocks:', error);
-          console.error('Error details:', error);
-        }
-      });
+    this.loading = true;
+    console.log('Starting parallel data loading...');
+    
+    // Load all data in parallel using forkJoin
+    forkJoin({
+      items: this.itemService.getAll().pipe(catchError(error => {
+        console.error('Error loading items:', error);
+        this.alertService.error('Error loading items');
+        return of([]);
+      })),
+      categories: this.categoryService.getAll().pipe(catchError(error => {
+        console.error('Error loading categories:', error);
+        this.alertService.error('Error loading categories');
+        return of([]);
+      })),
+      brands: this.brandService.getAll().pipe(catchError(error => {
+        console.error('Error loading brands:', error);
+        this.alertService.error('Error loading brands');
+        return of([]);
+      })),
+      stocks: this.stockService.getAll().pipe(catchError(error => {
+        console.error('Error loading stocks:', error);
+        this.alertService.error('Error loading stocks');
+        return of([]);
+      }))
+    }).pipe(first()).subscribe({
+      next: (data) => {
+        console.log('All data loaded successfully');
+        this.items = data.items;
+        this.categories = data.categories;
+        this.brands = data.brands;
+        this.allStocks = data.stocks;
+        
+        console.log('Data loaded:', {
+          items: this.items.length,
+          categories: this.categories.length,
+          brands: this.brands.length,
+          stocks: this.allStocks.length
+        });
+        
+        // Filter available items after all data is loaded
+        this.filterAvailableItems();
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error in parallel data loading:', error);
+        this.alertService.error('Error loading data');
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   filterAvailableItems() {
@@ -731,6 +727,7 @@ export class PCComponentsComponent implements OnInit {
   }
 
   loadPC(pcId: number) {
+    console.log('Loading PC with ID:', pcId);
     this.pcService.getById(pcId)
       .pipe(first())
       .subscribe({
@@ -739,16 +736,13 @@ export class PCComponentsComponent implements OnInit {
           console.log('PC loaded:', pc);
           console.log('PC location ID:', pc.roomLocationId);
           
-          // Load components and other data after PC is loaded
+          // Load components after PC is loaded
           this.loadComponents(pcId);
           this.loadExistingPCComponents();
           
-          // Ensure stocks are loaded before filtering available items
-          if (this.allStocks.length > 0) {
+          // Filter available items if data is already loaded
+          if (this.allStocks.length > 0 && this.items.length > 0) {
             this.filterAvailableItems();
-          } else {
-            // If stocks not loaded yet, wait for them
-            this.loadStocksForFiltering();
           }
         },
         error: error => {
@@ -761,49 +755,6 @@ export class PCComponentsComponent implements OnInit {
   loadComponents(pcId: number) {
     // Use the new method that loads current PC components
     this.loadCurrentPCComponents();
-  }
-
-  loadItems() {
-    this.itemService.getAll()
-      .pipe(first())
-      .subscribe({
-        next: (items) => {
-          this.items = items;
-          // Filter available items if stocks are already loaded
-          if (this.allStocks.length > 0) {
-            this.filterAvailableItems();
-          }
-        },
-        error: error => {
-          this.alertService.error('Error loading items: ' + error);
-        }
-      });
-  }
-
-  loadCategories() {
-    this.categoryService.getAll()
-      .pipe(first())
-      .subscribe({
-        next: (categories) => {
-          this.categories = categories;
-        },
-        error: error => {
-          this.alertService.error('Error loading categories: ' + error);
-        }
-      });
-  }
-
-  loadBrands() {
-    this.brandService.getAll()
-      .pipe(first())
-      .subscribe({
-        next: (brands) => {
-          this.brands = brands;
-        },
-        error: error => {
-          this.alertService.error('Error loading brands: ' + error);
-        }
-      });
   }
 
   refreshData() {
@@ -881,7 +832,7 @@ export class PCComponentsComponent implements OnInit {
     this.loadExistingPCComponents();
     
     // Refresh stock data to ensure we have the latest information
-    this.loadStocksForFiltering();
+    this.loadData();
     
     // Ensure quantity is properly set to 1
     setTimeout(() => {
@@ -1002,7 +953,7 @@ export class PCComponentsComponent implements OnInit {
             this.submitted = false;
             
             // Refresh stock data and components after adding
-            this.loadStocksForFiltering();
+            this.loadData();
             this.loadExistingPCComponents(); // This will refresh both global and current components
             
             // Notify stock list component to refresh its data
@@ -1045,7 +996,7 @@ export class PCComponentsComponent implements OnInit {
             this.alertService.success(`Component removed successfully. Stock quantity restored by ${component.quantity} units.`);
             
             // Refresh stock data and components after removing
-            this.loadStocksForFiltering();
+            this.loadData();
             this.loadExistingPCComponents(); // This will refresh both global and current components
             
             // Notify stock list component to refresh its data
@@ -1076,7 +1027,7 @@ export class PCComponentsComponent implements OnInit {
             this.alertService.success(`Component returned to stock successfully. Stock quantity increased by ${component.quantity} units.`);
             
             // Refresh stock data and components after returning to stock
-            this.loadStocksForFiltering();
+            this.loadData();
             this.loadExistingPCComponents(); // This will refresh both global and current components
             
             // Notify stock list component to refresh its data
@@ -1108,7 +1059,7 @@ export class PCComponentsComponent implements OnInit {
     console.log('Refreshing PC component stock data...');
     
     // Refresh stock data to get updated quantities
-    this.loadStocksForFiltering();
+    this.loadData();
     
     // Refresh global PC components to get accurate available stock
     this.loadExistingPCComponents();
