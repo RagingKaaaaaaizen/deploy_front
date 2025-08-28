@@ -171,19 +171,19 @@
                 <td data-label="Quantity">
                   <div class="quantity-info">
                     <span class="quantity-badge" [ngClass]="{
-                      'quantity-positive': !stock.disposeId && stock.quantity > 0,
-                      'quantity-negative': stock.disposeId,
+                      'quantity-positive': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
+                      'quantity-negative': stock.disposeId && !stock.disposal?.returnedToStock,
                       'quantity-zero': stock.quantity === 0
                     }">
                       {{ stock.quantity }}
                     </span>
-                    <div class="stock-summary" *ngIf="!stock.disposeId">
+                    <div class="stock-summary" *ngIf="isItemEffectivelyAvailable(stock)">
                       <strong>Stock Summary:</strong><br>
                       Total: {{ getStockSummary(stock.itemId).total }} | 
                       Available: {{ getStockSummary(stock.itemId).available }} | 
                       In Use: {{ getStockSummary(stock.itemId).inUse }}
                     </div>
-                    <small class="d-block text-muted mt-1" *ngIf="stock.disposal && stock.disposal.returnedToStock">
+                    <small class="d-block text-muted mt-1" *ngIf="stock.disposeId && stock.disposal && stock.disposal.returnedToStock">
                       <span class="badge badge-success">
                         <i class="fas fa-undo"></i> Returned {{ stock.quantity }} from disposal
                       </span>
@@ -212,7 +212,7 @@
                     <small class="d-block text-muted mt-1">
                       {{ stock.createdAt | date:'HH:mm:ss' }}
                     </small>
-                    <small class="d-block text-muted" *ngIf="stock.disposeId && stock.disposal">
+                    <small class="d-block text-muted" *ngIf="stock.disposeId && stock.disposal && !stock.disposal.returnedToStock">
                       <span class="badge badge-danger">
                         <i class="fas fa-trash-alt"></i> Disposal
                       </span>
@@ -258,7 +258,7 @@
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-info"
                             (click)="navigateToDispose(stock)" title="Dispose Stock"
-                            *ngIf="!stock.disposeId && hasRole([Role.SuperAdmin, Role.Admin])">
+                            *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin])">
                       <i class="fas fa-recycle"></i>
                     </button>
                   </div>

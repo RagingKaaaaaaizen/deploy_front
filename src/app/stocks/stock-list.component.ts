@@ -2021,6 +2021,13 @@ export class StockListComponent implements OnInit {
     return this.pcComponents.some(component => component.itemId === itemId);
   }
 
+  isItemEffectivelyAvailable(stock: any): boolean {
+    // An item is effectively available if:
+    // 1. It was never disposed (no disposeId)
+    // 2. It was disposed but returned to stock (disposeId exists but returnedToStock is true)
+    return !stock.disposeId || (stock.disposeId && stock.disposal && stock.disposal.returnedToStock);
+  }
+
   getInUseCount(itemId: number): number {
     // Count total quantity used in PC components for this item
     return this.pcComponents
