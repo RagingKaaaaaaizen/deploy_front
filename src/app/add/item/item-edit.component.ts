@@ -343,8 +343,8 @@ export class ItemEditComponent implements OnInit {
 
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
-      categoryId: [''],
-      brandId: [''],
+      categoryId: ['', Validators.required],
+      brandId: ['', Validators.required],
       description: ['']
     });
 
@@ -372,9 +372,11 @@ export class ItemEditComponent implements OnInit {
           // Set category and brand names for display
           if (item.category) {
             this.categoryNameControl.setValue(item.category.name);
+            this.categoryExists = true;
           }
           if (item.brand) {
             this.brandNameControl.setValue(item.brand.name);
+            this.brandExists = true;
           }
           
           this.loading = false;
@@ -417,19 +419,23 @@ export class ItemEditComponent implements OnInit {
     const searchTerm = event.target.value.toLowerCase();
     this.categoryNameControl.setValue(event.target.value);
     
+    const category = this.categories.find(c => c.name.toLowerCase() === searchTerm);
+    if (category) {
+        this.form.patchValue({ categoryId: category.id });
+        this.categoryExists = true;
+    } else {
+        this.form.patchValue({ categoryId: '' });
+        this.categoryExists = false;
+    }
+
     if (searchTerm.length === 0) {
       this.filteredCategories = [];
       this.showCategoryResults = false;
-      this.categoryExists = false;
       return;
     }
 
     this.filteredCategories = this.categories.filter(category => 
       category.name.toLowerCase().includes(searchTerm)
-    );
-    
-    this.categoryExists = this.categories.some(category => 
-      category.name.toLowerCase() === searchTerm
     );
     
     this.showCategoryResults = true;
@@ -452,26 +458,30 @@ export class ItemEditComponent implements OnInit {
   searchBrands(event: any) {
     const searchTerm = event.target.value.toLowerCase();
     this.brandNameControl.setValue(event.target.value);
+
+    const brand = this.brands.find(b => b.name.toLowerCase() === searchTerm);
+    if (brand) {
+        this.form.patchValue({ brandId: brand.id });
+        this.brandExists = true;
+    } else {
+        this.form.patchValue({ brandId: '' });
+        this.brandExists = false;
+    }
     
     if (searchTerm.length === 0) {
       this.filteredBrands = [];
       this.showBrandResults = false;
-      this.brandExists = false;
       return;
     }
 
     this.filteredBrands = this.brands.filter(brand => 
       brand.name.toLowerCase().includes(searchTerm)
     );
-    
-    this.brandExists = this.brands.some(brand => 
-      brand.name.toLowerCase() === searchTerm
-    );
-    
+        
     this.showBrandResults = true;
   }
 
-  selectBrand(brand: any) {
+  selectBrand(brand: any) {.
     this.form.patchValue({ brandId: brand.id });
     this.brandNameControl.setValue(brand.name);
     this.showBrandResults = false;
@@ -484,115 +494,44 @@ export class ItemEditComponent implements OnInit {
     }, 200);
   }
 
-  async save() {
+  save() {
     this.submitted = true;
 
-    // Check if we have the required fields (either IDs or names)
-    if (!this.form.get('name')?.value || 
-        (!this.form.get('categoryId')?.value && !this.categoryNameControl.value) ||
-        (!this.form.get('brandId')?.value && !this.brandNameControl.value)) {
-      this.alertService.error('Item name, category, and brand are required');
-      return;
+    if (this.form.invalid) {
+        return;
+    }
+
+    if (!this.categoryExists) {
+        this.alertService.error('Category does not exist. Please select a valid category.');
+        return;
+    }
+
+    if (!this.brandExists) {
+        this.alertService.error('Brand does not exist. Please select a valid brand.');
+        return;
     }
 
     this.loading = true;
-
-    try {
-      let categoryId = this.form.get('categoryId')?.value;
-      let brandId = this.form.get('brandId')?.value;
-
-      // Auto-create category if needed
-      if (!categoryId && this.categoryNameControl.value) {
-        const newCategory = await this.createCategory(this.categoryNameControl.value);
-        categoryId = newCategory.id;
-        this.alertService.success(`Category "${newCategory.name}" created automatically`);
-      }
-
-      // Auto-create brand if needed
-      if (!brandId && this.brandNameControl.value) {
-        const newBrand = await this.createBrand(this.brandNameControl.value);
-        brandId = newBrand.id;
-        this.alertService.success(`Brand "${newBrand.name}" created automatically`);
-      }
-
-      const itemData = {
+    const itemData = {
         name: this.form.get('name')?.value,
-        categoryId: categoryId,
-        brandId: brandId,
+        categoryId: this.form.get('categoryId')?.value,
+        brandId: this.form.get('brandId')?.value,
         description: this.form.get('description')?.value
-      };
+    };
 
-      if (this.id) {
-        // Update existing item
-        this.itemService.update(this.id, itemData)
-          .pipe(first())
-          .subscribe({
-            next: () => {
-              this.alertService.success('Item updated successfully');
-              this.router.navigate(['/add/item']);
-            },
-            error: (error) => {
-              console.error('Error updating item:', error);
-              this.alertService.error('Failed to update item');
-              this.loading = false;
-            }
-          });
-      } else {
-        // Create new item
-        this.itemService.create(itemData)
-          .pipe(first())
-          .subscribe({
-            next: () => {
-              this.alertService.success('Item created successfully');
-              this.router.navigate(['/add/item']);
-            },
-            error: (error) => {
-              console.error('Error creating item:', error);
-              this.alertService.error('Failed to create item');
-              this.loading = false;
-            }
-          });
-      }
-    } catch (error) {
-      console.error('Error creating category or brand:', error);
-      this.alertService.error('Failed to create category or brand');
-      this.loading = false;
-    }
-  }
+    const operation = this.id
+        ? this.itemService.update(this.id, itemData)
+        : this.itemService.create(itemData);
 
-  private createCategory(name: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.categoryService.create({ name })
-        .pipe(first())
-        .subscribe({
-          next: (category) => {
-            console.log('New category created:', category);
-            this.categories.push(category);
-            resolve(category);
-          },
-          error: (err) => {
-            console.error('Failed to create category:', err);
-            reject(err);
-          }
-        });
-    });
-  }
-
-  private createBrand(name: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.brandService.create({ name })
-        .pipe(first())
-        .subscribe({
-          next: (brand) => {
-            console.log('New brand created:', brand);
-            this.brands.push(brand);
-            resolve(brand);
-          },
-          error: (err) => {
-            console.error('Failed to create brand:', err);
-            reject(err);
-          }
-        });
+    operation.pipe(first()).subscribe({
+        next: () => {
+            this.alertService.success(`Item ${this.id ? 'updated' : 'created'} successfully`);
+            this.router.navigate(['/add/item']);
+        },
+        error: (error) => {
+            this.alertService.error(error);
+            this.loading = false;
+        },
     });
   }
 }

@@ -48,72 +48,56 @@
 
                         <!-- Category and Brand Row -->
                         <div class="form-row">
-                            <!-- Category Input with Search -->
+                            <!-- Category Input with Datalist -->
                             <div class="form-group col-md-6">
-                                <label class="form-label">
+                                <label for="category" class="form-label">
                                     <i class="fas fa-folder"></i>
                                     Category
                                 </label>
-                                <div class="search-input-container">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        [formControl]="categoryNameControl"
-                                        placeholder="Type category name or select from list"
-                                        autocomplete="off"
-                                        [readonly]="isViewMode"
-                                        (input)="searchCategories($event)"
-                                        (focus)="showCategoryResults = true"
-                                        (blur)="onCategoryBlur()"
-
-                                    />
-                                    <!-- Category Search Results -->
-                                    <div class="search-results" *ngIf="showCategoryResults && filteredCategories.length > 0 && !isViewMode">
-                                        <div 
-                                            class="search-result-item" 
-                                            *ngFor="let category of filteredCategories"
-                                            (mousedown)="$event.preventDefault(); selectCategory(category)"
-                                        >
-                                            <i class="fas fa-folder text-primary"></i>
-                                            {{ category.name }}
-                                        </div>
-                                    </div>
+                                <input
+                                    type="text"
+                                    id="category"
+                                    class="form-control"
+                                    [formControl]="categoryNameControl"
+                                    placeholder="Type or select a category"
+                                    autocomplete="off"
+                                    [readonly]="isViewMode"
+                                    (input)="searchCategories($event)"
+                                    list="category-list"
+                                    [ngClass]="{ 'is-invalid': submitted && form.get('categoryId')?.invalid }"
+                                />
+                                <datalist id="category-list">
+                                    <option *ngFor="let category of categories" [value]="category.name"></option>
+                                </datalist>
+                                <div *ngIf="submitted && form.get('categoryId')?.invalid" class="invalid-feedback">
+                                    <div *ngIf="form.get('categoryId')?.errors?.['required']">Category is required.</div>
                                 </div>
-
                             </div>
 
-                            <!-- Brand Input with Search -->
+                            <!-- Brand Input with Datalist -->
                             <div class="form-group col-md-6">
-                                <label class="form-label">
+                                <label for="brand" class="form-label">
                                     <i class="fas fa-trademark"></i>
                                     Brand
                                 </label>
-                                <div class="search-input-container">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        [formControl]="brandNameControl"
-                                        placeholder="Enter brand name or select from list"
-                                        autocomplete="off"
-                                        [readonly]="isViewMode"
-                                        (input)="searchBrands($event)"
-                                        (focus)="showBrandResults = true"
-                                        (blur)="onBrandBlur()"
-
-                                    />
-                                    <!-- Brand Search Results -->
-                                    <div class="search-results" *ngIf="showBrandResults && filteredBrands.length > 0 && !isViewMode">
-                                        <div 
-                                            class="search-result-item" 
-                                            *ngFor="let brand of filteredBrands"
-                                            (mousedown)="$event.preventDefault(); selectBrand(brand)"
-                                        >
-                                            <i class="fas fa-trademark text-info"></i>
-                                            {{ brand.name }}
-                                        </div>
-                                    </div>
+                                <input
+                                    type="text"
+                                    id="brand"
+                                    class="form-control"
+                                    [formControl]="brandNameControl"
+                                    placeholder="Type or select a brand"
+                                    autocomplete="off"
+                                    [readonly]="isViewMode"
+                                    (input)="searchBrands($event)"
+                                    list="brand-list"
+                                    [ngClass]="{ 'is-invalid': submitted && form.get('brandId')?.invalid }"
+                                />
+                                <datalist id="brand-list">
+                                    <option *ngFor="let brand of brands" [value]="brand.name"></option>
+                                </datalaligst>
+                                <div *ngIf="submitted && form.get('brandId')?.invalid" class="invalid-feedback">
+                                    <div *ngIf="form.get('brandId')?.errors?.['required']">Brand is required.</div>
                                 </div>
-
                             </div>
                         </div>
 
