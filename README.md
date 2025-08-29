@@ -23,4 +23,4 @@ Angular 10 Boilerplate - Email Sign Up with Verification, Authentication & Forgo
 - **Karl Vilar and Rommel Quirimit**
 
 ---
-Capstone Project [Documentation Progress Updated] Link: {https://docs.google.com/document/d/1ssJPVR6PM84RHQZWU-bYXXH1B8LEumSB-kB0M8DLtew/edit?tab=t.0}
+Capstone Project [Documentation Progress Updated] Link: (https://docs.google.com/document/d/1ssJPVR6PM84RHQZWU-bYXXH1B8LEumSB-kB0M8DLtew/edit?tab=t.0)
