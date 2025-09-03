@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: computer-lab-inventory-frontend
+    name: computer-lab-inventory-frontend-tedl
     env: static
     buildCommand: npm install --legacy-peer-deps && npm run build
     staticPublishPath: ./dist/angular-signup-verification-boilerplate
     envVars:
       - key: API_URL
-        value: https://computer-lab-inventory-backend-tybe.onrender.com
+        value: https://computer-lab-inventory-backend-szij.onrender.com
