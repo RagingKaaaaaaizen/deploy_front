@@ -67,7 +67,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- Stocks -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 
                routerLink="/stocks" 
                routerLinkActive="active"
@@ -79,7 +79,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- Disposals -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 
                routerLink="/dispose" 
                routerLinkActive="active"
@@ -103,7 +103,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- PC Management -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 
                routerLink="/pc" 
                routerLinkActive="active"
@@ -115,7 +115,7 @@ import { Role } from '@app/_models';
           </li>
 
                      <!-- Activity Logs -->
-           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
              <a class="nav-link" 
                 routerLink="/activity" 
                 routerLinkActive="active"
@@ -127,7 +127,7 @@ import { Role } from '@app/_models';
            </li>
 
            <!-- Archive Reports -->
-           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
              <a class="nav-link" 
                 routerLink="/archive" 
                 routerLinkActive="active"
