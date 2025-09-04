@@ -11,7 +11,7 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a routerLink="/pc/add" class="btn btn-primary" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <a routerLink="/pc/add" class="btn btn-primary" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                         <i class="fas fa-plus"></i>
                         Add PC
                     </a>
@@ -244,12 +244,12 @@
                                          </button>
                                          <button type="button" class="btn btn-sm btn-outline-warning"
                                                  (click)="editPC(pc.id)" title="Edit PC"
-                                                 *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                                                 *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                                              <i class="fas fa-edit"></i>
                                          </button>
                                          <button type="button" class="btn btn-sm btn-outline-danger"
                                                  (click)="deletePC(pc.id)" title="Delete PC"
-                                                 *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                                                 *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                                              <i class="fas fa-trash"></i>
                                          </button>
                                      </div>
