@@ -337,7 +337,7 @@ export class ApprovalListComponent implements OnInit {
 
   approveRequest(request: ApprovalRequest) {
     if (confirm('Are you sure you want to approve this request?')) {
-      this.approvalRequestService.approve(request.id!, {})
+      this.approvalRequestService.approve(request.id!, { remarks: '' })
         .pipe(first())
         .subscribe({
           next: () => {
@@ -345,7 +345,8 @@ export class ApprovalListComponent implements OnInit {
             this.loadApprovalRequests();
           },
           error: (error) => {
-            this.alertService.error('Failed to approve request');
+            console.error('Approval error:', error);
+            this.alertService.error('Failed to approve request: ' + (error.error?.message || error.message || 'Unknown error'));
           }
         });
     }
