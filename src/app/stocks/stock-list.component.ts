@@ -23,6 +23,21 @@ import { Role } from '../_models';
       min-height: 100vh;
     }
 
+    .no-receipt-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .no-receipt-placeholder h4 {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
     .page-header {
       background: white;
       border-radius: 16px;
@@ -1459,7 +1474,9 @@ export class StockListComponent implements OnInit {
 
   // Receipt Modal methods
   openReceiptModal(filename: string) {
+    console.log('Opening receipt modal for filename:', filename);
     this.currentReceiptUrl = this.getReceiptUrl(filename);
+    console.log('Receipt URL:', this.currentReceiptUrl);
     this.showReceiptModal = true;
     document.body.style.overflow = 'hidden';
   }
@@ -1472,6 +1489,16 @@ export class StockListComponent implements OnInit {
 
   getReceiptUrl(filename: string): string {
     return `${environment.apiUrl}/api/stocks/receipt/${filename}`;
+  }
+
+  onReceiptImageError(event: any) {
+    console.error('Receipt image failed to load:', event);
+    console.error('Image URL:', this.currentReceiptUrl);
+    this.alertService.error('Failed to load receipt image. Please check if the file exists.');
+  }
+
+  onReceiptImageLoad(event: any) {
+    console.log('Receipt image loaded successfully:', this.currentReceiptUrl);
   }
 
   // Info display methods
