@@ -25,6 +25,8 @@ export interface AnalyticsData {
   stockByCategory: { [key: string]: number };
   stockByLocation: { [key: string]: number };
   recentActivity: any[];
+  lastUpdated?: Date;
+  dataTimestamp?: string;
 }
 
 export interface TimelineData {

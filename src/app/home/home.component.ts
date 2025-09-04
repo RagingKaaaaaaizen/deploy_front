@@ -1,4 +1,5 @@
 ﻿import { AccountService, AnalyticsService, StockService, ItemService, DisposeService, AlertService } from '@app/_services';
+import { RealtimeUpdateService } from '@app/_services/realtime-update.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AnalyticsData, StockTimelineData } from '@app/_services/analytics.service';
 // Chart data interfaces
@@ -28,6 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     disposalTimelineData: TimelineChartData[] = [];
     selectedTimePeriod: number = 30;
     downloading = false;
+    lastDataUpdate: Date | null = null;
 
     // Chart.js properties
     @ViewChild('stockChart') stockChart: any;
@@ -304,6 +306,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         private itemService: ItemService,
         private disposalService: DisposeService,
         private analyticsService: AnalyticsService,
+        private realtimeUpdateService: RealtimeUpdateService,
         private alertService: AlertService
     ) { }
 
@@ -315,6 +318,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         
         // Set up real-time updates every 30 seconds
         this.setupRealTimeUpdates();
+        
+        // Listen for real-time data updates
+        this.setupRealtimeListeners();
     }
 
     ngOnDestroy() {
@@ -330,11 +336,36 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
     }
 
+    setupRealtimeListeners() {
+        // Listen for stock updates
+        this.realtimeUpdateService.getStockUpdateObservable().subscribe(() => {
+            console.log('Stock data updated - refreshing dashboard');
+            this.loadAnalytics();
+            this.loadStockTimelineData();
+        });
+
+        // Listen for disposal updates
+        this.realtimeUpdateService.getDisposalUpdateObservable().subscribe(() => {
+            console.log('Disposal data updated - refreshing dashboard');
+            this.loadAnalytics();
+            this.loadDisposalTimelineData();
+        });
+
+        // Listen for analytics updates
+        this.realtimeUpdateService.getAnalyticsUpdateObservable().subscribe(() => {
+            console.log('Analytics data updated - refreshing dashboard');
+            this.loadAnalytics();
+        });
+    }
+
     refreshData() {
         // Refresh all data to ensure charts are current
         this.loadStockTimelineData();
         this.loadDisposalTimelineData();
         this.loadCategoryDistribution();
+        this.loadAnalytics();
+        // Update the last data update timestamp
+        this.lastDataUpdate = new Date();
     }
 
     loadAnalytics() {
@@ -343,6 +374,14 @@ export class HomeComponent implements OnInit, OnDestroy {
             next: (data) => {
                 this.analyticsData = data;
                 this.loading = false;
+                // Use server timestamp if available, otherwise use current time
+                if (data.lastUpdated) {
+                    this.lastDataUpdate = new Date(data.lastUpdated);
+                } else if (data.dataTimestamp) {
+                    this.lastDataUpdate = new Date(data.dataTimestamp);
+                } else {
+                    this.lastDataUpdate = new Date();
+                }
             },
             error: (error) => {
                 console.error('Error loading analytics:', error);
@@ -698,7 +737,29 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
     }
 
+    getLastUpdateDateTime(): string {
+        if (this.lastDataUpdate) {
+            return this.lastDataUpdate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        return this.getCurrentDate();
+    }
+
     getLastUpdateTime(): string {
+        if (this.lastDataUpdate) {
+            return this.lastDataUpdate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+        // Fallback to current time if no data update timestamp available
         const now = new Date();
         return now.toLocaleTimeString('en-US', {
             hour: '2-digit',
@@ -722,6 +783,39 @@ export class HomeComponent implements OnInit, OnDestroy {
         } else {
             return `Active: ${disposalCount} disposal records;`;
         }
+    }
+
+    getDataAge(): string {
+        if (!this.lastDataUpdate) {
+            return 'Unknown';
+        }
+        
+        const now = new Date();
+        const diffMs = now.getTime() - this.lastDataUpdate.getTime();
+        const diffSeconds = Math.floor(diffMs / 1000);
+        const diffMinutes = Math.floor(diffSeconds / 60);
+        
+        if (diffSeconds < 60) {
+            return `${diffSeconds}s ago`;
+        } else if (diffMinutes < 60) {
+            return `${diffMinutes}m ago`;
+        } else {
+            const diffHours = Math.floor(diffMinutes / 60);
+            return `${diffHours}h ago`;
+        }
+    }
+
+    isDataFresh(): boolean {
+        if (!this.lastDataUpdate) {
+            return false;
+        }
+        
+        const now = new Date();
+        const diffMs = now.getTime() - this.lastDataUpdate.getTime();
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        
+        // Consider data fresh if it's less than 2 minutes old
+        return diffMinutes < 2;
     }
 
     getTotalTimelineAdditions(): number {
