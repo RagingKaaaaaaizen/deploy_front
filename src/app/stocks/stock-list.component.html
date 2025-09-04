@@ -461,22 +461,6 @@
                     >
                   </div>
 
-                  <!-- Receipt Upload -->
-                  <div class="form-group col-md-6">
-                    <label class="form-label">
-                      <i class="fas fa-receipt"></i> Receipt Photo (Optional)
-                    </label>
-                    <input 
-                      type="file" 
-                      class="form-control" 
-                      accept="image/*"
-                      (change)="onFileSelected($event, i)"
-                      [name]="'receipt_' + i"
-                    >
-                    <small class="form-text text-muted">
-                      Upload receipt photo (JPG, PNG, GIF - Max 5MB)
-                    </small>
-                  </div>
                 </div>
               </div>
 
@@ -488,6 +472,27 @@
                       <span><i class="fas fa-calculator"></i> <strong>Total Price for All Items:</strong></span>
                       <span class="h5 mb-0">₱{{ totalPrice | number:'1.2-2' }}</span>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Single Receipt Upload for All Items -->
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="fas fa-receipt"></i> Receipt Photo (Optional)
+                    </label>
+                    <input 
+                      type="file" 
+                      class="form-control" 
+                      accept="image/*"
+                      (change)="onReceiptFileSelected($event)"
+                      name="stock_receipt"
+                    >
+                    <small class="form-text text-muted">
+                      Upload one receipt photo for all items in this stock entry (JPG, PNG, GIF - Max 5MB)
+                    </small>
                   </div>
                 </div>
               </div>

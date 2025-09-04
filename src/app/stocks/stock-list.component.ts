@@ -1342,9 +1342,11 @@ export class StockListComponent implements OnInit {
     quantity: number | undefined,
     price: number | undefined,
     locationId: number | undefined,
-    remarks: string,
-    receiptFile: File | null
+    remarks: string
   }> = [];
+  
+  // Single receipt file for the entire stock entry
+  stockReceiptFile: File | null = null;
   stockSubmitted = false;
   stockLoading = false;
   totalPrice = 0;
@@ -1677,6 +1679,7 @@ export class StockListComponent implements OnInit {
   // Add Stock Form Methods
   resetStockForm() {
     this.stockEntries = [];
+    this.stockReceiptFile = null;
     this.stockSubmitted = false;
     this.stockLoading = false;
     this.totalPrice = 0;
@@ -1688,9 +1691,9 @@ export class StockListComponent implements OnInit {
       quantity: undefined,
       price: undefined,
       locationId: undefined,
-      remarks: '',
-      receiptFile: null
+      remarks: ''
     }];
+    this.stockReceiptFile = null;
   }
 
   addNewStockEntry() {
@@ -1699,8 +1702,7 @@ export class StockListComponent implements OnInit {
       quantity: undefined,
       price: undefined,
       locationId: undefined,
-      remarks: '',
-      receiptFile: null
+      remarks: ''
     });
   }
 
@@ -1710,7 +1712,7 @@ export class StockListComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any, index: number) {
+  onReceiptFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       // Validate file type
@@ -1725,7 +1727,7 @@ export class StockListComponent implements OnInit {
         return;
       }
       
-      this.stockEntries[index].receiptFile = file;
+      this.stockReceiptFile = file;
     }
   }
 
@@ -1744,7 +1746,7 @@ export class StockListComponent implements OnInit {
 
     this.stockLoading = true;
 
-    // Process all valid entries with file uploads
+    // Process all valid entries with single receipt file
     const savePromises = validEntries.map(entry => {
       const formData = new FormData();
       formData.append('itemId', entry.itemId!.toString());
@@ -1753,9 +1755,9 @@ export class StockListComponent implements OnInit {
       formData.append('locationId', entry.locationId!.toString());
       formData.append('remarks', entry.remarks || '');
       
-      // Add receipt file if present
-      if (entry.receiptFile) {
-        formData.append('receipt', entry.receiptFile);
+      // Add single receipt file if present (same file for all entries)
+      if (this.stockReceiptFile) {
+        formData.append('receipt', this.stockReceiptFile);
       }
       
       return this.stockService.createWithFile(formData).pipe(first()).toPromise();
