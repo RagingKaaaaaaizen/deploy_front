@@ -298,6 +298,59 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private refreshIntervalSubscription: Subscription | null = null;
 
+    // Dashboard properties
+    stats: any = {
+        totalItems: 0,
+        totalPCs: 0,
+        totalUsers: 0,
+        totalStock: 0,
+        inUse: 0,
+        available: 0,
+        lowStock: 0,
+        outOfStock: 0,
+        pendingRequests: 0
+    };
+
+    quickStats: any[] = [
+        { icon: 'fas fa-boxes text-primary', value: 0, label: 'Total Items' },
+        { icon: 'fas fa-desktop text-success', value: 0, label: 'PCs' },
+        { icon: 'fas fa-users text-info', value: 0, label: 'Users' },
+        { icon: 'fas fa-chart-line text-warning', value: 0, label: 'Active' }
+    ];
+
+    recentActivity: any[] = [
+        { icon: 'fas fa-plus text-success', message: 'New item added to inventory', timestamp: new Date() },
+        { icon: 'fas fa-edit text-primary', message: 'Stock updated for PC components', timestamp: new Date() },
+        { icon: 'fas fa-user text-info', message: 'New user registered', timestamp: new Date() }
+    ];
+
+    quickActions: any[] = [
+        { 
+            icon: 'fas fa-plus text-primary', 
+            title: 'Add Item', 
+            description: 'Add new inventory item',
+            route: '/add'
+        },
+        { 
+            icon: 'fas fa-boxes text-success', 
+            title: 'View Stock', 
+            description: 'Check current stock levels',
+            route: '/stocks'
+        },
+        { 
+            icon: 'fas fa-desktop text-info', 
+            title: 'PC Management', 
+            description: 'Manage PC components',
+            route: '/pc'
+        },
+        { 
+            icon: 'fas fa-chart-bar text-warning', 
+            title: 'Reports', 
+            description: 'Generate inventory reports',
+            route: '/reports'
+        }
+    ];
+
     constructor(
         private accountService: AccountService,
         private stockService: StockService,
@@ -312,6 +365,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.loadCategoryDistribution();
         this.loadStockTimelineData();
         this.loadDisposalTimelineData();
+        this.loadDashboardStats();
         
         // Set up real-time updates every 30 seconds
         this.setupRealTimeUpdates();
@@ -349,6 +403,43 @@ export class HomeComponent implements OnInit, OnDestroy {
                 this.loading = false;
             }
         });
+    }
+
+    loadDashboardStats() {
+        // Load items count
+        this.itemService.getAll().subscribe({
+            next: (items) => {
+                this.stats.totalItems = items.length;
+                this.quickStats[0].value = items.length;
+            },
+            error: (error) => {
+                console.error('Error loading items:', error);
+            }
+        });
+
+        // Load stock data
+        this.stockService.getAll().subscribe({
+            next: (stocks) => {
+                this.stats.totalStock = stocks.length;
+                this.stats.available = stocks.filter(s => s.quantity > 0).length;
+                this.stats.inUse = stocks.filter(s => s.quantity === 0).length;
+                this.stats.lowStock = stocks.filter(s => s.quantity > 0 && s.quantity <= 5).length;
+                this.stats.outOfStock = stocks.filter(s => s.quantity === 0).length;
+                
+                this.quickStats[1].value = this.stats.totalStock;
+                this.quickStats[3].value = this.stats.available;
+            },
+            error: (error) => {
+                console.error('Error loading stocks:', error);
+            }
+        });
+
+        // Set default values for other stats
+        this.stats.totalPCs = 0;
+        this.stats.totalUsers = 1; // At least the current user
+        this.stats.pendingRequests = 0;
+        
+        this.quickStats[2].value = this.stats.totalUsers;
     }
 
     loadCategoryDistribution() {
