@@ -3,21 +3,5 @@
         <!-- Only SuperAdmin can manage accounts -->
         <a routerLink="/admin/accounts" routerLinkActive="active" class="nav-item nav-link" 
            *ngIf="hasRole([Role.SuperAdmin])">Accounts</a>
-        
-        <!-- SuperAdmin and Admin can manage employees -->
-        <a routerLink="/admin/employees" routerLinkActive="active" class="nav-item nav-link"
-           *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">Employees</a>
-        
-        <!-- SuperAdmin and Admin can manage departments -->
-        <a routerLink="/admin/departments" routerLinkActive="active" class="nav-item nav-link"
-           *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">Departments</a>
-        
-        <!-- SuperAdmin and Admin can manage workflows -->
-        <a routerLink="/admin/workflows" routerLinkActive="active" class="nav-item nav-link"
-           *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">Workflows</a>
-        
-        <!-- All roles can view requests -->
-        <a routerLink="/admin/requests" routerLinkActive="active" class="nav-item nav-link"
-           *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">Requests</a>
     </div>
 </nav>
