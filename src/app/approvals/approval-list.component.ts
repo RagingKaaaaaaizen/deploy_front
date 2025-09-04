@@ -297,6 +297,12 @@ export class ApprovalListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Check if user is staff - redirect to my-requests
+    if (this.accountService.accountValue?.role === Role.Staff) {
+      this.router.navigate(['/approvals/my-requests']);
+      return;
+    }
+    
     this.loadApprovalRequests();
   }
 
