@@ -1791,8 +1791,16 @@ export class StockListComponent implements OnInit {
     });
 
     Promise.all(savePromises)
-      .then(() => {
-        this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
+      .then((results) => {
+        // Check if any results indicate pending approval
+        const hasPendingApproval = results.some(result => result && result.status === 'pending_approval');
+        
+        if (hasPendingApproval) {
+          this.alertService.success(`${validEntries.length} stock item(s) submitted for approval. You will be notified once approved.`);
+        } else {
+          this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
+        }
+        
         this.closeAddStockModal();
         this.loadData(); // Refresh the stock list
       })

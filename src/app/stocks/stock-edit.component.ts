@@ -138,6 +138,13 @@ export class StockEditComponent implements OnInit {
         next: (result) => {
           this.loading = false;
           
+          // Check if result indicates pending approval
+          if (result && (result as any).status === 'pending_approval') {
+            this.alertService.success('Stock entry submitted for approval. You will be notified once approved.');
+          } else {
+            this.alertService.success('Stock entry created successfully');
+          }
+          
           // Notify stock list component to refresh its data
           this.notifyStockListRefresh();
           

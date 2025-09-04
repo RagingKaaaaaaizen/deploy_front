@@ -22,8 +22,8 @@ export class StockService {
     return this.http.post<Stock>(baseUrl, stock);
   }
 
-  createWithFile(formData: FormData): Observable<Stock> {
-    return this.http.post<Stock>(baseUrl, formData);
+  createWithFile(formData: FormData): Observable<Stock | any> {
+    return this.http.post<Stock | any>(baseUrl, formData);
   }
 
   update(id: number, stock: Stock): Observable<Stock> {
