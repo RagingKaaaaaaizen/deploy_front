@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: 'account', loadChildren: accountModule },
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
     { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin] } },
-    { path: 'add', loadChildren: addModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+    { path: 'add', loadChildren: addModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
     { path: 'stocks', loadChildren: stocksModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
     { path: 'dispose', loadChildren: disposeModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
     

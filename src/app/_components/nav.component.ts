@@ -91,7 +91,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- Add Items -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
             <a class="nav-link" 
                routerLink="/add" 
                routerLinkActive="active"

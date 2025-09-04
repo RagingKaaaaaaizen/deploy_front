@@ -2077,7 +2077,7 @@ export class StockListComponent implements OnInit {
       disposeId: stock.disposeId,
       shouldShowGreenBadge: !stock.disposeId && stock.quantity > 0,
       shouldShowStockSummary: !stock.disposeId,
-      shouldShowDisposeButton: !stock.disposeId && this.hasRole([this.Role.SuperAdmin, this.Role.Admin]),
+      shouldShowDisposeButton: !stock.disposeId && this.hasRole([this.Role.SuperAdmin, this.Role.Admin, this.Role.Staff]),
       hasDisposal: !!stock.disposal
     };
     console.log('Stock display debug:', debug);

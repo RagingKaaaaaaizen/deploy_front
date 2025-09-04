@@ -154,11 +154,11 @@
                         <i class="fas fa-check-circle text-success me-2"></i>
                         <span>Role: {{account.role}}</span>
                     </div>
-                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                         <i class="fas fa-check-circle text-success me-2"></i>
                         <span>Can manage inventory</span>
                     </div>
-                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                         <i class="fas fa-check-circle text-success me-2"></i>
                         <span>Can add/edit items</span>
                     </div>
