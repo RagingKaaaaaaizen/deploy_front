@@ -1488,7 +1488,7 @@ export class StockListComponent implements OnInit {
   }
 
   getReceiptUrl(filename: string): string {
-    return `${environment.apiUrl}/api/stocks/receipt/${filename}`;
+    return `${environment.apiUrl}/uploads/receipts/${filename}`;
   }
 
   onReceiptImageError(event: any) {
