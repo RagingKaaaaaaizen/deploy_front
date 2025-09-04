@@ -45,6 +45,7 @@
             <select formControlName="role" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
                 <option [value]="Role.SuperAdmin">SuperAdmin</option>
                 <option [value]="Role.Admin">Admin</option>
+                <option [value]="Role.Staff">Staff</option>
                 <option [value]="Role.Viewer">Viewer</option>
             </select>
             <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
