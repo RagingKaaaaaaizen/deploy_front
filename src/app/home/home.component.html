@@ -134,14 +134,10 @@
                     <div class="last-update">
                         <i class="fas fa-clock text-warning me-2"></i>
                         <span class="text-muted">Last Update: <strong>{{getLastUpdateTime()}}</strong></span>
-                        <span class="badge ms-2" [class.badge-success]="isDataFresh()" [class.badge-warning]="!isDataFresh()">
-                            <i class="fas fa-circle" [class.text-success]="isDataFresh()" [class.text-warning]="!isDataFresh()"></i>
-                            {{getDataAge()}}
-                        </span>
                     </div>
                     <div class="analytics-date">
                         <i class="fas fa-calendar-alt text-primary me-2"></i>
-                        <span class="text-muted">{{getLastUpdateDateTime()}}</span>
+                        <span class="text-muted">{{getCurrentDate()}}</span>
                     </div>
                 </div>
             </div>
@@ -430,24 +426,17 @@
                         <small><i class="fas fa-info-circle"></i> Real-time system usage tracking</small>
                     </div>
                     <div class="activity-list" *ngIf="analyticsData?.recentActivity?.length">
-                        <div class="activity-item" *ngFor="let activity of analyticsData.recentActivity" 
-                             [class.highlight-august15]="activity.isSpecialDate">
-                            <div class="activity-icon" [class.special-icon]="activity.isSpecialDate">
+                        <div class="activity-item" *ngFor="let activity of analyticsData.recentActivity">
+                            <div class="activity-icon">
                                 <i [class]="activity.icon"></i>
                             </div>
                             <div class="activity-content">
                                 <div class="activity-message">
                                     {{activity.message}}
-                                    <span class="badge badge-warning ms-2" *ngIf="activity.isSpecialDate">
-                                        <i class="fas fa-star"></i> Aug 15, 2025
-                                    </span>
                                 </div>
                                 <div class="activity-time">
                                     <i class="fas fa-calendar-alt me-1"></i>
                                     {{activity.timestamp | date:'medium'}}
-                                    <span class="text-success ms-2" *ngIf="activity.isSpecialDate">
-                                        <i class="fas fa-check-circle"></i> Verified Date
-                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -465,10 +454,7 @@
                                 <i class="fas fa-sync-alt"></i> Auto-refresh: Every 30 seconds
                             </small>
                             <small class="text-muted">
-                                Last update: {{getLastUpdateTime()}} ({{getDataAge()}})
-                                <span class="badge badge-sm ms-1" [class.badge-success]="isDataFresh()" [class.badge-warning]="!isDataFresh()">
-                                    <i class="fas fa-circle" [class.text-success]="isDataFresh()" [class.text-warning]="!isDataFresh()"></i>
-                                </span>
+                                Last update: {{getLastUpdateTime()}}
                             </small>
                         </div>
                     </div>

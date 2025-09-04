@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Dispose } from '../_models';
-import { RealtimeUpdateService } from './realtime-update.service';
 
 const baseUrl = `${environment.apiUrl}/api/dispose`;
 
@@ -18,10 +16,7 @@ export interface DisposalValidation {
 
 @Injectable({ providedIn: 'root' })
 export class DisposeService {
-  constructor(
-    private http: HttpClient,
-    private realtimeUpdateService: RealtimeUpdateService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   getAll(): Observable<Dispose[]> {
     return this.http.get<Dispose[]>(baseUrl);
@@ -41,31 +36,15 @@ export class DisposeService {
       locationId: typeof dispose.locationId,
       reason: typeof dispose.reason
     });
-    return this.http.post<Dispose>(baseUrl, dispose).pipe(
-      tap(() => {
-        // Notify that disposal data has been updated
-        this.realtimeUpdateService.notifyDisposalUpdate();
-        this.realtimeUpdateService.notifyAnalyticsUpdate();
-      })
-    );
+    return this.http.post<Dispose>(baseUrl, dispose);
   }
 
   update(id: number, dispose: Partial<Dispose>): Observable<Dispose> {
-    return this.http.put<Dispose>(`${baseUrl}/${id}`, dispose).pipe(
-      tap(() => {
-        this.realtimeUpdateService.notifyDisposalUpdate();
-        this.realtimeUpdateService.notifyAnalyticsUpdate();
-      })
-    );
+    return this.http.put<Dispose>(`${baseUrl}/${id}`, dispose);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${baseUrl}/${id}`).pipe(
-      tap(() => {
-        this.realtimeUpdateService.notifyDisposalUpdate();
-        this.realtimeUpdateService.notifyAnalyticsUpdate();
-      })
-    );
+    return this.http.delete<void>(`${baseUrl}/${id}`);
   }
 
   getByItem(itemId: number): Observable<Dispose[]> {

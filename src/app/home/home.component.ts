@@ -1,5 +1,4 @@
 ﻿import { AccountService, AnalyticsService, StockService, ItemService, DisposeService, AlertService } from '@app/_services';
-import { RealtimeUpdateService } from '@app/_services/realtime-update.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AnalyticsData, StockTimelineData } from '@app/_services/analytics.service';
 // Chart data interfaces
@@ -29,7 +28,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     disposalTimelineData: TimelineChartData[] = [];
     selectedTimePeriod: number = 30;
     downloading = false;
-    lastDataUpdate: Date | null = null;
 
     // Chart.js properties
     @ViewChild('stockChart') stockChart: any;
@@ -97,10 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                         const labels = chart.data.labels;
                         if (labels && labels[dataIndex]) {
                             const label = labels[dataIndex];
-                            // Format August 15, 2025 specially
-                            if (label === 'Aug 15, 2025') {
-                                return 'August 15, 2025';
-                            }
+                            // Return the label as is
                             return label;
                         }
                         return '';
@@ -306,7 +301,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         private itemService: ItemService,
         private disposalService: DisposeService,
         private analyticsService: AnalyticsService,
-        private realtimeUpdateService: RealtimeUpdateService,
         private alertService: AlertService
     ) { }
 
@@ -318,9 +312,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         
         // Set up real-time updates every 30 seconds
         this.setupRealTimeUpdates();
-        
-        // Listen for real-time data updates
-        this.setupRealtimeListeners();
     }
 
     ngOnDestroy() {
@@ -336,36 +327,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
     }
 
-    setupRealtimeListeners() {
-        // Listen for stock updates
-        this.realtimeUpdateService.getStockUpdateObservable().subscribe(() => {
-            console.log('Stock data updated - refreshing dashboard');
-            this.loadAnalytics();
-            this.loadStockTimelineData();
-        });
-
-        // Listen for disposal updates
-        this.realtimeUpdateService.getDisposalUpdateObservable().subscribe(() => {
-            console.log('Disposal data updated - refreshing dashboard');
-            this.loadAnalytics();
-            this.loadDisposalTimelineData();
-        });
-
-        // Listen for analytics updates
-        this.realtimeUpdateService.getAnalyticsUpdateObservable().subscribe(() => {
-            console.log('Analytics data updated - refreshing dashboard');
-            this.loadAnalytics();
-        });
-    }
-
     refreshData() {
         // Refresh all data to ensure charts are current
         this.loadStockTimelineData();
         this.loadDisposalTimelineData();
         this.loadCategoryDistribution();
-        this.loadAnalytics();
-        // Update the last data update timestamp
-        this.lastDataUpdate = new Date();
     }
 
     loadAnalytics() {
@@ -374,14 +340,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             next: (data) => {
                 this.analyticsData = data;
                 this.loading = false;
-                // Use server timestamp if available, otherwise use current time
-                if (data.lastUpdated) {
-                    this.lastDataUpdate = new Date(data.lastUpdated);
-                } else if (data.dataTimestamp) {
-                    this.lastDataUpdate = new Date(data.dataTimestamp);
-                } else {
-                    this.lastDataUpdate = new Date();
-                }
             },
             error: (error) => {
                 console.error('Error loading analytics:', error);
@@ -500,37 +458,19 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.stockChartOptions.plugins.title.text = 'Stock Analytics - Monthly Overview';
         this.disposalChartOptions.plugins.title.text = 'Disposal Analytics - Monthly Overview';
         
-        // Ensure August 2025 data is prominently displayed
-        const august2025Index = monthlyData.findIndex(item => 
-            item.month === 'Aug 25' || item.isSpecialMonth
-        );
-        
-        if (august2025Index !== -1) {
-            // Update the chart to show August 15, 2025 specifically
-            this.stockChartData.labels[august2025Index] = 'Aug 15, 2025';
-            this.stockChartData.datasets[0].data[august2025Index] = 234; // The actual stock value from August 15
-        }
-        
         console.log('Monthly Chart.js data updated:', {
             stock: this.stockChartData,
             disposal: this.disposalChartData,
-            monthlyData: monthlyData,
-            august2025Data: august2025Index !== -1 ? {
-                label: this.stockChartData.labels[august2025Index],
-                value: this.stockChartData.datasets[0].data[august2025Index]
-            } : null
+            monthlyData: monthlyData
         });
     }
 
     createMonthlyTimeline(): any[] {
         const monthlyData = [];
-        
-        // Always ensure August 2025 is included for the special date
-        const august2025 = new Date('2025-08-01');
         const currentDate = new Date();
         
         // Get the date range from actual data
-        const allDates: Date[] = [august2025]; // Always include August 2025
+        const allDates: Date[] = [];
         
         // Collect all dates from stock timeline with validation
         this.stockTimelineData.forEach(item => {
@@ -560,28 +500,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
         });
         
-        if (allDates.length <= 1) {
-            // If no real data besides August 2025, create a meaningful timeline
-            const startFrom = new Date(Math.min(august2025.getTime(), currentDate.getTime()));
-            const endAt = new Date(Math.max(august2025.getTime(), currentDate.getTime()));
-            
-            // Add months from start to end
-            let monthDate = new Date(startFrom.getFullYear(), startFrom.getMonth(), 1);
-            while (monthDate <= endAt) {
-                const monthKey = monthDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-                const isAugust2025 = monthDate.getFullYear() === 2025 && monthDate.getMonth() === 7; // August is month 7
-                
-                monthlyData.push({
-                    month: isAugust2025 ? 'Aug 15, 2025' : monthKey, // Use specific date for August
-                    stockValue: isAugust2025 ? 234 : 0, // Show stock data for August 15, 2025
-                    disposalValue: 0,
-                    date: new Date(monthDate),
-                    fullDate: monthDate.toISOString(),
-                    isSpecialMonth: isAugust2025
-                });
-                
-                monthDate.setMonth(monthDate.getMonth() + 1);
-            }
+        if (allDates.length === 0) {
+            // If no data available, return empty array
             return monthlyData;
         }
         
@@ -601,8 +521,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         let bucketDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
         while (bucketDate <= extendedEndDate) {
             const monthKey = bucketDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-            const isAugust2025 = bucketDate.getFullYear() === 2025 && bucketDate.getMonth() === 7;
-            monthlyBuckets.set(monthKey, { stockValue: 0, disposalValue: 0, count: 0, isSpecial: isAugust2025 });
+            monthlyBuckets.set(monthKey, { stockValue: 0, disposalValue: 0, count: 0, isSpecial: false });
             bucketDate.setMonth(bucketDate.getMonth() + 1);
         }
         
@@ -645,17 +564,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         
         // Convert to array and sort by date
         monthlyBuckets.forEach((data, month) => {
-            // Format August 2025 specially
-            let displayMonth = month;
-            if (data.isSpecial) {
-                displayMonth = 'Aug 15, 2025';
-            }
-            
             monthlyData.push({
-                month: displayMonth,
+                month: month,
                 stockValue: data.stockValue,
                 disposalValue: data.disposalValue,
-                isSpecialMonth: data.isSpecial
+                isSpecialMonth: false
             });
         });
         
@@ -680,9 +593,30 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     getOperationalPeriod(): string {
-        // Always start from August 15, 2025 (when stocks were added)
-        const startDate = new Date('2025-08-15');
+        // Get the actual start date from the earliest stock or disposal record
         const currentDate = new Date();
+        let startDate = currentDate;
+        
+        // Find the earliest date from stock timeline data
+        if (this.stockTimelineData && this.stockTimelineData.length > 0) {
+            const earliestStockDate = new Date(Math.min(...this.stockTimelineData.map(item => new Date(item.date).getTime())));
+            if (earliestStockDate < startDate) {
+                startDate = earliestStockDate;
+            }
+        }
+        
+        // Find the earliest date from disposal timeline data
+        if (this.disposalTimelineData && this.disposalTimelineData.length > 0) {
+            const earliestDisposalDate = new Date(Math.min(...this.disposalTimelineData.map(item => new Date(item.date).getTime())));
+            if (earliestDisposalDate < startDate) {
+                startDate = earliestDisposalDate;
+            }
+        }
+        
+        // If no data available, use current date
+        if (startDate.getTime() === currentDate.getTime()) {
+            return 'No operational data available';
+        }
         
         // Format the start date
         const startFormatted = startDate.toLocaleDateString('en-US', { 
@@ -702,9 +636,30 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     getTotalOperationalMonths(): number {
-        // Calculate months from August 15, 2025 to current date
-        const startDate = new Date('2025-08-15');
+        // Calculate months from actual start date to current date
         const currentDate = new Date();
+        let startDate = currentDate;
+        
+        // Find the earliest date from stock timeline data
+        if (this.stockTimelineData && this.stockTimelineData.length > 0) {
+            const earliestStockDate = new Date(Math.min(...this.stockTimelineData.map(item => new Date(item.date).getTime())));
+            if (earliestStockDate < startDate) {
+                startDate = earliestStockDate;
+            }
+        }
+        
+        // Find the earliest date from disposal timeline data
+        if (this.disposalTimelineData && this.disposalTimelineData.length > 0) {
+            const earliestDisposalDate = new Date(Math.min(...this.disposalTimelineData.map(item => new Date(item.date).getTime())));
+            if (earliestDisposalDate < startDate) {
+                startDate = earliestDisposalDate;
+            }
+        }
+        
+        // If no data available, return 0
+        if (startDate.getTime() === currentDate.getTime()) {
+            return 0;
+        }
         
         // Calculate the difference in months
         const yearDiff = currentDate.getFullYear() - startDate.getFullYear();
@@ -717,7 +672,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             totalMonths--;
         }
         
-        // Ensure at least 1 month is shown
+        // Ensure at least 1 month is shown if there's any data
         return Math.max(1, totalMonths);
     }
 
@@ -737,29 +692,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
     }
 
-    getLastUpdateDateTime(): string {
-        if (this.lastDataUpdate) {
-            return this.lastDataUpdate.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-        return this.getCurrentDate();
-    }
-
     getLastUpdateTime(): string {
-        if (this.lastDataUpdate) {
-            return this.lastDataUpdate.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-        }
-        // Fallback to current time if no data update timestamp available
         const now = new Date();
         return now.toLocaleTimeString('en-US', {
             hour: '2-digit',
@@ -783,39 +716,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         } else {
             return `Active: ${disposalCount} disposal records;`;
         }
-    }
-
-    getDataAge(): string {
-        if (!this.lastDataUpdate) {
-            return 'Unknown';
-        }
-        
-        const now = new Date();
-        const diffMs = now.getTime() - this.lastDataUpdate.getTime();
-        const diffSeconds = Math.floor(diffMs / 1000);
-        const diffMinutes = Math.floor(diffSeconds / 60);
-        
-        if (diffSeconds < 60) {
-            return `${diffSeconds}s ago`;
-        } else if (diffMinutes < 60) {
-            return `${diffMinutes}m ago`;
-        } else {
-            const diffHours = Math.floor(diffMinutes / 60);
-            return `${diffHours}h ago`;
-        }
-    }
-
-    isDataFresh(): boolean {
-        if (!this.lastDataUpdate) {
-            return false;
-        }
-        
-        const now = new Date();
-        const diffMs = now.getTime() - this.lastDataUpdate.getTime();
-        const diffMinutes = Math.floor(diffMs / (1000 * 60));
-        
-        // Consider data fresh if it's less than 2 minutes old
-        return diffMinutes < 2;
     }
 
     getTotalTimelineAdditions(): number {
