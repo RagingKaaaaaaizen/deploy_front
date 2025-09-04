@@ -1,11 +1,41 @@
-﻿<div class="p-4">
+﻿<div class="admin-overview-container">
     <div class="container">
-        <h1>Admin</h1>
-        <p>This section can only be accessed by administrators.</p>
-        <p><a routerLink="accounts">Manage Accounts</a></p>
-        <p><a routerLink="employees">Manage Employees</a></p>
-        <p><a routerLink="departments">Manage Departments</a></p>
-        <p><a routerLink="workflows">Manage Workflows</a></p>
-        <p><a routerLink="requests">Manage Requests</a></p>
+        <!-- Admin Content -->
+        <div class="admin-content">
+            <!-- Header -->
+            <div class="header-section mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="main-title">
+                            <i class="fas fa-cogs text-primary me-3"></i>
+                            Admin Panel
+                        </h1>
+                        <p class="subtitle text-muted">
+                            Manage system settings and user accounts
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Cards Grid -->
+            <div class="admin-cards-section">
+                <div class="row">
+                    <div class="col-md-4 mb-4" *ngFor="let card of adminCards">
+                        <div class="admin-card" [routerLink]="card.route">
+                            <div class="card-icon">
+                                <i [class]="card.icon"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>{{card.title}}</h3>
+                                <p>{{card.description}}</p>
+                            </div>
+                            <div class="card-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
