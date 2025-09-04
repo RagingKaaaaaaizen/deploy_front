@@ -139,7 +139,7 @@ import { Role } from '@app/_models';
            </li>
 
            <!-- Manage Accounts -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
             <a class="nav-link" 
                routerLink="/admin/accounts" 
                routerLinkActive="active"
