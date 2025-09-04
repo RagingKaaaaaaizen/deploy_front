@@ -11,7 +11,7 @@
           </div>
         </div>
         <div class="header-actions">
-          <a routerLink="/dispose" class="btn btn-info" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <a routerLink="/dispose" class="btn btn-info" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <i class="fas fa-trash-alt"></i>
             View Disposals
           </a>
@@ -253,12 +253,12 @@
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-warning"
                             (click)="openEditStockModal(stock)" title="Edit Stock"
-                            *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                            *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                       <i class="fas fa-edit"></i>
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-info"
                             (click)="navigateToDispose(stock)" title="Dispose Stock"
-                            *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin])">
+                            *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                       <i class="fas fa-recycle"></i>
                     </button>
                   </div>
