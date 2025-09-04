@@ -1,0 +1,138 @@
+<div class="detail-container">
+  <div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <div class="header-title">
+          <i [class]="approvalRequest ? getTypeIcon(approvalRequest.type) : 'fas fa-clipboard-check'"></i>
+          <div>
+            <h1 class="page-title">
+              {{ approvalRequest ? getTypeLabel(approvalRequest.type) : 'Approval Request' }}
+            </h1>
+            <p class="page-subtitle">Request details and actions</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading">
+      <i class="fas fa-spinner"></i>
+      <p>Loading request details...</p>
+    </div>
+
+    <!-- Request Details -->
+    <div *ngIf="!loading && approvalRequest" class="detail-container-content">
+      <div class="detail-grid">
+        <!-- Request Information -->
+        <div class="detail-section">
+          <h3 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Request Information
+          </h3>
+          
+          <div class="detail-item">
+            <div class="detail-label">Type</div>
+            <div class="detail-value">
+              <i [class]="getTypeIcon(approvalRequest.type)"></i>
+              {{ getTypeLabel(approvalRequest.type) }}
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">Status</div>
+            <div class="detail-value">
+              <span class="request-status" [class]="getStatusClass(approvalRequest.status)">
+                {{ approvalRequest.status }}
+              </span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">Requested By</div>
+            <div class="detail-value">
+              {{ approvalRequest.creator?.firstName }} {{ approvalRequest.creator?.lastName }}
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-label">Created</div>
+            <div class="detail-value">{{ formatDate(approvalRequest.createdAt!) }}</div>
+          </div>
+
+          <div class="detail-item" *ngIf="approvalRequest.approvedBy">
+            <div class="detail-label">Processed By</div>
+            <div class="detail-value">
+              {{ approvalRequest.approver?.firstName }} {{ approvalRequest.approver?.lastName }}
+            </div>
+          </div>
+
+          <div class="detail-item" *ngIf="approvalRequest.approvedAt">
+            <div class="detail-label">Processed</div>
+            <div class="detail-value">{{ formatDate(approvalRequest.approvedAt) }}</div>
+          </div>
+        </div>
+
+        <!-- Request Data -->
+        <div class="detail-section">
+          <h3 class="section-title">
+            <i class="fas fa-database"></i>
+            Request Data
+          </h3>
+          
+          <div class="request-data">
+            {{ formatRequestData(approvalRequest.requestData) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Rejection Reason -->
+      <div *ngIf="approvalRequest.status === 'rejected' && approvalRequest.rejectionReason" class="rejection-reason">
+        <h5><i class="fas fa-exclamation-triangle"></i> Rejection Reason</h5>
+        <p>{{ approvalRequest.rejectionReason }}</p>
+      </div>
+
+      <!-- Remarks -->
+      <div *ngIf="approvalRequest.remarks" class="detail-section">
+        <h3 class="section-title">
+          <i class="fas fa-comment"></i>
+          Remarks
+        </h3>
+        <p>{{ approvalRequest.remarks }}</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button 
+          *ngIf="canApprove()" 
+          class="btn btn-success" 
+          (click)="approveRequest()">
+          <i class="fas fa-check"></i>
+          Approve Request
+        </button>
+        
+        <button 
+          *ngIf="canReject()" 
+          class="btn btn-danger" 
+          (click)="rejectRequest()">
+          <i class="fas fa-times"></i>
+          Reject Request
+        </button>
+        
+        <button 
+          *ngIf="canDelete()" 
+          class="btn btn-danger" 
+          (click)="deleteRequest()">
+          <i class="fas fa-trash"></i>
+          Delete Request
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

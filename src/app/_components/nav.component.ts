@@ -102,6 +102,18 @@ import { Role } from '@app/_models';
             </a>
           </li>
 
+          <!-- Approval Requests -->
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+            <a class="nav-link" 
+               routerLink="/approvals" 
+               routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+              <i class="fas fa-clipboard-check"></i>
+              <span *ngIf="!isCollapsed || isMobile">Approvals</span>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Approvals</span>
+            </a>
+          </li>
+
           <!-- PC Management -->
           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 

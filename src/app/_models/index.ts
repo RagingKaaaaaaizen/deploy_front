@@ -11,3 +11,4 @@ export * from './pc';
 export * from './dispose';
 export * from './pc-component';
 export * from './activity-log';
+export * from './approval-request';
