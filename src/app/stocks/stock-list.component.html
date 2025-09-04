@@ -448,7 +448,7 @@
 
                 <div class="row">
                   <!-- Remarks -->
-                  <div class="form-group col-md-12">
+                  <div class="form-group col-md-6">
                     <label class="form-label">
                       <i class="fas fa-comment"></i> Remarks
                     </label>
@@ -459,6 +459,23 @@
                       [name]="'remarks_' + i" 
                       placeholder="Optional remarks"
                     >
+                  </div>
+
+                  <!-- Receipt Upload -->
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-receipt"></i> Receipt Photo (Optional)
+                    </label>
+                    <input 
+                      type="file" 
+                      class="form-control" 
+                      accept="image/*"
+                      (change)="onFileSelected($event, i)"
+                      [name]="'receipt_' + i"
+                    >
+                    <small class="form-text text-muted">
+                      Upload receipt photo (JPG, PNG, GIF - Max 5MB)
+                    </small>
                   </div>
                 </div>
               </div>
@@ -614,6 +631,29 @@
                   <i class="fas fa-comment"></i> Remarks
                 </div>
                 <div class="detail-value">{{ selectedStock.remarks }}</div>
+              </div>
+
+              <!-- Receipt Section -->
+              <div class="detail-item" *ngIf="selectedStock.receiptAttachment">
+                <div class="detail-label">
+                  <i class="fas fa-receipt"></i> Receipt Photo
+                </div>
+                <div class="detail-value">
+                  <div class="receipt-container">
+                    <img 
+                      [src]="getReceiptUrl(selectedStock.receiptAttachment)" 
+                      alt="Receipt Photo" 
+                      class="receipt-image"
+                      (click)="openReceiptModal(selectedStock.receiptAttachment)"
+                      style="cursor: pointer; max-width: 200px; max-height: 150px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                    >
+                    <div class="receipt-actions mt-2">
+                      <button class="btn btn-sm btn-outline-primary" (click)="openReceiptModal(selectedStock.receiptAttachment)">
+                        <i class="fas fa-expand"></i> View Full Size
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -806,6 +846,39 @@
             </form>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div class="modal-overlay" *ngIf="showReceiptModal" (click)="closeReceiptModal()">
+  <div class="modal-container receipt-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="header-content">
+        <div class="header-title">
+          <i class="fas fa-receipt"></i>
+          <div>
+            <h1 class="page-title">Receipt Photo</h1>
+            <p class="page-subtitle">View receipt attachment</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-close" (click)="closeReceiptModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="receipt-viewer">
+        <img 
+          [src]="currentReceiptUrl" 
+          alt="Receipt Photo" 
+          class="receipt-full-image"
+          style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);"
+        >
       </div>
     </div>
   </div>

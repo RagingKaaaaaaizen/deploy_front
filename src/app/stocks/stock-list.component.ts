@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { environment } from '@environments/environment';
 
 import { StockService } from '../_services/stock.service';
 import { ItemService } from '../_services/item.service';
@@ -1330,8 +1331,10 @@ export class StockListComponent implements OnInit {
   highlightedItemId: number | null = null;
   showViewStockModal = false;
   showEditStockModal = false;
+  showReceiptModal = false;
   selectedStock: any = null;
   currentInfoType: string = '';
+  currentReceiptUrl: string = '';
 
   // Add Stock Form Properties
   stockEntries: Array<{
@@ -1339,7 +1342,8 @@ export class StockListComponent implements OnInit {
     quantity: number | undefined,
     price: number | undefined,
     locationId: number | undefined,
-    remarks: string
+    remarks: string,
+    receiptFile: File | null
   }> = [];
   stockSubmitted = false;
   stockLoading = false;
@@ -1449,6 +1453,23 @@ export class StockListComponent implements OnInit {
     this.editStockLoading = false;
     this.editTotalPrice = 0;
     document.body.style.overflow = 'auto';
+  }
+
+  // Receipt Modal methods
+  openReceiptModal(filename: string) {
+    this.currentReceiptUrl = this.getReceiptUrl(filename);
+    this.showReceiptModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeReceiptModal() {
+    this.showReceiptModal = false;
+    document.body.style.overflow = 'auto';
+    this.currentReceiptUrl = '';
+  }
+
+  getReceiptUrl(filename: string): string {
+    return `${environment.apiUrl}/api/stocks/receipt/${filename}`;
   }
 
   // Info display methods
@@ -1667,7 +1688,8 @@ export class StockListComponent implements OnInit {
       quantity: undefined,
       price: undefined,
       locationId: undefined,
-      remarks: ''
+      remarks: '',
+      receiptFile: null
     }];
   }
 
@@ -1677,13 +1699,33 @@ export class StockListComponent implements OnInit {
       quantity: undefined,
       price: undefined,
       locationId: undefined,
-      remarks: ''
+      remarks: '',
+      receiptFile: null
     });
   }
 
   removeStockEntry(index: number) {
     if (this.stockEntries.length > 1) {
       this.stockEntries.splice(index, 1);
+    }
+  }
+
+  onFileSelected(event: any, index: number) {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.alertService.error('Please select an image file for the receipt');
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        this.alertService.error('File size must be less than 5MB');
+        return;
+      }
+      
+      this.stockEntries[index].receiptFile = file;
     }
   }
 
@@ -1702,16 +1744,21 @@ export class StockListComponent implements OnInit {
 
     this.stockLoading = true;
 
-    // Process all valid entries
+    // Process all valid entries with file uploads
     const savePromises = validEntries.map(entry => {
-      const stockData = {
-        itemId: entry.itemId,
-        quantity: entry.quantity,
-        price: entry.price,
-        locationId: entry.locationId,
-        remarks: entry.remarks
-      };
-      return this.stockService.create(stockData).pipe(first()).toPromise();
+      const formData = new FormData();
+      formData.append('itemId', entry.itemId!.toString());
+      formData.append('quantity', entry.quantity!.toString());
+      formData.append('price', entry.price!.toString());
+      formData.append('locationId', entry.locationId!.toString());
+      formData.append('remarks', entry.remarks || '');
+      
+      // Add receipt file if present
+      if (entry.receiptFile) {
+        formData.append('receipt', entry.receiptFile);
+      }
+      
+      return this.stockService.createWithFile(formData).pipe(first()).toPromise();
     });
 
     Promise.all(savePromises)

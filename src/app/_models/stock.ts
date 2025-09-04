@@ -6,6 +6,7 @@ export class Stock {
   totalPrice?: number;        // Total price
   locationId!: number;        // Foreign key to StorageLocation
   remarks?: string;           // Optional notes
+  receiptAttachment?: string; // Receipt file path
   disposeId?: number;         // Link to disposal record (null for additions)
   createdAt?: Date;
   createdBy?: number;         // User ID
