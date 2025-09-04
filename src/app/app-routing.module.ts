@@ -21,13 +21,13 @@ const routes: Routes = [
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
     { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin] } },
     { path: 'add', loadChildren: addModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
-    { path: 'stocks', loadChildren: stocksModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-    { path: 'dispose', loadChildren: disposeModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'stocks', loadChildren: stocksModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'dispose', loadChildren: disposeModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     
-    { path: 'pc', loadChildren: pcModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'pc', loadChildren: pcModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     
-    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-    { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
 
     { path: '**', redirectTo: '' }
 ];
