@@ -1334,13 +1334,13 @@ export class StockListComponent implements OnInit {
   currentInfoType: string = '';
 
   // Add Stock Form Properties
-  stockModel = {
-    itemId: undefined as number | undefined,
-    quantity: undefined as number | undefined,
-    price: undefined as number | undefined,
-    locationId: undefined as number | undefined,
-    remarks: ''
-  };
+  stockEntries: Array<{
+    itemId: number | undefined,
+    quantity: number | undefined,
+    price: number | undefined,
+    locationId: number | undefined,
+    remarks: string
+  }> = [];
   stockSubmitted = false;
   stockLoading = false;
   totalPrice = 0;
@@ -1394,6 +1394,7 @@ export class StockListComponent implements OnInit {
   openAddStockModal() {
     this.showAddStockModal = true;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    this.initializeStockEntries();
   }
 
   closeAddStockModal() {
@@ -1654,49 +1655,74 @@ export class StockListComponent implements OnInit {
 
   // Add Stock Form Methods
   resetStockForm() {
-    this.stockModel = {
-      itemId: undefined,
-      quantity: undefined,
-      price: undefined,
-      locationId: undefined,
-      remarks: ''
-    };
+    this.stockEntries = [];
     this.stockSubmitted = false;
     this.stockLoading = false;
     this.totalPrice = 0;
   }
 
+  initializeStockEntries() {
+    this.stockEntries = [{
+      itemId: undefined,
+      quantity: undefined,
+      price: undefined,
+      locationId: undefined,
+      remarks: ''
+    }];
+  }
+
+  addNewStockEntry() {
+    this.stockEntries.push({
+      itemId: undefined,
+      quantity: undefined,
+      price: undefined,
+      locationId: undefined,
+      remarks: ''
+    });
+  }
+
+  removeStockEntry(index: number) {
+    if (this.stockEntries.length > 1) {
+      this.stockEntries.splice(index, 1);
+    }
+  }
+
   saveStock() {
     this.stockSubmitted = true;
 
-    // stop here if form is invalid
-    if (!this.stockModel.itemId || !this.stockModel.quantity || !this.stockModel.price || !this.stockModel.locationId) {
+    // Validate all entries
+    const validEntries = this.stockEntries.filter(entry => 
+      entry.itemId && entry.quantity && entry.price && entry.locationId
+    );
+
+    if (validEntries.length === 0) {
+      this.alertService.error('Please fill in at least one complete stock entry');
       return;
     }
 
     this.stockLoading = true;
 
-    // Create the stock object
-    const stockData = {
-      itemId: this.stockModel.itemId,
-      quantity: this.stockModel.quantity,
-      price: this.stockModel.price,
-      locationId: this.stockModel.locationId,
-      remarks: this.stockModel.remarks
-    };
+    // Process all valid entries
+    const savePromises = validEntries.map(entry => {
+      const stockData = {
+        itemId: entry.itemId,
+        quantity: entry.quantity,
+        price: entry.price,
+        locationId: entry.locationId,
+        remarks: entry.remarks
+      };
+      return this.stockService.create(stockData).pipe(first()).toPromise();
+    });
 
-    this.stockService.create(stockData)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.alertService.success('Stock added successfully');
-          this.closeAddStockModal();
-          this.loadData(); // Refresh the stock list
-        },
-        error: error => {
-          this.alertService.error(error);
-          this.stockLoading = false;
-        }
+    Promise.all(savePromises)
+      .then(() => {
+        this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
+        this.closeAddStockModal();
+        this.loadData(); // Refresh the stock list
+      })
+      .catch(error => {
+        this.alertService.error('Error adding stock items: ' + (error.message || error));
+        this.stockLoading = false;
       });
   }
 
@@ -1711,11 +1737,12 @@ export class StockListComponent implements OnInit {
   }
 
   calculateTotalPrice() {
-    if (this.stockModel.quantity && this.stockModel.price) {
-      this.totalPrice = this.stockModel.quantity * this.stockModel.price;
-    } else {
-      this.totalPrice = 0;
-    }
+    this.totalPrice = this.stockEntries.reduce((total, entry) => {
+      if (entry.quantity && entry.price) {
+        return total + (entry.quantity * entry.price);
+      }
+      return total;
+    }, 0);
   }
 
   // Edit Stock Form Methods
