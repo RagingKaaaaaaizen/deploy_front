@@ -20,6 +20,10 @@ export class LoginHistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  headerText: string = 'Stock Inventory System';
+  editingHeader: boolean = false;
+  tempHeaderText: string = this.headerText;
+
   constructor(
     private accountService: AccountService,
     private activityLogService: ActivityLogService
@@ -27,6 +31,20 @@ export class LoginHistoryComponent implements OnInit {
 
   ngOnInit() {
     this.fetchLoginHistory();
+  }
+
+  startEditHeader() {
+    this.tempHeaderText = this.headerText;
+    this.editingHeader = true;
+  }
+
+  saveHeader() {
+    this.headerText = this.tempHeaderText.trim() || 'Stock Inventory System';
+    this.editingHeader = false;
+  }
+
+  cancelEditHeader() {
+    this.editingHeader = false;
   }
 
   fetchLoginHistory() {
