@@ -31,12 +31,15 @@ export class LoginHistoryComponent implements OnInit {
 
   fetchLoginHistory() {
     this.loading = true;
+    const now = new Date();
+    const lastWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0, 0);
     this.accountService.getAll().subscribe({
       next: users => {
         this.activityLogService.getAllActivity(10000, 0, { action: 'LOGIN' }).subscribe({
           next: logs => {
             this.userLoginHistories = users.map(user => {
-              const userLogs = logs.filter(log => log.userId === user.id);
+              // Only logins in the last 7 days
+              const userLogs = logs.filter(log => log.userId === user.id && new Date(log.createdAt) >= lastWeek);
               const loginDates = userLogs.map(log => new Date(log.createdAt)).sort((a, b) => b.getTime() - a.getTime());
               return {
                 user,
