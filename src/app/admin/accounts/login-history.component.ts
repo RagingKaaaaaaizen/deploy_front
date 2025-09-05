@@ -20,6 +20,11 @@ export class LoginHistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+
+  headerName: string = 'Stock Inventory System';
+  isEditingHeader: boolean = false;
+  tempHeaderName: string = '';
+
   constructor(
     private accountService: AccountService,
     private activityLogService: ActivityLogService
@@ -60,5 +65,22 @@ export class LoginHistoryComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  // Editable header methods
+  startEditHeader() {
+    this.tempHeaderName = this.headerName;
+    this.isEditingHeader = true;
+  }
+
+  saveHeaderName() {
+    if (this.tempHeaderName.trim()) {
+      this.headerName = this.tempHeaderName.trim();
+    }
+    this.isEditingHeader = false;
+  }
+
+  cancelEditHeader() {
+    this.isEditingHeader = false;
   }
 }
