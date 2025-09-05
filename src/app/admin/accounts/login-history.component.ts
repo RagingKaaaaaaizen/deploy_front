@@ -20,9 +20,9 @@ export class LoginHistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  headerText: string = 'Stock Inventory System';
-  editingHeader: boolean = false;
-  tempHeaderText: string = this.headerText;
+  headerText = 'Stock Inventory System';
+  editingHeader = false;
+  tempHeaderText = this.headerText;
 
   constructor(
     private accountService: AccountService,
