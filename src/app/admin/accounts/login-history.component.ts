@@ -20,6 +20,7 @@ export class LoginHistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+
   headerName: string = 'Stock Inventory System';
   isEditingHeader: boolean = false;
   tempHeaderName: string = '';
