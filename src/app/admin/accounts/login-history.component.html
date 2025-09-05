@@ -1,0 +1,38 @@
+<div class="login-history-container">
+  <header class="header">
+    <h1></h1>
+  </header>
+
+  <main class="body">
+    <div *ngIf="loading" class="text-center my-4">
+      <span class="spinner-border spinner-border-lg"></span>
+    </div>
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <table *ngIf="!loading && !error" class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Login Count</th>
+          <th>Login Dates</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr *ngFor="let history of userLoginHistories">
+          <td>{{ history.user.firstName }} {{ history.user.lastName }}</td>
+          <td>{{ history.user.email }}</td>
+          <td>{{ history.loginCount }}</td>
+          <td>
+            <ul class="login-dates-list">
+              <li *ngFor="let date of history.loginDates">{{ date | date:'medium' }}</li>
+            </ul>
+          </td>
+        </tr> -->
+      </tbody>
+    </table>
+  </main>
+
+  <footer class="footer text-center mt-4">
+    <small></small>
+  </footer>
+</div>
