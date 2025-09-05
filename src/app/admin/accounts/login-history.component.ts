@@ -20,10 +20,6 @@ export class LoginHistoryComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  headerName: string = 'Stock Inventory System';
-  isEditingHeader: boolean = false;
-  tempHeaderName: string = '';
-
   constructor(
     private accountService: AccountService,
     private activityLogService: ActivityLogService
@@ -35,15 +31,12 @@ export class LoginHistoryComponent implements OnInit {
 
   fetchLoginHistory() {
     this.loading = true;
-    const now = new Date();
-    const lastWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0, 0);
     this.accountService.getAll().subscribe({
       next: users => {
         this.activityLogService.getAllActivity(10000, 0, { action: 'LOGIN' }).subscribe({
           next: logs => {
             this.userLoginHistories = users.map(user => {
-              // Only logins in the last 7 days
-              const userLogs = logs.filter(log => log.userId === user.id && new Date(log.createdAt) >= lastWeek);
+              const userLogs = logs.filter(log => log.userId === user.id);
               const loginDates = userLogs.map(log => new Date(log.createdAt)).sort((a, b) => b.getTime() - a.getTime());
               return {
                 user,
@@ -64,22 +57,5 @@ export class LoginHistoryComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  // Editable header methods
-  startEditHeader() {
-    this.tempHeaderName = this.headerName;
-    this.isEditingHeader = true;
-  }
-
-  saveHeaderName() {
-    if (this.tempHeaderName.trim()) {
-      this.headerName = this.tempHeaderName.trim();
-    }
-    this.isEditingHeader = false;
-  }
-
-  cancelEditHeader() {
-    this.isEditingHeader = false;
   }
 }
