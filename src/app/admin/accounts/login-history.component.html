@@ -1,6 +1,14 @@
 <div class="login-history-container">
   <header class="header">
-    <h1></h1>
+    <div *ngIf="!editingHeader; else editHeaderBlock">
+      <h1>{{ headerText }}</h1>
+      <button class="btn btn-link btn-sm" (click)="startEditHeader()">Edit</button>
+    </div>
+    <ng-template #editHeaderBlock>
+      <input [(ngModel)]="tempHeaderText" class="form-control d-inline-block w-auto" style="max-width: 300px;" />
+      <button class="btn btn-primary btn-sm mx-1" (click)="saveHeader()">Save</button>
+      <button class="btn btn-secondary btn-sm" (click)="cancelEditHeader()">Cancel</button>
+    </ng-template>
   </header>
 
   <main class="body">
