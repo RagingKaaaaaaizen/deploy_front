@@ -275,16 +275,66 @@ export class ApprovalDetailComponent implements OnInit {
 
   approveRequest() {
     if (this.approvalRequest && confirm('Are you sure you want to approve this request?')) {
+      console.log('=== FRONTEND APPROVAL DEBUG ===');
+      console.log('Approval Request ID:', this.approvalRequest.id);
+      console.log('Approval Request Data:', JSON.stringify(this.approvalRequest, null, 2));
+      console.log('Sending approval request...');
+      
       this.approvalRequestService.approve(this.approvalRequest.id!, { remarks: '' })
         .pipe(first())
         .subscribe({
-          next: () => {
+          next: (response) => {
+            console.log('✅ Approval successful!');
+            console.log('Server response:', JSON.stringify(response, null, 2));
             this.alertService.success('Request approved successfully');
             this.loadApprovalRequest(this.approvalRequest!.id!.toString());
           },
           error: (error) => {
-            console.error('Approval error:', error);
-            this.alertService.error('Failed to approve request: ' + (error.error?.message || error.message || 'Unknown error'));
+            console.error('❌ APPROVAL ERROR - DETAILED DEBUG ===');
+            console.error('Full error object:', error);
+            console.error('Error status:', error.status);
+            console.error('Error statusText:', error.statusText);
+            console.error('Error headers:', error.headers);
+            console.error('Error url:', error.url);
+            console.error('Error message:', error.message);
+            
+            if (error.error) {
+              console.error('Server error details:', error.error);
+              console.error('Server error message:', error.error.message);
+              console.error('Server error type:', error.error.type);
+              console.error('Server error timestamp:', error.error.timestamp);
+              
+              if (error.error.stack) {
+                console.error('Server stack trace:', error.error.stack);
+              }
+              
+              if (error.error.missingFields) {
+                console.error('Missing fields:', error.error.missingFields);
+              }
+              
+              if (error.error.errors) {
+                console.error('Validation errors:', error.error.errors);
+              }
+            }
+            
+            // Log the original request that failed
+            console.error('Original approval request that failed:', JSON.stringify(this.approvalRequest, null, 2));
+            
+            let errorMessage = 'Unknown error occurred';
+            if (error.status === 500) {
+              errorMessage = `Internal Server Error (500): ${error.error?.message || 'Server encountered an error'}`;
+            } else if (error.status === 400) {
+              errorMessage = `Bad Request (400): ${error.error?.message || 'Invalid request'}`;
+            } else if (error.status === 404) {
+              errorMessage = `Not Found (404): ${error.error?.message || 'Resource not found'}`;
+            } else if (error.error?.message) {
+              errorMessage = error.error.message;
+            } else if (error.message) {
+              errorMessage = error.message;
+            }
+            
+            console.error('Final error message to display:', errorMessage);
+            this.alertService.error('Failed to approve request: ' + errorMessage);
           }
         });
     }

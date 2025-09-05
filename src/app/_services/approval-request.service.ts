@@ -32,7 +32,14 @@ export class ApprovalRequestService {
 
     // Approve request
     approve(id: number, request: ApproveRequest): Observable<ApprovalRequest> {
-        return this.http.put<ApprovalRequest>(`${baseUrl}/${id}/approve`, request);
+        const url = `${baseUrl}/${id}/approve`;
+        console.log('=== APPROVAL SERVICE DEBUG ===');
+        console.log('Making HTTP PUT request to:', url);
+        console.log('Request payload:', JSON.stringify(request, null, 2));
+        console.log('Base URL:', baseUrl);
+        console.log('Request ID:', id);
+        
+        return this.http.put<ApprovalRequest>(url, request);
     }
 
     // Reject request
