@@ -3,7 +3,6 @@ import { AccountService } from '@app/_services/account.service';
 import { ActivityLogService } from '@app/_services/activity-log.service';
 import { Account } from '@app/_models/account';
 import { ActivityLog } from '@app/_models/activity-log';
-import { FormsModule } from '@angular/forms';
 
 interface UserLoginHistory {
   user: Account;
@@ -20,8 +19,10 @@ export class LoginHistoryComponent implements OnInit {
   userLoginHistories: UserLoginHistory[] = [];
   loading = true;
   error: string | null = null;
-  headerText: string = '';
-  editingHeader: boolean = false;
+
+  headerName: string = 'Stock Inventory System';
+  isEditingHeader: boolean = false;
+  tempHeaderName: string = '';
 
   constructor(
     private accountService: AccountService,
@@ -63,5 +64,22 @@ export class LoginHistoryComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  // Editable header methods
+  startEditHeader() {
+    this.tempHeaderName = this.headerName;
+    this.isEditingHeader = true;
+  }
+
+  saveHeaderName() {
+    if (this.tempHeaderName.trim()) {
+      this.headerName = this.tempHeaderName.trim();
+    }
+    this.isEditingHeader = false;
+  }
+
+  cancelEditHeader() {
+    this.isEditingHeader = false;
   }
 }
