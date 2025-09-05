@@ -164,21 +164,12 @@ export class AnalyticsService {
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - days);
     
-    // Include August 15, 2025 data specifically if within range
-    const august15_2025 = new Date('2025-08-15');
-    const shouldIncludeAugust15 = august15_2025 >= startDate && august15_2025 <= today;
-    
-    // Filter stocks that were created within the specified days OR on August 15, 2025
+    // Filter stocks that were created within the specified days
     const recentStocks = stocks.filter(stock => {
       if (!stock.createdAt) return false;
       const stockDate = new Date(stock.createdAt);
       
-      // Always include stocks from August 15, 2025
-      if (stockDate.toDateString() === august15_2025.toDateString()) {
-        return true;
-      }
-      
-      // Include other stocks within the time range
+      // Include stocks within the time range
       return stockDate >= startDate && stockDate <= today;
     });
     
@@ -224,21 +215,13 @@ export class AnalyticsService {
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - days);
 
-    // Include August 15, 2025 data specifically
-    const august15_2025 = new Date('2025-08-15');
-    
     const dailyAdditions = new Map<string, number>();
 
     stocks.filter(stock => {
       if (!stock.createdAt) return false;
       const stockDate = new Date(stock.createdAt);
       
-      // Always include stocks from August 15, 2025
-      if (stockDate.toDateString() === august15_2025.toDateString()) {
-        return true;
-      }
-      
-      // Include other stocks within the time range
+      // Include stocks within the time range
       return stockDate >= startDate && stockDate <= today;
     }).forEach(stock => {
       const stockDate = new Date(stock.createdAt);
@@ -310,14 +293,13 @@ export class AnalyticsService {
         const item = items.find(i => i.id === stock.itemId);
         if (item) {
           const stockDate = new Date(stock.updatedAt || stock.createdAt);
-          const isFromAugust15 = stockDate.toDateString() === new Date('2025-08-15').toDateString();
           
           activities.push({
             type: 'stock',
             message: `${item.name} stock updated to ${stock.quantity}`,
             timestamp: stockDate,
             icon: 'fas fa-boxes',
-            isSpecialDate: isFromAugust15
+            isSpecialDate: false
           });
         }
       });
