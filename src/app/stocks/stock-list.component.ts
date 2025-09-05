@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { environment } from '@environments/environment';
 
 import { StockService } from '../_services/stock.service';
 import { ItemService } from '../_services/item.service';
@@ -20,6 +21,21 @@ import { Role } from '../_models';
       padding: 20px 0;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       min-height: 100vh;
+    }
+
+    .no-receipt-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .no-receipt-placeholder h4 {
+      margin-bottom: 0.5rem;
+      color: #333;
     }
 
     .page-header {
@@ -1330,17 +1346,22 @@ export class StockListComponent implements OnInit {
   highlightedItemId: number | null = null;
   showViewStockModal = false;
   showEditStockModal = false;
+  showReceiptModal = false;
   selectedStock: any = null;
   currentInfoType: string = '';
+  currentReceiptUrl: string = '';
 
   // Add Stock Form Properties
-  stockModel = {
-    itemId: undefined as number | undefined,
-    quantity: undefined as number | undefined,
-    price: undefined as number | undefined,
-    locationId: undefined as number | undefined,
-    remarks: ''
-  };
+  stockEntries: Array<{
+    itemId: number | undefined,
+    quantity: number | undefined,
+    price: number | undefined,
+    locationId: number | undefined,
+    remarks: string
+  }> = [];
+  
+  // Single receipt file for the entire stock entry
+  stockReceiptFile: File | null = null;
   stockSubmitted = false;
   stockLoading = false;
   totalPrice = 0;
@@ -1394,6 +1415,7 @@ export class StockListComponent implements OnInit {
   openAddStockModal() {
     this.showAddStockModal = true;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    this.initializeStockEntries();
   }
 
   closeAddStockModal() {
@@ -1448,6 +1470,35 @@ export class StockListComponent implements OnInit {
     this.editStockLoading = false;
     this.editTotalPrice = 0;
     document.body.style.overflow = 'auto';
+  }
+
+  // Receipt Modal methods
+  openReceiptModal(filename: string) {
+    console.log('Opening receipt modal for filename:', filename);
+    this.currentReceiptUrl = this.getReceiptUrl(filename);
+    console.log('Receipt URL:', this.currentReceiptUrl);
+    this.showReceiptModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeReceiptModal() {
+    this.showReceiptModal = false;
+    document.body.style.overflow = 'auto';
+    this.currentReceiptUrl = '';
+  }
+
+  getReceiptUrl(filename: string): string {
+    return `${environment.apiUrl}/uploads/receipts/${filename}`;
+  }
+
+  onReceiptImageError(event: any) {
+    console.error('Receipt image failed to load:', event);
+    console.error('Image URL:', this.currentReceiptUrl);
+    this.alertService.error('Failed to load receipt image. Please check if the file exists.');
+  }
+
+  onReceiptImageLoad(event: any) {
+    console.log('Receipt image loaded successfully:', this.currentReceiptUrl);
   }
 
   // Info display methods
@@ -1654,49 +1705,108 @@ export class StockListComponent implements OnInit {
 
   // Add Stock Form Methods
   resetStockForm() {
-    this.stockModel = {
-      itemId: undefined,
-      quantity: undefined,
-      price: undefined,
-      locationId: undefined,
-      remarks: ''
-    };
+    this.stockEntries = [];
+    this.stockReceiptFile = null;
     this.stockSubmitted = false;
     this.stockLoading = false;
     this.totalPrice = 0;
   }
 
+  initializeStockEntries() {
+    this.stockEntries = [{
+      itemId: undefined,
+      quantity: undefined,
+      price: undefined,
+      locationId: undefined,
+      remarks: ''
+    }];
+    this.stockReceiptFile = null;
+  }
+
+  addNewStockEntry() {
+    this.stockEntries.push({
+      itemId: undefined,
+      quantity: undefined,
+      price: undefined,
+      locationId: undefined,
+      remarks: ''
+    });
+  }
+
+  removeStockEntry(index: number) {
+    if (this.stockEntries.length > 1) {
+      this.stockEntries.splice(index, 1);
+    }
+  }
+
+  onReceiptFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.alertService.error('Please select an image file for the receipt');
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        this.alertService.error('File size must be less than 5MB');
+        return;
+      }
+      
+      this.stockReceiptFile = file;
+    }
+  }
+
   saveStock() {
     this.stockSubmitted = true;
 
-    // stop here if form is invalid
-    if (!this.stockModel.itemId || !this.stockModel.quantity || !this.stockModel.price || !this.stockModel.locationId) {
+    // Validate all entries
+    const validEntries = this.stockEntries.filter(entry => 
+      entry.itemId && entry.quantity && entry.price && entry.locationId
+    );
+
+    if (validEntries.length === 0) {
+      this.alertService.error('Please fill in at least one complete stock entry');
       return;
     }
 
     this.stockLoading = true;
 
-    // Create the stock object
-    const stockData = {
-      itemId: this.stockModel.itemId,
-      quantity: this.stockModel.quantity,
-      price: this.stockModel.price,
-      locationId: this.stockModel.locationId,
-      remarks: this.stockModel.remarks
-    };
+    // Process all valid entries with single receipt file
+    const savePromises = validEntries.map(entry => {
+      const formData = new FormData();
+      formData.append('itemId', entry.itemId!.toString());
+      formData.append('quantity', entry.quantity!.toString());
+      formData.append('price', entry.price!.toString());
+      formData.append('locationId', entry.locationId!.toString());
+      formData.append('remarks', entry.remarks || '');
+      
+      // Add single receipt file if present (same file for all entries)
+      if (this.stockReceiptFile) {
+        formData.append('receipt', this.stockReceiptFile);
+      }
+      
+      return this.stockService.createWithFile(formData).pipe(first()).toPromise();
+    });
 
-    this.stockService.create(stockData)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.alertService.success('Stock added successfully');
-          this.closeAddStockModal();
-          this.loadData(); // Refresh the stock list
-        },
-        error: error => {
-          this.alertService.error(error);
-          this.stockLoading = false;
+    Promise.all(savePromises)
+      .then((results) => {
+        // Check if any results indicate pending approval
+        const hasPendingApproval = results.some(result => result && result.status === 'pending_approval');
+        
+        if (hasPendingApproval) {
+          this.alertService.success(`${validEntries.length} stock item(s) submitted for approval. You will be notified once approved.`);
+        } else {
+          this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
         }
+        
+        this.closeAddStockModal();
+        this.loadData(); // Refresh the stock list
+      })
+      .catch(error => {
+        this.alertService.error('Error adding stock items: ' + (error.message || error));
+        this.stockLoading = false;
       });
   }
 
@@ -1711,11 +1821,12 @@ export class StockListComponent implements OnInit {
   }
 
   calculateTotalPrice() {
-    if (this.stockModel.quantity && this.stockModel.price) {
-      this.totalPrice = this.stockModel.quantity * this.stockModel.price;
-    } else {
-      this.totalPrice = 0;
-    }
+    this.totalPrice = this.stockEntries.reduce((total, entry) => {
+      if (entry.quantity && entry.price) {
+        return total + (entry.quantity * entry.price);
+      }
+      return total;
+    }, 0);
   }
 
   // Edit Stock Form Methods
@@ -2077,7 +2188,7 @@ export class StockListComponent implements OnInit {
       disposeId: stock.disposeId,
       shouldShowGreenBadge: !stock.disposeId && stock.quantity > 0,
       shouldShowStockSummary: !stock.disposeId,
-      shouldShowDisposeButton: !stock.disposeId && this.hasRole([this.Role.SuperAdmin, this.Role.Admin]),
+      shouldShowDisposeButton: !stock.disposeId && this.hasRole([this.Role.SuperAdmin, this.Role.Admin, this.Role.Staff]),
       hasDisposal: !!stock.disposal
     };
     console.log('Stock display debug:', debug);

@@ -67,7 +67,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- Stocks -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 
                routerLink="/stocks" 
                routerLinkActive="active"
@@ -79,7 +79,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- Disposals -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 
                routerLink="/dispose" 
                routerLinkActive="active"
@@ -91,7 +91,7 @@ import { Role } from '@app/_models';
           </li>
 
           <!-- Add Items -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
             <a class="nav-link" 
                routerLink="/add" 
                routerLinkActive="active"
@@ -102,8 +102,20 @@ import { Role } from '@app/_models';
             </a>
           </li>
 
+          <!-- Approval Requests -->
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+            <a class="nav-link" 
+               routerLink="/approvals" 
+               routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+              <i class="fas fa-clipboard-check"></i>
+              <span *ngIf="!isCollapsed || isMobile">Approvals</span>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Approvals</span>
+            </a>
+          </li>
+
           <!-- PC Management -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <a class="nav-link" 
                routerLink="/pc" 
                routerLinkActive="active"
@@ -115,7 +127,7 @@ import { Role } from '@app/_models';
           </li>
 
                      <!-- Activity Logs -->
-           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
              <a class="nav-link" 
                 routerLink="/activity" 
                 routerLinkActive="active"
@@ -127,7 +139,7 @@ import { Role } from '@app/_models';
            </li>
 
            <!-- Archive Reports -->
-           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
              <a class="nav-link" 
                 routerLink="/archive" 
                 routerLinkActive="active"
@@ -139,7 +151,7 @@ import { Role } from '@app/_models';
            </li>
 
            <!-- Manage Accounts -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
             <a class="nav-link" 
                routerLink="/admin/accounts" 
                routerLinkActive="active"

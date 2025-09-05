@@ -6,3 +6,4 @@ export const environment = {
     ? process.env['API_URL'] 
     : 'https://computer-lab-inventory-backend-d48i.onrender.com'
 };
+

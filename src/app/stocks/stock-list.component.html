@@ -11,7 +11,7 @@
           </div>
         </div>
         <div class="header-actions">
-          <a routerLink="/dispose" class="btn btn-info" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
+          <a routerLink="/dispose" class="btn btn-info" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
             <i class="fas fa-trash-alt"></i>
             View Disposals
           </a>
@@ -253,12 +253,12 @@
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-warning"
                             (click)="openEditStockModal(stock)" title="Edit Stock"
-                            *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                            *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                       <i class="fas fa-edit"></i>
                     </button>
                     <button type="button" class="btn btn-sm btn-outline-info"
                             (click)="navigateToDispose(stock)" title="Dispose Stock"
-                            *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin])">
+                            *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                       <i class="fas fa-recycle"></i>
                     </button>
                   </div>
@@ -329,129 +329,171 @@
       <!-- Add Stock Form Content -->
       <div class="form-card">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header d-flex justify-content-between align-items-center">
             <h5><i class="fas fa-edit"></i> Stock Information</h5>
+            <button type="button" class="btn btn-success btn-sm" (click)="addNewStockEntry()">
+              <i class="fas fa-plus"></i> Add New Item
+            </button>
           </div>
           <div class="card-body">
             <form (ngSubmit)="saveStock()" #stockForm="ngForm" class="stock-form">
-              <div class="row">
-                <!-- Item Selection -->
-                <div class="form-group col-md-6">
-                  <label class="form-label">
-                    <i class="fas fa-tag"></i> Item *
-                  </label>
-                  <select 
-                    class="form-select" 
-                    [(ngModel)]="stockModel.itemId" 
-                    name="itemId" 
-                    required 
-                    [ngClass]="{ 'is-invalid': stockSubmitted && !stockModel.itemId }"
-                    (change)="onItemChange()"
+              
+              <!-- Multiple Stock Entries -->
+              <div *ngFor="let entry of stockEntries; let i = index" class="stock-entry mb-4 p-3 border rounded">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0">
+                    <i class="fas fa-box"></i> Stock Entry {{ i + 1 }}
+                  </h6>
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-danger btn-sm" 
+                    (click)="removeStockEntry(i)"
+                    *ngIf="stockEntries.length > 1"
+                    title="Remove this entry"
                   >
-                    <option value="" disabled>Select Item</option>
-                    <option *ngFor="let item of items" [value]="item.id">
-                      {{ item.name }} ({{ item.category?.name || 'No Category' }})
-                    </option>
-                  </select>
-                  <div class="invalid-feedback" *ngIf="stockSubmitted && !stockModel.itemId">
-                    Please select an item
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+
+                <div class="row">
+                  <!-- Item Selection -->
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-tag"></i> Item *
+                    </label>
+                    <select 
+                      class="form-select" 
+                      [(ngModel)]="entry.itemId" 
+                      [name]="'itemId_' + i" 
+                      required 
+                      [ngClass]="{ 'is-invalid': stockSubmitted && !entry.itemId }"
+                      (change)="calculateTotalPrice()"
+                    >
+                      <option value="" disabled>Select Item</option>
+                      <option *ngFor="let item of items" [value]="item.id">
+                        {{ item.name }} ({{ item.category?.name || 'No Category' }})
+                      </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && !entry.itemId">
+                      Please select an item
+                    </div>
+                  </div>
+
+                  <!-- Quantity -->
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-sort-numeric-up"></i> Quantity *
+                    </label>
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      [(ngModel)]="entry.quantity" 
+                      [name]="'quantity_' + i" 
+                      required
+                      min="1"
+                      (input)="calculateTotalPrice()"
+                      [ngClass]="{ 'is-invalid': stockSubmitted && (!entry.quantity || entry.quantity <= 0) }"
+                      placeholder="Enter quantity"
+                    >
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && (!entry.quantity || entry.quantity <= 0)">
+                      Quantity must be greater than 0
+                    </div>
                   </div>
                 </div>
 
-                <!-- Quantity -->
-                <div class="form-group col-md-6">
-                  <label class="form-label">
-                    <i class="fas fa-sort-numeric-up"></i> Quantity *
-                  </label>
-                  <input 
-                    type="number" 
-                    class="form-control" 
-                    [(ngModel)]="stockModel.quantity" 
-                    name="quantity" 
-                    required
-                    min="1"
-                    (input)="onQuantityChange()"
-                    [ngClass]="{ 'is-invalid': stockSubmitted && (!stockModel.quantity || stockModel.quantity <= 0) }"
-                    placeholder="Enter quantity"
-                  >
-                  <div class="invalid-feedback" *ngIf="stockSubmitted && (!stockModel.quantity || stockModel.quantity <= 0)">
-                    Quantity must be greater than 0
+                <div class="row">
+                  <!-- Price -->
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-dollar-sign"></i> Price (per item) *
+                    </label>
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      [(ngModel)]="entry.price" 
+                      [name]="'price_' + i" 
+                      step="0.01"
+                      required
+                      (input)="calculateTotalPrice()"
+                      [ngClass]="{ 'is-invalid': stockSubmitted && (!entry.price || entry.price <= 0) }"
+                      placeholder="Enter price"
+                    >
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && (!entry.price || entry.price <= 0)">
+                      Price must be greater than 0
+                    </div>
+                  </div>
+
+                  <!-- Storage Location -->
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-map-marker-alt"></i> Storage Location *
+                    </label>
+                    <select 
+                      class="form-select" 
+                      [(ngModel)]="entry.locationId" 
+                      [name]="'locationId_' + i" 
+                      required
+                      [ngClass]="{ 'is-invalid': stockSubmitted && !entry.locationId }"
+                    >
+                      <option value="" disabled>Select Location</option>
+                      <option *ngFor="let location of locations" [value]="location.id">
+                        {{ location.name }}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && !entry.locationId">
+                      Please select a storage location
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <!-- Remarks -->
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-comment"></i> Remarks
+                    </label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      [(ngModel)]="entry.remarks" 
+                      [name]="'remarks_' + i" 
+                      placeholder="Optional remarks"
+                    >
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Total Price Summary -->
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span><i class="fas fa-calculator"></i> <strong>Total Price for All Items:</strong></span>
+                      <span class="h5 mb-0">₱{{ totalPrice | number:'1.2-2' }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="row">
-                <!-- Price -->
-                <div class="form-group col-md-6">
-                  <label class="form-label">
-                    <i class="fas fa-dollar-sign"></i> Price (per item) *
-                  </label>
-                  <input 
-                    type="number" 
-                    class="form-control" 
-                    [(ngModel)]="stockModel.price" 
-                    name="price" 
-                    step="0.01"
-                    required
-                    (input)="calculateTotalPrice()"
-                    [ngClass]="{ 'is-invalid': stockSubmitted && (!stockModel.price || stockModel.price <= 0) }"
-                    placeholder="Enter price"
-                  >
-                  <div class="invalid-feedback" *ngIf="stockSubmitted && (!stockModel.price || stockModel.price <= 0)">
-                    Price must be greater than 0
+              <!-- Single Receipt Upload for All Items -->
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="fas fa-receipt"></i> Receipt Photo (Optional)
+                    </label>
+                    <input 
+                      type="file" 
+                      class="form-control" 
+                      accept="image/*"
+                      (change)="onReceiptFileSelected($event)"
+                      name="stock_receipt"
+                    >
+                    <small class="form-text text-muted">
+                      Upload one receipt photo for all items in this stock entry (JPG, PNG, GIF - Max 5MB)
+                    </small>
                   </div>
-                </div>
-
-                <!-- Total Price (Read-only) -->
-                <div class="form-group col-md-6">
-                  <label class="form-label">
-                    <i class="fas fa-calculator"></i> Total Price
-                  </label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    [value]="'php' + (totalPrice | number:'1.2-2')" 
-                    readonly
-                    style="background-color: #f8f9fa;"
-                  >
-                </div>
-              </div>
-
-              <div class="row">
-                <!-- Storage Location -->
-                <div class="form-group col-md-6">
-                  <label class="form-label">
-                    <i class="fas fa-map-marker-alt"></i> Storage Location *
-                  </label>
-                  <select 
-                    class="form-select" 
-                    [(ngModel)]="stockModel.locationId" 
-                    name="locationId" 
-                    required
-                    [ngClass]="{ 'is-invalid': stockSubmitted && !stockModel.locationId }"
-                  >
-                    <option value="" disabled>Select Location</option>
-                    <option *ngFor="let location of locations" [value]="location.id">
-                      {{ location.name }}
-                    </option>
-                  </select>
-                  <div class="invalid-feedback" *ngIf="stockSubmitted && !stockModel.locationId">
-                    Please select a storage location
-                  </div>
-                </div>
-
-                <!-- Remarks -->
-                <div class="form-group col-md-6">
-                  <label class="form-label">
-                    <i class="fas fa-comment"></i> Remarks
-                  </label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    [(ngModel)]="stockModel.remarks" 
-                    name="remarks" 
-                    placeholder="Optional remarks"
-                  >
                 </div>
               </div>
 
@@ -463,7 +505,7 @@
                 </button>
                 <button type="submit" class="btn btn-primary" [disabled]="stockLoading">
                   <i class="fas fa-save"></i>
-                  <span *ngIf="!stockLoading">Add Stock</span>
+                  <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>
                   <span *ngIf="stockLoading">Adding...</span>
                 </button>
               </div>
@@ -594,6 +636,29 @@
                   <i class="fas fa-comment"></i> Remarks
                 </div>
                 <div class="detail-value">{{ selectedStock.remarks }}</div>
+              </div>
+
+              <!-- Receipt Section -->
+              <div class="detail-item" *ngIf="selectedStock.receiptAttachment">
+                <div class="detail-label">
+                  <i class="fas fa-receipt"></i> Receipt Photo
+                </div>
+                <div class="detail-value">
+                  <div class="receipt-container">
+                    <img 
+                      [src]="getReceiptUrl(selectedStock.receiptAttachment)" 
+                      alt="Receipt Photo" 
+                      class="receipt-image"
+                      (click)="openReceiptModal(selectedStock.receiptAttachment)"
+                      style="cursor: pointer; max-width: 200px; max-height: 150px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                    >
+                    <div class="receipt-actions mt-2">
+                      <button class="btn btn-sm btn-outline-primary" (click)="openReceiptModal(selectedStock.receiptAttachment)">
+                        <i class="fas fa-expand"></i> View Full Size
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -786,6 +851,50 @@
             </form>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div class="modal-overlay" *ngIf="showReceiptModal" (click)="closeReceiptModal()">
+  <div class="modal-container receipt-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="header-content">
+        <div class="header-title">
+          <i class="fas fa-receipt"></i>
+          <div>
+            <h1 class="page-title">Receipt Photo</h1>
+            <p class="page-subtitle">View receipt attachment</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-close" (click)="closeReceiptModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="receipt-viewer">
+        <div *ngIf="currentReceiptUrl; else noReceiptTemplate">
+          <img 
+            [src]="currentReceiptUrl" 
+            alt="Receipt Photo" 
+            class="receipt-full-image"
+            style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);"
+            (error)="onReceiptImageError($event)"
+            (load)="onReceiptImageLoad($event)"
+          >
+        </div>
+        <ng-template #noReceiptTemplate>
+          <div class="no-receipt-placeholder">
+            <i class="fas fa-receipt" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <h4>No Receipt Available</h4>
+            <p class="text-muted">This stock entry doesn't have a receipt photo attached.</p>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

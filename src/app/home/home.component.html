@@ -1,66 +1,45 @@
 ﻿<div class="dashboard-container">
     <div class="container">
         <!-- Welcome Section -->
-        <div class="welcome-section">
+        <div class="welcome-section mb-4">
             <div class="welcome-card">
-                <div class="welcome-icon">
-                    <i class="fas fa-user-circle"></i>
-                </div>
                 <div class="welcome-content">
-                    <h1>Welcome back, {{account.firstName}}!</h1>
-                    <p class="welcome-subtitle">Inventory Management System Dashboard</p>
-                    <div class="role-badge">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>{{account.role}}</span>
+                    <h1 class="welcome-title">
+                        <i class="fas fa-tachometer-alt text-primary me-3"></i>
+                        Welcome to Inventory Pro
+                    </h1>
+                    <p class="welcome-subtitle">
+                        Manage your computer lab inventory efficiently and effectively
+                    </p>
+                    <div class="welcome-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-boxes text-primary"></i>
+                            <span>{{stats?.totalItems || 0}} Items</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-desktop text-success"></i>
+                            <span>{{stats?.totalPCs || 0}} PCs</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-users text-info"></i>
+                            <span>{{stats?.totalUsers || 0}} Users</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Quick Stats -->
-        <div class="stats-section">
+        <div class="quick-stats-section mb-4">
             <div class="row">
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-6 mb-3" *ngFor="let stat of quickStats">
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <i class="fas fa-boxes"></i>
+                            <i [class]="stat.icon"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>{{analyticsData?.totalItems || 0}}</h3>
-                            <p class="stat-number">Total Items</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-cubes"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>{{analyticsData?.totalStock || 0}}</h3>
-                            <p class="stat-number">Total Stock</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-desktop"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>{{analyticsData?.totalPCs || 0}}</h3>
-                            <p class="stat-number">Total PCs</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>{{analyticsData?.totalEmployees || 0}}</h3>
-                            <p class="stat-number">Total Employees</p>
+                            <div class="stat-number">{{stat.value}}</div>
+                            <div class="stat-label">{{stat.label}}</div>
                         </div>
                     </div>
                 </div>
@@ -68,49 +47,47 @@
         </div>
 
         <!-- Summary Metrics -->
-        <div class="summary-metrics-section" *ngIf="!loading && analyticsData">
+        <div class="summary-metrics-section mb-4">
             <div class="row">
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-6 mb-3">
                     <div class="metric-card">
-                        <div class="metric-icon warning">
-                            <i class="fas fa-exclamation-triangle"></i>
+                        <div class="metric-header">
+                            <h5><i class="fas fa-chart-pie text-primary me-2"></i> Stock Overview</h5>
                         </div>
                         <div class="metric-content">
-                            <h4>{{analyticsData.lowStockItems}}</h4>
-                            <p>Low Stock Items</p>
+                            <div class="metric-item">
+                                <span class="metric-label">Total Stock:</span>
+                                <span class="metric-value">{{stats?.totalStock || 0}}</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">In Use:</span>
+                                <span class="metric-value">{{stats?.inUse || 0}}</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Available:</span>
+                                <span class="metric-value">{{stats?.available || 0}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-6 mb-3">
                     <div class="metric-card">
-                        <div class="metric-icon danger">
-                            <i class="fas fa-times-circle"></i>
+                        <div class="metric-header">
+                            <h5><i class="fas fa-exclamation-triangle text-warning me-2"></i> Alerts</h5>
                         </div>
                         <div class="metric-content">
-                            <h4>{{analyticsData.outOfStockItems}}</h4>
-                            <p>Out of Stock</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="metric-card">
-                        <div class="metric-icon info">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h4>{{analyticsData.totalDepartments}}</h4>
-                            <p>Departments</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="metric-card">
-                        <div class="metric-icon secondary">
-                            <i class="fas fa-trash-alt"></i>
-                        </div>
-                        <div class="metric-content">
-                            <h4>{{analyticsData.totalDisposals}}</h4>
-                            <p>Total Disposals</p>
+                            <div class="metric-item">
+                                <span class="metric-label">Low Stock Items:</span>
+                                <span class="metric-value text-warning">{{stats?.lowStock || 0}}</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Out of Stock:</span>
+                                <span class="metric-value text-danger">{{stats?.outOfStock || 0}}</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Pending Requests:</span>
+                                <span class="metric-value text-info">{{stats?.pendingRequests || 0}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -438,6 +415,25 @@
                                     <i class="fas fa-calendar-alt me-1"></i>
                                     {{activity.timestamp | date:'medium'}}
                                 </div>
+                <div class="col-md-4 mb-3">
+                    <div class="analytics-card">
+                        <div class="analytics-header">
+                            <h5><i class="fas fa-clock text-info me-2"></i> Quick Actions</h5>
+                        </div>
+                        <div class="analytics-content">
+                            <div class="quick-actions">
+                                <button class="btn btn-primary btn-sm mb-2 w-100" routerLink="/add">
+                                    <i class="fas fa-plus me-2"></i>Add Item
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm mb-2 w-100" routerLink="/stocks">
+                                    <i class="fas fa-boxes me-2"></i>View Stock
+                                </button>
+                                <button class="btn btn-outline-success btn-sm mb-2 w-100" routerLink="/pc">
+                                    <i class="fas fa-desktop me-2"></i>PC Management
+                                </button>
+                                <button class="btn btn-outline-info btn-sm w-100" routerLink="/reports">
+                                    <i class="fas fa-chart-bar me-2"></i>Generate Report
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -469,73 +465,47 @@
         </div>
 
         <!-- Permissions Section -->
-        <div class="permissions-section" *ngIf="!loading">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-key"></i> Your Permissions</h5>
+        <div class="permissions-section mb-4" *ngIf="account">
+            <div class="permissions-card">
+                <div class="permissions-header">
+                    <h5><i class="fas fa-user-shield text-success me-2"></i> Your Permissions</h5>
                 </div>
-                <div class="card-body">
-                    <div class="permissions-grid">
-                        <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                            <i class="fas fa-eye"></i>
-                            <span>View inventory and stock information</span>
-                        </div>
-                        <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                            <i class="fas fa-edit"></i>
-                            <span>Add, edit, and manage inventory items</span>
-                        </div>
-                        <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                            <i class="fas fa-users-cog"></i>
-                            <span>Manage employees and departments</span>
-                        </div>
-                        <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                            <i class="fas fa-desktop"></i>
-                            <span>View PC management and components</span>
-                        </div>
-                        <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
-                            <i class="fas fa-cogs"></i>
-                            <span>Manage user accounts and system administration</span>
-                        </div>
+                <div class="permissions-content">
+                    <div class="permission-item">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Role: {{account.role}}</span>
+                    </div>
+                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Can manage inventory</span>
+                    </div>
+                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Can add/edit items</span>
+                    </div>
+                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Can manage users</span>
+                    </div>
+                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Can view all reports</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="quick-actions-section" *ngIf="!loading">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="actions-grid">
-                        <a routerLink="/stocks" class="action-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                            <i class="fas fa-boxes"></i>
-                            <span>View Stocks</span>
-                        </a>
-                        <a routerLink="/dispose" class="action-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                            <i class="fas fa-trash-alt"></i>
-                            <span>View Disposals</span>
-                        </a>
-                        <a routerLink="/add" class="action-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                            <i class="fas fa-plus-circle"></i>
-                            <span>Add Items</span>
-                        </a>
-                        <a routerLink="/pc" class="action-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])">
-                            <i class="fas fa-desktop"></i>
-                            <span>PC Management</span>
-                        </a>
-                        <a routerLink="/admin" class="action-item" *ngIf="hasRole([Role.SuperAdmin])">
-                            <i class="fas fa-cogs"></i>
-                            <span>Admin Panel</span>
-                        </a>
-                        <a routerLink="/profile" class="action-item">
-                            <i class="fas fa-user"></i>
-                            <span>My Profile</span>
-                        </a>
-                        <div class="action-item" (click)="downloadStockList()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Viewer])" style="cursor: pointer;">
-                            <i class="fas fa-file-excel text-success"></i>
-                            <span>Export Stock List</span>
+        <div class="quick-actions-section">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-3" *ngFor="let action of quickActions">
+                    <div class="action-card" [routerLink]="action.route">
+                        <div class="action-icon">
+                            <i [class]="action.icon"></i>
+                        </div>
+                        <div class="action-content">
+                            <h6>{{action.title}}</h6>
+                            <p>{{action.description}}</p>
                         </div>
                     </div>
                 </div>

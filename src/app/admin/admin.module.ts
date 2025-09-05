@@ -7,10 +7,6 @@ import { RouterModule } from '@angular/router';
 import { SubNavComponent } from './subnav.component';
 import { LayoutComponent } from './layout.component';
 import { OverviewComponent } from './overview.component';
-import { EmployeeTransferComponent } from './employee-transfer/employee-transfer.component';
-import { WorkflowListComponent } from './employees/workflow-list.component';
-import { WorkflowFormComponent } from './employees/workflow-form.component';
-import { WorkflowModalComponent } from './employees/workflow-modal.component';
 
 @NgModule({
     imports: [
@@ -22,11 +18,7 @@ import { WorkflowModalComponent } from './employees/workflow-modal.component';
     declarations: [
         SubNavComponent,
         LayoutComponent,
-        OverviewComponent,
-        EmployeeTransferComponent,
-        WorkflowListComponent,
-        WorkflowFormComponent,
-        WorkflowModalComponent
+        OverviewComponent
     ]
 })
 export class AdminModule { }

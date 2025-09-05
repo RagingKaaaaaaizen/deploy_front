@@ -1,5 +1,4 @@
 ﻿import { Role } from './role';
-import { Employee } from './employee'
 
 export class Account {
     id: string;
@@ -12,5 +11,4 @@ export class Account {
     status?: string;
     jwtToken?: string;
     verified?: Date;
-    employee?: Employee;
 }

@@ -17,27 +17,27 @@ import { StorageLocationAddComponent } from './storage-location/storage-location
 import { OverviewComponent } from './overview.component';
 
 const routes: Routes = [
-  { path: '', component: OverviewComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },        // default overview
+  { path: '', component: OverviewComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },        // default overview
   { path: 'category', component: CategoryListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-  { path: 'category/add', component: CategoryEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
-  { path: 'category/edit/:id', component: CategoryEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+  { path: 'category/add', component: CategoryEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+  { path: 'category/edit/:id', component: CategoryEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
   { path: 'category/view/:id', component: CategoryEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
 
   { path: 'item', component: ItemListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-  { path: 'item/add', component: ItemEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
-  { path: 'item/edit/:id', component: ItemEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+  { path: 'item/add', component: ItemEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+  { path: 'item/edit/:id', component: ItemEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
   { path: 'item/view/:id', component: ItemEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
 
   // NEW BRAND ROUTES
   { path: 'brand', component: BrandListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-  { path: 'brand/add', component: BrandEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
-  { path: 'brand/edit/:id', component: BrandEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+  { path: 'brand/add', component: BrandEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+  { path: 'brand/edit/:id', component: BrandEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
   { path: 'brand/view/:id', component: BrandEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
 
  
   { path: 'storage-locations', component: StorageLocationListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-  { path: 'storage-locations/add', component: StorageLocationAddComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
-  { path: 'storage-locations/edit/:id', component: StorageLocationEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+  { path: 'storage-locations/add', component: StorageLocationAddComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+  { path: 'storage-locations/edit/:id', component: StorageLocationEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
   { path: 'storage-locations/view/:id', component: StorageLocationEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
 ];
 

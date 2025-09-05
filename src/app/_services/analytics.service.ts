@@ -7,8 +7,6 @@ import { StockService } from './stock.service';
 import { ItemService } from './item.service';
 import { PCService } from './pc.service';
 import { PCComponentService } from './pc-component.service';
-import { EmployeeService } from './employee.service';
-import { DepartmentService } from './department.service';
 import { DisposeService } from './dispose.service';
 import * as XLSX from 'xlsx';
 // import * as docx from 'docx';
@@ -51,8 +49,6 @@ export class AnalyticsService {
     private itemService: ItemService,
     private pcService: PCService,
     private pcComponentService: PCComponentService,
-    private employeeService: EmployeeService,
-    private departmentService: DepartmentService,
     private disposeService: DisposeService
   ) {}
 

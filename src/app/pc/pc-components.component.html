@@ -24,7 +24,7 @@
             <a routerLink="/pc" class="btn btn-outline-secondary me-2">
               <i class="fas fa-arrow-left"></i> Back to PCs
             </a>
-            <button type="button" class="btn btn-primary" (click)="addComponent()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+            <button type="button" class="btn btn-primary" (click)="addComponent()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
               <i class="fas fa-plus"></i> Add Component
             </button>
           </div>
@@ -359,7 +359,7 @@
                         </select>
                       </td>
                       <td>
-                        <div class="btn-group" role="group" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+                        <div class="btn-group" role="group" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                           <button type="button" class="btn btn-sm btn-outline-warning" 
                                   (click)="returnToStock(component.id)" 
                                   title="Return to Stock">
@@ -371,7 +371,7 @@
                             <i class="fas fa-trash"></i>
                           </button>
                         </div>
-                        <span class="text-muted" *ngIf="!hasRole([Role.SuperAdmin, Role.Admin])">
+                        <span class="text-muted" *ngIf="!hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                           <i class="fas fa-eye"></i> View Only
                         </span>
                       </td>

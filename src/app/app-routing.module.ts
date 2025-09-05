@@ -14,20 +14,22 @@ const stocksModule = () => import('./stocks/stocks.module').then(x => x.StocksMo
 const pcModule = () => import('./pc/pc.module').then(x => x.PCModule);
 const disposeModule = () => import('./dispose/dispose.module').then(x => x.DisposeModule);
 const archiveModule = () => import('./archive/archive.module').then(x => x.ArchiveModule);
+const approvalsModule = () => import('./approvals/approvals.module').then(x => x.ApprovalsModule);
 
 const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'account', loadChildren: accountModule },
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
-    { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin] } },
-    { path: 'add', loadChildren: addModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
-    { path: 'stocks', loadChildren: stocksModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-    { path: 'dispose', loadChildren: disposeModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+    { path: 'add', loadChildren: addModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+    { path: 'stocks', loadChildren: stocksModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'dispose', loadChildren: disposeModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'approvals', loadChildren: approvalsModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
     
-    { path: 'pc', loadChildren: pcModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'pc', loadChildren: pcModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     
-    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-    { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
+    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
 
     { path: '**', redirectTo: '' }
 ];

@@ -1,8 +1,6 @@
 ﻿export * from './account';
 export * from './alert';
 export * from './role';
-export * from './employee';
-export * from './department';
 export * from './category';
 export * from './item';
 export * from './stock';
@@ -13,3 +11,4 @@ export * from './pc';
 export * from './dispose';
 export * from './pc-component';
 export * from './activity-log';
+export * from './approval-request';

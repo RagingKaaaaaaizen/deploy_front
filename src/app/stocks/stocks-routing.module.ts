@@ -8,8 +8,8 @@ import { StockEditComponent } from './stock-edit.component';
 
 const routes: Routes = [
   { path: '', component: StockListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } },
-  { path: 'add', component: StockEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
-  { path: 'edit/:id', component: StockEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+  { path: 'add', component: StockEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+  { path: 'edit/:id', component: StockEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
   { path: 'view/:id', component: StockEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Viewer] } }
 ];
 
