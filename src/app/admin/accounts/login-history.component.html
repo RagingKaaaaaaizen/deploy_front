@@ -1,24 +1,35 @@
 <div class="login-history-container">
   <header class="header">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <ng-container *ngIf="!editingHeader; else editHeader">
-        <h1 style="margin: 0;">{{ headerText || 'Stock Inventory System' }}</h1>
-        <button class="btn btn-link p-0" (click)="editingHeader = true" title="Edit header">
-          <span class="material-icons">edit</span>
-        </button>
-      </ng-container>
-      <ng-template #editHeader>
-        <input
-          [(ngModel)]="headerText"
-          (blur)="editingHeader = false"
-          (keydown.enter)="editingHeader = false"
-          placeholder="Stock Inventory System"
-          style="border: none; outline: none; font-size: 2rem; font-weight: bold; background: transparent; width: 320px; text-align: center;"
-          autofocus
-        />
-      </ng-template>
-    </div>
+    <input
+      type="text"
+      class="header-input"
+      [value]="headerName"
+      readonly
+      placeholder="Stock Inventory System"
+      (click)="startEditHeader()"
+    />
+    <button class="edit-btn" (click)="startEditHeader()" aria-label="Edit header">
+      ✏️
+    </button>
   </header>
+
+  <!-- Modal for editing header -->
+  <div class="modal-backdrop" *ngIf="isEditingHeader">
+    <div class="modal-content">
+      <h3>Edit Header</h3>
+      <input
+        type="text"
+        [(ngModel)]="tempHeaderName"
+        class="modal-input"
+        placeholder="Stock Inventory System"
+        autofocus
+      />
+      <div class="modal-actions">
+        <button (click)="saveHeaderName()" class="ok-btn">OK</button>
+        <button (click)="cancelEditHeader()" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <main class="body">
     <div *ngIf="loading" class="text-center my-4">
