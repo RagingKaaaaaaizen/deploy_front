@@ -47,7 +47,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- <tr *ngFor="let history of userLoginHistories">
+        <tr *ngFor="let history of userLoginHistories">
           <td>{{ history.user.firstName }} {{ history.user.lastName }}</td>
           <td>{{ history.user.email }}</td>
           <td>{{ history.loginCount }}</td>
@@ -56,7 +56,7 @@
               <li *ngFor="let date of history.loginDates">{{ date | date:'medium' }}</li>
             </ul>
           </td>
-        </tr> -->
+        </tr>
       </tbody>
     </table>
   </main>
