@@ -1,16 +1,23 @@
 <div class="login-history-container">
   <header class="header">
-    <div *ngIf="!editingHeader; else editHeaderBlock">
-      <h1>{{ headerText }}</h1>
-      <button class="btn btn-link btn-sm" (click)="startEditHeader()" title="Edit header">
-        <span class="fa fa-edit"></span> Edit
-      </button>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <ng-container *ngIf="!editingHeader; else editHeader">
+        <h1 style="margin: 0;">{{ headerText || 'Stock Inventory System' }}</h1>
+        <button class="btn btn-link p-0" (click)="editingHeader = true" title="Edit header">
+          <span class="material-icons">edit</span>
+        </button>
+      </ng-container>
+      <ng-template #editHeader>
+        <input
+          [(ngModel)]="headerText"
+          (blur)="editingHeader = false"
+          (keydown.enter)="editingHeader = false"
+          placeholder="Stock Inventory System"
+          style="border: none; outline: none; font-size: 2rem; font-weight: bold; background: transparent; width: 320px; text-align: center;"
+          autofocus
+        />
+      </ng-template>
     </div>
-    <ng-template #editHeaderBlock>
-      <input [(ngModel)]="tempHeaderText" class="form-control d-inline-block w-auto" style="max-width: 350px;" />
-      <button class="btn btn-success btn-sm ml-2" (click)="saveHeader()">Save</button>
-      <button class="btn btn-secondary btn-sm ml-1" (click)="cancelEditHeader()">Cancel</button>
-    </ng-template>
   </header>
 
   <main class="body">
