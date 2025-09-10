@@ -98,34 +98,30 @@
               
               <div class="detail-row">
                 <div class="detail-item">
-                  <div class="detail-label">Item ID</div>
-                  <div class="detail-value highlight">{{ getRequestData()?.itemId || 'N/A' }}</div>
-                </div>
-                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.name">
                   <div class="detail-label">Item Name</div>
-                  <div class="detail-value highlight">{{ getEnhancedData()?.itemDetails?.name }}</div>
+                  <div class="detail-value highlight">{{ getItemDisplayName() }}</div>
                 </div>
-              </div>
-              
-              <div class="detail-row" *ngIf="getEnhancedData()?.itemDetails?.model">
-                <div class="detail-item">
+                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.model">
                   <div class="detail-label">Model</div>
                   <div class="detail-value">{{ getEnhancedData()?.itemDetails?.model }}</div>
                 </div>
-                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.description">
+              </div>
+              
+              <div class="detail-row" *ngIf="getEnhancedData()?.itemDetails?.description">
+                <div class="detail-item full-width">
                   <div class="detail-label">Description</div>
                   <div class="detail-value">{{ getEnhancedData()?.itemDetails?.description }}</div>
                 </div>
               </div>
               
-              <div class="detail-row" *ngIf="getEnhancedData()?.itemDetails?.category || getEnhancedData()?.itemDetails?.brand">
-                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.category">
+              <div class="detail-row">
+                <div class="detail-item">
                   <div class="detail-label">Category</div>
-                  <div class="detail-value">{{ getEnhancedData()?.itemDetails?.category?.name }}</div>
+                  <div class="detail-value">{{ getCategoryDisplayName() }}</div>
                 </div>
-                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.brand">
+                <div class="detail-item">
                   <div class="detail-label">Brand</div>
-                  <div class="detail-value">{{ getEnhancedData()?.itemDetails?.brand?.name }}</div>
+                  <div class="detail-value">{{ getBrandDisplayName() }}</div>
                 </div>
               </div>
             </div>
@@ -162,12 +158,8 @@
               
               <div class="detail-row">
                 <div class="detail-item">
-                  <div class="detail-label">Location ID</div>
-                  <div class="detail-value highlight">{{ getRequestData()?.locationId || 'N/A' }}</div>
-                </div>
-                <div class="detail-item" *ngIf="getEnhancedData()?.locationDetails?.name">
-                  <div class="detail-label">Location Name</div>
-                  <div class="detail-value highlight">{{ getEnhancedData()?.locationDetails?.name }}</div>
+                  <div class="detail-label">Location</div>
+                  <div class="detail-value highlight">{{ getLocationDisplayName() }}</div>
                 </div>
               </div>
               <div class="detail-row" *ngIf="getEnhancedData()?.locationDetails?.description">

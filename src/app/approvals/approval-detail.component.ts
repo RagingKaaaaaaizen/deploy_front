@@ -222,9 +222,9 @@ import { ApprovalRequest, Role } from '@app/_models';
 
     .detail-value.total-value {
       font-weight: 700;
-      color: #e53e3e;
+      color: #38a169;
       font-size: 1.2rem;
-      background: #fed7d7;
+      background: #c6f6d5;
       padding: 8px 12px;
       border-radius: 6px;
       text-align: center;
@@ -583,6 +583,62 @@ export class ApprovalDetailComponent implements OnInit {
     const price = enhanced?.price || basic?.price || 0;
     console.log('Display price result:', price);
     return price;
+  }
+
+  // Get item display name with fallback
+  getItemDisplayName(): string {
+    const enhanced = this.getEnhancedData();
+    const basic = this.getRequestData();
+    
+    if (enhanced?.itemDetails?.name) {
+      return enhanced.itemDetails.name;
+    }
+    
+    // Fallback to Item ID if enhanced data not available
+    if (basic?.itemId) {
+      return `Item #${basic.itemId}`;
+    }
+    
+    return 'Unknown Item';
+  }
+
+  // Get category display name with fallback
+  getCategoryDisplayName(): string {
+    const enhanced = this.getEnhancedData();
+    
+    if (enhanced?.itemDetails?.category?.name) {
+      return enhanced.itemDetails.category.name;
+    }
+    
+    return 'Unknown Category';
+  }
+
+  // Get brand display name with fallback
+  getBrandDisplayName(): string {
+    const enhanced = this.getEnhancedData();
+    
+    if (enhanced?.itemDetails?.brand?.name) {
+      return enhanced.itemDetails.brand.name;
+    }
+    
+    return 'Unknown Brand';
+  }
+
+  // Get location display name with fallback
+  getLocationDisplayName(): string {
+    const enhanced = this.getEnhancedData();
+    const basic = this.getRequestData();
+    
+    if (enhanced?.locationDetails?.name) {
+      return enhanced.locationDetails.name;
+    }
+    
+    // Fallback to Location ID if enhanced data not available
+    if (basic?.locationId) {
+      return `Location #${basic.locationId}`;
+    }
+    
+    return 'Unknown Location';
   }
 
   // Format currency with proper comma separation
