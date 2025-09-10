@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AccountService } from '@app/_services';
+import { AccountService, ApprovalRequestService } from '@app/_services';
 import { Role } from '@app/_models';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav',
@@ -110,6 +112,7 @@ import { Role } from '@app/_models';
                (click)="closeMobileSidebar()">
               <i class="fas fa-clipboard-check"></i>
               <span *ngIf="!isCollapsed || isMobile">Approvals</span>
+              <span class="badge" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Approvals</span>
             </a>
           </li>
@@ -379,6 +382,25 @@ import { Role } from '@app/_models';
       transition: all 0.3s ease;
     }
 
+    .badge {
+      position: absolute;
+      top: 8px;
+      right: 15px;
+      background: #e53e3e;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 10px;
+      min-width: 18px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .nav-link:hover .badge {
+      background: #c53030;
+    }
+
     .tooltip {
       position: absolute;
       left: 100%;
@@ -502,18 +524,54 @@ import { Role } from '@app/_models';
     }
   `]
 })
-export class NavComponent {
+export class NavComponent implements OnInit, OnDestroy {
   Role = Role;
   isCollapsed = false;
   isMobile = false;
   isMobileOpen = false;
+  pendingCount = 0;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
-    public accountService: AccountService
+    public accountService: AccountService,
+    private approvalRequestService: ApprovalRequestService
   ) {
     this.checkScreenSize();
     window.addEventListener('resize', () => this.checkScreenSize());
+  }
+
+  ngOnInit() {
+    // Load pending count only if user has permission to see approvals
+    if (this.hasRole([Role.SuperAdmin, Role.Admin])) {
+      this.loadPendingCount();
+      
+      // Refresh pending count every 30 seconds
+      setInterval(() => {
+        if (this.hasRole([Role.SuperAdmin, Role.Admin])) {
+          this.loadPendingCount();
+        }
+      }, 30000);
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadPendingCount() {
+    this.approvalRequestService.getPendingCount()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.pendingCount = response.count || 0;
+        },
+        error: (error) => {
+          console.error('Error loading pending count:', error);
+          this.pendingCount = 0;
+        }
+      });
   }
 
   checkScreenSize() {
