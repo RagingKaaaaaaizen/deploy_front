@@ -525,11 +525,27 @@ export class ApprovalDetailComponent implements OnInit {
     return this.approvalRequest?.enhancedRequestData || null;
   }
 
-  // Get basic request data
+  // Get basic request data with proper parsing
   getRequestData(): any {
     console.log('=== FRONTEND DEBUG: getRequestData() ===');
     console.log('requestData:', this.approvalRequest?.requestData);
-    return this.approvalRequest?.requestData || null;
+    console.log('requestData type:', typeof this.approvalRequest?.requestData);
+    
+    let requestData = this.approvalRequest?.requestData;
+    
+    // If requestData is a string, parse it as JSON
+    if (typeof requestData === 'string') {
+      try {
+        requestData = JSON.parse(requestData);
+        console.log('✅ Successfully parsed requestData from string to object:', requestData);
+      } catch (error) {
+        console.error('❌ Failed to parse requestData JSON:', error);
+        return null;
+      }
+    }
+    
+    console.log('Final parsed requestData:', requestData);
+    return requestData || null;
   }
 
   // Get display quantity with robust fallback
