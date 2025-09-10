@@ -3,6 +3,7 @@ export interface ApprovalRequest {
     type: 'stock' | 'dispose';
     status: 'pending' | 'approved' | 'rejected';
     requestData: any; // JSON data containing the request details
+    enhancedRequestData?: any; // Enhanced data from backend with item/location details
     createdBy: number;
     approvedBy?: number;
     approvedAt?: Date;
@@ -17,12 +18,14 @@ export interface ApprovalRequest {
         firstName: string;
         lastName: string;
         email: string;
+        role?: string;
     };
     approver?: {
         id: number;
         firstName: string;
         lastName: string;
         email: string;
+        role?: string;
     };
 }
 
