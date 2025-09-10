@@ -65,7 +65,7 @@ import { ApprovalRequest, Role } from '@app/_models';
 
     .detail-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 350px 1fr;
       gap: 30px;
       margin-bottom: 30px;
     }
@@ -75,6 +75,11 @@ import { ApprovalRequest, Role } from '@app/_models';
       border-radius: 12px;
       padding: 20px;
       border: 1px solid #e2e8f0;
+    }
+
+    .detail-section:first-child {
+      padding: 16px;
+      max-width: 350px;
     }
 
     .section-title {
@@ -89,6 +94,10 @@ import { ApprovalRequest, Role } from '@app/_models';
 
     .detail-item {
       margin-bottom: 15px;
+    }
+
+    .detail-section:first-child .detail-item {
+      margin-bottom: 10px;
     }
 
     .detail-label {
@@ -324,6 +333,12 @@ import { ApprovalRequest, Role } from '@app/_models';
     @media (max-width: 768px) {
       .detail-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .detail-section:first-child {
+        max-width: none;
+        padding: 16px;
       }
     }
   `]
