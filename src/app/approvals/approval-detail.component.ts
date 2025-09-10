@@ -147,6 +147,96 @@ import { ApprovalRequest, Role } from '@app/_models';
       margin-top: 30px;
     }
 
+    /* Enhanced detailed request data styling */
+    .detailed-request-data {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .detail-subsection {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .subsection-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 0 0 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid #f7fafc;
+      padding-bottom: 10px;
+    }
+
+    .subsection-title i {
+      color: #4299e1;
+      font-size: 1rem;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .detail-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .detail-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .detail-value.highlight {
+      font-weight: 600;
+      color: #2b6cb0;
+    }
+
+    .detail-value.quantity {
+      font-weight: 600;
+      color: #38a169;
+      font-size: 1.1rem;
+    }
+
+    .detail-value.price {
+      font-weight: 600;
+      color: #d69e2e;
+      font-size: 1.1rem;
+    }
+
+    .detail-value.total-value {
+      font-weight: 700;
+      color: #e53e3e;
+      font-size: 1.2rem;
+      background: #fed7d7;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .detail-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .detail-subsection {
+        padding: 15px;
+      }
+      
+      .subsection-title {
+        font-size: 1rem;
+      }
+    }
+
     .btn {
       padding: 12px 24px;
       border-radius: 8px;
@@ -425,5 +515,24 @@ export class ApprovalDetailComponent implements OnInit {
 
   formatRequestData(data: any): string {
     return JSON.stringify(data, null, 2);
+  }
+
+  // Get enhanced request data from backend
+  getEnhancedData(): any {
+    return this.approvalRequest?.enhancedRequestData || null;
+  }
+
+  // Get basic request data
+  getRequestData(): any {
+    return this.approvalRequest?.requestData || null;
+  }
+
+  // Format currency with proper comma separation
+  formatCurrency(amount: number): string {
+    if (!amount && amount !== 0) return '0.00';
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
   }
 }

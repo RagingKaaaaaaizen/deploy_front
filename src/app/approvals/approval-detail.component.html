@@ -83,10 +83,121 @@
         <div class="detail-section">
           <h3 class="section-title">
             <i class="fas fa-database"></i>
-            Request Data
+            Request Details
           </h3>
           
-          <div class="request-data">
+          <!-- Stock Request Details -->
+          <div *ngIf="approvalRequest.type === 'stock'" class="detailed-request-data">
+            
+            <!-- Item Information -->
+            <div class="detail-subsection" *ngIf="getEnhancedData()?.itemDetails">
+              <h4 class="subsection-title">
+                <i class="fas fa-cube"></i>
+                Item Information
+              </h4>
+              
+              <div class="detail-row">
+                <div class="detail-item">
+                  <div class="detail-label">Item Name</div>
+                  <div class="detail-value highlight">{{ getEnhancedData()?.itemDetails?.name || 'N/A' }}</div>
+                </div>
+                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.model">
+                  <div class="detail-label">Model</div>
+                  <div class="detail-value">{{ getEnhancedData()?.itemDetails?.model }}</div>
+                </div>
+              </div>
+              
+              <div class="detail-row" *ngIf="getEnhancedData()?.itemDetails?.description">
+                <div class="detail-item full-width">
+                  <div class="detail-label">Description</div>
+                  <div class="detail-value">{{ getEnhancedData()?.itemDetails?.description }}</div>
+                </div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.category">
+                  <div class="detail-label">Category</div>
+                  <div class="detail-value">{{ getEnhancedData()?.itemDetails?.category?.name }}</div>
+                </div>
+                <div class="detail-item" *ngIf="getEnhancedData()?.itemDetails?.brand">
+                  <div class="detail-label">Brand</div>
+                  <div class="detail-value">{{ getEnhancedData()?.itemDetails?.brand?.name }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stock Information -->
+            <div class="detail-subsection">
+              <h4 class="subsection-title">
+                <i class="fas fa-boxes"></i>
+                Stock Information
+              </h4>
+              
+              <div class="detail-row">
+                <div class="detail-item">
+                  <div class="detail-label">Quantity</div>
+                  <div class="detail-value quantity">{{ getEnhancedData()?.quantity || getRequestData()?.quantity || 0 }}</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Unit Price</div>
+                  <div class="detail-value price">₱{{ formatCurrency(getEnhancedData()?.price || getRequestData()?.price || 0) }}</div>
+                </div>
+                <div class="detail-item" *ngIf="getEnhancedData()?.totalValue || (getRequestData()?.quantity && getRequestData()?.price)">
+                  <div class="detail-label">Total Value</div>
+                  <div class="detail-value total-value">₱{{ formatCurrency(getEnhancedData()?.totalValue || (getRequestData()?.quantity * getRequestData()?.price)) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Location Information -->
+            <div class="detail-subsection" *ngIf="getEnhancedData()?.locationDetails">
+              <h4 class="subsection-title">
+                <i class="fas fa-map-marker-alt"></i>
+                Storage Location
+              </h4>
+              
+              <div class="detail-row">
+                <div class="detail-item">
+                  <div class="detail-label">Location</div>
+                  <div class="detail-value highlight">{{ getEnhancedData()?.locationDetails?.name || 'N/A' }}</div>
+                </div>
+              </div>
+              <div class="detail-row" *ngIf="getEnhancedData()?.locationDetails?.description">
+                <div class="detail-item full-width">
+                  <div class="detail-label">Description</div>
+                  <div class="detail-value">{{ getEnhancedData()?.locationDetails?.description }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="detail-subsection" *ngIf="getRequestData()?.remarks || getRequestData()?.receiptAttachment">
+              <h4 class="subsection-title">
+                <i class="fas fa-info-circle"></i>
+                Additional Information
+              </h4>
+              
+              <div class="detail-row" *ngIf="getRequestData()?.remarks">
+                <div class="detail-item full-width">
+                  <div class="detail-label">Remarks</div>
+                  <div class="detail-value">{{ getRequestData()?.remarks }}</div>
+                </div>
+              </div>
+              
+              <div class="detail-row" *ngIf="getRequestData()?.receiptAttachment">
+                <div class="detail-item full-width">
+                  <div class="detail-label">Receipt Attachment</div>
+                  <div class="detail-value">
+                    <i class="fas fa-file-invoice"></i>
+                    {{ getRequestData()?.receiptAttachment }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fallback for dispose or other types -->
+          <div *ngIf="approvalRequest.type !== 'stock'" class="request-data">
             {{ formatRequestData(approvalRequest.requestData) }}
           </div>
         </div>
