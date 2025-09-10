@@ -136,15 +136,15 @@
               <div class="detail-row">
                 <div class="detail-item">
                   <div class="detail-label">Quantity</div>
-                  <div class="detail-value quantity">{{ getEnhancedData()?.quantity || getRequestData()?.quantity || 0 }}</div>
+                  <div class="detail-value quantity">{{ getDisplayQuantity() }}</div>
                 </div>
                 <div class="detail-item">
                   <div class="detail-label">Unit Price</div>
-                  <div class="detail-value price">₱{{ formatCurrency(getEnhancedData()?.price || getRequestData()?.price || 0) }}</div>
+                  <div class="detail-value price">₱{{ formatCurrency(getDisplayPrice()) }}</div>
                 </div>
-                <div class="detail-item" *ngIf="getEnhancedData()?.totalValue || (getRequestData()?.quantity && getRequestData()?.price)">
+                <div class="detail-item" *ngIf="getDisplayQuantity() && getDisplayPrice()">
                   <div class="detail-label">Total Value</div>
-                  <div class="detail-value total-value">₱{{ formatCurrency(getEnhancedData()?.totalValue || (getRequestData()?.quantity * getRequestData()?.price)) }}</div>
+                  <div class="detail-value total-value">₱{{ formatCurrency(getDisplayQuantity() * getDisplayPrice()) }}</div>
                 </div>
               </div>
             </div>

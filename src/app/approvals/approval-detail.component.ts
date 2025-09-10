@@ -519,12 +519,39 @@ export class ApprovalDetailComponent implements OnInit {
 
   // Get enhanced request data from backend
   getEnhancedData(): any {
+    console.log('=== FRONTEND DEBUG: getEnhancedData() ===');
+    console.log('Full approvalRequest:', this.approvalRequest);
+    console.log('enhancedRequestData:', this.approvalRequest?.enhancedRequestData);
     return this.approvalRequest?.enhancedRequestData || null;
   }
 
   // Get basic request data
   getRequestData(): any {
+    console.log('=== FRONTEND DEBUG: getRequestData() ===');
+    console.log('requestData:', this.approvalRequest?.requestData);
     return this.approvalRequest?.requestData || null;
+  }
+
+  // Get display quantity with robust fallback
+  getDisplayQuantity(): number {
+    console.log('Getting display quantity...');
+    const enhanced = this.getEnhancedData();
+    const basic = this.getRequestData();
+    
+    const quantity = enhanced?.quantity || basic?.quantity || 0;
+    console.log('Display quantity result:', quantity);
+    return quantity;
+  }
+
+  // Get display price with robust fallback
+  getDisplayPrice(): number {
+    console.log('Getting display price...');
+    const enhanced = this.getEnhancedData();
+    const basic = this.getRequestData();
+    
+    const price = enhanced?.price || basic?.price || 0;
+    console.log('Display price result:', price);
+    return price;
   }
 
   // Format currency with proper comma separation
