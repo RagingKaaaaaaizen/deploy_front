@@ -24,7 +24,7 @@ const routes: Routes = [
     path: '',
     component: ApprovalListComponent,
     canActivate: [AuthGuard],
-    data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] }
+    data: { roles: [Role.SuperAdmin, Role.Admin] }
   }
 ];
 

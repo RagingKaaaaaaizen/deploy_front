@@ -343,6 +343,12 @@ export class ApprovalListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Redirect Staff users to My Requests page
+    if (this.hasRole([Role.Staff])) {
+      this.router.navigate(['/approvals/my-requests']);
+      return;
+    }
+    
     this.loadApprovalRequests();
   }
 
