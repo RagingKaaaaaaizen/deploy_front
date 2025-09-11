@@ -221,6 +221,10 @@ export class ArchiveService {
 
   // Generate PDF and return as blob for preview
   generatePDFBlob(reportData: ReportData, reportType: string): Blob {
+    console.log('Generating PDF for report type:', reportType);
+    console.log('Report data structure:', reportData);
+    console.log('Summary data:', reportData.summary);
+    
     const doc = new jsPDF();
     
     // Add header
@@ -390,7 +394,7 @@ export class ArchiveService {
         xPosition += 35;
         doc.text(new Date(disposal.disposalDate).toLocaleDateString(), xPosition, yPosition);
         xPosition += 35;
-        doc.text(`$${disposal.totalValue?.toFixed(2) || '0.00'}`, xPosition, yPosition);
+        doc.text(`$${(typeof disposal.totalValue === 'number' ? disposal.totalValue.toFixed(2) : '0.00')}`, xPosition, yPosition);
         yPosition += 5;
       });
       yPosition += 10;
@@ -448,26 +452,47 @@ export class ArchiveService {
   }
 
   downloadPDF(reportData: ReportData, reportType: string): void {
-    const blob = this.generatePDFBlob(reportData, reportType);
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `inventory-report-${reportType}-${new Date().toISOString().split('T')[0]}.pdf`;
-    link.click();
-    window.URL.revokeObjectURL(url);
+    try {
+      console.log('Downloading PDF for report type:', reportType);
+      console.log('Report data:', reportData);
+      const blob = this.generatePDFBlob(reportData, reportType);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `inventory-report-${reportType}-${new Date().toISOString().split('T')[0]}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generating PDF for download:', error);
+      alert('Error generating PDF download. Please check the console for details.');
+    }
   }
 
   downloadStoredReportPDF(report: StoredReport): void {
-    this.downloadPDF(report.data, report.type);
+    try {
+      console.log('Downloading PDF for report:', report);
+      console.log('Report data:', report.data);
+      this.downloadPDF(report.data, report.type);
+    } catch (error) {
+      console.error('Error generating PDF for download:', error);
+      alert('Error generating PDF download. Please check the console for details.');
+    }
   }
 
   // Preview PDF in new window
   previewPDF(report: StoredReport): void {
-    const blob = this.generatePDFBlob(report.data, report.type);
-    const url = window.URL.createObjectURL(blob);
-    window.open(url, '_blank');
-    // Clean up after a delay
-    setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+    try {
+      console.log('Previewing PDF for report:', report);
+      console.log('Report data:', report.data);
+      const blob = this.generatePDFBlob(report.data, report.type);
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      // Clean up after a delay
+      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+      console.error('Error generating PDF for preview:', error);
+      alert('Error generating PDF preview. Please check the console for details.');
+    }
   }
 
   getWeeklyReportData(): Observable<ReportData> {
