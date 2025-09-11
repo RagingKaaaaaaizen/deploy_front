@@ -245,13 +245,13 @@ export class ArchiveService {
     yPosition += 7;
     doc.text(`Total PCs: ${reportData.summary.totalPCs}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total Value: $${reportData.summary.totalValue.toFixed(2)}`, 20, yPosition);
+    doc.text(`Total Value: $${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Stock Value: $${reportData.summary.stockValue?.toFixed(2) || '0.00'}`, 20, yPosition);
+    doc.text(`Stock Value: $${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Disposal Value: $${reportData.summary.disposalValue?.toFixed(2) || '0.00'}`, 20, yPosition);
+    doc.text(`Disposal Value: $${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`PC Value: $${reportData.summary.pcValue?.toFixed(2) || '0.00'}`, 20, yPosition);
+    doc.text(`PC Value: $${(typeof reportData.summary.pcValue === 'number' ? reportData.summary.pcValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 15;
 
     // Detailed Analysis section
@@ -348,7 +348,7 @@ export class ArchiveService {
         xPosition += 35;
         doc.text(stock.locationName || 'N/A', xPosition, yPosition);
         xPosition += 35;
-        doc.text(`$${stock.totalPrice?.toFixed(2) || '0.00'}`, xPosition, yPosition);
+        doc.text(`$${(typeof stock.totalPrice === 'number' ? stock.totalPrice.toFixed(2) : '0.00')}`, xPosition, yPosition);
         xPosition += 35;
         doc.text(stock.categoryName || 'N/A', xPosition, yPosition);
         yPosition += 5;
