@@ -23,7 +23,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
             
             <!-- Items Summary -->
             <div class="items-summary mt-4" *ngIf="items && items.length > 0">
-              <h5><i class="fas fa-list"></i> Items to Add:</h5>
+              <h5><i class="fas fa-list"></i> Items to Add ({{ items.length }} item{{ items.length > 1 ? 's' : '' }}):</h5>
               <div class="table-responsive">
                 <table class="table table-striped">
                   <thead>
@@ -36,7 +36,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let item of items">
+                    <tr *ngFor="let item of items; let i = index">
                       <td>
                         <strong>{{ getItemName(item.itemId) }}</strong>
                         <br>
@@ -50,7 +50,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
                   </tbody>
                   <tfoot>
                     <tr class="table-success">
-                      <th colspan="3">Total Value:</th>
+                      <th colspan="3">Total Value ({{ items.length }} item{{ items.length > 1 ? 's' : '' }}):</th>
                       <th class="text-success">₱{{ getTotalValue() | number:'1.2-2' }}</th>
                       <th></th>
                     </tr>

@@ -26,6 +26,13 @@ export class StockService {
     return this.http.post<Stock | any>(baseUrl, formData);
   }
 
+  createBulk(stockEntries: any[], receiptAttachment?: string): Observable<any> {
+    return this.http.post<any>(`${baseUrl}/bulk`, {
+      stockEntries: stockEntries,
+      receiptAttachment: receiptAttachment
+    });
+  }
+
   update(id: number, stock: Stock): Observable<Stock> {
     return this.http.put<Stock>(`${baseUrl}/${id}`, stock);
   }

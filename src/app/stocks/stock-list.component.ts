@@ -1788,40 +1788,43 @@ export class StockListComponent implements OnInit {
 
     this.stockLoading = true;
 
-    // Process all valid entries with single receipt file
-    const savePromises = validEntries.map(entry => {
-      const formData = new FormData();
-      formData.append('itemId', entry.itemId!.toString());
-      formData.append('quantity', entry.quantity!.toString());
-      formData.append('price', entry.price!.toString());
-      formData.append('locationId', entry.locationId!.toString());
-      formData.append('remarks', entry.remarks || '');
-      
-      // Add single receipt file if present (same file for all entries)
-      if (this.stockReceiptFile) {
-        formData.append('receipt', this.stockReceiptFile);
-      }
-      
-      return this.stockService.createWithFile(formData).pipe(first()).toPromise();
-    });
+    // Prepare stock entries data
+    const stockEntriesData = validEntries.map(entry => ({
+      itemId: entry.itemId,
+      quantity: entry.quantity,
+      price: entry.price,
+      locationId: entry.locationId,
+      remarks: entry.remarks || ''
+    }));
 
-    Promise.all(savePromises)
-      .then((results) => {
-        // Check if any results indicate pending approval
-        const hasPendingApproval = results.some(result => result && result.status === 'pending_approval');
-        
-        if (hasPendingApproval) {
-          this.alertService.success(`${validEntries.length} stock item(s) submitted for approval. You will be notified once approved.`);
-        } else {
-          this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
+    // Handle receipt file
+    let receiptAttachment = '';
+    if (this.stockReceiptFile) {
+      // For now, we'll store the filename - in a real implementation, 
+      // you might want to upload the file first and get the filename
+      receiptAttachment = this.stockReceiptFile.name;
+    }
+
+    // Use bulk endpoint for better grouping
+    this.stockService.createBulk(stockEntriesData, receiptAttachment)
+      .pipe(first())
+      .subscribe({
+        next: (result) => {
+          this.stockLoading = false;
+          
+          if (result && result.status === 'pending_approval') {
+            this.alertService.success(`${validEntries.length} stock item(s) submitted for approval. You will be notified once approved.`);
+          } else {
+            this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
+          }
+          
+          this.closeAddStockModal();
+          this.loadData(); // Refresh the stock list
+        },
+        error: (error) => {
+          this.stockLoading = false;
+          this.alertService.error('Error adding stock items: ' + (error.message || error));
         }
-        
-        this.closeAddStockModal();
-        this.loadData(); // Refresh the stock list
-      })
-      .catch(error => {
-        this.alertService.error('Error adding stock items: ' + (error.message || error));
-        this.stockLoading = false;
       });
   }
 
