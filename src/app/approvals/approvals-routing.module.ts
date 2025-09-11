@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@app/_helpers';
+import { ApprovalRedirectGuard } from '@app/_helpers/approval-redirect.guard';
 import { Role } from '@app/_models';
 
 import { ApprovalListComponent } from './approval-list.component';
@@ -23,8 +24,7 @@ const routes: Routes = [
   {
     path: '',
     component: ApprovalListComponent,
-    canActivate: [AuthGuard],
-    data: { roles: [Role.SuperAdmin, Role.Admin] }
+    canActivate: [ApprovalRedirectGuard]
   }
 ];
 
