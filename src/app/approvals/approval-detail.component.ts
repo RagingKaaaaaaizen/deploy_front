@@ -761,8 +761,8 @@ export class ApprovalDetailComponent implements OnInit {
     console.error('Image URL:', this.currentReceiptUrl);
     console.error('Filename from request data:', this.getRequestData()?.receiptAttachment);
     
-    // Don't show error alert for missing images, just log it
-    // this.alertService.error('Failed to load receipt image. Please check if the file exists.');
+    // Show a more informative error message
+    this.alertService.warning('Receipt image file not found on server. The file may have been deleted or moved.');
   }
 
   onReceiptImageLoad(event: any) {

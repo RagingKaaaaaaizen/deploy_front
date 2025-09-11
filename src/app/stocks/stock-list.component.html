@@ -658,12 +658,12 @@
               </div>
 
               <!-- Receipt Section -->
-              <div class="detail-item" *ngIf="selectedStock.receiptAttachment">
+              <div class="detail-item">
                 <div class="detail-label">
                   <i class="fas fa-receipt"></i> Receipt Photo
                 </div>
                 <div class="detail-value">
-                  <div class="receipt-container">
+                  <div class="receipt-container" *ngIf="selectedStock.receiptAttachment; else noReceiptTemplate">
                     <img 
                       [src]="getReceiptUrl(selectedStock.receiptAttachment)" 
                       alt="Receipt Photo" 
@@ -684,6 +684,12 @@
                       </button>
                     </div>
                   </div>
+                  <ng-template #noReceiptTemplate>
+                    <div class="no-receipt-placeholder" style="max-width: 200px; max-height: 150px; border: 2px dashed #ccc; border-radius: 8px; padding: 20px; text-align: center; background: #f9f9f9;">
+                      <i class="fas fa-receipt" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                      <p style="margin: 0; color: #666; font-size: 0.9rem;">No Receipt Available</p>
+                    </div>
+                  </ng-template>
                 </div>
               </div>
             </div>
