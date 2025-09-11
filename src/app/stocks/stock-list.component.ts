@@ -1888,16 +1888,7 @@ export class StockListComponent implements OnInit {
     });
   }
 
-  // Helper methods for delete modal
-  getItemName(itemId: number): string {
-    const item = this.items.find(i => i.id === itemId);
-    return item ? item.name : `Item #${itemId}`;
-  }
-
-  getLocationName(locationId: number): string {
-    const location = this.locations.find(l => l.id === locationId);
-    return location ? location.name : `Location #${locationId}`;
-  }
+  // Helper methods for delete modal removed - using existing methods below
 
   onItemChange() {
     // Reset total price when item changes
@@ -2182,6 +2173,11 @@ export class StockListComponent implements OnInit {
     return item ? item.name : 'Unknown Item';
   }
 
+  getLocationName(locationId: number): string {
+    const location = this.locations.find(l => l.id === locationId);
+    return location ? location.name : `Location #${locationId}`;
+  }
+
   getCategoryName(stock: any): string {
     const item = this.items.find(i => i.id === stock.itemId);
     if (!item) return 'Unknown';
@@ -2198,7 +2194,7 @@ export class StockListComponent implements OnInit {
     return brand ? brand.name : 'Unknown Brand';
   }
 
-  getLocationName(stock: any): string {
+  getLocationNameByStock(stock: any): string {
     const location = this.locations.find(l => l.id === stock.locationId);
     return location ? location.name : 'Unknown Location';
   }
