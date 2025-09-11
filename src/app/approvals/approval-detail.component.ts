@@ -740,7 +740,9 @@ export class ApprovalDetailComponent implements OnInit {
   }
 
   getReceiptUrl(filename: string): string {
-    return `${environment.apiUrl}/uploads/receipts/${filename}`;
+    // URL encode the filename to handle spaces and special characters
+    const encodedFilename = encodeURIComponent(filename);
+    return `${environment.apiUrl}/uploads/receipts/${encodedFilename}`;
   }
 
   onReceiptImageError(event: any) {

@@ -1503,7 +1503,9 @@ export class StockListComponent implements OnInit {
   }
 
   getReceiptUrl(filename: string): string {
-    return `${environment.apiUrl}/uploads/receipts/${filename}`;
+    // URL encode the filename to handle spaces and special characters
+    const encodedFilename = encodeURIComponent(filename);
+    return `${environment.apiUrl}/uploads/receipts/${encodedFilename}`;
   }
 
   onReceiptImageError(event: any) {
@@ -1797,16 +1799,8 @@ export class StockListComponent implements OnInit {
       remarks: entry.remarks || ''
     }));
 
-    // Handle receipt file
-    let receiptAttachment = '';
-    if (this.stockReceiptFile) {
-      // For now, we'll store the filename - in a real implementation, 
-      // you might want to upload the file first and get the filename
-      receiptAttachment = this.stockReceiptFile.name;
-    }
-
     // Use bulk endpoint for better grouping
-    this.stockService.createBulk(stockEntriesData, receiptAttachment)
+    this.stockService.createBulk(stockEntriesData, this.stockReceiptFile)
       .pipe(first())
       .subscribe({
         next: (result) => {
