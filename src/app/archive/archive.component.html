@@ -18,7 +18,7 @@
         <div class="statistic-label">Total Reports</div>
       </div>
       <div class="statistic-card">
-        <div class="statistic-number">${{ (typeof reportStatistics.totalValue === 'number' ? reportStatistics.totalValue.toFixed(0) : '0') }}</div>
+        <div class="statistic-number">${{ formatNumber(reportStatistics.totalValue, 0) }}</div>
         <div class="statistic-label">Total Value</div>
       </div>
       <div class="statistic-card">
@@ -265,7 +265,7 @@
         <div class="summary-label">Total PCs</div>
       </div>
       <div class="summary-card">
-        <div class="summary-number">${{ (typeof (weeklyData || monthlyData)?.summary?.totalValue === 'number' ? (weeklyData || monthlyData)?.summary?.totalValue?.toFixed(2) : '0.00') }}</div>
+        <div class="summary-number">${{ formatCurrency((weeklyData || monthlyData)?.summary?.totalValue, 2) }}</div>
         <div class="summary-label">Total Value</div>
       </div>
     </div>
@@ -343,7 +343,7 @@
             <div class="stored-summary-label">PCs</div>
           </div>
           <div class="stored-summary-item">
-            <div class="stored-summary-number">${{ (typeof report.summary.totalValue === 'number' ? report.summary.totalValue.toFixed(0) : '0') }}</div>
+            <div class="stored-summary-number">${{ formatNumber(report.summary.totalValue, 0) }}</div>
             <div class="stored-summary-label">Value</div>
           </div>
         </div>

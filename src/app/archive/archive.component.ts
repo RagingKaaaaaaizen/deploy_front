@@ -1132,4 +1132,19 @@ export class ArchiveComponent implements OnInit {
   private getMonthYear(date: Date): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
   }
+
+  // Helper methods for safe number formatting
+  formatNumber(value: any, decimals: number = 0): string {
+    if (typeof value === 'number') {
+      return value.toFixed(decimals);
+    }
+    return decimals === 0 ? '0' : '0.00';
+  }
+
+  formatCurrency(value: any, decimals: number = 2): string {
+    if (typeof value === 'number') {
+      return value.toFixed(decimals);
+    }
+    return decimals === 0 ? '0' : '0.00';
+  }
 }
