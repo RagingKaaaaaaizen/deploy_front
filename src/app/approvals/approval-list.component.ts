@@ -328,6 +328,7 @@ export class ApprovalListComponent implements OnInit {
   approvalRequests: ApprovalRequest[] = [];
   loading = false;
   currentFilter: string = 'all';
+  Role = Role; // Make Role enum accessible in template
   stats = {
     pending: 0,
     approved: 0,
