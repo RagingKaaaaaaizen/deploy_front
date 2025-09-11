@@ -373,6 +373,11 @@ export class ApprovalDetailComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (request) => {
+          console.log('=== LOADING APPROVAL REQUEST ===');
+          console.log('Approval request data:', request);
+          console.log('Request data:', request.requestData);
+          console.log('Receipt attachment:', this.getRequestData()?.receiptAttachment);
+          
           this.approvalRequest = request;
           this.loading = false;
         },
@@ -726,7 +731,11 @@ export class ApprovalDetailComponent implements OnInit {
 
   // Receipt Modal methods
   openReceiptModal(filename: string) {
-    console.log('Opening receipt modal for filename:', filename);
+    console.log('=== OPENING RECEIPT MODAL (APPROVAL) ===');
+    console.log('Filename:', filename);
+    console.log('Request data:', this.getRequestData());
+    console.log('Receipt attachment from request:', this.getRequestData()?.receiptAttachment);
+    
     this.currentReceiptUrl = this.getReceiptUrl(filename);
     console.log('Receipt URL:', this.currentReceiptUrl);
     this.showReceiptModal = true;

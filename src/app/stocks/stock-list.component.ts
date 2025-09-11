@@ -1441,6 +1441,11 @@ export class StockListComponent implements OnInit {
 
   // View Stock Modal methods
   openViewStockModal(stock: any) {
+    console.log('=== OPENING STOCK DETAILS MODAL ===');
+    console.log('Selected stock data:', stock);
+    console.log('Receipt attachment:', stock.receiptAttachment);
+    console.log('Has receipt attachment:', !!stock.receiptAttachment);
+    
     this.selectedStock = stock;
     this.showViewStockModal = true;
     this.currentInfoType = '';
