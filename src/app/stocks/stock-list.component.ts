@@ -1366,6 +1366,17 @@ export class StockListComponent implements OnInit {
   stockLoading = false;
   totalPrice = 0;
 
+  // Confirmation Modal Properties
+  showConfirmationModalFlag = false;
+  validStockEntries: any[] = [];
+  currentUserRole = '';
+  confirmButtonText = 'Confirm';
+
+  // Delete Modal Properties
+  showDeleteStockModal = false;
+  stockToDelete: any = null;
+  deleteStockLoading = false;
+
   // Edit Stock Form Properties
   editStockModel = {
     id: undefined as number | undefined,
@@ -1395,6 +1406,10 @@ export class StockListComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    
+    // Set current user role
+    const currentUser = this.accountService.accountValue;
+    this.currentUserRole = currentUser?.role || '';
     
     // Check for query parameters to highlight specific items
     this.route.queryParams.subscribe(params => {
@@ -1808,6 +1823,80 @@ export class StockListComponent implements OnInit {
         this.alertService.error('Error adding stock items: ' + (error.message || error));
         this.stockLoading = false;
       });
+  }
+
+  // New confirmation modal methods
+  showConfirmationModal() {
+    this.stockSubmitted = true;
+
+    // Validate all entries
+    this.validStockEntries = this.stockEntries.filter(entry => 
+      entry.itemId && entry.quantity && entry.price && entry.locationId
+    );
+
+    if (this.validStockEntries.length === 0) {
+      this.alertService.error('Please fill in at least one complete stock entry');
+      return;
+    }
+
+    // Set confirmation button text based on role
+    if (this.currentUserRole === 'SuperAdmin' || this.currentUserRole === 'Admin') {
+      this.confirmButtonText = 'Add to Inventory';
+    } else {
+      this.confirmButtonText = 'Submit for Approval';
+    }
+
+    this.showConfirmationModalFlag = true;
+  }
+
+  hideConfirmationModal() {
+    this.showConfirmationModalFlag = false;
+  }
+
+  proceedWithSave() {
+    this.hideConfirmationModal();
+    this.saveStock();
+  }
+
+  // Delete stock methods
+  confirmDeleteStock(stock: any) {
+    this.stockToDelete = stock;
+    this.showDeleteStockModal = true;
+  }
+
+  cancelDeleteStock() {
+    this.showDeleteStockModal = false;
+    this.stockToDelete = null;
+  }
+
+  deleteStock() {
+    if (!this.stockToDelete) return;
+
+    this.deleteStockLoading = true;
+    
+    this.stockService.delete(this.stockToDelete.id).subscribe({
+      next: () => {
+        this.alertService.success('Stock entry deleted successfully');
+        this.cancelDeleteStock();
+        this.loadData(); // Refresh the list
+        this.deleteStockLoading = false;
+      },
+      error: (error) => {
+        this.alertService.error('Error deleting stock entry: ' + (error.message || error));
+        this.deleteStockLoading = false;
+      }
+    });
+  }
+
+  // Helper methods for delete modal
+  getItemName(itemId: number): string {
+    const item = this.items.find(i => i.id === itemId);
+    return item ? item.name : `Item #${itemId}`;
+  }
+
+  getLocationName(locationId: number): string {
+    const location = this.locations.find(l => l.id === locationId);
+    return location ? location.name : `Location #${locationId}`;
   }
 
   onItemChange() {
