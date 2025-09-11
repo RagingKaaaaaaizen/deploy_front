@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'account', loadChildren: accountModule },
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
-    { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
+    { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
     { path: 'add', loadChildren: addModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
     { path: 'stocks', loadChildren: stocksModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     { path: 'dispose', loadChildren: disposeModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
@@ -28,7 +28,7 @@ const routes: Routes = [
     
     { path: 'pc', loadChildren: pcModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     
-    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
     { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
 
     { path: '**', redirectTo: '' }

@@ -129,17 +129,17 @@ import { takeUntil } from 'rxjs/operators';
             </a>
           </li>
 
-                     <!-- Activity Logs -->
-           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-             <a class="nav-link" 
-                routerLink="/activity" 
-                routerLinkActive="active"
-                (click)="closeMobileSidebar()">
-               <i class="fas fa-history"></i>
-               <span *ngIf="!isCollapsed || isMobile">Activity Logs</span>
-               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Activity Logs</span>
-             </a>
-           </li>
+          <!-- Activity Logs -->
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+            <a class="nav-link" 
+               routerLink="/activity" 
+               routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+              <i class="fas fa-history"></i>
+              <span *ngIf="!isCollapsed || isMobile">Activity Logs</span>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Activity Logs</span>
+            </a>
+          </li>
 
            <!-- Archive Reports -->
            <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
@@ -154,7 +154,7 @@ import { takeUntil } from 'rxjs/operators';
            </li>
 
            <!-- Manage Accounts -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
             <a class="nav-link" 
                routerLink="/admin/accounts" 
                routerLinkActive="active"
