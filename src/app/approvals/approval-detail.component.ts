@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { ApprovalRequestService, AlertService, AccountService } from '@app/_services';
 import { ApprovalRequest, Role } from '@app/_models';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-approval-detail',
@@ -346,6 +347,10 @@ import { ApprovalRequest, Role } from '@app/_models';
 export class ApprovalDetailComponent implements OnInit {
   approvalRequest: ApprovalRequest | null = null;
   loading = false;
+  
+  // Receipt modal properties
+  showReceiptModal = false;
+  currentReceiptUrl = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -717,5 +722,34 @@ export class ApprovalDetailComponent implements OnInit {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(amount);
+  }
+
+  // Receipt Modal methods
+  openReceiptModal(filename: string) {
+    console.log('Opening receipt modal for filename:', filename);
+    this.currentReceiptUrl = this.getReceiptUrl(filename);
+    console.log('Receipt URL:', this.currentReceiptUrl);
+    this.showReceiptModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeReceiptModal() {
+    this.showReceiptModal = false;
+    document.body.style.overflow = 'auto';
+    this.currentReceiptUrl = '';
+  }
+
+  getReceiptUrl(filename: string): string {
+    return `${environment.apiUrl}/uploads/receipts/${filename}`;
+  }
+
+  onReceiptImageError(event: any) {
+    console.error('Receipt image failed to load:', event);
+    console.error('Image URL:', this.currentReceiptUrl);
+    this.alertService.error('Failed to load receipt image. Please check if the file exists.');
+  }
+
+  onReceiptImageLoad(event: any) {
+    console.log('Receipt image loaded successfully');
   }
 }
