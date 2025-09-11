@@ -557,8 +557,8 @@ export class ArchiveService {
     const weeklyReports = this.getReportsByType('weekly');
     const weeks: { weekNumber: number; startDate: Date; endDate: Date; exists: boolean }[] = [];
     
-    // Generate last 12 weeks
-    for (let i = 0; i < 12; i++) {
+    // Generate last 24 weeks (6 months) for more flexibility
+    for (let i = 0; i < 24; i++) {
       const endDate = new Date();
       endDate.setDate(endDate.getDate() - (i * 7));
       const startDate = new Date(endDate);
@@ -581,8 +581,8 @@ export class ArchiveService {
     const monthlyReports = this.getReportsByType('monthly');
     const months: { monthYear: string; startDate: Date; endDate: Date; exists: boolean }[] = [];
     
-    // Generate last 12 months
-    for (let i = 0; i < 12; i++) {
+    // Generate last 24 months (2 years) for more flexibility
+    for (let i = 0; i < 24; i++) {
       const endDate = new Date();
       endDate.setMonth(endDate.getMonth() - i);
       endDate.setDate(0); // Last day of the month
