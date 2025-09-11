@@ -546,12 +546,12 @@ export class NavComponent implements OnInit, OnDestroy {
     if (this.hasRole([Role.SuperAdmin, Role.Admin])) {
       this.loadPendingCount();
       
-      // Refresh pending count every 30 seconds
+      // Refresh pending count every 1 second
       setInterval(() => {
         if (this.hasRole([Role.SuperAdmin, Role.Admin])) {
           this.loadPendingCount();
         }
-      }, 30000);
+      }, 1000);
     }
   }
 
