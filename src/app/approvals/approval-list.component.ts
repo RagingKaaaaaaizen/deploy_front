@@ -507,4 +507,13 @@ export class ApprovalListComponent implements OnInit {
         return 'All Requests';
     }
   }
+
+  // Role checking method
+  hasRole(roles: Role[]): boolean {
+    const account = this.accountService.accountValue;
+    if (!account) return false;
+    
+    const userRole = account.role;
+    return roles.some(role => role === userRole);
+  }
 }
