@@ -274,6 +274,50 @@ import { ApprovalRequest, Role } from '@app/_models';
       animation: spin 1s linear infinite;
     }
 
+    .filter-section {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-filter {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      color: #6c757d;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-filter:hover {
+      background: #e9ecef;
+      border-color: #dee2e6;
+      color: #495057;
+    }
+
+    .btn-filter.active {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+    }
+
+    .btn-filter i {
+      font-size: 0.9rem;
+    }
+
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -283,6 +327,7 @@ import { ApprovalRequest, Role } from '@app/_models';
 export class ApprovalListComponent implements OnInit {
   approvalRequests: ApprovalRequest[] = [];
   loading = false;
+  currentFilter: string = 'all';
   stats = {
     pending: 0,
     approved: 0,
@@ -297,12 +342,6 @@ export class ApprovalListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Check if user is staff - redirect to my-requests
-    if (this.accountService.accountValue?.role === Role.Staff) {
-      this.router.navigate(['/approvals/my-requests']);
-      return;
-    }
-    
     this.loadApprovalRequests();
   }
 
@@ -442,5 +481,30 @@ export class ApprovalListComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  // Filter methods
+  setFilter(filter: string) {
+    this.currentFilter = filter;
+  }
+
+  getFilteredRequests(): ApprovalRequest[] {
+    if (this.currentFilter === 'all') {
+      return this.approvalRequests;
+    }
+    return this.approvalRequests.filter(request => request.status === this.currentFilter);
+  }
+
+  getFilterTitle(): string {
+    switch (this.currentFilter) {
+      case 'pending':
+        return 'Pending Requests';
+      case 'approved':
+        return 'Approved Requests';
+      case 'rejected':
+        return 'Rejected Requests';
+      default:
+        return 'All Requests';
+    }
   }
 }

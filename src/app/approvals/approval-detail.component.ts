@@ -569,6 +569,18 @@ export class ApprovalDetailComponent implements OnInit {
     const enhanced = this.getEnhancedData();
     const basic = this.getRequestData();
     
+    // Handle bulk requests
+    if (this.isBulkRequest()) {
+      const enhancedEntries = enhanced?.enhancedStockEntries;
+      if (enhancedEntries && enhancedEntries.length > 0) {
+        const totalQuantity = enhancedEntries.reduce((sum, entry) => sum + (entry.quantity || 0), 0);
+        console.log('Bulk quantity result:', totalQuantity);
+        return totalQuantity;
+      }
+      return basic?.stockEntries?.length || 0;
+    }
+    
+    // Handle single item requests
     const quantity = enhanced?.quantity || basic?.quantity || 0;
     console.log('Display quantity result:', quantity);
     return quantity;
@@ -580,16 +592,47 @@ export class ApprovalDetailComponent implements OnInit {
     const enhanced = this.getEnhancedData();
     const basic = this.getRequestData();
     
+    // Handle bulk requests
+    if (this.isBulkRequest()) {
+      const enhancedEntries = enhanced?.enhancedStockEntries;
+      if (enhancedEntries && enhancedEntries.length > 0) {
+        const totalValue = enhancedEntries.reduce((sum, entry) => sum + (entry.totalValue || 0), 0);
+        console.log('Bulk total value result:', totalValue);
+        return totalValue;
+      }
+      return 0;
+    }
+    
+    // Handle single item requests
     const price = enhanced?.price || basic?.price || 0;
     console.log('Display price result:', price);
     return price;
   }
 
   // Get item display name with fallback
+  // Check if this is a bulk request
+  isBulkRequest(): boolean {
+    const basic = this.getRequestData();
+    return basic?.stockEntries && Array.isArray(basic.stockEntries) && basic.stockEntries.length > 1;
+  }
+
   getItemDisplayName(): string {
     const enhanced = this.getEnhancedData();
     const basic = this.getRequestData();
     
+    // Handle bulk requests
+    if (this.isBulkRequest()) {
+      const enhancedEntries = enhanced?.enhancedStockEntries;
+      if (enhancedEntries && enhancedEntries.length > 0) {
+        const firstItem = enhancedEntries[0];
+        if (firstItem?.itemDetails?.name) {
+          return `${firstItem.itemDetails.name} (+${enhancedEntries.length - 1} more)`;
+        }
+      }
+      return `${basic.stockEntries.length} Items`;
+    }
+    
+    // Handle single item requests
     if (enhanced?.itemDetails?.name) {
       return enhanced.itemDetails.name;
     }
@@ -606,6 +649,19 @@ export class ApprovalDetailComponent implements OnInit {
   getCategoryDisplayName(): string {
     const enhanced = this.getEnhancedData();
     
+    // Handle bulk requests
+    if (this.isBulkRequest()) {
+      const enhancedEntries = enhanced?.enhancedStockEntries;
+      if (enhancedEntries && enhancedEntries.length > 0) {
+        const firstItem = enhancedEntries[0];
+        if (firstItem?.itemDetails?.category?.name) {
+          return `${firstItem.itemDetails.category.name} (+${enhancedEntries.length - 1} more)`;
+        }
+      }
+      return 'Multiple Categories';
+    }
+    
+    // Handle single item requests
     if (enhanced?.itemDetails?.category?.name) {
       return enhanced.itemDetails.category.name;
     }
@@ -617,6 +673,19 @@ export class ApprovalDetailComponent implements OnInit {
   getBrandDisplayName(): string {
     const enhanced = this.getEnhancedData();
     
+    // Handle bulk requests
+    if (this.isBulkRequest()) {
+      const enhancedEntries = enhanced?.enhancedStockEntries;
+      if (enhancedEntries && enhancedEntries.length > 0) {
+        const firstItem = enhancedEntries[0];
+        if (firstItem?.itemDetails?.brand?.name) {
+          return `${firstItem.itemDetails.brand.name} (+${enhancedEntries.length - 1} more)`;
+        }
+      }
+      return 'Multiple Brands';
+    }
+    
+    // Handle single item requests
     if (enhanced?.itemDetails?.brand?.name) {
       return enhanced.itemDetails.brand.name;
     }

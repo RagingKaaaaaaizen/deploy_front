@@ -89,8 +89,54 @@
           <!-- Stock Request Details -->
           <div *ngIf="approvalRequest.type === 'stock'" class="detailed-request-data">
             
-            <!-- Item Information -->
-            <div class="detail-subsection">
+            <!-- Bulk Items Section (for multiple items) -->
+            <div *ngIf="isBulkRequest()" class="detail-subsection">
+              <h4 class="subsection-title">
+                <i class="fas fa-boxes"></i>
+                Items Information ({{ getRequestData()?.stockEntries?.length }} items)
+              </h4>
+              
+              <div class="bulk-items-table">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Category</th>
+                      <th>Brand</th>
+                      <th>Quantity</th>
+                      <th>Price</th>
+                      <th>Total</th>
+                      <th>Location</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let entry of getEnhancedData()?.enhancedStockEntries">
+                      <td>
+                        <strong>{{ entry.itemDetails?.name || 'Unknown Item' }}</strong>
+                        <br>
+                        <small class="text-muted">{{ entry.itemDetails?.model || '' }}</small>
+                      </td>
+                      <td>{{ entry.itemDetails?.category?.name || 'Unknown Category' }}</td>
+                      <td>{{ entry.itemDetails?.brand?.name || 'Unknown Brand' }}</td>
+                      <td class="quantity">{{ entry.quantity || 0 }}</td>
+                      <td class="price">₱{{ entry.price | number:'1.2-2' }}</td>
+                      <td class="total-value">₱{{ entry.totalValue | number:'1.2-2' }}</td>
+                      <td>{{ entry.locationDetails?.name || 'Unknown Location' }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="table-success">
+                      <th colspan="5">Total Value:</th>
+                      <th class="total-value">₱{{ getEnhancedData()?.totalValue | number:'1.2-2' }}</th>
+                      <th></th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            
+            <!-- Single Item Information -->
+            <div *ngIf="!isBulkRequest()" class="detail-subsection">
               <h4 class="subsection-title">
                 <i class="fas fa-cube"></i>
                 Item Information
@@ -126,8 +172,8 @@
               </div>
             </div>
 
-            <!-- Stock Information -->
-            <div class="detail-subsection">
+            <!-- Stock Information (Single Item Only) -->
+            <div *ngIf="!isBulkRequest()" class="detail-subsection">
               <h4 class="subsection-title">
                 <i class="fas fa-boxes"></i>
                 Stock Information
@@ -149,8 +195,8 @@
               </div>
             </div>
 
-            <!-- Location Information -->
-            <div class="detail-subsection">
+            <!-- Location Information (Single Item Only) -->
+            <div *ngIf="!isBulkRequest()" class="detail-subsection">
               <h4 class="subsection-title">
                 <i class="fas fa-map-marker-alt"></i>
                 Storage Location

@@ -10,7 +10,7 @@
             <p class="page-subtitle">Review and manage pending requests</p>
           </div>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" *ngIf="hasRole([Role.Staff])">
           <a routerLink="/approvals/my-requests" class="btn btn-secondary">
             <i class="fas fa-user"></i>
             My Requests
@@ -44,12 +44,42 @@
       </div>
     </div>
 
+    <!-- Filter Buttons -->
+    <div class="filter-section">
+      <div class="filter-buttons">
+        <button class="btn btn-filter" 
+                [class.active]="currentFilter === 'all'"
+                (click)="setFilter('all')">
+          <i class="fas fa-list"></i>
+          All ({{ stats.pending + stats.approved + stats.rejected }})
+        </button>
+        <button class="btn btn-filter" 
+                [class.active]="currentFilter === 'pending'"
+                (click)="setFilter('pending')">
+          <i class="fas fa-clock"></i>
+          Pending ({{ stats.pending }})
+        </button>
+        <button class="btn btn-filter" 
+                [class.active]="currentFilter === 'approved'"
+                (click)="setFilter('approved')">
+          <i class="fas fa-check"></i>
+          Approved ({{ stats.approved }})
+        </button>
+        <button class="btn btn-filter" 
+                [class.active]="currentFilter === 'rejected'"
+                (click)="setFilter('rejected')">
+          <i class="fas fa-times"></i>
+          Rejected ({{ stats.rejected }})
+        </button>
+      </div>
+    </div>
+
     <!-- Requests List -->
     <div class="requests-container">
       <div class="requests-header">
         <h2 class="requests-title">
           <i class="fas fa-list"></i>
-          All Requests
+          {{ getFilterTitle() }}
         </h2>
         <button class="btn btn-primary" (click)="loadApprovalRequests()">
           <i class="fas fa-sync-alt"></i>
@@ -64,15 +94,15 @@
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="!loading && approvalRequests.length === 0" class="empty-state">
+      <div *ngIf="!loading && getFilteredRequests().length === 0" class="empty-state">
         <i class="fas fa-clipboard-list"></i>
-        <h3>No Approval Requests</h3>
-        <p>There are no approval requests to review at this time.</p>
+        <h3>No {{ getFilterTitle() }}</h3>
+        <p>There are no {{ getFilterTitle().toLowerCase() }} to review at this time.</p>
       </div>
 
       <!-- Requests List -->
-      <div *ngIf="!loading && approvalRequests.length > 0">
-        <div *ngFor="let request of approvalRequests" class="request-item">
+      <div *ngIf="!loading && getFilteredRequests().length > 0">
+        <div *ngFor="let request of getFilteredRequests()" class="request-item">
           <div class="request-header">
             <div class="request-type">
               <i [class]="getTypeIcon(request.type)"></i>
