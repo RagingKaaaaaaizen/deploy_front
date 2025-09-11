@@ -762,7 +762,7 @@ export class ApprovalDetailComponent implements OnInit {
     console.error('Filename from request data:', this.getRequestData()?.receiptAttachment);
     
     // Show a more informative error message
-    this.alertService.warning('Receipt image file not found on server. The file may have been deleted or moved.');
+    this.alertService.warn('Receipt image file not found on server. The file may have been deleted or moved.');
   }
 
   onReceiptImageLoad(event: any) {

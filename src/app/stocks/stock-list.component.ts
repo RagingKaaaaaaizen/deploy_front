@@ -1521,7 +1521,7 @@ export class StockListComponent implements OnInit {
     console.error('Filename from stock data:', this.selectedStock?.receiptAttachment);
     
     // Show a more informative error message
-    this.alertService.warning('Receipt image file not found on server. The file may have been deleted or moved.');
+    this.alertService.warn('Receipt image file not found on server. The file may have been deleted or moved.');
   }
 
   onReceiptImageLoad(event: any) {
