@@ -1503,6 +1503,8 @@ export class StockListComponent implements OnInit {
   }
 
   getReceiptUrl(filename: string): string {
+    if (!filename) return '';
+    
     // URL encode the filename to handle spaces and special characters
     const encodedFilename = encodeURIComponent(filename);
     return `${environment.apiUrl}/uploads/receipts/${encodedFilename}`;
@@ -1511,7 +1513,10 @@ export class StockListComponent implements OnInit {
   onReceiptImageError(event: any) {
     console.error('Receipt image failed to load:', event);
     console.error('Image URL:', this.currentReceiptUrl);
-    this.alertService.error('Failed to load receipt image. Please check if the file exists.');
+    console.error('Filename from stock data:', this.selectedStock?.receiptAttachment);
+    
+    // Don't show error alert for missing images, just log it
+    // this.alertService.error('Failed to load receipt image. Please check if the file exists.');
   }
 
   onReceiptImageLoad(event: any) {
