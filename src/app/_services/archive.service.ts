@@ -439,6 +439,67 @@ export class ArchiveService {
       });
     }
 
+    // Receipt Images section
+    const receiptsWithImages = [
+      ...reportData.stocks.filter(stock => stock.receiptAttachment),
+      ...reportData.disposals.filter(disposal => disposal.receiptAttachment)
+    ];
+
+    if (receiptsWithImages.length > 0) {
+      if (yPosition > 200) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.text('Receipt Images', 20, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.text(`Total Receipt Images: ${receiptsWithImages.length}`, 20, yPosition);
+      yPosition += 15;
+      
+      doc.setFontSize(8);
+      const receiptHeaders = ['Type', 'Item', 'Date Added', 'Receipt File', 'Value'];
+      let xPosition = 20;
+      receiptHeaders.forEach(header => {
+        doc.text(header, xPosition, yPosition);
+        xPosition += 35;
+      });
+      yPosition += 7;
+      
+      receiptsWithImages.forEach(receipt => {
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        xPosition = 20;
+        
+        // Determine type (Stock or Disposal)
+        const isStock = reportData.stocks.some(stock => stock.id === receipt.id);
+        doc.text(isStock ? 'Stock' : 'Disposal', xPosition, yPosition);
+        xPosition += 35;
+        
+        doc.text(receipt.itemName || 'N/A', xPosition, yPosition);
+        xPosition += 35;
+        
+        const dateAdded = new Date(receipt.createdAt).toLocaleDateString();
+        const timeAdded = new Date(receipt.createdAt).toLocaleTimeString();
+        doc.text(`${dateAdded}`, xPosition, yPosition);
+        yPosition += 4;
+        doc.text(`${timeAdded}`, xPosition, yPosition);
+        yPosition -= 4;
+        xPosition += 35;
+        
+        doc.text(receipt.receiptAttachment || 'N/A', xPosition, yPosition);
+        xPosition += 35;
+        
+        const value = isStock ? receipt.totalPrice : receipt.totalValue;
+        doc.text(`$${(typeof value === 'number' ? value.toFixed(2) : '0.00')}`, xPosition, yPosition);
+        yPosition += 8;
+      });
+    }
+
     // Footer with metadata
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
