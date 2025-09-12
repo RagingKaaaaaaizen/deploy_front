@@ -1,0 +1,18 @@
+Library system
+•No issues found so far
+
+Registrar system
+•Student registration duplicated
+•Pending files fail to update
+•Data fetching errors
+
+Voting System
+•Create new election bug/s
+
+Hotel Booking system
+•Does not handle misrouting
+•No success confirmation after booking
+
+Grading system
+•UI needs improvement
+•Unlock request needs notification
