@@ -6,4 +6,4 @@ services:
     staticPublishPath: ./dist/angular-signup-verification-boilerplate
     envVars:
       - key: API_URL
-        value: https://computer-lab-inventory-backend-szij.onrender.com
+        value: https://computer-lab-inventory-backend-klzb.onrender.com

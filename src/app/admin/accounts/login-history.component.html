@@ -1,7 +1,36 @@
 <div class="login-history-container">
   <header class="header">
-    <h1></h1>
+
+    <input
+      type="text"
+      class="header-input"
+      [value]="headerName"
+      readonly
+      placeholder="Stock Inventory System"
+      (click)="startEditHeader()"
+    />
+    <button class="edit-btn" (click)="startEditHeader()" aria-label="Edit header">
+      ✏️
+    </button>
   </header>
+
+  <!-- Modal for editing header -->
+  <div class="modal-backdrop" *ngIf="isEditingHeader">
+    <div class="modal-content">
+      <h3>Edit Header</h3>
+      <input
+        type="text"
+        [(ngModel)]="tempHeaderName"
+        class="modal-input"
+        placeholder="Stock Inventory System"
+        autofocus
+      />
+      <div class="modal-actions">
+        <button (click)="saveHeaderName()" class="ok-btn">OK</button>
+        <button (click)="cancelEditHeader()" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <main class="body">
     <div *ngIf="loading" class="text-center my-4">
@@ -33,6 +62,7 @@
   </main>
 
   <footer class="footer text-center mt-4">
-    <small></small>
+
+    <small>©2025 - 2026 </small>
   </footer>
 </div>
