@@ -1,4 +1,4 @@
-﻿<div class="login-page h-screen w-full bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 flex">
+﻿<div class="login-page fixed inset-0 w-screen h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 flex overflow-hidden">
     <!-- Left Side - Branding -->
     <div class="w-1/2 flex items-center justify-center p-12">
         <div class="max-w-lg text-white">
@@ -132,8 +132,45 @@
     </div>
 </div>
 
-<!-- Custom Animations -->
+<!-- Custom Animations and Fullscreen Fix -->
 <style>
+/* Aggressive fullscreen reset for login page */
+.login-page {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    z-index: 9999 !important;
+}
+
+/* Reset any parent container constraints */
+body:has(.login-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+html:has(.login-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Override any Angular or global styles */
+.app-container:has(.login-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
 @keyframes fade-in {
     from {
         opacity: 0;
