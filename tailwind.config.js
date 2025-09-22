@@ -4,7 +4,13 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'akira': ['Akira Expanded', 'sans-serif'],
+        'montserrat': ['Montserrat', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
