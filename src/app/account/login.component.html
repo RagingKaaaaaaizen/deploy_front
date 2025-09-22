@@ -1,4 +1,4 @@
-﻿<div class="min-h-screen flex">
+﻿<div class="min-h-screen flex flex-col lg:flex-row">
     <!-- Left Side - Computer Lab Image with Gradient Overlay -->
     <div class="hidden lg:flex lg:w-1/2 relative">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-purple-900/70 to-indigo-900/80 z-10"></div>
@@ -9,30 +9,30 @@
             class="w-full h-full object-cover"
         />
         <!-- Overlay Content -->
-        <div class="absolute inset-0 z-30 flex flex-col justify-center items-center text-white p-12">
-            <div class="text-center max-w-md">
+        <div class="absolute inset-0 z-30 flex flex-col justify-center items-center text-white p-8 xl:p-12">
+            <div class="text-center max-w-sm xl:max-w-md">
                 <!-- Benedicto College Logo -->
-                <div class="mb-8">
-                    <div class="inline-flex items-center justify-center w-32 h-32 bg-white rounded-full shadow-2xl mb-4 border-4 border-white/20 backdrop-blur-sm">
+                <div class="mb-6 xl:mb-8">
+                    <div class="inline-flex items-center justify-center w-24 h-24 xl:w-32 xl:h-32 bg-white rounded-full shadow-2xl mb-4 border-4 border-white/20 backdrop-blur-sm">
                         <img 
                             src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
                             alt="Benedicto College Logo" 
-                            class="w-24 h-24 object-contain drop-shadow-lg"
+                            class="w-18 h-18 xl:w-24 xl:h-24 object-contain drop-shadow-lg"
                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                         />
                         <!-- Fallback logo if image fails to load -->
                         <div class="text-center hidden">
                             <div class="flex items-center justify-center">
-                                <span class="text-3xl font-bold text-blue-600">B</span>
-                                <span class="text-3xl font-bold text-orange-500">C</span>
+                                <span class="text-2xl xl:text-3xl font-bold text-blue-600">B</span>
+                                <span class="text-2xl xl:text-3xl font-bold text-orange-500">C</span>
                             </div>
                             <div class="text-xs text-gray-600 font-semibold">2000</div>
                         </div>
                     </div>
                 </div>
-                <h1 class="text-4xl font-bold mb-4 drop-shadow-lg">Benedicto College</h1>
-                <p class="text-lg text-blue-100 mb-2 font-medium drop-shadow-md">Your Education... Our Mission</p>
-                <p class="text-lg text-blue-100 leading-relaxed drop-shadow-md">
+                <h1 class="text-3xl xl:text-4xl font-bold mb-3 xl:mb-4 drop-shadow-lg leading-tight">Benedicto College</h1>
+                <p class="text-base xl:text-lg text-blue-100 mb-2 font-semibold drop-shadow-md">Your Education... Our Mission</p>
+                <p class="text-sm xl:text-lg text-blue-100 leading-relaxed drop-shadow-md">
                     Computer Lab Inventory Management System
                 </p>
             </div>
@@ -40,48 +40,48 @@
     </div>
 
     <!-- Right Side - Login Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
-        <div class="w-full max-w-md">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen lg:min-h-0">
+        <div class="w-full max-w-sm sm:max-w-md">
             <!-- Login Card -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 drop-shadow-2xl backdrop-blur-sm">
+            <div class="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100 drop-shadow-2xl backdrop-blur-sm">
                 <!-- Header -->
-                <div class="text-center mb-8">
-                    <div class="inline-flex items-center justify-center w-20 h-20 bg-white border-2 border-blue-200 rounded-full mb-4 shadow-xl drop-shadow-lg">
+                <div class="text-center mb-6 sm:mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white border-2 border-blue-200 rounded-full mb-3 sm:mb-4 shadow-xl drop-shadow-lg">
                         <img 
                             src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
                             alt="Benedicto College Logo" 
-                            class="w-14 h-14 object-contain drop-shadow-md"
+                            class="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-md"
                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                         />
                         <!-- Fallback logo if image fails to load -->
                         <div class="text-center hidden">
                             <div class="flex items-center justify-center">
-                                <span class="text-xl font-bold text-blue-600">B</span>
-                                <span class="text-xl font-bold text-orange-500">C</span>
+                                <span class="text-lg sm:text-xl font-bold text-blue-600">B</span>
+                                <span class="text-lg sm:text-xl font-bold text-orange-500">C</span>
                             </div>
                         </div>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2 drop-shadow-sm">Welcome Back</h2>
-                    <p class="text-gray-600 drop-shadow-sm">Sign in to your Benedicto College account</p>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 drop-shadow-sm leading-tight">Welcome Back</h2>
+                    <p class="text-sm sm:text-base text-gray-600 drop-shadow-sm leading-relaxed">Sign in to your Benedicto College account</p>
                 </div>
 
                 <!-- Login Form -->
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5 sm:space-y-6">
                     <!-- Email Field -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-envelope text-blue-500 mr-2"></i>
+                        <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-2 leading-relaxed">
+                            <i class="fas fa-envelope text-blue-500 mr-2 text-sm sm:text-base"></i>
                             Email Address
                         </label>
                         <input 
                             type="email" 
                             formControlName="email" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md"
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md placeholder-gray-400"
                             placeholder="Enter your email"
                             [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.email.errors }" 
                         />
-                        <div *ngIf="submitted && f.email.errors" class="mt-2 text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1"></i>
+                        <div *ngIf="submitted && f.email.errors" class="mt-2 text-xs sm:text-sm text-red-600 flex items-center">
+                            <i class="fas fa-exclamation-circle mr-1 text-xs"></i>
                             <span *ngIf="f.email.errors.required">Email is required</span>
                             <span *ngIf="f.email.errors.email">Please enter a valid email address</span>
                         </div>
@@ -89,29 +89,29 @@
 
                     <!-- Password Field -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-lock text-blue-500 mr-2"></i>
+                        <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-2 leading-relaxed">
+                            <i class="fas fa-lock text-blue-500 mr-2 text-sm sm:text-base"></i>
                             Password
                         </label>
                         <div class="relative">
                             <input 
                                 [type]="showPassword ? 'text' : 'password'" 
                                 formControlName="password" 
-                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md"
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md placeholder-gray-400"
                                 placeholder="Enter your password"
                                 [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.password.errors }" 
                             />
                             <button 
                                 type="button" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                class="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                                 (click)="togglePassword()"
                                 [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
                             >
-                                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-sm sm:text-base"></i>
                             </button>
                         </div>
-                        <div *ngIf="submitted && f.password.errors" class="mt-2 text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1"></i>
+                        <div *ngIf="submitted && f.password.errors" class="mt-2 text-xs sm:text-sm text-red-600 flex items-center">
+                            <i class="fas fa-exclamation-circle mr-1 text-xs"></i>
                             <span>Password is required</span>
                         </div>
                     </div>
@@ -119,38 +119,38 @@
                     <!-- Submit Button -->
                     <button 
                         [disabled]="loading" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl drop-shadow-md"
+                        class="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-2.5 sm:py-3 px-4 rounded-lg font-semibold text-sm sm:text-base hover:from-blue-700 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl drop-shadow-md"
                         type="submit"
                     >
                         <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                        <i *ngIf="!loading" class="fas fa-sign-in-alt mr-2"></i>
+                        <i *ngIf="!loading" class="fas fa-sign-in-alt mr-2 text-sm sm:text-base"></i>
                         {{ loading ? 'Signing In...' : 'Sign In' }}
                     </button>
                 </form>
 
                 <!-- Links -->
-                <div class="mt-6 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-                    <a routerLink="../register" class="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors flex items-center">
-                        <i class="fas fa-user-plus mr-1"></i>
+                <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                    <a routerLink="../register" class="text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm transition-colors flex items-center">
+                        <i class="fas fa-user-plus mr-1 text-xs sm:text-sm"></i>
                         Create Account
                     </a>
-                    <a routerLink="../forgot-password" class="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors flex items-center">
-                        <i class="fas fa-key mr-1"></i>
+                    <a routerLink="../forgot-password" class="text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm transition-colors flex items-center">
+                        <i class="fas fa-key mr-1 text-xs sm:text-sm"></i>
                         Forgot Password?
                     </a>
                 </div>
 
                 <!-- Error Message -->
-                <div *ngIf="error" class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-700">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    <span class="text-sm">{{ error }}</span>
+                <div *ngIf="error" class="mt-5 sm:mt-6 bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 flex items-center text-red-700">
+                    <i class="fas fa-exclamation-triangle mr-2 text-sm"></i>
+                    <span class="text-xs sm:text-sm leading-relaxed">{{ error }}</span>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div class="text-center mt-8 text-gray-500 text-sm">
-                <p>&copy; 2024 Benedicto College. All rights reserved.</p>
-                <p class="mt-1 text-xs">Computer Lab Inventory Management System</p>
+            <div class="text-center mt-6 sm:mt-8 text-gray-500">
+                <p class="text-xs sm:text-sm leading-relaxed">&copy; 2024 Benedicto College. All rights reserved.</p>
+                <p class="mt-1 text-xs leading-relaxed">Computer Lab Inventory Management System</p>
             </div>
         </div>
     </div>
