@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-  <div class="max-w-7xl mx-auto">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-0">
+  <div class="w-full">
     <!-- Page Header -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-4 mb-2">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
@@ -26,29 +26,29 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-shadow duration-300">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-2 text-center hover:shadow-xl transition-shadow duration-300">
         <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-4">
           <i class="fas fa-trash-alt text-white text-xl"></i>
         </div>
         <div class="text-2xl font-bold text-gray-900 font-akira">{{ disposals.length }}</div>
         <div class="text-sm text-gray-600 font-inter">Total Disposals</div>
       </div>
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-2 text-center hover:shadow-xl transition-shadow duration-300">
         <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
           <i class="fas fa-boxes text-white text-xl"></i>
         </div>
         <div class="text-2xl font-bold text-gray-900 font-akira">{{ getTotalDisposedItems() }}</div>
         <div class="text-sm text-gray-600 font-inter">Items Disposed</div>
       </div>
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-2 text-center hover:shadow-xl transition-shadow duration-300">
         <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
           <i class="fas fa-dollar-sign text-white text-xl"></i>
         </div>
         <div class="text-2xl font-bold text-gray-900 font-akira">{{ getTotalDisposalValue() | currency:'PHP':'symbol':'1.0-0' }}</div>
         <div class="text-sm text-gray-600 font-inter">Total Value</div>
       </div>
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-2 text-center hover:shadow-xl transition-shadow duration-300">
         <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
           <i class="fas fa-calendar-alt text-white text-xl"></i>
         </div>
@@ -58,8 +58,8 @@
     </div>
 
     <!-- Filters and Search -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-2 mb-2">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
         <div class="relative">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <i class="fas fa-search text-gray-400"></i>
