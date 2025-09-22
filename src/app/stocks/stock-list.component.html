@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-0">
-  <div class="w-full ml-64 mr-1 mt-1 mb-1 px-1">
+  <div class="w-full ml-64 mr-1 mt-1 mb-1">
     <!-- Page Header -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-4 mb-2">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -160,10 +160,10 @@
                 <td class="font-inter w-64" data-label="Item">
                   <div class="item-info">
                     <strong class="font-montserrat text-xs">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
-                    <small class="d-block text-gray-500 font-inter text-xs" *ngIf="stock.item?.description">
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.item?.description">
                       {{ stock.item.description }}
                     </small>
-                    <small class="d-block text-gray-500 font-inter text-xs" *ngIf="stock.disposal">
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.disposal">
                       <strong>Disposal Info:</strong><br>
                       Reason: {{ stock.disposal.reason || 'No reason' }}<br>
                       Date: {{ stock.disposal.disposalDate | date:'MMM dd, yyyy' }}<br>
@@ -171,7 +171,7 @@
                         <i class="fas fa-check-circle"></i> Returned to Stock
                       </span>
                     </small>
-                    <small class="d-block text-gray-500 font-inter text-xs" *ngIf="stock.remarks && !stock.disposal">
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.remarks && !stock.disposal">
                       {{ stock.remarks }}
                     </small>
                   </div>
@@ -189,7 +189,7 @@
                 <td class="font-inter w-32" data-label="Location">
                   <span class="location-badge text-xs">
                     {{ stock.location?.name || getLocationNameByStock(stock) }}
-                    <small class="d-block text-gray-500 font-inter text-xs" *ngIf="stock.location?.description">
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.location?.description">
                       {{ stock.location.description }}
                     </small>
                   </span>
@@ -209,12 +209,12 @@
                       Available: {{ getStockSummary(stock.itemId).available }} | 
                       In Use: {{ getStockSummary(stock.itemId).inUse }}
                     </div>
-                    <small class="d-block text-muted mt-1" *ngIf="stock.disposeId && stock.disposal && stock.disposal.returnedToStock">
-                      <span class="badge badge-success">
-                        <i class="fas fa-undo"></i> Returned {{ stock.quantity }} from disposal
+                    <small class="block text-gray-500 mt-1" *ngIf="stock.disposeId && stock.disposal && stock.disposal.returnedToStock">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <i class="fas fa-undo mr-1"></i> Returned {{ stock.quantity }} from disposal
                       </span>
                     </small>
-                    <small class="d-block text-muted mt-1" *ngIf="stock.disposal && !stock.disposal.returnedToStock">
+                    <small class="block text-gray-500 mt-1" *ngIf="stock.disposal && !stock.disposal.returnedToStock">
                       <strong>Disposal Value:</strong> php{{ stock.disposal.disposalValue | number:'1.2-2' }}<br>
                       <strong>Total Value:</strong> php{{ (stock.disposal.disposalValue * stock.quantity) | number:'1.2-2' }}
                     </small>
@@ -235,12 +235,12 @@
                     <span class="date-badge">
                       {{ stock.createdAt | date:'MMM dd, yyyy' }}
                     </span>
-                    <small class="d-block text-muted mt-1">
+                    <small class="block text-gray-500 mt-1">
                       {{ stock.createdAt | date:'HH:mm:ss' }}
                     </small>
-                    <small class="d-block text-muted" *ngIf="stock.disposeId && stock.disposal && !stock.disposal.returnedToStock">
-                      <span class="badge badge-danger">
-                        <i class="fas fa-trash-alt"></i> Disposal
+                    <small class="block text-gray-500" *ngIf="stock.disposeId && stock.disposal && !stock.disposal.returnedToStock">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        <i class="fas fa-trash-alt mr-1"></i> Disposal
                       </span>
                     </small>
                   </div>
@@ -253,20 +253,20 @@
                     <span class="user-badge text-gray-500 font-inter text-xs" *ngIf="!stock.user">
                       Unknown User
                     </span>
-                    <small class="d-block text-gray-500 mt-1 font-inter text-xs" *ngIf="stock.user?.email">
+                    <small class="block text-gray-500 mt-1 font-inter text-xs" *ngIf="stock.user?.email">
                       {{ stock.user.email }}
                     </small>
                   </div>
                 </td>
                 <td class="font-inter w-24" data-label="In Use">
                   <div class="in-use-info">
-                    <span *ngIf="isItemInUse(stock.itemId)" class="badge badge-warning text-xs">
-                      <i class="fas fa-desktop"></i> In Use
+                    <span *ngIf="isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      <i class="fas fa-desktop mr-1"></i> In Use
                     </span>
-                    <span *ngIf="!isItemInUse(stock.itemId)" class="badge badge-secondary text-xs">
-                      <i class="fas fa-box"></i> Available
+                    <span *ngIf="!isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <i class="fas fa-box mr-1"></i> Available
                     </span>
-                    <small class="d-block text-gray-500 mt-1 font-inter text-xs">
+                    <small class="block text-gray-500 mt-1 font-inter text-xs">
                       {{ getInUseDetails(stock.itemId) }}
                     </small>
                   </div>
