@@ -118,44 +118,44 @@
           <table class="w-full border-collapse table-auto">
             <thead>
               <tr class="bg-gray-50">
-                <th class="font-montserrat w-48 text-left">
+                <th class="font-montserrat w-40 text-left">
                   <i class="fas fa-box mr-1"></i> Item
                 </th>
-                <th class="font-montserrat w-24 text-center">
+                <th class="font-montserrat w-20 text-center">
                   <i class="fas fa-tag mr-1"></i> Category
                 </th>
-                <th class="font-montserrat w-32 text-center">
+                <th class="font-montserrat w-24 text-center">
                   <i class="fas fa-trademark mr-1"></i> Brand
                 </th>
-                <th class="font-montserrat w-32 text-right">
-                  <i class="fas fa-sort-numeric-up mr-1"></i> Quantity
+                <th class="font-montserrat w-20 text-right">
+                  <i class="fas fa-sort-numeric-up mr-1"></i> Qty
                 </th>
-                <th class="font-montserrat w-24 text-right">
+                <th class="font-montserrat w-20 text-right">
                   <i class="fas fa-dollar-sign mr-1"></i> Price
                 </th>
                 <th class="font-montserrat w-24 text-right">
-                  <i class="fas fa-calculator mr-1"></i> Total Value
+                  <i class="fas fa-calculator mr-1"></i> Total
                 </th>
-                <th class="font-montserrat w-32 text-center">
+                <th class="font-montserrat w-24 text-center">
                   <i class="fas fa-map-marker-alt mr-1"></i> Location
                 </th>
-                <th class="font-montserrat w-40 text-left">
+                <th class="font-montserrat w-32 text-left">
                   <i class="fas fa-comment mr-1"></i> Reason
                 </th>
-                <th class="font-montserrat w-40 text-left">
+                <th class="font-montserrat w-28 text-left">
                   <i class="fas fa-user mr-1"></i> Disposed By
                 </th>
-                <th class="font-montserrat w-24 text-left">
+                <th class="font-montserrat w-20 text-left">
                   <i class="fas fa-calendar mr-1"></i> Date
                 </th>
-                <th class="font-montserrat w-32 text-left">
+                <th class="font-montserrat w-24 text-left">
                   <i class="fas fa-cogs mr-1"></i> Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let disposal of paginatedDisposals" class="hover:bg-gray-50 transition-colors duration-200">
-                <td class="font-inter w-48" data-label="Item">
+                <td class="font-inter w-40" data-label="Item">
                   <div class="item-info">
                     <strong class="font-montserrat text-xs">{{ disposal.item?.name || 'Unknown Item' }}</strong>
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.item?.description">
@@ -163,17 +163,17 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-24 text-center" data-label="Category">
+                <td class="font-inter w-20 text-center" data-label="Category">
                   <span class="category-badge text-xs">
                     {{ disposal.item?.category?.name || 'No Category' }}
                   </span>
                 </td>
-                <td class="font-inter w-32 text-center" data-label="Brand">
+                <td class="font-inter w-24 text-center" data-label="Brand">
                   <span class="brand-badge text-xs">
                     {{ disposal.item?.brand?.name || 'No Brand' }}
                   </span>
                 </td>
-                <td class="font-inter w-32 text-right" data-label="Quantity">
+                <td class="font-inter w-20 text-right" data-label="Quantity">
                   <span class="quantity-badge badge-danger text-xs">
                     {{ disposal.quantity }}
                   </span>
@@ -184,7 +184,7 @@
                     <i class="fas fa-undo mr-1"></i> Partially Returned
                   </span>
                 </td>
-                <td class="font-inter w-24 text-right" data-label="Price">
+                <td class="font-inter w-20 text-right" data-label="Price">
                   <span class="price-value text-xs">
                     {{ getDisposalValueForItem(disposal) | currency:'PHP':'symbol' }}
                   </span>
@@ -194,7 +194,7 @@
                     {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
                   </span>
                 </td>
-                <td class="font-inter w-32 text-center" data-label="Location">
+                <td class="font-inter w-24 text-center" data-label="Location">
                   <span class="location-badge text-xs">
                     {{ disposal.location?.name || 'No Location' }}
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.location?.description">
@@ -202,12 +202,12 @@
                     </small>
                   </span>
                 </td>
-                <td class="font-inter w-40" data-label="Reason">
+                <td class="font-inter w-32" data-label="Reason">
                   <span class="reason-text text-xs" [title]="disposal.reason || 'No reason provided'">
                     {{ (disposal.reason || 'No reason provided') | slice:0:30 }}{{ (disposal.reason || '').length > 30 ? '...' : '' }}
                   </span>
                 </td>
-                <td class="font-inter w-40" data-label="Disposed By">
+                <td class="font-inter w-28" data-label="Disposed By">
                   <span class="user-badge">
                     <span class="font-montserrat text-xs">{{ disposal.user?.firstName }} {{ disposal.user?.lastName }}</span>
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.user?.email">
@@ -215,12 +215,12 @@
                     </small>
                   </span>
                 </td>
-                <td class="font-inter w-24" data-label="Date">
+                <td class="font-inter w-20" data-label="Date">
                   <span class="date-badge text-xs">
                     {{ disposal.disposalDate | date: 'MMM dd, yyyy' }}
                   </span>
                 </td>
-                <td class="font-inter w-32" data-label="Actions">
+                <td class="font-inter w-24" data-label="Actions">
                   <div class="flex flex-row gap-0">
                     <button class="btn btn-sm btn-outline-primary p-1 m-0"
                             (click)="viewDisposal(disposal.id!)" title="View Details">

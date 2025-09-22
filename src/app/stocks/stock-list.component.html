@@ -120,44 +120,44 @@
           <table class="w-full border-collapse table-auto">
             <thead>
               <tr class="bg-gray-50">
-                <th class="font-montserrat w-64 text-left">
+                <th class="font-montserrat w-48 text-left">
                   <i class="fas fa-box mr-1"></i> Item
                 </th>
-                <th class="font-montserrat w-24 text-center">
+                <th class="font-montserrat w-20 text-center">
                   <i class="fas fa-tag mr-1"></i> Category
                 </th>
-                <th class="font-montserrat w-32 text-center">
+                <th class="font-montserrat w-24 text-center">
                   <i class="fas fa-trademark mr-1"></i> Brand
                 </th>
-                <th class="font-montserrat w-32 text-center">
+                <th class="font-montserrat w-24 text-center">
                   <i class="fas fa-map-marker-alt mr-1"></i> Location
                 </th>
-                <th class="font-montserrat w-40 text-right">
-                  <i class="fas fa-sort-numeric-up mr-1"></i> Quantity
+                <th class="font-montserrat w-20 text-right">
+                  <i class="fas fa-sort-numeric-up mr-1"></i> Qty
                 </th>
-                <th class="font-montserrat w-24 text-right">
+                <th class="font-montserrat w-20 text-right">
                   <i class="fas fa-dollar-sign mr-1"></i> Price
                 </th>
                 <th class="font-montserrat w-24 text-right">
                   <i class="fas fa-calculator mr-1"></i> Total
                 </th>
-                <th class="font-montserrat w-32 text-left">
-                  <i class="fas fa-clock mr-1"></i> Time & Date
+                <th class="font-montserrat w-24 text-left">
+                  <i class="fas fa-clock mr-1"></i> Date
                 </th>
-                <th class="font-montserrat w-40 text-left">
+                <th class="font-montserrat w-28 text-left">
                   <i class="fas fa-user mr-1"></i> Created By
                 </th>
-                <th class="font-montserrat w-24 text-center">
-                  <i class="fas fa-desktop mr-1"></i> In Use
+                <th class="font-montserrat w-20 text-center">
+                  <i class="fas fa-desktop mr-1"></i> Status
                 </th>
-                <th class="font-montserrat w-32 text-left">
+                <th class="font-montserrat w-24 text-left">
                   <i class="fas fa-cogs mr-1"></i> Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId" class="hover:bg-gray-50 transition-colors duration-200">
-                <td class="font-inter w-64" data-label="Item">
+                <td class="font-inter w-48" data-label="Item">
                   <div class="item-info">
                     <strong class="font-montserrat text-xs">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.item?.description">
@@ -176,17 +176,17 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-24 text-center" data-label="Category">
+                <td class="font-inter w-20 text-center" data-label="Category">
                   <span class="category-badge text-xs">
                     {{ stock.item?.category?.name || getCategoryName(stock) }}
                   </span>
                 </td>
-                <td class="font-inter w-32 text-center" data-label="Brand">
+                <td class="font-inter w-24 text-center" data-label="Brand">
                   <span class="brand-badge text-xs">
                     {{ stock.item?.brand?.name || getBrandName(stock) }}
                   </span>
                 </td>
-                <td class="font-inter w-32 text-center" data-label="Location">
+                <td class="font-inter w-24 text-center" data-label="Location">
                   <span class="location-badge text-xs">
                     {{ stock.location?.name || getLocationNameByStock(stock) }}
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.location?.description">
@@ -194,7 +194,7 @@
                     </small>
                   </span>
                 </td>
-                <td class="font-inter w-40 text-right" data-label="Quantity">
+                <td class="font-inter w-20 text-right" data-label="Quantity">
                   <div class="quantity-info">
                     <span class="quantity-badge" [ngClass]="{
                       'quantity-positive': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
@@ -220,7 +220,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-24 text-right" data-label="Price">
+                <td class="font-inter w-20 text-right" data-label="Price">
                   <span class="price-value text-xs">
                     php{{ stock.price | number:'1.2-2' }}
                   </span>
@@ -230,7 +230,7 @@
                     php{{ (stock.price * stock.quantity) | number:'1.2-2' }}
                   </span>
                 </td>
-                <td class="font-inter w-32" data-label="Time & Date">
+                <td class="font-inter w-24" data-label="Time & Date">
                   <div class="time-date-info">
                     <span class="date-badge">
                       {{ stock.createdAt | date:'MMM dd, yyyy' }}
@@ -245,7 +245,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-40" data-label="Created By">
+                <td class="font-inter w-28" data-label="Created By">
                   <div class="user-info">
                     <span class="user-badge font-montserrat text-xs" *ngIf="stock.user">
                       {{ stock.user.firstName }} {{ stock.user.lastName }}
@@ -258,7 +258,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-24 text-center" data-label="In Use">
+                <td class="font-inter w-20 text-center" data-label="In Use">
                   <div class="in-use-info">
                     <span *ngIf="isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                       <i class="fas fa-desktop mr-1"></i> In Use
@@ -271,7 +271,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-32" data-label="Actions">
+                <td class="font-inter w-24" data-label="Actions">
                   <div class="flex flex-row gap-0">
                     <button type="button" class="btn btn-sm btn-outline-primary p-1 m-0"
                             (click)="openViewStockModal(stock)" title="View Details">
