@@ -23,6 +23,25 @@ body {
     padding: 0 !important;
 }
 
+// Aggressive reset for login page
+body:has(.login-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+// Reset all Bootstrap defaults
+* {
+    box-sizing: border-box;
+}
+
+// Override any Bootstrap container classes
+.container, .container-fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+}
+
 // Full-screen app container
 .app-container {
     width: 100%;

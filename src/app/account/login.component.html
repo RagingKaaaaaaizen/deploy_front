@@ -1,4 +1,4 @@
-﻿<div class="h-screen w-full bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 flex">
+﻿<div class="login-page h-screen w-full bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 flex">
     <!-- Left Side - Branding -->
     <div class="w-1/2 flex items-center justify-center p-12">
         <div class="max-w-lg text-white">
@@ -132,8 +132,35 @@
     </div>
 </div>
 
-<!-- Custom Animations -->
+<!-- Custom Animations and Bootstrap Reset -->
 <style>
+/* Bootstrap Reset for Login Page */
+.login-page * {
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.login-page {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Override any Bootstrap classes that might interfere */
+.login-page .container,
+.login-page .container-fluid,
+.login-page .row,
+.login-page .col,
+.login-page [class*="col-"] {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+}
+
 @keyframes fade-in {
     from {
         opacity: 0;
