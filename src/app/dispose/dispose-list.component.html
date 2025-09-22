@@ -118,37 +118,37 @@
           <table class="w-full border-collapse table-auto">
             <thead>
               <tr class="bg-gray-50">
-                <th class="font-montserrat w-48">
+                <th class="font-montserrat w-48 text-left">
                   <i class="fas fa-box mr-1"></i> Item
                 </th>
-                <th class="font-montserrat w-24">
+                <th class="font-montserrat w-24 text-center">
                   <i class="fas fa-tag mr-1"></i> Category
                 </th>
-                <th class="font-montserrat w-32">
+                <th class="font-montserrat w-32 text-center">
                   <i class="fas fa-trademark mr-1"></i> Brand
                 </th>
-                <th class="font-montserrat w-32">
+                <th class="font-montserrat w-32 text-right">
                   <i class="fas fa-sort-numeric-up mr-1"></i> Quantity
                 </th>
-                <th class="font-montserrat w-24">
+                <th class="font-montserrat w-24 text-right">
                   <i class="fas fa-dollar-sign mr-1"></i> Price
                 </th>
-                <th class="font-montserrat w-24">
+                <th class="font-montserrat w-24 text-right">
                   <i class="fas fa-calculator mr-1"></i> Total Value
                 </th>
-                <th class="font-montserrat w-32">
+                <th class="font-montserrat w-32 text-center">
                   <i class="fas fa-map-marker-alt mr-1"></i> Location
                 </th>
-                <th class="font-montserrat w-40">
+                <th class="font-montserrat w-40 text-left">
                   <i class="fas fa-comment mr-1"></i> Reason
                 </th>
-                <th class="font-montserrat w-40">
+                <th class="font-montserrat w-40 text-left">
                   <i class="fas fa-user mr-1"></i> Disposed By
                 </th>
-                <th class="font-montserrat w-24">
+                <th class="font-montserrat w-24 text-left">
                   <i class="fas fa-calendar mr-1"></i> Date
                 </th>
-                <th class="font-montserrat w-32">
+                <th class="font-montserrat w-32 text-left">
                   <i class="fas fa-cogs mr-1"></i> Actions
                 </th>
               </tr>
@@ -163,17 +163,17 @@
                     </small>
                   </div>
                 </td>
-                <td class="font-inter w-24" data-label="Category">
+                <td class="font-inter w-24 text-center" data-label="Category">
                   <span class="category-badge text-xs">
                     {{ disposal.item?.category?.name || 'No Category' }}
                   </span>
                 </td>
-                <td class="font-inter w-32" data-label="Brand">
+                <td class="font-inter w-32 text-center" data-label="Brand">
                   <span class="brand-badge text-xs">
                     {{ disposal.item?.brand?.name || 'No Brand' }}
                   </span>
                 </td>
-                <td class="font-inter w-32" data-label="Quantity">
+                <td class="font-inter w-32 text-right" data-label="Quantity">
                   <span class="quantity-badge badge-danger text-xs">
                     {{ disposal.quantity }}
                   </span>
@@ -184,17 +184,17 @@
                     <i class="fas fa-undo mr-1"></i> Partially Returned
                   </span>
                 </td>
-                <td class="font-inter w-24" data-label="Price">
+                <td class="font-inter w-24 text-right" data-label="Price">
                   <span class="price-value text-xs">
                     {{ getDisposalValueForItem(disposal) | currency:'PHP':'symbol' }}
                   </span>
                 </td>
-                <td class="font-inter w-24" data-label="Total Value">
+                <td class="font-inter w-24 text-right" data-label="Total Value">
                   <span class="total-value text-xs">
                     {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
                   </span>
                 </td>
-                <td class="font-inter w-32" data-label="Location">
+                <td class="font-inter w-32 text-center" data-label="Location">
                   <span class="location-badge text-xs">
                     {{ disposal.location?.name || 'No Location' }}
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.location?.description">
