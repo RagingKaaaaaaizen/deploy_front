@@ -1,9 +1,60 @@
-﻿<div class="h-screen w-full flex items-center justify-center p-4 relative" style="background-image: url('assets/images/8a5699d6-994b-40f1-ab4c-2da12669d7f1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
+﻿<div class="h-screen w-full flex relative" style="background-image: url('assets/images/8a5699d6-994b-40f1-ab4c-2da12669d7f1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-purple-900/50 to-orange-900/60"></div>
-    <!-- Main Login Card -->
-    <div class="w-full max-w-md relative z-10">
-        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
+    
+    <!-- Left Side - Typography Content -->
+    <div class="w-1/2 relative z-10 flex items-center justify-center p-12">
+        <div class="max-w-lg text-white">
+            <!-- Main Heading -->
+            <h1 class="text-6xl font-black mb-6 leading-tight font-akira">
+                Welcome to
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-orange-400">
+                    Benedicto College
+                </span>
+            </h1>
+            
+            <!-- Subheading -->
+            <h2 class="text-2xl font-bold text-white/90 mb-8 font-montserrat">
+                Computer Lab Inventory Management System
+            </h2>
+            
+            <!-- Description -->
+            <p class="text-lg text-white/80 mb-8 leading-relaxed font-inter">
+                Streamline your computer lab operations with our comprehensive inventory management solution. 
+                Track equipment, manage assets, and maintain optimal lab efficiency.
+            </p>
+            
+            <!-- Features List -->
+            <div class="space-y-4 mb-8">
+                <div class="flex items-center text-white/90">
+                    <i class="fas fa-check-circle text-green-400 mr-3 text-xl"></i>
+                    <span class="font-inter">Real-time inventory tracking</span>
+                </div>
+                <div class="flex items-center text-white/90">
+                    <i class="fas fa-check-circle text-green-400 mr-3 text-xl"></i>
+                    <span class="font-inter">Automated asset management</span>
+                </div>
+                <div class="flex items-center text-white/90">
+                    <i class="fas fa-check-circle text-green-400 mr-3 text-xl"></i>
+                    <span class="font-inter">Comprehensive reporting system</span>
+                </div>
+                <div class="flex items-center text-white/90">
+                    <i class="fas fa-check-circle text-green-400 mr-3 text-xl"></i>
+                    <span class="font-inter">Multi-user access control</span>
+                </div>
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="text-white/70 text-sm font-inter">
+                <p>Ready to get started? Sign in to access your dashboard.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Side - Login Form -->
+    <div class="w-1/2 flex items-center justify-center p-8 relative z-10">
+        <div class="w-full max-w-md">
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
             <!-- Header -->
             <div class="text-center mb-8">
                 <!-- Logo Icon -->
@@ -106,6 +157,7 @@
             <div *ngIf="error" class="mt-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center text-red-700 animate-fade-in">
                 <i class="fas fa-exclamation-triangle mr-3"></i>
                 <span class="text-sm font-inter">{{ error }}</span>
+            </div>
             </div>
         </div>
     </div>
