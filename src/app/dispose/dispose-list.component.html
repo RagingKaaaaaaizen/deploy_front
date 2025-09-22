@@ -90,46 +90,70 @@
     </div>
 
     <!-- Disposal Records Table -->
-    <div class="card">
-      <div class="card-header">
-        <h5><i class="fas fa-list"></i> Disposal Records</h5>
-        <div class="table-actions">
-          <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
-            <i class="fas fa-sync-alt"></i>
-            Refresh
-          </button>
+    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h5 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-list text-blue-600"></i> Disposal Records
+          </h5>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+              <i class="fas fa-sync-alt"></i>
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
-      <div class="card-body">
+      <div class="p-6">
         <!-- Loading -->
-        <div *ngIf="loading" class="text-center py-4">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <p class="mt-2">Loading disposal records...</p>
+        <div *ngIf="loading" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p class="mt-2 text-gray-600">Loading disposal records...</p>
         </div>
 
         <!-- Table -->
-        <div *ngIf="!loading" class="table-responsive">
-          <table class="table table-hover">
+        <div *ngIf="!loading" class="overflow-x-auto">
+          <table class="w-full border-collapse">
             <thead>
-              <tr>
-                <th><i class="fas fa-box"></i> Item</th>
-                <th><i class="fas fa-tag"></i> Category</th>
-                <th><i class="fas fa-trademark"></i> Brand</th>
-                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
-                <th><i class="fas fa-dollar-sign"></i> Price</th>
-                <th><i class="fas fa-calculator"></i> Total Value</th>
-                <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                <th><i class="fas fa-comment"></i> Reason</th>
-                <th><i class="fas fa-user"></i> Disposed By</th>
-                <th><i class="fas fa-calendar"></i> Date</th>
-                <th><i class="fas fa-cogs"></i> Actions</th>
+              <tr class="bg-gray-50">
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-box mr-2"></i> Item
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-tag mr-2"></i> Category
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-trademark mr-2"></i> Brand
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-sort-numeric-up mr-2"></i> Quantity
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-dollar-sign mr-2"></i> Price
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-calculator mr-2"></i> Total Value
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-map-marker-alt mr-2"></i> Location
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-comment mr-2"></i> Reason
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-user mr-2"></i> Disposed By
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-calendar mr-2"></i> Date
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-cogs mr-2"></i> Actions
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let disposal of paginatedDisposals" class="disposal-row">
-                <td>
+              <tr *ngFor="let disposal of paginatedDisposals" class="hover:bg-gray-50 transition-colors duration-200 border-b border-gray-200">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <div class="item-info">
                     <strong>{{ disposal.item?.name || 'Unknown Item' }}</strong>
                     <small class="d-block text-muted" *ngIf="disposal.item?.description">
@@ -137,17 +161,17 @@
                     </small>
                   </div>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="category-badge">
                     {{ disposal.item?.category?.name || 'No Category' }}
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="brand-badge">
                     {{ disposal.item?.brand?.name || 'No Brand' }}
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="quantity-badge badge-danger">
                     {{ disposal.quantity }}
                   </span>
@@ -158,17 +182,17 @@
                     <i class="fas fa-undo"></i> Partially Returned
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="price-value">
                     {{ getDisposalValueForItem(disposal) | currency:'PHP':'symbol' }}
                   </span>
                 </td>
-                <td>
-                                     <span class="total-value">
-                     {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
-                   </span>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
+                  <span class="total-value">
+                    {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
+                  </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="location-badge">
                     {{ disposal.location?.name || 'No Location' }}
                     <small class="d-block text-muted" *ngIf="disposal.location?.description">
@@ -176,12 +200,12 @@
                     </small>
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="reason-text" [title]="disposal.reason || 'No reason provided'">
                     {{ (disposal.reason || 'No reason provided') | slice:0:30 }}{{ (disposal.reason || '').length > 30 ? '...' : '' }}
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="user-badge">
                     {{ disposal.user?.firstName }} {{ disposal.user?.lastName }}
                     <small class="d-block text-muted" *ngIf="disposal.user?.email">
@@ -189,12 +213,12 @@
                     </small>
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <span class="date-badge">
                     {{ disposal.disposalDate | date: 'MMM dd, yyyy' }}
                   </span>
                 </td>
-                <td>
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
                   <div class="action-buttons">
                     <button class="btn btn-sm btn-outline-primary"
                             (click)="viewDisposal(disposal.id!)" title="View Details">
@@ -224,11 +248,11 @@
                 </td>
               </tr>
               <tr *ngIf="filteredDisposals?.length === 0">
-                <td colspan="11" class="text-center py-4">
+                <td colspan="11" class="px-4 py-8 text-center text-gray-500">
                   <div class="empty-state">
-                    <i class="fas fa-trash-alt"></i>
-                    <h4>No disposal records found</h4>
-                    <p>Try adjusting your search or filters</p>
+                    <i class="fas fa-trash-alt text-4xl mb-4"></i>
+                    <h4 class="text-lg font-semibold mb-2">No disposal records found</h4>
+                    <p class="text-sm">Try adjusting your search or filters</p>
                   </div>
                 </td>
               </tr>

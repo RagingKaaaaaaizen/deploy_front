@@ -101,37 +101,63 @@
     </div>
 
     <!-- Stock Table -->
-    <div class="card">
-      <div class="card-header">
-        <h5><i class="fas fa-list"></i> Stock Entries</h5>
-        <div class="table-actions">
-          <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
-            <i class="fas fa-sync-alt"></i>
-            Refresh
-          </button>
+    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h5 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-list text-blue-600"></i> Stock Entries
+          </h5>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+              <i class="fas fa-sync-alt"></i>
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-hover">
+      <div class="p-6">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
             <thead>
-              <tr>
-                <th><i class="fas fa-box"></i> Item</th>
-                <th><i class="fas fa-tag"></i> Category</th>
-                <th><i class="fas fa-trademark"></i> Brand</th>
-                <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
-                <th><i class="fas fa-dollar-sign"></i> Price</th>
-                <th><i class="fas fa-calculator"></i> Total</th>
-                <th><i class="fas fa-clock"></i> Time & Date</th>
-                <th><i class="fas fa-user"></i> Created By</th>
-                <th><i class="fas fa-desktop"></i> In Use</th>
-                <th><i class="fas fa-cogs"></i> Actions</th>
+              <tr class="bg-gray-50">
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-box mr-2"></i> Item
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-tag mr-2"></i> Category
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-trademark mr-2"></i> Brand
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-map-marker-alt mr-2"></i> Location
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-sort-numeric-up mr-2"></i> Quantity
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-dollar-sign mr-2"></i> Price
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-calculator mr-2"></i> Total
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-clock mr-2"></i> Time & Date
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-user mr-2"></i> Created By
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-desktop mr-2"></i> In Use
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <i class="fas fa-cogs mr-2"></i> Actions
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId" class="stock-row">
-                <td data-label="Item">
+              <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId" class="hover:bg-gray-50 transition-colors duration-200 border-b border-gray-200">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Item">
                   <div class="item-info">
                     <strong>{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
                     <small class="d-block text-muted" *ngIf="stock.item?.description">
@@ -150,17 +176,17 @@
                     </small>
                   </div>
                 </td>
-                <td data-label="Category">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Category">
                   <span class="category-badge">
                     {{ stock.item?.category?.name || getCategoryName(stock) }}
                   </span>
                 </td>
-                <td data-label="Brand">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Brand">
                   <span class="brand-badge">
                     {{ stock.item?.brand?.name || getBrandName(stock) }}
                   </span>
                 </td>
-                <td data-label="Location">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Location">
                   <span class="location-badge">
                     {{ stock.location?.name || getLocationNameByStock(stock) }}
                     <small class="d-block text-muted" *ngIf="stock.location?.description">
@@ -168,7 +194,7 @@
                     </small>
                   </span>
                 </td>
-                <td data-label="Quantity">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Quantity">
                   <div class="quantity-info">
                     <span class="quantity-badge" [ngClass]="{
                       'quantity-positive': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
@@ -194,17 +220,17 @@
                     </small>
                   </div>
                 </td>
-                <td data-label="Price">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Price">
                   <span class="price-value">
                     php{{ stock.price | number:'1.2-2' }}
                   </span>
                 </td>
-                <td data-label="Total">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Total">
                   <span class="total-price">
                     php{{ (stock.price * stock.quantity) | number:'1.2-2' }}
                   </span>
                 </td>
-                <td data-label="Time & Date">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Time & Date">
                   <div class="time-date-info">
                     <span class="date-badge">
                       {{ stock.createdAt | date:'MMM dd, yyyy' }}
@@ -219,7 +245,7 @@
                     </small>
                   </div>
                 </td>
-                <td data-label="Created By">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Created By">
                   <div class="user-info">
                     <span class="user-badge" *ngIf="stock.user">
                       {{ stock.user.firstName }} {{ stock.user.lastName }}
@@ -232,7 +258,7 @@
                     </small>
                   </div>
                 </td>
-                <td data-label="In Use">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="In Use">
                   <div class="in-use-info">
                     <span *ngIf="isItemInUse(stock.itemId)" class="badge badge-warning">
                       <i class="fas fa-desktop"></i> In Use
@@ -245,7 +271,7 @@
                     </small>
                   </div>
                 </td>
-                <td data-label="Actions">
+                <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200" data-label="Actions">
                   <div class="action-buttons">
                     <button type="button" class="btn btn-sm btn-outline-primary"
                             (click)="openViewStockModal(stock)" title="View Details">
@@ -270,11 +296,11 @@
                 </td>
               </tr>
               <tr *ngIf="filteredStocks.length === 0">
-                <td colspan="10" class="text-center py-4">
+                <td colspan="11" class="px-4 py-8 text-center text-gray-500">
                   <div class="empty-state">
-                    <i class="fas fa-box-open"></i>
-                    <h4>No stock entries found</h4>
-                    <p>Try adjusting your search or filters</p>
+                    <i class="fas fa-box-open text-4xl mb-4"></i>
+                    <h4 class="text-lg font-semibold mb-2">No stock entries found</h4>
+                    <p class="text-sm">Try adjusting your search or filters</p>
                   </div>
                 </td>
               </tr>
