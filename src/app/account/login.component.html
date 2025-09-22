@@ -1,157 +1,184 @@
-﻿<div class="min-h-screen flex flex-col lg:flex-row">
-    <!-- Left Side - Computer Lab Image with Gradient Overlay -->
-    <div class="hidden lg:flex lg:w-1/2 relative">
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-purple-900/70 to-indigo-900/80 z-10"></div>
-        <div class="absolute inset-0 bg-black/20 z-20"></div>
-        <img 
-            src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-            alt="Computer Lab" 
-            class="w-full h-full object-cover"
-        />
-        <!-- Overlay Content -->
-        <div class="absolute inset-0 z-30 flex flex-col justify-center items-center text-white p-8 xl:p-12">
-            <div class="text-center max-w-sm xl:max-w-md">
-                <!-- Benedicto College Logo -->
-                <div class="mb-6 xl:mb-8">
-                    <div class="inline-flex items-center justify-center w-24 h-24 xl:w-32 xl:h-32 bg-white rounded-full shadow-2xl mb-4 border-4 border-white/20 backdrop-blur-sm">
-                        <img 
-                            src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
-                            alt="Benedicto College Logo" 
-                            class="w-18 h-18 xl:w-24 xl:h-24 object-contain drop-shadow-lg"
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                        />
-                        <!-- Fallback logo if image fails to load -->
-                        <div class="text-center hidden">
-                            <div class="flex items-center justify-center">
-                                <span class="text-2xl xl:text-3xl font-bold text-blue-600">B</span>
-                                <span class="text-2xl xl:text-3xl font-bold text-orange-500">C</span>
-                            </div>
-                            <div class="text-xs text-gray-600 font-semibold">2000</div>
-                        </div>
-                    </div>
-                </div>
-                <h1 class="text-3xl xl:text-4xl font-bold mb-3 xl:mb-4 drop-shadow-lg leading-tight">Benedicto College</h1>
-                <p class="text-base xl:text-lg text-blue-100 mb-2 font-semibold drop-shadow-md">Your Education... Our Mission</p>
-                <p class="text-sm xl:text-lg text-blue-100 leading-relaxed drop-shadow-md">
-                    Computer Lab Inventory Management System
-                </p>
-            </div>
-        </div>
+﻿<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-20 left-20 w-32 h-32 bg-blue-600 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-20 w-40 h-40 bg-orange-500 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-blue-400 rounded-full blur-3xl animate-pulse delay-500"></div>
     </div>
 
-    <!-- Right Side - Login Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen lg:min-h-0">
-        <div class="w-full max-w-sm sm:max-w-md">
-            <!-- Login Card -->
-            <div class="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100 drop-shadow-2xl backdrop-blur-sm">
-                <!-- Header -->
-                <div class="text-center mb-6 sm:mb-8">
-                    <div class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white border-2 border-blue-200 rounded-full mb-3 sm:mb-4 shadow-xl drop-shadow-lg">
-                        <img 
-                            src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
-                            alt="Benedicto College Logo" 
-                            class="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-md"
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                        />
-                        <!-- Fallback logo if image fails to load -->
-                        <div class="text-center hidden">
-                            <div class="flex items-center justify-center">
-                                <span class="text-lg sm:text-xl font-bold text-blue-600">B</span>
-                                <span class="text-lg sm:text-xl font-bold text-orange-500">C</span>
-                            </div>
+    <!-- Main Login Card -->
+    <div class="relative z-10 w-full max-w-md">
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 transform transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-3xl">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <!-- Logo Icon -->
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-6 transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                    <img 
+                        src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
+                        alt="Benedicto College Logo" 
+                        class="w-10 h-10 object-contain"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <!-- Fallback logo if image fails to load -->
+                    <div class="text-center hidden">
+                        <div class="flex items-center justify-center">
+                            <span class="text-xl font-bold text-blue-600">B</span>
+                            <span class="text-xl font-bold text-orange-500">C</span>
                         </div>
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 drop-shadow-sm leading-tight">Welcome Back</h2>
-                    <p class="text-sm sm:text-base text-gray-600 drop-shadow-sm leading-relaxed">Sign in to your Benedicto College account</p>
                 </div>
+                
+                <!-- Title -->
+                <h1 class="text-2xl font-bold text-gray-900 mb-3 leading-tight">Sign in with email</h1>
+                <p class="text-gray-600 text-sm leading-relaxed max-w-xs mx-auto">
+                    Access your Benedicto College Computer Lab Inventory Management System
+                </p>
+            </div>
 
-                <!-- Login Form -->
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5 sm:space-y-6">
-                    <!-- Email Field -->
-                    <div>
-                        <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-2 leading-relaxed">
-                            <i class="fas fa-envelope text-blue-500 mr-2 text-sm sm:text-base"></i>
-                            Email Address
-                        </label>
+            <!-- Login Form -->
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+                <!-- Email Field -->
+                <div class="group">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400 group-focus-within:text-blue-600 transition-colors duration-300"></i>
+                        </div>
                         <input 
                             type="email" 
                             formControlName="email" 
-                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md placeholder-gray-400"
-                            placeholder="Enter your email"
+                            class="w-full pl-12 pr-4 py-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-300 placeholder-gray-400 hover:bg-gray-100 focus:bg-white"
+                            placeholder="Email"
                             [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.email.errors }" 
                         />
-                        <div *ngIf="submitted && f.email.errors" class="mt-2 text-xs sm:text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1 text-xs"></i>
-                            <span *ngIf="f.email.errors.required">Email is required</span>
-                            <span *ngIf="f.email.errors.email">Please enter a valid email address</span>
-                        </div>
                     </div>
-
-                    <!-- Password Field -->
-                    <div>
-                        <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-2 leading-relaxed">
-                            <i class="fas fa-lock text-blue-500 mr-2 text-sm sm:text-base"></i>
-                            Password
-                        </label>
-                        <div class="relative">
-                            <input 
-                                [type]="showPassword ? 'text' : 'password'" 
-                                formControlName="password" 
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md placeholder-gray-400"
-                                placeholder="Enter your password"
-                                [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.password.errors }" 
-                            />
-                            <button 
-                                type="button" 
-                                class="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
-                                (click)="togglePassword()"
-                                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-                            >
-                                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-sm sm:text-base"></i>
-                            </button>
-                        </div>
-                        <div *ngIf="submitted && f.password.errors" class="mt-2 text-xs sm:text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1 text-xs"></i>
-                            <span>Password is required</span>
-                        </div>
+                    <div *ngIf="submitted && f.email.errors" class="mt-2 text-sm text-red-600 flex items-center animate-fade-in">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span *ngIf="f.email.errors.required">Email is required</span>
+                        <span *ngIf="f.email.errors.email">Please enter a valid email address</span>
                     </div>
+                </div>
 
-                    <!-- Submit Button -->
-                    <button 
-                        [disabled]="loading" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-2.5 sm:py-3 px-4 rounded-lg font-semibold text-sm sm:text-base hover:from-blue-700 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl drop-shadow-md"
-                        type="submit"
-                    >
-                        <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                        <i *ngIf="!loading" class="fas fa-sign-in-alt mr-2 text-sm sm:text-base"></i>
-                        {{ loading ? 'Signing In...' : 'Sign In' }}
-                    </button>
-                </form>
+                <!-- Password Field -->
+                <div class="group">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400 group-focus-within:text-blue-600 transition-colors duration-300"></i>
+                        </div>
+                        <input 
+                            [type]="showPassword ? 'text' : 'password'" 
+                            formControlName="password" 
+                            class="w-full pl-12 pr-12 py-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-300 placeholder-gray-400 hover:bg-gray-100 focus:bg-white"
+                            placeholder="Password"
+                            [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.password.errors }" 
+                        />
+                        <button 
+                            type="button" 
+                            class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-300"
+                            (click)="togglePassword()"
+                            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                        >
+                            <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="submitted && f.password.errors" class="mt-2 text-sm text-red-600 flex items-center animate-fade-in">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>Password is required</span>
+                    </div>
+                </div>
 
-                <!-- Links -->
-                <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-                    <a routerLink="../register" class="text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm transition-colors flex items-center">
-                        <i class="fas fa-user-plus mr-1 text-xs sm:text-sm"></i>
-                        Create Account
-                    </a>
-                    <a routerLink="../forgot-password" class="text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm transition-colors flex items-center">
-                        <i class="fas fa-key mr-1 text-xs sm:text-sm"></i>
-                        Forgot Password?
+                <!-- Forgot Password Link -->
+                <div class="text-right">
+                    <a routerLink="../forgot-password" class="text-sm text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                        Forgot password?
                     </a>
                 </div>
 
-                <!-- Error Message -->
-                <div *ngIf="error" class="mt-5 sm:mt-6 bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 flex items-center text-red-700">
-                    <i class="fas fa-exclamation-triangle mr-2 text-sm"></i>
-                    <span class="text-xs sm:text-sm leading-relaxed">{{ error }}</span>
+                <!-- Submit Button -->
+                <button 
+                    [disabled]="loading" 
+                    class="w-full bg-gray-900 text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
+                    type="submit"
+                >
+                    <span *ngIf="loading" class="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                    <i *ngIf="!loading" class="fas fa-arrow-right mr-2"></i>
+                    {{ loading ? 'Signing In...' : 'Get Started' }}
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="relative my-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-4 bg-white text-gray-500">Or sign in with</span>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="text-center mt-6 sm:mt-8 text-gray-500">
-                <p class="text-xs sm:text-sm leading-relaxed">&copy; 2024 Benedicto College. All rights reserved.</p>
-                <p class="mt-1 text-xs leading-relaxed">Computer Lab Inventory Management System</p>
+            <!-- Social Login Buttons -->
+            <div class="flex justify-center space-x-4">
+                <button class="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all duration-300 transform hover:scale-110 shadow-sm hover:shadow-md">
+                    <i class="fab fa-google text-red-500 text-lg"></i>
+                </button>
+                <button class="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all duration-300 transform hover:scale-110 shadow-sm hover:shadow-md">
+                    <i class="fab fa-facebook text-blue-600 text-lg"></i>
+                </button>
+                <button class="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all duration-300 transform hover:scale-110 shadow-sm hover:shadow-md">
+                    <i class="fab fa-apple text-gray-900 text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Create Account Link -->
+            <div class="text-center mt-8">
+                <p class="text-sm text-gray-600">
+                    Don't have an account? 
+                    <a routerLink="../register" class="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-300">
+                        Create Account
+                    </a>
+                </p>
+            </div>
+
+            <!-- Error Message -->
+            <div *ngIf="error" class="mt-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center text-red-700 animate-fade-in">
+                <i class="fas fa-exclamation-triangle mr-3"></i>
+                <span class="text-sm">{{ error }}</span>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Custom Animations -->
+<style>
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Custom shadow for hover effects */
+.hover\:shadow-3xl:hover {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+</style>
