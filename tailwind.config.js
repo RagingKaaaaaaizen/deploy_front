@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'akira': ['Orbitron', 'sans-serif'],
+        'akira': ['Akira Expanded', 'sans-serif'],
         'montserrat': ['Montserrat', 'sans-serif'],
         'inter': ['Inter', 'sans-serif'],
       },
