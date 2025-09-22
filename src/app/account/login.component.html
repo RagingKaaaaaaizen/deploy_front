@@ -13,8 +13,15 @@
             <div class="text-center max-w-md">
                 <!-- Benedicto College Logo -->
                 <div class="mb-8">
-                    <div class="inline-flex items-center justify-center w-24 h-24 bg-white rounded-full shadow-lg mb-4">
-                        <div class="text-center">
+                    <div class="inline-flex items-center justify-center w-32 h-32 bg-white rounded-full shadow-2xl mb-4 border-4 border-white/20 backdrop-blur-sm">
+                        <img 
+                            src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
+                            alt="Benedicto College Logo" 
+                            class="w-24 h-24 object-contain drop-shadow-lg"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        />
+                        <!-- Fallback logo if image fails to load -->
+                        <div class="text-center hidden">
                             <div class="flex items-center justify-center">
                                 <span class="text-3xl font-bold text-blue-600">B</span>
                                 <span class="text-3xl font-bold text-orange-500">C</span>
@@ -23,9 +30,9 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="text-4xl font-bold mb-4">Benedicto College</h1>
-                <p class="text-lg text-blue-100 mb-2 font-medium">Your Education... Our Mission</p>
-                <p class="text-lg text-blue-100 leading-relaxed">
+                <h1 class="text-4xl font-bold mb-4 drop-shadow-lg">Benedicto College</h1>
+                <p class="text-lg text-blue-100 mb-2 font-medium drop-shadow-md">Your Education... Our Mission</p>
+                <p class="text-lg text-blue-100 leading-relaxed drop-shadow-md">
                     Computer Lab Inventory Management System
                 </p>
             </div>
@@ -36,19 +43,26 @@
     <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
         <div class="w-full max-w-md">
             <!-- Login Card -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 drop-shadow-2xl backdrop-blur-sm">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-white border-2 border-blue-200 rounded-full mb-4 shadow-md">
-                        <div class="text-center">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-white border-2 border-blue-200 rounded-full mb-4 shadow-xl drop-shadow-lg">
+                        <img 
+                            src="assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp" 
+                            alt="Benedicto College Logo" 
+                            class="w-14 h-14 object-contain drop-shadow-md"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        />
+                        <!-- Fallback logo if image fails to load -->
+                        <div class="text-center hidden">
                             <div class="flex items-center justify-center">
                                 <span class="text-xl font-bold text-blue-600">B</span>
                                 <span class="text-xl font-bold text-orange-500">C</span>
                             </div>
                         </div>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-                    <p class="text-gray-600">Sign in to your Benedicto College account</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2 drop-shadow-sm">Welcome Back</h2>
+                    <p class="text-gray-600 drop-shadow-sm">Sign in to your Benedicto College account</p>
                 </div>
 
                 <!-- Login Form -->
@@ -62,7 +76,7 @@
                         <input 
                             type="email" 
                             formControlName="email" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md"
                             placeholder="Enter your email"
                             [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.email.errors }" 
                         />
@@ -83,7 +97,7 @@
                             <input 
                                 [type]="showPassword ? 'text' : 'password'" 
                                 formControlName="password" 
-                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                                class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white shadow-sm focus:shadow-md"
                                 placeholder="Enter your password"
                                 [ngClass]="{ 'border-red-500 focus:ring-red-500': submitted && f.password.errors }" 
                             />
@@ -105,7 +119,7 @@
                     <!-- Submit Button -->
                     <button 
                         [disabled]="loading" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+                        class="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl drop-shadow-md"
                         type="submit"
                     >
                         <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
