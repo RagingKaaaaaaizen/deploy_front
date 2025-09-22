@@ -36,11 +36,6 @@ import { takeUntil } from 'rxjs/operators';
                   *ngIf="isMobile">
             <i class="fas fa-bars"></i>
           </button>
-          <button class="toggle-btn desktop-toggle" 
-                  (click)="toggleSidebar()"
-                  *ngIf="!isMobile">
-            <i class="fas fa-chevron-left" [class.rotated]="isCollapsed"></i>
-          </button>
         </div>
       </div>
 

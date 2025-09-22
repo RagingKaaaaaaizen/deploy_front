@@ -1,9 +1,4 @@
 ﻿<div class="app-container flex" [ngClass]="{ 'bg-gray-50': account }">
-    <!-- Mobile Menu Button -->
-    <div class="mobile-menu-btn lg:hidden fixed top-4 left-4 z-50 bg-white rounded-lg shadow-lg p-3 cursor-pointer" *ngIf="account" (click)="toggleMobileMenu()">
-        <i class="fas fa-bars text-gray-700"></i>
-    </div>
-
     <!-- Sidebar Navigation -->
     <app-nav *ngIf="account" class="hidden lg:block"></app-nav>
 

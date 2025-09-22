@@ -120,44 +120,44 @@
           <table class="w-full border-collapse min-w-full">
             <thead>
               <tr class="bg-gray-50">
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-64">
-                  <i class="fas fa-box mr-2"></i> Item
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-64">
+                  <i class="fas fa-box mr-1"></i> Item
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
-                  <i class="fas fa-tag mr-2"></i> Category
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
+                  <i class="fas fa-tag mr-1"></i> Category
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
-                  <i class="fas fa-trademark mr-2"></i> Brand
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
+                  <i class="fas fa-trademark mr-1"></i> Brand
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
-                  <i class="fas fa-map-marker-alt mr-2"></i> Location
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
+                  <i class="fas fa-map-marker-alt mr-1"></i> Location
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-40">
-                  <i class="fas fa-sort-numeric-up mr-2"></i> Quantity
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-40">
+                  <i class="fas fa-sort-numeric-up mr-1"></i> Quantity
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
-                  <i class="fas fa-dollar-sign mr-2"></i> Price
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
+                  <i class="fas fa-dollar-sign mr-1"></i> Price
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
-                  <i class="fas fa-calculator mr-2"></i> Total
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
+                  <i class="fas fa-calculator mr-1"></i> Total
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
-                  <i class="fas fa-clock mr-2"></i> Time & Date
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
+                  <i class="fas fa-clock mr-1"></i> Time & Date
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-40">
-                  <i class="fas fa-user mr-2"></i> Created By
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-40">
+                  <i class="fas fa-user mr-1"></i> Created By
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
-                  <i class="fas fa-desktop mr-2"></i> In Use
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-24">
+                  <i class="fas fa-desktop mr-1"></i> In Use
                 </th>
-                <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
-                  <i class="fas fa-cogs mr-2"></i> Actions
+                <th class="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 font-montserrat w-32">
+                  <i class="fas fa-cogs mr-1"></i> Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId" class="hover:bg-gray-50 transition-colors duration-200 border-b border-gray-200">
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-64" data-label="Item">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-64" data-label="Item">
                   <div class="item-info">
                     <strong class="font-montserrat text-xs">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
                     <small class="d-block text-gray-500 font-inter text-xs" *ngIf="stock.item?.description">
@@ -176,17 +176,17 @@
                     </small>
                   </div>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="Category">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="Category">
                   <span class="category-badge text-xs">
                     {{ stock.item?.category?.name || getCategoryName(stock) }}
                   </span>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Brand">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Brand">
                   <span class="brand-badge text-xs">
                     {{ stock.item?.brand?.name || getBrandName(stock) }}
                   </span>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Location">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Location">
                   <span class="location-badge text-xs">
                     {{ stock.location?.name || getLocationNameByStock(stock) }}
                     <small class="d-block text-gray-500 font-inter text-xs" *ngIf="stock.location?.description">
@@ -194,7 +194,7 @@
                     </small>
                   </span>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-40" data-label="Quantity">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-40" data-label="Quantity">
                   <div class="quantity-info">
                     <span class="quantity-badge" [ngClass]="{
                       'quantity-positive': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
@@ -220,17 +220,17 @@
                     </small>
                   </div>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="Price">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="Price">
                   <span class="price-value text-xs">
                     php{{ stock.price | number:'1.2-2' }}
                   </span>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="Total">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="Total">
                   <span class="total-price text-xs">
                     php{{ (stock.price * stock.quantity) | number:'1.2-2' }}
                   </span>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Time & Date">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Time & Date">
                   <div class="time-date-info">
                     <span class="date-badge">
                       {{ stock.createdAt | date:'MMM dd, yyyy' }}
@@ -245,7 +245,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-40" data-label="Created By">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-40" data-label="Created By">
                   <div class="user-info">
                     <span class="user-badge font-montserrat text-xs" *ngIf="stock.user">
                       {{ stock.user.firstName }} {{ stock.user.lastName }}
@@ -258,7 +258,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="In Use">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-24" data-label="In Use">
                   <div class="in-use-info">
                     <span *ngIf="isItemInUse(stock.itemId)" class="badge badge-warning text-xs">
                       <i class="fas fa-desktop"></i> In Use
@@ -271,7 +271,7 @@
                     </small>
                   </div>
                 </td>
-                <td class="px-2 py-2 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Actions">
+                <td class="px-1 py-1 text-sm text-gray-900 border-b border-gray-200 font-inter w-32" data-label="Actions">
                   <div class="action-buttons">
                     <button type="button" class="btn btn-sm btn-outline-primary"
                             (click)="openViewStockModal(stock)" title="View Details">
