@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { environment } from '@environments/environment';
@@ -1402,7 +1402,8 @@ export class StockListComponent implements OnInit {
     private router: Router,
     private accountService: AccountService,
     private alertService: AlertService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -1760,6 +1761,8 @@ export class StockListComponent implements OnInit {
   }
 
   addNewStockEntry() {
+    console.log('=== ADD NEW STOCK ENTRY BUTTON CLICKED ===');
+    console.log('Current stock entries length:', this.stockEntries.length);
     this.stockEntries.push({
       itemId: undefined,
       quantity: undefined,
@@ -1767,12 +1770,23 @@ export class StockListComponent implements OnInit {
       locationId: undefined,
       remarks: ''
     });
+    console.log('New stock entries length:', this.stockEntries.length);
+    console.log('Stock entries:', this.stockEntries);
+    // Recalculate total price and trigger change detection
+    this.calculateTotalPrice();
+    this.cdr.detectChanges();
   }
 
   removeStockEntry(index: number) {
     if (this.stockEntries.length > 1) {
       this.stockEntries.splice(index, 1);
+      this.calculateTotalPrice();
+      this.cdr.detectChanges();
     }
+  }
+
+  trackByIndex(index: number, item: any): number {
+    return index;
   }
 
   onReceiptFileSelected(event: any) {

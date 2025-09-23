@@ -347,7 +347,7 @@
             <form (ngSubmit)="showConfirmationModal()" #stockForm="ngForm" class="stock-form">
               
               <!-- Multiple Stock Entries -->
-              <div *ngFor="let entry of stockEntries; let i = index" class="mb-6 p-4 border border-gray-200 rounded-xl bg-gray-50">
+              <div *ngFor="let entry of stockEntries; let i = index; trackBy: trackByIndex" class="mb-6 p-4 border border-gray-200 rounded-xl bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
                   <h6 class="text-lg font-semibold text-gray-900 flex items-center gap-2 font-montserrat">
                     <i class="fas fa-box text-blue-600"></i> Stock Entry {{ i + 1 }}
