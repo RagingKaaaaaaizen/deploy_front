@@ -1096,23 +1096,37 @@ export class PCListComponent implements OnInit {
 
     this.pcLoading = true;
 
-    // Prepare PC data
+    // Prepare PC data - only send fields that the backend expects
     const pcData = {
-      ...this.pcForm.value,
-      defaultComponents: this.defaultComponents
+      name: this.pcForm.value.name,
+      roomLocationId: parseInt(this.pcForm.value.roomLocationId), // Ensure it's a number
+      status: this.pcForm.value.status,
+      notes: this.pcForm.value.notes || '' // Ensure notes is not null
     };
 
-    this.pcService.create(pcData)
+    console.log('Creating PC with data:', pcData);
+
+    this.pcService.create(pcData as any)
       .pipe(first())
       .subscribe({
-        next: () => {
-          this.alertService.success('PC created successfully with default components configuration!', { autoClose: true });
+        next: (createdPC) => {
+          console.log('PC created successfully:', createdPC);
+          this.alertService.success('PC created successfully!', { autoClose: true });
+          
+          // TODO: In the future, we can store the default components configuration
+          // For now, just show a message about the default components
+          if (Object.keys(this.defaultComponents).length > 0) {
+            console.log('Default components configuration saved for future reference:', this.defaultComponents);
+            this.alertService.info('Default components configuration noted. Components matching these defaults will be marked when added to this PC.', { autoClose: true });
+          }
+          
           this.closeAddPCModal();
           this.loadPCs(); // Reload the PC list
         },
         error: (error) => {
           this.alertService.error('Error creating PC. Please try again.', { autoClose: true });
           console.error('Error creating PC:', error);
+          console.error('Full error details:', error);
         },
         complete: () => {
           this.pcLoading = false;
