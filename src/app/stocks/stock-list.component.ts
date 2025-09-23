@@ -1432,12 +1432,16 @@ export class StockListComponent implements OnInit {
     this.showAddStockModal = true;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     this.initializeStockEntries();
+    // Dispatch modal open event
+    window.dispatchEvent(new CustomEvent('modalOpen'));
   }
 
   closeAddStockModal() {
     this.showAddStockModal = false;
     document.body.style.overflow = 'auto'; // Restore scrolling
     this.resetStockForm();
+    // Dispatch modal close event
+    window.dispatchEvent(new CustomEvent('modalClose'));
   }
 
   // View Stock Modal methods
@@ -1451,6 +1455,8 @@ export class StockListComponent implements OnInit {
     this.showViewStockModal = true;
     this.currentInfoType = '';
     document.body.style.overflow = 'hidden';
+    // Dispatch modal open event
+    window.dispatchEvent(new CustomEvent('modalOpen'));
   }
 
   closeViewStockModal() {
@@ -1458,6 +1464,8 @@ export class StockListComponent implements OnInit {
     this.selectedStock = null;
     this.currentInfoType = '';
     document.body.style.overflow = 'auto';
+    // Dispatch modal close event
+    window.dispatchEvent(new CustomEvent('modalClose'));
   }
 
   // Edit Stock Modal methods

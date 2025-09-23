@@ -18,7 +18,8 @@ import { takeUntil } from 'rxjs/operators';
          [ngClass]="{ 
            'collapsed': isCollapsed && !isMobile, 
            'mobile-open': isMobileOpen,
-           'mobile': isMobile 
+           'mobile': isMobile,
+           'modal-blur': isModalOpen
          }">
       
       <!-- Sidebar Header -->
@@ -203,7 +204,7 @@ import { takeUntil } from 'rxjs/operators';
       top: 0;
       left: 0;
       height: 100vh;
-      width: 240px;
+      width: 200px;
       background: white;
       color: #374151;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -214,13 +215,18 @@ import { takeUntil } from 'rxjs/operators';
       border-right: 1px solid #e5e7eb;
     }
 
+    .sidebar.modal-blur {
+      filter: blur(4px);
+      opacity: 0.7;
+    }
+
     .sidebar.collapsed {
       width: 70px;
     }
 
     .sidebar.mobile {
       transform: translateX(-100%);
-      width: 240px;
+      width: 200px;
     }
 
     .sidebar.mobile-open {
@@ -607,6 +613,7 @@ export class NavComponent implements OnInit, OnDestroy {
   isMobileOpen = false;
   pendingCount = 0;
   openDropdowns: Set<string> = new Set();
+  isModalOpen = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -630,11 +637,25 @@ export class NavComponent implements OnInit, OnDestroy {
         }
       }, 1000);
     }
+    
+    // Listen for modal state changes
+    this.listenForModalEvents();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  listenForModalEvents() {
+    // Listen for modal open/close events
+    window.addEventListener('modalOpen', () => {
+      this.isModalOpen = true;
+    });
+    
+    window.addEventListener('modalClose', () => {
+      this.isModalOpen = false;
+    });
   }
 
   loadPendingCount() {
