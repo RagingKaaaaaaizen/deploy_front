@@ -69,32 +69,32 @@ import { takeUntil } from 'rxjs/operators';
 
           <!-- Inventory Dropdown -->
           <li class="nav-item dropdown" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-            <div class="nav-link dropdown-toggle" 
-                 (click)="toggleDropdown('inventory')"
-                 [class.active]="isDropdownOpen('inventory')">
-              <i class="fas fa-boxes"></i>
-              <span class="font-montserrat" *ngIf="!isCollapsed || isMobile">Inventory</span>
-              <i class="fas fa-chevron-down dropdown-arrow" 
-                 [class.rotated]="isDropdownOpen('inventory')"
-                 *ngIf="!isCollapsed || isMobile"></i>
-              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Inventory</span>
-            </div>
-            <ul class="dropdown-menu" [class.show]="isDropdownOpen('inventory')">
-              <li class="dropdown-item">
-                <a routerLink="/stocks" 
+            <a class="nav-link dropdown-toggle d-flex align-items-center" 
+               href="#" 
+               id="inventoryDropdown" 
+               role="button" 
+               data-bs-toggle="dropdown" 
+               aria-expanded="false"
+               [class.active]="isDropdownOpen('inventory')">
+              <i class="fas fa-boxes me-2 text-primary"></i>
+              <span *ngIf="!isCollapsed || isMobile">Inventory</span>
+            </a>
+            <ul class="dropdown-menu shadow border-0" aria-labelledby="inventoryDropdown">
+              <li>
+                <a class="dropdown-item d-flex align-items-center" 
+                   routerLink="/stocks" 
                    routerLinkActive="active"
-                   (click)="closeMobileSidebar()"
-                   class="font-inter">
-                  <i class="fas fa-boxes"></i>
+                   (click)="closeMobileSidebar()">
+                  <i class="fas fa-boxes me-2 text-success"></i>
                   <span>Stocks</span>
                 </a>
               </li>
-              <li class="dropdown-item">
-                <a routerLink="/dispose" 
+              <li>
+                <a class="dropdown-item d-flex align-items-center" 
+                   routerLink="/dispose" 
                    routerLinkActive="active"
-                   (click)="closeMobileSidebar()"
-                   class="font-inter">
-                  <i class="fas fa-trash-alt"></i>
+                   (click)="closeMobileSidebar()">
+                  <i class="fas fa-trash-alt me-2 text-danger"></i>
                   <span>Dispose</span>
                 </a>
               </li>
