@@ -1857,12 +1857,24 @@ export class StockListComponent implements OnInit {
 
   // New confirmation modal methods
   showConfirmationModal() {
+    console.log('=== SHOW CONFIRMATION MODAL CALLED ===');
+    console.log('Stock entries:', this.stockEntries);
     this.stockSubmitted = true;
 
     // Validate all entries
-    this.validStockEntries = this.stockEntries.filter(entry => 
-      entry.itemId && entry.quantity && entry.price && entry.locationId
-    );
+    this.validStockEntries = this.stockEntries.filter(entry => {
+      console.log('Validating entry:', entry);
+      console.log('itemId:', entry.itemId, 'quantity:', entry.quantity, 'price:', entry.price, 'locationId:', entry.locationId);
+      const isValid = entry.itemId && 
+        entry.quantity && entry.quantity > 0 && 
+        entry.price && entry.price > 0 && 
+        entry.locationId;
+      console.log('Entry is valid:', isValid);
+      return isValid;
+    });
+
+    console.log('Valid entries:', this.validStockEntries);
+    console.log('Valid entries count:', this.validStockEntries.length);
 
     if (this.validStockEntries.length === 0) {
       this.alertService.error('Please fill in at least one complete stock entry');

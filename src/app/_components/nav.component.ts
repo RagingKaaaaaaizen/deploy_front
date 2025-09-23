@@ -204,7 +204,7 @@ import { takeUntil } from 'rxjs/operators';
       top: 0;
       left: 0;
       height: 100vh;
-      width: 200px;
+      width: 240px;
       background: white;
       color: #374151;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -226,7 +226,7 @@ import { takeUntil } from 'rxjs/operators';
 
     .sidebar.mobile {
       transform: translateX(-100%);
-      width: 200px;
+      width: 240px;
     }
 
     .sidebar.mobile-open {
