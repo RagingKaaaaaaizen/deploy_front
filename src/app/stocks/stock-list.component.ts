@@ -1855,6 +1855,24 @@ export class StockListComponent implements OnInit {
       });
   }
 
+  // Form submission debug method
+  onFormSubmit(event: Event) {
+    console.log('=== FORM SUBMIT EVENT ===');
+    console.log('Event:', event);
+    console.log('Form validity:', event.target);
+    event.preventDefault(); // Prevent default submission
+    this.showConfirmationModal();
+  }
+
+  // Debug submit button click
+  debugSubmitButton(event: Event) {
+    console.log('=== SUBMIT BUTTON CLICKED ===');
+    console.log('Event:', event);
+    console.log('Stock entries at button click:', this.stockEntries);
+    console.log('Button disabled state:', this.stockLoading);
+    // Don't prevent default here - let the form submission proceed
+  }
+
   // New confirmation modal methods
   showConfirmationModal() {
     console.log('=== SHOW CONFIRMATION MODAL CALLED ===');
