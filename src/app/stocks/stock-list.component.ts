@@ -1347,6 +1347,7 @@ export class StockListComponent implements OnInit {
   showViewStockModal = false;
   showEditStockModal = false;
   showReceiptModal = false;
+  loading = false;
   selectedStock: any = null;
   currentInfoType: string = '';
   currentReceiptUrl: string = '';
@@ -1983,6 +1984,7 @@ export class StockListComponent implements OnInit {
   }
 
   loadStocks() {
+    this.loading = true;
     this.stockService.getAll()
       .pipe(first())
       .subscribe({
@@ -2023,10 +2025,12 @@ export class StockListComponent implements OnInit {
           this.applyFilters();
           
           console.log('=== END STOCK DATA DEBUG ===');
+          this.loading = false;
         },
         error: error => {
           console.error('Error loading stocks:', error);
           this.alertService.error(error);
+          this.loading = false;
         }
       });
   }
