@@ -1041,25 +1041,40 @@ export class PCListComponent implements OnInit {
   }
 
   loadRoomLocations() {
+    console.log('Loading room locations...');
     this.locationService.getAll()
       .pipe(first())
       .subscribe({
         next: (locations) => {
+          console.log('Room locations loaded:', locations);
           this.roomLocations = locations;
+          if (locations.length === 0) {
+            console.warn('No room locations found! This might cause foreign key constraint errors.');
+          }
         },
         error: (error) => {
           console.error('Error loading room locations:', error);
+          this.alertService.error('Error loading room locations. Please refresh the page.', { autoClose: true });
         }
       });
   }
 
   openAddPCModal() {
+    console.log('Opening Add PC Modal...');
     this.showAddPCModal = true;
     this.submitted = false;
     this.pcForm.reset();
     this.pcForm.patchValue({ status: 'Active' });
     this.selectedCategories = [];
     this.defaultComponents = {};
+    
+    // Ensure we have the latest room locations data
+    if (this.roomLocations.length === 0) {
+      console.log('No room locations loaded, refreshing...');
+      this.loadRoomLocations();
+    } else {
+      console.log('Room locations already loaded:', this.roomLocations.length);
+    }
   }
 
   closeAddPCModal() {
@@ -1090,7 +1105,26 @@ export class PCListComponent implements OnInit {
   onSubmitPC() {
     this.submitted = true;
 
+    console.log('=== PC FORM SUBMISSION ===');
+    console.log('Form valid:', this.pcForm.valid);
+    console.log('Form values:', this.pcForm.value);
+    console.log('Available room locations:', this.roomLocations);
+
     if (this.pcForm.invalid) {
+      console.log('Form is invalid, aborting submission');
+      this.alertService.error('Please fill in all required fields correctly.', { autoClose: true });
+      return;
+    }
+
+    // Validate roomLocationId exists in our loaded data
+    const selectedRoomLocationId = parseInt(this.pcForm.value.roomLocationId);
+    const roomLocationExists = this.roomLocations.find(loc => loc.id === selectedRoomLocationId);
+    
+    if (!roomLocationExists) {
+      console.error('Selected room location not found in available locations');
+      console.log('Selected ID:', selectedRoomLocationId);
+      console.log('Available locations:', this.roomLocations.map(loc => ({ id: loc.id, name: loc.name })));
+      this.alertService.error('Invalid room location selected. Please refresh the page and try again.', { autoClose: true });
       return;
     }
 
@@ -1098,13 +1132,14 @@ export class PCListComponent implements OnInit {
 
     // Prepare PC data - only send fields that the backend expects
     const pcData = {
-      name: this.pcForm.value.name,
-      roomLocationId: parseInt(this.pcForm.value.roomLocationId), // Ensure it's a number
+      name: this.pcForm.value.name.trim(),
+      roomLocationId: selectedRoomLocationId,
       status: this.pcForm.value.status,
-      notes: this.pcForm.value.notes || '' // Ensure notes is not null
+      notes: this.pcForm.value.notes ? this.pcForm.value.notes.trim() : ''
     };
 
-    console.log('Creating PC with data:', pcData);
+    console.log('Creating PC with validated data:', pcData);
+    console.log('Selected room location details:', roomLocationExists);
 
     this.pcService.create(pcData as any)
       .pipe(first())
@@ -1124,9 +1159,22 @@ export class PCListComponent implements OnInit {
           this.loadPCs(); // Reload the PC list
         },
         error: (error) => {
-          this.alertService.error('Error creating PC. Please try again.', { autoClose: true });
+          console.error('=== PC CREATION ERROR ===');
           console.error('Error creating PC:', error);
-          console.error('Full error details:', error);
+          console.error('Error message:', error?.error?.message || error?.message);
+          console.error('Error status:', error?.status);
+          console.error('Full error object:', error);
+          
+          let errorMessage = 'Error creating PC. ';
+          if (error?.error?.message) {
+            errorMessage += error.error.message;
+          } else if (error?.message) {
+            errorMessage += error.message;
+          } else {
+            errorMessage += 'Please try again.';
+          }
+          
+          this.alertService.error(errorMessage, { autoClose: false });
         },
         complete: () => {
           this.pcLoading = false;
