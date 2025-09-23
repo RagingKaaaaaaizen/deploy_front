@@ -11,10 +11,10 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a routerLink="/pc/add" class="btn btn-primary" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                    <button type="button" class="btn btn-primary" (click)="openAddPCModal()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                         <i class="fas fa-plus"></i>
                         Add PC
-                    </a>
+                    </button>
                     <button type="button" class="btn btn-secondary ml-2" (click)="testNavigation()">
                         <i class="fas fa-test"></i>
                         Test Navigation
@@ -167,9 +167,7 @@
                         <thead>
                             <tr>
                                 <th><i class="fas fa-desktop"></i> PC Name</th>
-                                <th><i class="fas fa-barcode"></i> Serial Number</th>
                                 <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                                <th><i class="fas fa-user"></i> Assigned To</th>
                                 <th><i class="fas fa-info-circle"></i> Status</th>
                                 <th><i class="fas fa-microchip"></i> Component Status</th>
                                 <th><i class="fas fa-calendar"></i> Created</th>
@@ -186,19 +184,9 @@
                                          </small>
                                      </div>
                                  </td>
-                                 <td data-label="Serial Number">
-                                     <span class="serial-number">
-                                         {{ pc.serialNumber || 'No Serial' }}
-                                     </span>
-                                 </td>
                                  <td data-label="Location">
                                      <span class="location-badge">
                                          {{ getLocationName(pc.roomLocationId) }}
-                                     </span>
-                                 </td>
-                                 <td data-label="Assigned To">
-                                     <span class="assigned-to">
-                                         {{ pc.assignedTo || 'Unassigned' }}
                                      </span>
                                  </td>
                                  <td data-label="Status">
@@ -256,7 +244,7 @@
                                  </td>
                              </tr>
                             <tr *ngIf="paginatedPCs.length === 0">
-                                <td colspan="7" class="text-center py-4">
+                                <td colspan="6" class="text-center py-4">
                                     <div class="empty-state">
                                         <i class="fas fa-desktop"></i>
                                         <h4>No PCs found</h4>
@@ -292,6 +280,151 @@
                     </li>
                 </ul>
             </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Add PC Modal -->
+<div class="modal fade show" *ngIf="showAddPCModal" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-desktop me-2"></i>Add New PC
+                </h5>
+                <button type="button" class="btn-close" (click)="closeAddPCModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="pcForm" (ngSubmit)="onSubmitPC()">
+                    <!-- PC Basic Information -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>PC Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">PC Name *</label>
+                                        <input type="text" class="form-control" formControlName="name" 
+                                               placeholder="Enter PC name">
+                                        <div *ngIf="submitted && pcForm.get('name')?.errors?.['required']" 
+                                             class="text-danger small">PC Name is required</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Room Location *</label>
+                                        <select class="form-select" formControlName="roomLocationId">
+                                            <option value="">Select Room Location</option>
+                                            <option *ngFor="let location of roomLocations" [value]="location.id">
+                                                {{ location.name }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="submitted && pcForm.get('roomLocationId')?.errors?.['required']" 
+                                             class="text-danger small">Room Location is required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Status</label>
+                                        <select class="form-select" formControlName="status">
+                                            <option value="Active">🟢 Active</option>
+                                            <option value="Inactive">⚪ Inactive</option>
+                                            <option value="Maintenance">🟡 Maintenance</option>
+                                            <option value="Retired">🔴 Retired</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Notes</label>
+                                        <textarea class="form-control" formControlName="notes" rows="2" 
+                                                  placeholder="Optional notes about this PC"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Default Components Configuration -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-microchip me-2"></i>Default Components Configuration
+                            </h6>
+                            <small class="text-muted">Set the default components for this PC. Components matching these defaults will be marked as "Component Match".</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Category Selection -->
+                                <div class="col-md-12 mb-4">
+                                    <label class="form-label">Select Categories for Default Components</label>
+                                    <div class="row">
+                                        <div class="col-md-3" *ngFor="let category of categories">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       [value]="category.id" 
+                                                       (change)="onCategorySelect(category, $event)"
+                                                       [id]="'category_' + category.id">
+                                                <label class="form-check-label" [for]="'category_' + category.id">
+                                                    {{ category.name }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Selected Categories with Items -->
+                            <div *ngFor="let selectedCategory of selectedCategories" class="card border-primary mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-tag me-2"></i>{{ selectedCategory.name }} - Default Component
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select Default {{ selectedCategory.name }} *</label>
+                                        <select class="form-select" 
+                                                [(ngModel)]="defaultComponents[selectedCategory.id]"
+                                                [ngModelOptions]="{standalone: true}">
+                                            <option value="">Select {{ selectedCategory.name }}</option>
+                                            <option *ngFor="let item of getItemsByCategory(selectedCategory.id)" 
+                                                    [value]="item.id">
+                                                {{ item.name }}
+                                                <span *ngIf="item.brand"> - {{ item.brand.name }}</span>
+                                            </option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            Components matching this default will be marked as "Component Match" when added to the PC.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="selectedCategories.length === 0" class="text-center text-muted p-4">
+                                <i class="fas fa-info-circle fa-2x mb-2"></i>
+                                <p>Select categories above to configure default components for this PC.</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeAddPCModal()">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" (click)="onSubmitPC()" [disabled]="pcLoading">
+                    <i *ngIf="pcLoading" class="fas fa-spinner fa-spin me-1"></i>
+                    <i *ngIf="!pcLoading" class="fas fa-save me-1"></i>
+                    {{ pcLoading ? 'Creating...' : 'Create PC' }}
+                </button>
+            </div>
         </div>
     </div>
 </div> 

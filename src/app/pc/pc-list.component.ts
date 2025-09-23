@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService } from '@app/_services';
+import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService, CategoryService, ItemService } from '@app/_services';
 import { Role } from '@app/_models';
 
 @Component({
@@ -635,6 +636,19 @@ export class PCListComponent implements OnInit {
   itemsPerPage = 10;
   Math = Math;
 
+  // Modal properties
+  showAddPCModal = false;
+  pcForm: FormGroup;
+  submitted = false;
+  pcLoading = false;
+  
+  // Categories and items for default components
+  categories: any[] = [];
+  items: any[] = [];
+  roomLocations: any[] = [];
+  selectedCategories: any[] = [];
+  defaultComponents: { [categoryId: number]: number } = {};
+
   constructor(
     private router: Router,
     private pcService: PCService,
@@ -642,8 +656,18 @@ export class PCListComponent implements OnInit {
     private locationService: RoomLocationService,
     private alertService: AlertService,
     public accountService: AccountService,
-    private analyticsService: AnalyticsService
-  ) { }
+    private analyticsService: AnalyticsService,
+    private formBuilder: FormBuilder,
+    private categoryService: CategoryService,
+    private itemService: ItemService
+  ) { 
+    this.pcForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      roomLocationId: ['', Validators.required],
+      status: ['Active'],
+      notes: ['']
+    });
+  }
 
   ngOnInit() {
     console.log('PC List Component - ngOnInit called');
@@ -658,6 +682,9 @@ export class PCListComponent implements OnInit {
     this.loadPCs();
     this.loadLocations();
     this.loadPCComponents();
+    this.loadCategories();
+    this.loadItems();
+    this.loadRoomLocations();
   }
 
   loadPCs() {
@@ -984,6 +1011,113 @@ export class PCListComponent implements OnInit {
         console.error('Error downloading yearly PC analysis:', error);
       }
     });
+  }
+
+  // New methods for modal and default components functionality
+  loadCategories() {
+    this.categoryService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (categories) => {
+          this.categories = categories;
+        },
+        error: (error) => {
+          console.error('Error loading categories:', error);
+        }
+      });
+  }
+
+  loadItems() {
+    this.itemService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (items) => {
+          this.items = items;
+        },
+        error: (error) => {
+          console.error('Error loading items:', error);
+        }
+      });
+  }
+
+  loadRoomLocations() {
+    this.locationService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (locations) => {
+          this.roomLocations = locations;
+        },
+        error: (error) => {
+          console.error('Error loading room locations:', error);
+        }
+      });
+  }
+
+  openAddPCModal() {
+    this.showAddPCModal = true;
+    this.submitted = false;
+    this.pcForm.reset();
+    this.pcForm.patchValue({ status: 'Active' });
+    this.selectedCategories = [];
+    this.defaultComponents = {};
+  }
+
+  closeAddPCModal() {
+    this.showAddPCModal = false;
+    this.submitted = false;
+    this.pcForm.reset();
+    this.selectedCategories = [];
+    this.defaultComponents = {};
+  }
+
+  onCategorySelect(category: any, event: any) {
+    if (event.target.checked) {
+      // Add category to selected list
+      if (!this.selectedCategories.find(c => c.id === category.id)) {
+        this.selectedCategories.push(category);
+      }
+    } else {
+      // Remove category from selected list
+      this.selectedCategories = this.selectedCategories.filter(c => c.id !== category.id);
+      delete this.defaultComponents[category.id];
+    }
+  }
+
+  getItemsByCategory(categoryId: number) {
+    return this.items.filter(item => item.categoryId === categoryId);
+  }
+
+  onSubmitPC() {
+    this.submitted = true;
+
+    if (this.pcForm.invalid) {
+      return;
+    }
+
+    this.pcLoading = true;
+
+    // Prepare PC data
+    const pcData = {
+      ...this.pcForm.value,
+      defaultComponents: this.defaultComponents
+    };
+
+    this.pcService.create(pcData)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.alertService.success('PC created successfully with default components configuration!', { autoClose: true });
+          this.closeAddPCModal();
+          this.loadPCs(); // Reload the PC list
+        },
+        error: (error) => {
+          this.alertService.error('Error creating PC. Please try again.', { autoClose: true });
+          console.error('Error creating PC:', error);
+        },
+        complete: () => {
+          this.pcLoading = false;
+        }
+      });
   }
 
   ngOnDestroy() {
