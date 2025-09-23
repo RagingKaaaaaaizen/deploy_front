@@ -134,7 +134,30 @@
             <div class="card-body">
               <form (ngSubmit)="saveComponent()" #componentForm="ngForm">
                 <div class="row">
-                  <!-- Item Selection -->
+                  <!-- Category Selection -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      <i class="fas fa-list text-primary"></i> Category *
+                    </label>
+                    <select 
+                      class="form-select" 
+                      [(ngModel)]="selectedCategoryId" 
+                      name="categoryId" 
+                      required 
+                      [ngClass]="{ 'is-invalid': submitted && !selectedCategoryId }"
+                      (change)="onCategoryChange()"
+                    >
+                      <option value="">Select Component Category</option>
+                      <option *ngFor="let category of categories" [value]="category.id">
+                        {{ category.name }}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="submitted && !selectedCategoryId">
+                      Please select a category first
+                    </div>
+                  </div>
+
+                  <!-- Item Selection (filtered by category) -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">
                       <i class="fas fa-tag text-primary"></i> Item *
@@ -146,15 +169,21 @@
                       required 
                       [ngClass]="{ 'is-invalid': submitted && !newComponent.itemId }"
                       (change)="onItemChange()"
+                      [disabled]="!selectedCategoryId"
                     >
-                      <option value="">Select Item with Available Stock</option>
-                      <option *ngFor="let item of availableItems" [value]="item.id">
+                      <option value="">{{ selectedCategoryId ? 'Select Item from Stock' : 'Select Category First' }}</option>
+                      <option *ngFor="let item of filteredAvailableItems" [value]="item.id">
                         {{ item.name }} - Available: {{ getAvailableQuantity(item.id) }} units
+                        <span *ngIf="item.brand"> ({{ item.brand.name }})</span>
                       </option>
                     </select>
                     <div class="invalid-feedback" *ngIf="submitted && !newComponent.itemId">
                       Please select an item
                     </div>
+                    <small class="form-text text-muted" *ngIf="selectedCategoryId && filteredAvailableItems.length === 0">
+                      <i class="fas fa-exclamation-triangle text-warning"></i>
+                      No items with available stock found for this category.
+                    </small>
                     
                     <!-- Stock Status Display -->
                     <div *ngIf="newComponent.itemId" class="mt-3">
