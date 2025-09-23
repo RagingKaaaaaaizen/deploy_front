@@ -335,6 +335,10 @@
                                             <i class="fas fa-exclamation-triangle text-warning"></i>
                                             No room locations available. Click refresh or contact administrator.
                                         </small>
+                                        <small class="form-text text-info" *ngIf="roomLocations.length > 0">
+                                            <i class="fas fa-info-circle"></i>
+                                            {{ roomLocations.length }} room location(s) available
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -358,6 +362,38 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Debug Information (Remove in production) -->
+                    <div class="card mb-4 border-warning" *ngIf="roomLocations.length > 0">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0">
+                                <i class="fas fa-bug me-2"></i>Debug: Room Locations Data
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let location of roomLocations">
+                                            <td>{{ location.id }}</td>
+                                            <td>{{ location.name }}</td>
+                                            <td>{{ location.description || 'No description' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <small class="text-muted">
+                                <strong>Selected Value:</strong> {{ pcForm.value.roomLocationId || 'None selected' }}
+                            </small>
                         </div>
                     </div>
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import { environment } from '@environments/environment';
 
 import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService, CategoryService, ItemService } from '@app/_services';
 import { Role } from '@app/_models';
@@ -1041,20 +1042,40 @@ export class PCListComponent implements OnInit {
   }
 
   loadRoomLocations() {
-    console.log('Loading room locations...');
+    console.log('🔄 Loading room locations...');
+    console.log('🔗 Room location service URL:', `${environment.apiUrl}/api/room-locations`);
+    
     this.locationService.getAll()
       .pipe(first())
       .subscribe({
         next: (locations) => {
-          console.log('Room locations loaded:', locations);
+          console.log('✅ Room locations loaded successfully!');
+          console.log('📍 Number of locations:', locations.length);
+          console.log('📋 Room locations data:', locations);
+          
+          // Log each location with its ID and name
+          locations.forEach((loc, index) => {
+            console.log(`   ${index + 1}. ID: ${loc.id}, Name: "${loc.name}", Description: "${loc.description || 'N/A'}"`);
+          });
+          
           this.roomLocations = locations;
+          
           if (locations.length === 0) {
-            console.warn('No room locations found! This might cause foreign key constraint errors.');
+            console.warn('⚠️  No room locations found! This will cause foreign key constraint errors.');
+            this.alertService.warn('No room locations available. Please add room locations first.', { autoClose: true });
+          } else {
+            console.log('✅ Room locations ready for use');
           }
         },
         error: (error) => {
-          console.error('Error loading room locations:', error);
-          this.alertService.error('Error loading room locations. Please refresh the page.', { autoClose: true });
+          console.error('❌ Error loading room locations:', error);
+          console.error('🔍 Error details:', {
+            status: error.status,
+            message: error.message,
+            url: error.url,
+            error: error.error
+          });
+          this.alertService.error('Error loading room locations. Please refresh the page or check backend.', { autoClose: true });
         }
       });
   }
