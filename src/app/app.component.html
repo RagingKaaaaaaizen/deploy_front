@@ -1,9 +1,9 @@
-﻿<div class="app-container flex" [ngClass]="{ 'bg-gray-50': account }">
+﻿<div class="d-flex" [ngClass]="{ 'bg-light': account }">
     <!-- Sidebar Navigation -->
-    <app-nav *ngIf="account" class="hidden lg:block"></app-nav>
+    <app-nav *ngIf="account"></app-nav>
 
     <!-- Main Content Area -->
-    <div class="main-content flex-1 overflow-auto" [ngClass]="{ 'lg:ml-60': account }">
+    <div class="flex-fill overflow-auto" [ngStyle]="{ 'margin-left': account ? '240px' : '0' }">
         <!-- subnav router outlet -->
         <router-outlet name="subnav"></router-outlet>
 

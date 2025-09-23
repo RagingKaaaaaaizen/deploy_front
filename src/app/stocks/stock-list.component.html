@@ -1,29 +1,32 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-0">
-  <div class="w-full ml-60 px-4">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
     <!-- Page Header -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 mb-0">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <i class="fas fa-boxes text-white text-xl"></i>
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center">
+          <div class="d-flex align-items-center mb-2 mb-lg-0">
+            <div class="bg-primary text-white rounded p-2 me-3">
+              <i class="fas fa-boxes"></i>
+            </div>
+            <div>
+              <h1 class="h3 mb-0">Stock Management</h1>
+              <small class="text-muted">Manage and track your inventory stock levels</small>
+            </div>
           </div>
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 font-akira">Stock Management</h1>
-            <p class="text-gray-600 font-inter">Manage and track your inventory stock levels</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a routerLink="/dispose" class="btn btn-info btn-sm" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
+              <i class="fas fa-trash-alt"></i>
+              View Disposals
+            </a>
+            <a routerLink="/pc" class="btn btn-secondary btn-sm">
+              <i class="fas fa-desktop"></i> View PCs
+            </a>
+            <button class="btn btn-primary btn-sm" (click)="openAddStockModal()">
+              <i class="fas fa-plus"></i>
+              Add Stock
+            </button>
           </div>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <a routerLink="/dispose" class="btn btn-info" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-            <i class="fas fa-trash-alt"></i>
-            View Disposals
-          </a>
-          <a routerLink="/pc" class="btn btn-secondary">
-            <i class="fas fa-desktop"></i> View PCs
-          </a>
-          <button class="btn btn-primary" (click)="openAddStockModal()">
-            <i class="fas fa-plus"></i>
-            Add Stock
-          </button>
         </div>
       </div>
     </div>
@@ -312,45 +315,35 @@
 </div>
 
 <!-- Add Stock Modal -->
-<div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" *ngIf="showAddStockModal" (click)="closeAddStockModal()">
-  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
-    <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-2xl p-6">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-            <i class="fas fa-plus text-white text-xl"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl font-black text-white font-akira">Add New Item</h1>
-            <p class="text-white/90 font-inter">Create a new inventory item</p>
-          </div>
-        </div>
-        <button class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors duration-200" (click)="closeAddStockModal()">
-          <i class="fas fa-times text-white"></i>
-        </button>
+<div class="modal fade show d-block" *ngIf="showAddStockModal" tabindex="-1" role="dialog" aria-labelledby="addStockModalLabel" aria-modal="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="addStockModalLabel">
+          <i class="fas fa-plus me-2"></i>Add New Item
+        </h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeAddStockModal()"></button>
       </div>
-    </div>
 
-    <div class="p-6 bg-white">
-      <!-- Add Stock Form Content -->
-      <div class="bg-white rounded-xl shadow-lg border border-gray-200">
-        <div class="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h5 class="text-lg font-semibold text-gray-900 flex items-center gap-2 font-montserrat">
-              <i class="fas fa-edit text-blue-600"></i> Stock Information
+      <div class="modal-body">
+        <!-- Add Stock Form Content -->
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="fas fa-edit text-primary me-2"></i>Stock Information
             </h5>
-            <button type="button" class="btn btn-success" (click)="addNewStockEntry()">
+            <button type="button" class="btn btn-success btn-sm" (click)="addNewStockEntry()">
               <i class="fas fa-plus"></i> Add New Item
             </button>
           </div>
-          <div class="px-6 py-4">
+          <div class="card-body">
             <form (ngSubmit)="onFormSubmit($event)" #stockForm="ngForm" class="stock-form">
               
               <!-- Multiple Stock Entries -->
-              <div *ngFor="let entry of stockEntries; let i = index; trackBy: trackByIndex" class="mb-6 p-4 border border-gray-200 rounded-xl bg-gray-50">
-                <div class="flex justify-between items-center mb-4">
-                  <h6 class="text-lg font-semibold text-gray-900 flex items-center gap-2 font-montserrat">
-                    <i class="fas fa-box text-blue-600"></i> Stock Entry {{ i + 1 }}
+              <div *ngFor="let entry of stockEntries; let i = index; trackBy: trackByIndex" class="stock-entry mb-4 p-3 border rounded">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0">
+                    <i class="fas fa-box text-primary me-2"></i>Stock Entry {{ i + 1 }}
                   </h6>
                   <button 
                     type="button" 
@@ -363,18 +356,18 @@
                   </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="row">
                   <!-- Item Selection -->
-                  <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 flex items-center gap-2 font-montserrat">
-                      <i class="fas fa-tag text-blue-600"></i> Item *
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-tag text-primary me-1"></i>Item *
                     </label>
                     <select 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none font-inter"
+                      class="form-select" 
                       [(ngModel)]="entry.itemId" 
                       [name]="'itemId_' + i" 
                       required 
-                      [ngClass]="{ 'border-red-500 focus:ring-red-500': stockSubmitted && !entry.itemId }"
+                      [ngClass]="{ 'is-invalid': stockSubmitted && !entry.itemId }"
                       (change)="calculateTotalPrice()"
                     >
                       <option value="" disabled>Select Item</option>
@@ -382,141 +375,141 @@
                         {{ item.name }} ({{ item.category?.name || 'No Category' }})
                       </option>
                     </select>
-                    <div class="text-sm text-red-600" *ngIf="stockSubmitted && !entry.itemId">
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && !entry.itemId">
                       Please select an item
                     </div>
                   </div>
 
                   <!-- Quantity -->
-                  <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 flex items-center gap-2 font-montserrat">
-                      <i class="fas fa-sort-numeric-up text-blue-600"></i> Quantity *
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-sort-numeric-up text-primary me-1"></i>Quantity *
                     </label>
                     <input 
                       type="number" 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter"
+                      class="form-control" 
                       [(ngModel)]="entry.quantity" 
                       [name]="'quantity_' + i" 
                       required
                       min="1"
                       (input)="calculateTotalPrice()"
-                      [ngClass]="{ 'border-red-500 focus:ring-red-500': stockSubmitted && (!entry.quantity || entry.quantity <= 0) }"
+                      [ngClass]="{ 'is-invalid': stockSubmitted && (!entry.quantity || entry.quantity <= 0) }"
                       placeholder="Enter quantity"
                     >
-                    <div class="text-sm text-red-600" *ngIf="stockSubmitted && (!entry.quantity || entry.quantity <= 0)">
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && (!entry.quantity || entry.quantity <= 0)">
                       Quantity must be greater than 0
                     </div>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="row">
                   <!-- Price -->
-                  <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 flex items-center gap-2 font-montserrat">
-                      <i class="fas fa-dollar-sign text-blue-600"></i> Price (per item) *
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-dollar-sign text-primary me-1"></i>Price (per item) *
                     </label>
                     <input 
                       type="number" 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter"
+                      class="form-control" 
                       [(ngModel)]="entry.price" 
                       [name]="'price_' + i" 
                       step="0.01"
                       required
                       (input)="calculateTotalPrice()"
-                      [ngClass]="{ 'border-red-500 focus:ring-red-500': stockSubmitted && (!entry.price || entry.price <= 0) }"
+                      [ngClass]="{ 'is-invalid': stockSubmitted && (!entry.price || entry.price <= 0) }"
                       placeholder="Enter price"
                     >
-                    <div class="text-sm text-red-600" *ngIf="stockSubmitted && (!entry.price || entry.price <= 0)">
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && (!entry.price || entry.price <= 0)">
                       Price must be greater than 0
                     </div>
                   </div>
 
                   <!-- Storage Location -->
-                  <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 flex items-center gap-2 font-montserrat">
-                      <i class="fas fa-map-marker-alt text-blue-600"></i> Storage Location *
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-map-marker-alt text-primary me-1"></i>Storage Location *
                     </label>
                     <select 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none font-inter"
+                      class="form-select" 
                       [(ngModel)]="entry.locationId" 
                       [name]="'locationId_' + i" 
                       required
-                      [ngClass]="{ 'border-red-500 focus:ring-red-500': stockSubmitted && !entry.locationId }"
+                      [ngClass]="{ 'is-invalid': stockSubmitted && !entry.locationId }"
                     >
                       <option value="" disabled>Select Location</option>
                       <option *ngFor="let location of locations" [value]="location.id">
                         {{ location.name }}
                       </option>
                     </select>
-                    <div class="text-sm text-red-600" *ngIf="stockSubmitted && !entry.locationId">
+                    <div class="invalid-feedback" *ngIf="stockSubmitted && !entry.locationId">
                       Please select a storage location
                     </div>
                   </div>
                 </div>
 
-                <div class="mt-4">
+                <div class="row">
                   <!-- Remarks -->
-                  <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 flex items-center gap-2 font-montserrat">
-                      <i class="fas fa-comment text-blue-600"></i> Remarks
+                  <div class="form-group col-md-6">
+                    <label class="form-label">
+                      <i class="fas fa-comment text-primary me-1"></i>Remarks
                     </label>
-                    <textarea 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter resize-none"
+                    <input 
+                      type="text" 
+                      class="form-control" 
                       [(ngModel)]="entry.remarks" 
                       [name]="'remarks_' + i" 
                       placeholder="Optional remarks"
-                      rows="2"
-                    ></textarea>
+                    >
                   </div>
                 </div>
               </div>
 
               <!-- Total Price Summary -->
-              <div class="mb-6">
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <div class="flex justify-between items-center">
-                    <span class="text-blue-800 font-medium flex items-center gap-2 font-montserrat">
-                      <i class="fas fa-calculator"></i> <strong>Total Price for All Items:</strong>
-                    </span>
-                    <span class="text-2xl font-bold text-blue-900 font-akira">₱{{ totalPrice | number:'1.2-2' }}</span>
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span><i class="fas fa-calculator"></i> <strong>Total Price for All Items:</strong></span>
+                      <span class="h5 mb-0">₱{{ totalPrice | number:'1.2-2' }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- Single Receipt Upload for All Items -->
-              <div class="mb-6">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700 flex items-center gap-2 font-montserrat">
-                    <i class="fas fa-receipt text-blue-600"></i> Receipt Photo (Optional)
-                  </label>
-                  <input 
-                    type="file" 
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter"
-                    accept="image/*"
-                    (change)="onReceiptFileSelected($event)"
-                    name="stock_receipt"
-                  >
-                  <small class="text-gray-500 text-sm font-inter">
-                    Upload one receipt photo for all items in this stock entry (JPG, PNG, GIF - Max 5MB)
-                  </small>
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <i class="fas fa-receipt text-primary me-1"></i>Receipt Photo (Optional)
+                    </label>
+                    <input 
+                      type="file" 
+                      class="form-control" 
+                      accept="image/*"
+                      (change)="onReceiptFileSelected($event)"
+                      name="stock_receipt"
+                    >
+                    <small class="form-text text-muted">
+                      Upload one receipt photo for all items in this stock entry (JPG, PNG, GIF - Max 5MB)
+                    </small>
+                  </div>
                 </div>
-              </div>
-
-              <!-- Form Actions -->
-              <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
-                <button type="button" class="btn btn-secondary" (click)="closeAddStockModal()">
-                  <i class="fas fa-times"></i>
-                  Cancel
-                </button>
-                <button type="submit" class="btn btn-primary" [disabled]="stockLoading" (click)="debugSubmitButton($event)">
-                  <i class="fas fa-save"></i>
-                  <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>
-                  <span *ngIf="stockLoading">Adding...</span>
-                </button>
               </div>
             </form>
           </div>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddStockModal()">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="stockLoading" (click)="debugSubmitButton($event); onFormSubmit($event)">
+          <i class="fas fa-save"></i>
+          <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>
+          <span *ngIf="stockLoading">Adding...</span>
+        </button>
       </div>
     </div>
   </div>
