@@ -131,11 +131,11 @@
               <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId" class="hover:bg-gray-50 transition-colors duration-200">
                 <td class="font-inter w-48" data-label="Item">
                   <div class="item-info">
-                    <strong class="font-montserrat text-xs">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
-                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.item?.description">
+                    <strong class="font-montserrat text-sm font-semibold">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
+                    <small class="block text-gray-600 font-inter text-sm" *ngIf="stock.item?.description">
                       {{ stock.item.description }}
                     </small>
-                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.disposal">
+                    <small class="block text-gray-500 font-inter text-sm" *ngIf="stock.disposal">
                       <strong>Disposal Info:</strong><br>
                       Reason: {{ stock.disposal.reason || 'No reason' }}<br>
                       Date: {{ stock.disposal.disposalDate | date:'MMM dd, yyyy' }}<br>
@@ -143,23 +143,23 @@
                         <i class="fas fa-check-circle"></i> Returned to Stock
                       </span>
                     </small>
-                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.remarks && !stock.disposal">
+                    <small class="block text-gray-500 font-inter text-sm" *ngIf="stock.remarks && !stock.disposal">
                       {{ stock.remarks }}
                     </small>
                   </div>
                 </td>
                 <td class="font-inter w-20 text-center" data-label="Category">
-                  <span class="category-badge text-xs">
+                  <span class="category-badge text-sm font-medium">
                     {{ stock.item?.category?.name || getCategoryName(stock) }}
                   </span>
                 </td>
                 <td class="font-inter w-24 text-center" data-label="Brand">
-                  <span class="brand-badge text-xs">
+                  <span class="brand-badge text-sm font-medium">
                     {{ stock.item?.brand?.name || getBrandName(stock) }}
                   </span>
                 </td>
                 <td class="font-inter w-24 text-center" data-label="Location">
-                  <span class="location-badge text-xs">
+                  <span class="location-badge text-sm font-medium">
                     {{ stock.location?.name || getLocationNameByStock(stock) }}
                     <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.location?.description">
                       {{ stock.location.description }}
@@ -168,7 +168,7 @@
                 </td>
                 <td class="font-inter w-20 text-right" data-label="Quantity">
                   <div class="quantity-info">
-                    <span class="quantity-badge" [ngClass]="{
+                    <span class="quantity-badge text-sm font-semibold" [ngClass]="{
                       'quantity-positive': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
                       'quantity-negative': stock.disposeId && !stock.disposal?.returnedToStock,
                       'quantity-zero': stock.quantity === 0
@@ -193,21 +193,21 @@
                   </div>
                 </td>
                 <td class="font-inter w-20 text-right" data-label="Price">
-                  <span class="price-value text-xs">
+                  <span class="price-value text-sm font-semibold">
                     php{{ stock.price | number:'1.2-2' }}
                   </span>
                 </td>
                 <td class="font-inter w-24 text-right" data-label="Total">
-                  <span class="total-price text-xs">
+                  <span class="total-price text-sm font-semibold">
                     php{{ (stock.price * stock.quantity) | number:'1.2-2' }}
                   </span>
                 </td>
                 <td class="font-inter w-24" data-label="Time & Date">
                   <div class="time-date-info">
-                    <span class="date-badge">
+                    <span class="date-badge text-sm font-medium">
                       {{ stock.createdAt | date:'MMM dd, yyyy' }}
                     </span>
-                    <small class="block text-gray-500 mt-1">
+                    <small class="block text-gray-500 mt-1 text-sm">
                       {{ stock.createdAt | date:'HH:mm:ss' }}
                     </small>
                     <small class="block text-gray-500" *ngIf="stock.disposeId && stock.disposal && !stock.disposal.returnedToStock">
@@ -219,10 +219,10 @@
                 </td>
                 <td class="font-inter w-28" data-label="Created By">
                   <div class="user-info">
-                    <span class="user-badge font-montserrat text-xs" *ngIf="stock.user">
+                    <span class="user-badge font-montserrat text-sm font-medium" *ngIf="stock.user">
                       {{ stock.user.firstName }} {{ stock.user.lastName }}
                     </span>
-                    <span class="user-badge text-gray-500 font-inter text-xs" *ngIf="!stock.user">
+                    <span class="user-badge text-gray-500 font-inter text-sm font-medium" *ngIf="!stock.user">
                       Unknown User
                     </span>
                     <small class="block text-gray-500 mt-1 font-inter text-xs" *ngIf="stock.user?.email">
@@ -232,10 +232,10 @@
                 </td>
                 <td class="font-inter w-20 text-center" data-label="In Use">
                   <div class="in-use-info">
-                    <span *ngIf="isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <span *ngIf="isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                       <i class="fas fa-desktop mr-1"></i> In Use
                     </span>
-                    <span *ngIf="!isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <span *ngIf="!isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                       <i class="fas fa-box mr-1"></i> Available
                     </span>
                     <small class="block text-gray-500 mt-1 font-inter text-xs">
@@ -244,25 +244,25 @@
                   </div>
                 </td>
                 <td class="font-inter w-24" data-label="Actions">
-                  <div class="flex flex-row gap-0">
-                    <button type="button" class="btn btn-sm btn-outline-primary p-1 m-0"
+                  <div class="flex flex-row gap-1">
+                    <button type="button" class="btn btn-outline-primary px-2 py-2"
                             (click)="openViewStockModal(stock)" title="View Details">
-                      <i class="fas fa-eye text-xs"></i>
+                      <i class="fas fa-eye text-sm"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-warning p-1 m-0"
+                    <button type="button" class="btn btn-outline-warning px-2 py-2"
                             (click)="openEditStockModal(stock)" title="Edit Stock"
                             *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                      <i class="fas fa-edit text-xs"></i>
+                      <i class="fas fa-edit text-sm"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-info p-1 m-0"
+                    <button type="button" class="btn btn-outline-info px-2 py-2"
                             (click)="navigateToDispose(stock)" title="Dispose Stock"
                             *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                      <i class="fas fa-recycle text-xs"></i>
+                      <i class="fas fa-recycle text-sm"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-danger p-1 m-0"
+                    <button type="button" class="btn btn-outline-danger px-2 py-2"
                             (click)="confirmDeleteStock(stock)" title="Delete Stock Entry"
                             *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                      <i class="fas fa-trash text-xs"></i>
+                      <i class="fas fa-trash text-sm"></i>
                     </button>
                   </div>
                 </td>
