@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import { environment } from '@environments/environment';
 
-import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService } from '@app/_services';
+import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService, CategoryService, ItemService } from '@app/_services';
 import { Role } from '@app/_models';
 
 @Component({
@@ -635,6 +637,19 @@ export class PCListComponent implements OnInit {
   itemsPerPage = 10;
   Math = Math;
 
+  // Modal properties
+  showAddPCModal = false;
+  pcForm: FormGroup;
+  submitted = false;
+  pcLoading = false;
+  
+  // Categories and items for default components
+  categories: any[] = [];
+  items: any[] = [];
+  roomLocations: any[] = [];
+  selectedCategories: any[] = [];
+  defaultComponents: { [categoryId: number]: number } = {};
+
   constructor(
     private router: Router,
     private pcService: PCService,
@@ -642,8 +657,18 @@ export class PCListComponent implements OnInit {
     private locationService: RoomLocationService,
     private alertService: AlertService,
     public accountService: AccountService,
-    private analyticsService: AnalyticsService
-  ) { }
+    private analyticsService: AnalyticsService,
+    private formBuilder: FormBuilder,
+    private categoryService: CategoryService,
+    private itemService: ItemService
+  ) { 
+    this.pcForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      roomLocationId: ['', Validators.required],
+      status: ['Active'],
+      notes: ['']
+    });
+  }
 
   ngOnInit() {
     console.log('PC List Component - ngOnInit called');
@@ -658,6 +683,9 @@ export class PCListComponent implements OnInit {
     this.loadPCs();
     this.loadLocations();
     this.loadPCComponents();
+    this.loadCategories();
+    this.loadItems();
+    this.loadRoomLocations();
   }
 
   loadPCs() {
@@ -984,6 +1012,195 @@ export class PCListComponent implements OnInit {
         console.error('Error downloading yearly PC analysis:', error);
       }
     });
+  }
+
+  // New methods for modal and default components functionality
+  loadCategories() {
+    this.categoryService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (categories) => {
+          this.categories = categories;
+        },
+        error: (error) => {
+          console.error('Error loading categories:', error);
+        }
+      });
+  }
+
+  loadItems() {
+    this.itemService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (items) => {
+          this.items = items;
+        },
+        error: (error) => {
+          console.error('Error loading items:', error);
+        }
+      });
+  }
+
+  loadRoomLocations() {
+    console.log('🔄 Loading room locations...');
+    console.log('🔗 Room location service URL:', `${environment.apiUrl}/api/room-locations`);
+    
+    this.locationService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (locations) => {
+          console.log('✅ Room locations loaded successfully!');
+          console.log('📍 Number of locations:', locations.length);
+          console.log('📋 Room locations data:', locations);
+          
+          // Log each location with its ID and name
+          locations.forEach((loc, index) => {
+            console.log(`   ${index + 1}. ID: ${loc.id}, Name: "${loc.name}", Description: "${loc.description || 'N/A'}"`);
+          });
+          
+          this.roomLocations = locations;
+          
+          if (locations.length === 0) {
+            console.warn('⚠️  No room locations found! This will cause foreign key constraint errors.');
+            this.alertService.warn('No room locations available. Please add room locations first.', { autoClose: true });
+          } else {
+            console.log('✅ Room locations ready for use');
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error loading room locations:', error);
+          console.error('🔍 Error details:', {
+            status: error.status,
+            message: error.message,
+            url: error.url,
+            error: error.error
+          });
+          this.alertService.error('Error loading room locations. Please refresh the page or check backend.', { autoClose: true });
+        }
+      });
+  }
+
+  openAddPCModal() {
+    console.log('Opening Add PC Modal...');
+    this.showAddPCModal = true;
+    this.submitted = false;
+    this.pcForm.reset();
+    this.pcForm.patchValue({ status: 'Active' });
+    this.selectedCategories = [];
+    this.defaultComponents = {};
+    
+    // Ensure we have the latest room locations data
+    if (this.roomLocations.length === 0) {
+      console.log('No room locations loaded, refreshing...');
+      this.loadRoomLocations();
+    } else {
+      console.log('Room locations already loaded:', this.roomLocations.length);
+    }
+  }
+
+  closeAddPCModal() {
+    this.showAddPCModal = false;
+    this.submitted = false;
+    this.pcForm.reset();
+    this.selectedCategories = [];
+    this.defaultComponents = {};
+  }
+
+  onCategorySelect(category: any, event: any) {
+    if (event.target.checked) {
+      // Add category to selected list
+      if (!this.selectedCategories.find(c => c.id === category.id)) {
+        this.selectedCategories.push(category);
+      }
+    } else {
+      // Remove category from selected list
+      this.selectedCategories = this.selectedCategories.filter(c => c.id !== category.id);
+      delete this.defaultComponents[category.id];
+    }
+  }
+
+  getItemsByCategory(categoryId: number) {
+    return this.items.filter(item => item.categoryId === categoryId);
+  }
+
+  onSubmitPC() {
+    this.submitted = true;
+
+    console.log('=== PC FORM SUBMISSION ===');
+    console.log('Form valid:', this.pcForm.valid);
+    console.log('Form values:', this.pcForm.value);
+    console.log('Available room locations:', this.roomLocations);
+
+    if (this.pcForm.invalid) {
+      console.log('Form is invalid, aborting submission');
+      this.alertService.error('Please fill in all required fields correctly.', { autoClose: true });
+      return;
+    }
+
+    // Validate roomLocationId exists in our loaded data
+    const selectedRoomLocationId = parseInt(this.pcForm.value.roomLocationId);
+    const roomLocationExists = this.roomLocations.find(loc => loc.id === selectedRoomLocationId);
+    
+    if (!roomLocationExists) {
+      console.error('Selected room location not found in available locations');
+      console.log('Selected ID:', selectedRoomLocationId);
+      console.log('Available locations:', this.roomLocations.map(loc => ({ id: loc.id, name: loc.name })));
+      this.alertService.error('Invalid room location selected. Please refresh the page and try again.', { autoClose: true });
+      return;
+    }
+
+    this.pcLoading = true;
+
+    // Prepare PC data - only send fields that the backend expects
+    const pcData = {
+      name: this.pcForm.value.name.trim(),
+      roomLocationId: selectedRoomLocationId,
+      status: this.pcForm.value.status,
+      notes: this.pcForm.value.notes ? this.pcForm.value.notes.trim() : ''
+    };
+
+    console.log('Creating PC with validated data:', pcData);
+    console.log('Selected room location details:', roomLocationExists);
+
+    this.pcService.create(pcData as any)
+      .pipe(first())
+      .subscribe({
+        next: (createdPC) => {
+          console.log('PC created successfully:', createdPC);
+          this.alertService.success('PC created successfully!', { autoClose: true });
+          
+          // TODO: In the future, we can store the default components configuration
+          // For now, just show a message about the default components
+          if (Object.keys(this.defaultComponents).length > 0) {
+            console.log('Default components configuration saved for future reference:', this.defaultComponents);
+            this.alertService.info('Default components configuration noted. Components matching these defaults will be marked when added to this PC.', { autoClose: true });
+          }
+          
+          this.closeAddPCModal();
+          this.loadPCs(); // Reload the PC list
+        },
+        error: (error) => {
+          console.error('=== PC CREATION ERROR ===');
+          console.error('Error creating PC:', error);
+          console.error('Error message:', error?.error?.message || error?.message);
+          console.error('Error status:', error?.status);
+          console.error('Full error object:', error);
+          
+          let errorMessage = 'Error creating PC. ';
+          if (error?.error?.message) {
+            errorMessage += error.error.message;
+          } else if (error?.message) {
+            errorMessage += error.message;
+          } else {
+            errorMessage += 'Please try again.';
+          }
+          
+          this.alertService.error(errorMessage, { autoClose: false });
+        },
+        complete: () => {
+          this.pcLoading = false;
+        }
+      });
   }
 
   ngOnDestroy() {

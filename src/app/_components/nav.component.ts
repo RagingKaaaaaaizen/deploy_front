@@ -18,25 +18,24 @@ import { takeUntil } from 'rxjs/operators';
          [ngClass]="{ 
            'collapsed': isCollapsed && !isMobile, 
            'mobile-open': isMobileOpen,
-           'mobile': isMobile 
+           'mobile': isMobile,
+           'modal-blur': isModalOpen
          }">
       
       <!-- Sidebar Header -->
       <div class="sidebar-header">
         <div class="brand">
-          <i class="fas fa-boxes"></i>
-          <span class="brand-text" *ngIf="!isCollapsed || isMobile">Inventory Pro</span>
+          <div class="brand-logo">
+            <span class="text-blue-600 font-akira">B</span>
+            <span class="text-orange-500 font-akira">C</span>
+          </div>
+          <span class="brand-text font-akira" *ngIf="!isCollapsed || isMobile">Benedicto College</span>
         </div>
         <div class="header-actions">
           <button class="toggle-btn mobile-toggle" 
                   (click)="toggleMobileSidebar()"
                   *ngIf="isMobile">
             <i class="fas fa-bars"></i>
-          </button>
-          <button class="toggle-btn desktop-toggle" 
-                  (click)="toggleSidebar()"
-                  *ngIf="!isMobile">
-            <i class="fas fa-chevron-left" [class.rotated]="isCollapsed"></i>
           </button>
         </div>
       </div>
@@ -47,8 +46,8 @@ import { takeUntil } from 'rxjs/operators';
           <i class="fas fa-user-circle"></i>
         </div>
         <div class="user-info" *ngIf="!isCollapsed || isMobile">
-          <div class="user-name">{{ accountService.accountValue.firstName }} {{ accountService.accountValue.lastName }}</div>
-          <div class="user-role">{{ accountService.accountValue.role }}</div>
+          <div class="user-name font-montserrat">{{ accountService.accountValue.firstName }} {{ accountService.accountValue.lastName }}</div>
+          <div class="user-role font-inter">{{ accountService.accountValue.role }}</div>
         </div>
       </div>
 
@@ -63,55 +62,65 @@ import { takeUntil } from 'rxjs/operators';
                [routerLinkActiveOptions]="{exact: true}"
                (click)="closeMobileSidebar()">
               <i class="fas fa-tachometer-alt"></i>
-              <span *ngIf="!isCollapsed || isMobile">Dashboard</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Dashboard</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Dashboard</span>
             </a>
           </li>
 
-          <!-- Stocks -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-            <a class="nav-link" 
-               routerLink="/stocks" 
-               routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-              <i class="fas fa-boxes"></i>
-              <span *ngIf="!isCollapsed || isMobile">Stocks</span>
-              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Stocks</span>
+          <!-- Inventory Dropdown -->
+          <li class="nav-item dropdown" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" 
+               href="#" 
+               id="inventoryDropdown" 
+               role="button" 
+               data-bs-toggle="dropdown" 
+               aria-expanded="false"
+               [class.active]="isDropdownOpen('inventory')">
+              <i class="fas fa-boxes me-2 text-primary"></i>
+              <span *ngIf="!isCollapsed || isMobile">Inventory</span>
             </a>
+            <ul class="dropdown-menu shadow border-0" aria-labelledby="inventoryDropdown">
+              <li>
+                <a class="dropdown-item d-flex align-items-center" 
+                   routerLink="/stocks" 
+                   routerLinkActive="active"
+                   (click)="closeMobileSidebar()">
+                  <i class="fas fa-boxes me-2 text-success"></i>
+                  <span>Stocks</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center" 
+                   routerLink="/dispose" 
+                   routerLinkActive="active"
+                   (click)="closeMobileSidebar()">
+                  <i class="fas fa-trash-alt me-2 text-danger"></i>
+                  <span>Dispose</span>
+                </a>
+              </li>
+            </ul>
           </li>
 
-          <!-- Disposals -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-            <a class="nav-link" 
-               routerLink="/dispose" 
-               routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-              <i class="fas fa-trash-alt"></i>
-              <span *ngIf="!isCollapsed || isMobile">Disposals</span>
-              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Disposals</span>
-            </a>
-          </li>
-
-          <!-- Add Items -->
+          <!-- Add -->
           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
             <a class="nav-link" 
                routerLink="/add" 
                routerLinkActive="active"
                (click)="closeMobileSidebar()">
               <i class="fas fa-plus-circle"></i>
-              <span *ngIf="!isCollapsed || isMobile">Add Items</span>
-              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Add Items</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Add</span>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Add</span>
             </a>
           </li>
 
-          <!-- Approval Requests -->
+          <!-- Approvals -->
           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
             <a class="nav-link" 
                routerLink="/approvals" 
                routerLinkActive="active"
                (click)="closeMobileSidebar()">
               <i class="fas fa-clipboard-check"></i>
-              <span *ngIf="!isCollapsed || isMobile">Approvals</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Approvals</span>
               <span class="badge" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Approvals</span>
             </a>
@@ -124,7 +133,7 @@ import { takeUntil } from 'rxjs/operators';
                routerLinkActive="active"
                (click)="closeMobileSidebar()">
               <i class="fas fa-desktop"></i>
-              <span *ngIf="!isCollapsed || isMobile">PC Management</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">PC Management</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">PC Management</span>
             </a>
           </li>
@@ -136,31 +145,31 @@ import { takeUntil } from 'rxjs/operators';
                routerLinkActive="active"
                (click)="closeMobileSidebar()">
               <i class="fas fa-history"></i>
-              <span *ngIf="!isCollapsed || isMobile">Activity Logs</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Activity Logs</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Activity Logs</span>
             </a>
           </li>
 
-           <!-- Archive Reports -->
-           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-             <a class="nav-link" 
-                routerLink="/archive" 
-                routerLinkActive="active"
-                (click)="closeMobileSidebar()">
-               <i class="fas fa-archive"></i>
-               <span *ngIf="!isCollapsed || isMobile">Archive Reports</span>
-               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Archive Reports</span>
-             </a>
-           </li>
+          <!-- Archive Reports -->
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
+            <a class="nav-link" 
+               routerLink="/archive" 
+               routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+              <i class="fas fa-archive"></i>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Archive Reports</span>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Archive Reports</span>
+            </a>
+          </li>
 
-           <!-- Manage Accounts -->
+          <!-- Manage Accounts -->
           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
             <a class="nav-link" 
                routerLink="/admin/accounts" 
                routerLinkActive="active"
                (click)="closeMobileSidebar()">
               <i class="fas fa-users-cog"></i>
-              <span *ngIf="!isCollapsed || isMobile">Manage Accounts</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Manage Accounts</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Manage Accounts</span>
             </a>
           </li>
@@ -172,7 +181,7 @@ import { takeUntil } from 'rxjs/operators';
                routerLinkActive="active"
                (click)="closeMobileSidebar()">
               <i class="fas fa-user"></i>
-              <span *ngIf="!isCollapsed || isMobile">Profile</span>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Profile</span>
               <span class="tooltip" *ngIf="isCollapsed && !isMobile">Profile</span>
             </a>
           </li>
@@ -183,7 +192,7 @@ import { takeUntil } from 'rxjs/operators';
       <div class="sidebar-footer">
         <button class="logout-btn" (click)="logout()">
           <i class="fas fa-sign-out-alt"></i>
-          <span *ngIf="!isCollapsed || isMobile">Logout</span>
+          <span class="font-inter" *ngIf="!isCollapsed || isMobile">Logout</span>
           <span class="tooltip" *ngIf="isCollapsed && !isMobile">Logout</span>
         </button>
       </div>
@@ -195,14 +204,20 @@ import { takeUntil } from 'rxjs/operators';
       top: 0;
       left: 0;
       height: 100vh;
-      width: 280px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      width: 240px;
+      background: white;
+      color: #374151;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 1000;
-      box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .sidebar.modal-blur {
+      filter: blur(4px);
+      opacity: 0.7;
     }
 
     .sidebar.collapsed {
@@ -211,7 +226,7 @@ import { takeUntil } from 'rxjs/operators';
 
     .sidebar.mobile {
       transform: translateX(-100%);
-      width: 280px;
+      width: 240px;
     }
 
     .sidebar.mobile-open {
@@ -241,8 +256,9 @@ import { takeUntil } from 'rxjs/operators';
       align-items: center;
       justify-content: space-between;
       padding: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid #e5e7eb;
       min-height: 80px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     }
 
     .brand {
@@ -253,14 +269,17 @@ import { takeUntil } from 'rxjs/operators';
       font-weight: bold;
     }
 
-    .brand i {
-      font-size: 2rem;
-      color: #ffd700;
-      transition: all 0.3s ease;
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 1.8rem;
+      font-weight: 900;
     }
 
     .brand-text {
       transition: all 0.3s ease;
+      color: #1f2937;
     }
 
     .header-actions {
@@ -269,13 +288,13 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .toggle-btn {
-      background: none;
+      background: #f3f4f6;
       border: none;
-      color: white;
+      color: #6b7280;
       font-size: 1.2rem;
       cursor: pointer;
       padding: 8px;
-      border-radius: 50%;
+      border-radius: 8px;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
@@ -285,8 +304,9 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .toggle-btn:hover {
-      background: rgba(255,255,255,0.1);
-      transform: scale(1.1);
+      background: #e5e7eb;
+      color: #374151;
+      transform: scale(1.05);
     }
 
     .toggle-btn.rotated i {
@@ -306,13 +326,14 @@ import { takeUntil } from 'rxjs/operators';
       align-items: center;
       padding: 20px;
       gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid #e5e7eb;
       min-height: 80px;
+      background: #f9fafb;
     }
 
     .user-avatar i {
       font-size: 2.5rem;
-      color: #ffd700;
+      color: #3b82f6;
     }
 
     .user-info {
@@ -321,14 +342,15 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .user-name {
-      font-weight: bold;
+      font-weight: 600;
       font-size: 0.9rem;
       margin-bottom: 4px;
+      color: #1f2937;
     }
 
     .user-role {
       font-size: 0.8rem;
-      opacity: 0.8;
+      color: #6b7280;
       text-transform: capitalize;
     }
 
@@ -345,48 +367,104 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .nav-item {
-      margin-bottom: 5px;
+      margin-bottom: 2px;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
       gap: 15px;
-      padding: 15px 20px;
-      color: white;
+      padding: 12px 20px;
+      color: #374151;
       text-decoration: none;
       transition: all 0.3s ease;
       border-left: 3px solid transparent;
       position: relative;
+      font-weight: 500;
     }
 
-
-
     .nav-link:hover {
-      background: rgba(255,255,255,0.1);
-      border-left-color: #ffd700;
-      color: white;
+      background: #f3f4f6;
+      border-left-color: #3b82f6;
+      color: #1f2937;
       text-decoration: none;
-      transform: translateX(5px);
+      transform: translateX(3px);
     }
 
     .nav-link.active {
-      background: rgba(255,255,255,0.15);
-      border-left-color: #ffd700;
+      background: #eff6ff;
+      border-left-color: #3b82f6;
+      color: #1d4ed8;
     }
 
     .nav-link i {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       width: 20px;
       text-align: center;
       transition: all 0.3s ease;
+    }
+
+    .dropdown-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-arrow.rotated {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background: #f9fafb;
+      border-left: 3px solid #e5e7eb;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-menu.show {
+      max-height: 200px;
+    }
+
+    .dropdown-item {
+      margin: 0;
+    }
+
+    .dropdown-item a {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 10px 20px 10px 50px;
+      color: #6b7280;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .dropdown-item a:hover {
+      background: #f3f4f6;
+      color: #374151;
+      text-decoration: none;
+    }
+
+    .dropdown-item a.active {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .dropdown-item a i {
+      font-size: 1rem;
+      width: 16px;
     }
 
     .badge {
       position: absolute;
       top: 8px;
       right: 15px;
-      background: #e53e3e;
+      background: #ef4444;
       color: white;
       font-size: 0.7rem;
       font-weight: bold;
@@ -398,7 +476,7 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .nav-link:hover .badge {
-      background: #c53030;
+      background: #dc2626;
     }
 
     .tooltip {
@@ -406,7 +484,7 @@ import { takeUntil } from 'rxjs/operators';
       left: 100%;
       top: 50%;
       transform: translateY(-50%);
-      background: #333;
+      background: #1f2937;
       color: white;
       padding: 8px 12px;
       border-radius: 6px;
@@ -417,6 +495,7 @@ import { takeUntil } from 'rxjs/operators';
       transition: all 0.3s ease;
       z-index: 1001;
       margin-left: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .tooltip::before {
@@ -426,7 +505,7 @@ import { takeUntil } from 'rxjs/operators';
       top: 50%;
       transform: translateY(-50%);
       border: 5px solid transparent;
-      border-right-color: #333;
+      border-right-color: #1f2937;
     }
 
     .nav-link:hover .tooltip {
@@ -436,7 +515,8 @@ import { takeUntil } from 'rxjs/operators';
 
     .sidebar-footer {
       padding: 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
     }
 
     .logout-btn {
@@ -444,19 +524,21 @@ import { takeUntil } from 'rxjs/operators';
       align-items: center;
       gap: 12px;
       width: 100%;
-      background: rgba(255,255,255,0.1);
+      background: #f3f4f6;
       border: none;
-      color: white;
+      color: #6b7280;
       padding: 12px;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
+      font-weight: 500;
     }
 
     .logout-btn:hover {
-      background: rgba(255,255,255,0.2);
-      transform: translateY(-2px);
+      background: #fee2e2;
+      color: #dc2626;
+      transform: translateY(-1px);
     }
 
     .logout-btn i {
@@ -510,17 +592,17 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .sidebar-nav::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.1);
+      background: #f1f5f9;
       border-radius: 3px;
     }
 
     .sidebar-nav::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.3);
+      background: #cbd5e1;
       border-radius: 3px;
     }
 
     .sidebar-nav::-webkit-scrollbar-thumb:hover {
-      background: rgba(255,255,255,0.5);
+      background: #94a3b8;
     }
   `]
 })
@@ -530,6 +612,8 @@ export class NavComponent implements OnInit, OnDestroy {
   isMobile = false;
   isMobileOpen = false;
   pendingCount = 0;
+  openDropdowns: Set<string> = new Set();
+  isModalOpen = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -553,11 +637,25 @@ export class NavComponent implements OnInit, OnDestroy {
         }
       }, 1000);
     }
+    
+    // Listen for modal state changes
+    this.listenForModalEvents();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  listenForModalEvents() {
+    // Listen for modal open/close events
+    window.addEventListener('modalOpen', () => {
+      this.isModalOpen = true;
+    });
+    
+    window.addEventListener('modalClose', () => {
+      this.isModalOpen = false;
+    });
   }
 
   loadPendingCount() {
@@ -607,5 +705,17 @@ export class NavComponent implements OnInit, OnDestroy {
 
   logout() {
     this.accountService.logout();
+  }
+
+  toggleDropdown(dropdownName: string) {
+    if (this.openDropdowns.has(dropdownName)) {
+      this.openDropdowns.delete(dropdownName);
+    } else {
+      this.openDropdowns.add(dropdownName);
+    }
+  }
+
+  isDropdownOpen(dropdownName: string): boolean {
+    return this.openDropdowns.has(dropdownName);
   }
 } 

@@ -32,6 +32,8 @@ export class PCComponentsComponent implements OnInit {
     remarks: ''
   };
   availableItems: any[] = [];
+  filteredAvailableItems: any[] = [];
+  selectedCategoryId: number | null = null;
   existingPCComponents: PCComponent[] = [];
   categoryError = '';
   submitted = false;
@@ -877,11 +879,17 @@ export class PCComponentsComponent implements OnInit {
 
   addComponent() {
     this.showAddForm = true;
+    this.submitted = false;
+    this.categoryError = '';
+    this.selectedCategoryId = null;
     this.resetNewComponent();
     this.loadExistingPCComponents();
     
     // Refresh stock data to ensure we have the latest information
     this.loadStocksForFiltering();
+    
+    // Reset filtered items
+    this.filteredAvailableItems = [];
     
     // Ensure quantity is properly set to 1
     setTimeout(() => {
@@ -897,7 +905,43 @@ export class PCComponentsComponent implements OnInit {
     this.resetNewComponent();
     this.categoryError = '';
     this.submitted = false;
+    this.selectedCategoryId = null;
+    this.filteredAvailableItems = [];
     console.log('Form cancelled, newComponent reset');
+  }
+
+  onCategoryChange() {
+    console.log('🔄 Category changed to:', this.selectedCategoryId);
+    
+    // Reset item selection when category changes
+    this.newComponent.itemId = null;
+    this.newComponent.price = null;
+    this.newComponent.totalPrice = null;
+    this.newComponent.stockId = null;
+    
+    // Filter items by selected category
+    this.filterItemsByCategory();
+  }
+
+  filterItemsByCategory() {
+    if (!this.selectedCategoryId) {
+      this.filteredAvailableItems = [];
+      return;
+    }
+
+    // Filter available items by selected category
+    this.filteredAvailableItems = this.availableItems.filter(item => {
+      const itemCategoryId = item.categoryId || item.category?.id;
+      return itemCategoryId === parseInt(this.selectedCategoryId.toString());
+    });
+
+    console.log('📋 Filtered items for category', this.selectedCategoryId, ':', this.filteredAvailableItems.length, 'items');
+    console.log('🔍 Available items:', this.filteredAvailableItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      categoryId: item.categoryId || item.category?.id,
+      availableQty: this.getAvailableQuantity(item.id)
+    })));
   }
 
   resetNewComponent() {
@@ -920,6 +964,10 @@ export class PCComponentsComponent implements OnInit {
     console.log('Saving component with data:', this.newComponent);
     
     // Validate required fields
+    if (!this.selectedCategoryId) {
+      this.alertService.error('Please select a category first');
+      return;
+    }
     if (!this.newComponent.itemId) {
       this.alertService.error('Please select an item');
       return;

@@ -1,16 +1,18 @@
-<div class="list-container">
-  <div class="container">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-0">
+  <div class="container mx-auto px-4">
     <!-- Page Header -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-title">
-          <i class="fas fa-trash-alt"></i>
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 mb-0">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-trash-alt text-white text-xl"></i>
+          </div>
           <div>
-            <h1 class="page-title">Disposal Records</h1>
-            <p class="page-subtitle">Track and manage inventory disposal activities</p>
+            <h1 class="text-3xl font-bold text-gray-900 font-akira">Disposal Records</h1>
+            <p class="text-gray-600 font-inter">Track and manage inventory disposal activities</p>
           </div>
         </div>
-        <div class="header-actions">
+        <div class="flex flex-wrap gap-3">
           <button class="btn btn-primary" (click)="addNewDisposal()">
             <i class="fas fa-plus"></i>
             Add Disposal
@@ -24,211 +26,234 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="fas fa-trash-alt"></i>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 mb-0">
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 text-center hover:shadow-xl transition-shadow duration-300">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-trash-alt text-white text-xl"></i>
         </div>
-        <div class="stat-number">{{ disposals.length }}</div>
-        <div class="stat-label">Total Disposals</div>
+        <div class="text-2xl font-bold text-gray-900 font-akira">{{ disposals.length }}</div>
+        <div class="text-sm text-gray-600 font-inter">Total Disposals</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="fas fa-boxes"></i>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 text-center hover:shadow-xl transition-shadow duration-300">
+        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-boxes text-white text-xl"></i>
         </div>
-        <div class="stat-number">{{ getTotalDisposedItems() }}</div>
-        <div class="stat-label">Items Disposed</div>
+        <div class="text-2xl font-bold text-gray-900 font-akira">{{ getTotalDisposedItems() }}</div>
+        <div class="text-sm text-gray-600 font-inter">Items Disposed</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="fas fa-dollar-sign"></i>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 text-center hover:shadow-xl transition-shadow duration-300">
+        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-dollar-sign text-white text-xl"></i>
         </div>
-        <div class="stat-number">{{ getTotalDisposalValue() | currency:'PHP':'symbol':'1.0-0' }}</div>
-        <div class="stat-label">Total Value</div>
+        <div class="text-2xl font-bold text-gray-900 font-akira">{{ getTotalDisposalValue() | currency:'PHP':'symbol':'1.0-0' }}</div>
+        <div class="text-sm text-gray-600 font-inter">Total Value</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="fas fa-calendar-alt"></i>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 text-center hover:shadow-xl transition-shadow duration-300">
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-calendar-alt text-white text-xl"></i>
         </div>
-        <div class="stat-number">{{ getThisMonthDisposals() }}</div>
-        <div class="stat-label">This Month</div>
+        <div class="text-2xl font-bold text-gray-900 font-akira">{{ getThisMonthDisposals() }}</div>
+        <div class="text-sm text-gray-600 font-inter">This Month</div>
       </div>
     </div>
 
     <!-- Filters and Search -->
-    <div class="filters-section">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input 
-              type="text" 
-              class="form-control" 
-              placeholder="Search disposals..."
-              [(ngModel)]="searchTerm"
-              (input)="onSearch()"
-            >
+        <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-1 mb-0">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-0">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fas fa-search text-gray-400"></i>
           </div>
+          <input 
+            type="text" 
+            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter" 
+            placeholder="Search disposals..."
+            [(ngModel)]="searchTerm"
+            (input)="onSearch()"
+          >
         </div>
-        <div class="col-md-6">
-          <div class="filter-controls">
-            <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
-              <option value="">All Categories</option>
-              <option *ngFor="let category of categories" [value]="category.id">
-                {{ category.name }}
-              </option>
-            </select>
-            <select class="form-select" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
-              <option value="">All Locations</option>
-              <option *ngFor="let location of locations" [value]="location.id">
-                {{ location.name }}
-              </option>
-            </select>
-          </div>
+        <div>
+          <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+            <option value="">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-inter" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
+            <option value="">All Locations</option>
+            <option *ngFor="let location of locations" [value]="location.id">
+              {{ location.name }}
+            </option>
+          </select>
         </div>
       </div>
     </div>
 
     <!-- Disposal Records Table -->
-    <div class="card">
-      <div class="card-header">
-        <h5><i class="fas fa-list"></i> Disposal Records</h5>
-        <div class="table-actions">
-          <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
-            <i class="fas fa-sync-alt"></i>
-            Refresh
-          </button>
+    <div class="bg-white rounded-lg shadow-md border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h5 class="text-lg font-semibold text-gray-900 flex items-center gap-2 font-montserrat">
+            <i class="fas fa-list text-blue-600"></i> Disposal Records
+          </h5>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
+              <i class="fas fa-sync-alt"></i>
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
-      <div class="card-body">
+      <div class="p-0">
         <!-- Loading -->
-        <div *ngIf="loading" class="text-center py-4">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <p class="mt-2">Loading disposal records...</p>
+        <div *ngIf="loading" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p class="mt-2 text-gray-600">Loading disposal records...</p>
         </div>
 
         <!-- Table -->
-        <div *ngIf="!loading" class="table-responsive">
-          <table class="table table-hover">
+        <div *ngIf="!loading" class="overflow-hidden">
+          <table class="w-full border-collapse table-auto">
             <thead>
-              <tr>
-                <th><i class="fas fa-box"></i> Item</th>
-                <th><i class="fas fa-tag"></i> Category</th>
-                <th><i class="fas fa-trademark"></i> Brand</th>
-                <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
-                <th><i class="fas fa-dollar-sign"></i> Price</th>
-                <th><i class="fas fa-calculator"></i> Total Value</th>
-                <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                <th><i class="fas fa-comment"></i> Reason</th>
-                <th><i class="fas fa-user"></i> Disposed By</th>
-                <th><i class="fas fa-calendar"></i> Date</th>
-                <th><i class="fas fa-cogs"></i> Actions</th>
+              <tr class="bg-gray-50">
+                <th class="font-montserrat w-40 text-left">
+                  <i class="fas fa-box mr-1"></i> Item
+                </th>
+                <th class="font-montserrat w-20 text-center">
+                  <i class="fas fa-tag mr-1"></i> Category
+                </th>
+                <th class="font-montserrat w-24 text-center">
+                  <i class="fas fa-trademark mr-1"></i> Brand
+                </th>
+                <th class="font-montserrat w-20 text-right">
+                  <i class="fas fa-sort-numeric-up mr-1"></i> Qty
+                </th>
+                <th class="font-montserrat w-20 text-right">
+                  <i class="fas fa-dollar-sign mr-1"></i> Price
+                </th>
+                <th class="font-montserrat w-24 text-right">
+                  <i class="fas fa-calculator mr-1"></i> Total
+                </th>
+                <th class="font-montserrat w-24 text-center">
+                  <i class="fas fa-map-marker-alt mr-1"></i> Location
+                </th>
+                <th class="font-montserrat w-32 text-left">
+                  <i class="fas fa-comment mr-1"></i> Reason
+                </th>
+                <th class="font-montserrat w-28 text-left">
+                  <i class="fas fa-user mr-1"></i> Disposed By
+                </th>
+                <th class="font-montserrat w-20 text-left">
+                  <i class="fas fa-calendar mr-1"></i> Date
+                </th>
+                <th class="font-montserrat w-24 text-left">
+                  <i class="fas fa-cogs mr-1"></i> Actions
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let disposal of paginatedDisposals" class="disposal-row">
-                <td>
+              <tr *ngFor="let disposal of paginatedDisposals" class="hover:bg-gray-50 transition-colors duration-200">
+                <td class="font-inter w-40" data-label="Item">
                   <div class="item-info">
-                    <strong>{{ disposal.item?.name || 'Unknown Item' }}</strong>
-                    <small class="d-block text-muted" *ngIf="disposal.item?.description">
+                    <strong class="font-montserrat text-xs">{{ disposal.item?.name || 'Unknown Item' }}</strong>
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.item?.description">
                       {{ disposal.item.description }}
                     </small>
                   </div>
                 </td>
-                <td>
-                  <span class="category-badge">
+                <td class="font-inter w-20 text-center" data-label="Category">
+                  <span class="category-badge text-xs">
                     {{ disposal.item?.category?.name || 'No Category' }}
                   </span>
                 </td>
-                <td>
-                  <span class="brand-badge">
+                <td class="font-inter w-24 text-center" data-label="Brand">
+                  <span class="brand-badge text-xs">
                     {{ disposal.item?.brand?.name || 'No Brand' }}
                   </span>
                 </td>
-                <td>
-                  <span class="quantity-badge badge-danger">
+                <td class="font-inter w-20 text-right" data-label="Quantity">
+                  <span class="quantity-badge badge-danger text-xs">
                     {{ disposal.quantity }}
                   </span>
-                  <span *ngIf="disposal.returnedToStock" class="badge badge-success ms-1">
-                    <i class="fas fa-check"></i> Returned
+                  <span *ngIf="disposal.returnedToStock" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-1">
+                    <i class="fas fa-check mr-1"></i> Returned
                   </span>
-                  <span *ngIf="disposal.quantity < disposal.originalQuantity" class="badge badge-warning ms-1">
-                    <i class="fas fa-undo"></i> Partially Returned
+                  <span *ngIf="disposal.quantity < disposal.originalQuantity" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 ml-1">
+                    <i class="fas fa-undo mr-1"></i> Partially Returned
                   </span>
                 </td>
-                <td>
-                  <span class="price-value">
+                <td class="font-inter w-20 text-right" data-label="Price">
+                  <span class="price-value text-xs">
                     {{ getDisposalValueForItem(disposal) | currency:'PHP':'symbol' }}
                   </span>
                 </td>
-                <td>
-                                     <span class="total-value">
-                     {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
-                   </span>
+                <td class="font-inter w-24 text-right" data-label="Total Value">
+                  <span class="total-value text-xs">
+                    {{ getTotalValueForItem(disposal) | currency:'PHP':'symbol' }}
+                  </span>
                 </td>
-                <td>
-                  <span class="location-badge">
+                <td class="font-inter w-24 text-center" data-label="Location">
+                  <span class="location-badge text-xs">
                     {{ disposal.location?.name || 'No Location' }}
-                    <small class="d-block text-muted" *ngIf="disposal.location?.description">
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.location?.description">
                       {{ disposal.location.description }}
                     </small>
                   </span>
                 </td>
-                <td>
-                  <span class="reason-text" [title]="disposal.reason || 'No reason provided'">
+                <td class="font-inter w-32" data-label="Reason">
+                  <span class="reason-text text-xs" [title]="disposal.reason || 'No reason provided'">
                     {{ (disposal.reason || 'No reason provided') | slice:0:30 }}{{ (disposal.reason || '').length > 30 ? '...' : '' }}
                   </span>
                 </td>
-                <td>
+                <td class="font-inter w-28" data-label="Disposed By">
                   <span class="user-badge">
-                    {{ disposal.user?.firstName }} {{ disposal.user?.lastName }}
-                    <small class="d-block text-muted" *ngIf="disposal.user?.email">
+                    <span class="font-montserrat text-xs">{{ disposal.user?.firstName }} {{ disposal.user?.lastName }}</span>
+                    <small class="block text-gray-500 font-inter text-xs" *ngIf="disposal.user?.email">
                       {{ disposal.user.email }}
                     </small>
                   </span>
                 </td>
-                <td>
-                  <span class="date-badge">
+                <td class="font-inter w-20" data-label="Date">
+                  <span class="date-badge text-xs">
                     {{ disposal.disposalDate | date: 'MMM dd, yyyy' }}
                   </span>
                 </td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="btn btn-sm btn-outline-primary"
+                <td class="font-inter w-24" data-label="Actions">
+                  <div class="flex flex-row gap-0">
+                    <button class="btn btn-sm btn-outline-primary p-1 m-0"
                             (click)="viewDisposal(disposal.id!)" title="View Details">
-                      <i class="fas fa-eye"></i>
+                      <i class="fas fa-eye text-xs"></i>
                     </button>
                     <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
-                            class="btn btn-sm btn-outline-warning"
+                            class="btn btn-sm btn-outline-warning p-1 m-0"
                             (click)="editDisposal(disposal.id!)" title="Edit Disposal">
-                      <i class="fas fa-edit"></i>
+                      <i class="fas fa-edit text-xs"></i>
                     </button>
                     <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
-                            class="btn btn-sm btn-outline-danger"
+                            class="btn btn-sm btn-outline-danger p-1 m-0"
                             (click)="deleteDisposal(disposal.id!)" title="Delete Disposal">
-                      <i class="fas fa-trash"></i>
+                      <i class="fas fa-trash text-xs"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-info"
+                    <button class="btn btn-sm btn-outline-info p-1 m-0"
                             (click)="viewStockInfo(disposal.itemId)" title="Stock Info">
-                      <i class="fas fa-boxes"></i>
+                      <i class="fas fa-boxes text-xs"></i>
                     </button>
                     <button *ngIf="disposal.quantity > 0" 
-                            class="btn btn-sm btn-outline-success"
+                            class="btn btn-sm btn-outline-success p-1 m-0"
                             (click)="returnToStock(disposal)" title="Return to Stock">
-                      <i class="fas fa-undo"></i>
+                      <i class="fas fa-undo text-xs"></i>
                     </button>
-
                   </div>
                 </td>
               </tr>
               <tr *ngIf="filteredDisposals?.length === 0">
-                <td colspan="11" class="text-center py-4">
+                <td colspan="11" class="px-4 py-8 text-center text-gray-500">
                   <div class="empty-state">
-                    <i class="fas fa-trash-alt"></i>
-                    <h4>No disposal records found</h4>
-                    <p>Try adjusting your search or filters</p>
+                    <i class="fas fa-trash-alt text-4xl mb-4"></i>
+                    <h4 class="text-lg font-semibold mb-2 font-montserrat">No disposal records found</h4>
+                    <p class="text-sm font-inter">Try adjusting your search or filters</p>
                   </div>
                 </td>
               </tr>

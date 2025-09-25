@@ -1,14 +1,9 @@
-﻿<div class="app-container" [ngClass]="{ 'bg-light': account }">
-    <!-- Mobile Menu Button -->
-    <div class="mobile-menu-btn" *ngIf="account" (click)="toggleMobileMenu()">
-        <i class="fas fa-bars"></i>
-    </div>
-
+﻿<div class="d-flex" [ngClass]="{ 'bg-light': account }">
     <!-- Sidebar Navigation -->
     <app-nav *ngIf="account"></app-nav>
 
     <!-- Main Content Area -->
-    <div class="main-content" [ngClass]="{ 'with-sidebar': account }">
+    <div class="flex-fill overflow-auto" [ngStyle]="{ 'margin-left': account ? '240px' : '0' }">
         <!-- subnav router outlet -->
         <router-outlet name="subnav"></router-outlet>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { environment } from '@environments/environment';
@@ -1347,6 +1347,7 @@ export class StockListComponent implements OnInit {
   showViewStockModal = false;
   showEditStockModal = false;
   showReceiptModal = false;
+  loading = false;
   selectedStock: any = null;
   currentInfoType: string = '';
   currentReceiptUrl: string = '';
@@ -1401,7 +1402,8 @@ export class StockListComponent implements OnInit {
     private router: Router,
     private accountService: AccountService,
     private alertService: AlertService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -1431,12 +1433,16 @@ export class StockListComponent implements OnInit {
     this.showAddStockModal = true;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     this.initializeStockEntries();
+    // Dispatch modal open event
+    window.dispatchEvent(new CustomEvent('modalOpen'));
   }
 
   closeAddStockModal() {
     this.showAddStockModal = false;
     document.body.style.overflow = 'auto'; // Restore scrolling
     this.resetStockForm();
+    // Dispatch modal close event
+    window.dispatchEvent(new CustomEvent('modalClose'));
   }
 
   // View Stock Modal methods
@@ -1450,6 +1456,8 @@ export class StockListComponent implements OnInit {
     this.showViewStockModal = true;
     this.currentInfoType = '';
     document.body.style.overflow = 'hidden';
+    // Dispatch modal open event
+    window.dispatchEvent(new CustomEvent('modalOpen'));
   }
 
   closeViewStockModal() {
@@ -1457,6 +1465,8 @@ export class StockListComponent implements OnInit {
     this.selectedStock = null;
     this.currentInfoType = '';
     document.body.style.overflow = 'auto';
+    // Dispatch modal close event
+    window.dispatchEvent(new CustomEvent('modalClose'));
   }
 
   // Edit Stock Modal methods
@@ -1751,6 +1761,8 @@ export class StockListComponent implements OnInit {
   }
 
   addNewStockEntry() {
+    console.log('=== ADD NEW STOCK ENTRY BUTTON CLICKED ===');
+    console.log('Current stock entries length:', this.stockEntries.length);
     this.stockEntries.push({
       itemId: undefined,
       quantity: undefined,
@@ -1758,12 +1770,23 @@ export class StockListComponent implements OnInit {
       locationId: undefined,
       remarks: ''
     });
+    console.log('New stock entries length:', this.stockEntries.length);
+    console.log('Stock entries:', this.stockEntries);
+    // Recalculate total price and trigger change detection
+    this.calculateTotalPrice();
+    this.cdr.detectChanges();
   }
 
   removeStockEntry(index: number) {
     if (this.stockEntries.length > 1) {
       this.stockEntries.splice(index, 1);
+      this.calculateTotalPrice();
+      this.cdr.detectChanges();
     }
+  }
+
+  trackByIndex(index: number, item: any): number {
+    return index;
   }
 
   onReceiptFileSelected(event: any) {
@@ -1832,14 +1855,44 @@ export class StockListComponent implements OnInit {
       });
   }
 
+  // Form submission debug method
+  onFormSubmit(event: Event) {
+    console.log('=== FORM SUBMIT EVENT ===');
+    console.log('Event:', event);
+    console.log('Form validity:', event.target);
+    event.preventDefault(); // Prevent default submission
+    this.showConfirmationModal();
+  }
+
+  // Debug submit button click
+  debugSubmitButton(event: Event) {
+    console.log('=== SUBMIT BUTTON CLICKED ===');
+    console.log('Event:', event);
+    console.log('Stock entries at button click:', this.stockEntries);
+    console.log('Button disabled state:', this.stockLoading);
+    // Don't prevent default here - let the form submission proceed
+  }
+
   // New confirmation modal methods
   showConfirmationModal() {
+    console.log('=== SHOW CONFIRMATION MODAL CALLED ===');
+    console.log('Stock entries:', this.stockEntries);
     this.stockSubmitted = true;
 
     // Validate all entries
-    this.validStockEntries = this.stockEntries.filter(entry => 
-      entry.itemId && entry.quantity && entry.price && entry.locationId
-    );
+    this.validStockEntries = this.stockEntries.filter(entry => {
+      console.log('Validating entry:', entry);
+      console.log('itemId:', entry.itemId, 'quantity:', entry.quantity, 'price:', entry.price, 'locationId:', entry.locationId);
+      const isValid = entry.itemId && 
+        entry.quantity && entry.quantity > 0 && 
+        entry.price && entry.price > 0 && 
+        entry.locationId;
+      console.log('Entry is valid:', isValid);
+      return isValid;
+    });
+
+    console.log('Valid entries:', this.validStockEntries);
+    console.log('Valid entries count:', this.validStockEntries.length);
 
     if (this.validStockEntries.length === 0) {
       this.alertService.error('Please fill in at least one complete stock entry');
@@ -1983,6 +2036,7 @@ export class StockListComponent implements OnInit {
   }
 
   loadStocks() {
+    this.loading = true;
     this.stockService.getAll()
       .pipe(first())
       .subscribe({
@@ -2023,10 +2077,12 @@ export class StockListComponent implements OnInit {
           this.applyFilters();
           
           console.log('=== END STOCK DATA DEBUG ===');
+          this.loading = false;
         },
         error: error => {
           console.error('Error loading stocks:', error);
           this.alertService.error(error);
+          this.loading = false;
         }
       });
   }
