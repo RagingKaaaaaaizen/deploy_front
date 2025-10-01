@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { PCService, PCComponentService, StockService, ItemService, CategoryService, BrandService, AlertService, AccountService, StorageLocationService } from '@app/_services';
-import { PCComponent, Role } from '@app/_models';
+import { PCService, PCComponentService, StockService, ItemService, CategoryService, BrandService, AlertService, AccountService, StorageLocationService, PCBuildTemplateService } from '@app/_services';
+import { PCComponent, Role, PCBuildTemplate, PCTemplateComparison } from '@app/_models';
 
 @Component({
   selector: 'app-pc-components',
@@ -43,6 +43,13 @@ export class PCComponentsComponent implements OnInit {
   stockSearchTerm = '';
   selectedStockEntry: any = null;
   filteredStockEntries: any[] = [];
+
+  // Template comparison properties
+  templates: PCBuildTemplate[] = [];
+  selectedTemplateId: number | null = null;
+  comparisonResult: PCTemplateComparison | null = null;
+  showComparisonPanel = false;
+  comparingTemplate = false;
 
   // Computed property for available stocks count
   get availableStocksCount(): number {
@@ -121,7 +128,8 @@ export class PCComponentsComponent implements OnInit {
     private brandService: BrandService,
     private alertService: AlertService,
     private accountService: AccountService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private templateService: PCBuildTemplateService
   ) { }
 
   ngOnInit() {
@@ -138,6 +146,7 @@ export class PCComponentsComponent implements OnInit {
     this.loadCategories();
     this.loadBrands();
     this.loadStocksForFiltering();
+    this.loadTemplates();
   }
 
   loadStocksForFiltering() {
@@ -1338,5 +1347,107 @@ export class PCComponentsComponent implements OnInit {
     // You might need to load locations or get them from a service
     // For now, return a placeholder
     return `Location ${locationId}`;
+  }
+
+  // Template Comparison Methods
+  loadTemplates() {
+    this.templateService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (templates) => {
+          this.templates = templates;
+        },
+        error: (error) => {
+          console.error('Error loading templates:', error);
+        }
+      });
+  }
+
+  toggleComparisonPanel() {
+    this.showComparisonPanel = !this.showComparisonPanel;
+    if (this.showComparisonPanel && this.selectedTemplateId) {
+      this.compareWithTemplate();
+    }
+  }
+
+  compareWithTemplate() {
+    if (!this.selectedTemplateId || !this.pc) {
+      return;
+    }
+
+    this.comparingTemplate = true;
+    this.templateService.comparePC(this.pc.id, this.selectedTemplateId)
+      .pipe(first())
+      .subscribe({
+        next: (comparison) => {
+          this.comparisonResult = comparison;
+          this.comparingTemplate = false;
+        },
+        error: (error) => {
+          this.alertService.error('Error comparing with template: ' + error);
+          this.comparingTemplate = false;
+        }
+      });
+  }
+
+  applyTemplate(replaceAll: boolean = false) {
+    if (!this.selectedTemplateId || !this.pc || !this.comparisonResult) {
+      return;
+    }
+
+    const message = replaceAll 
+      ? `Replace ALL ${this.comparisonResult.mismatchCount} non-matching components?`
+      : 'Apply selected component replacements?';
+
+    if (!confirm(message)) {
+      return;
+    }
+
+    const options = {
+      replaceAll: replaceAll,
+      replaceCategories: replaceAll ? [] : this.comparisonResult.mismatches.map(m => m.categoryId)
+    };
+
+    this.loading = true;
+    this.templateService.applyTemplate(this.pc.id, this.selectedTemplateId, options)
+      .pipe(first())
+      .subscribe({
+        next: (result) => {
+          this.alertService.success(`Successfully replaced ${result.replacedCount} component(s)`);
+          this.loadComponents(this.pc.id);
+          this.compareWithTemplate(); // Refresh comparison
+          this.loading = false;
+        },
+        error: (error) => {
+          this.alertService.error('Error applying template: ' + error);
+          this.loading = false;
+        }
+      });
+  }
+
+  getMismatchBadgeClass(reason: string): string {
+    switch (reason) {
+      case 'missing':
+        return 'bg-danger';
+      case 'different_item':
+        return 'bg-warning';
+      case 'different_quantity':
+        return 'bg-info';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  getMismatchIcon(reason: string): string {
+    switch (reason) {
+      case 'missing':
+        return 'fa-times-circle';
+      case 'different_item':
+        return 'fa-exchange-alt';
+      case 'different_quantity':
+        return 'fa-sort-numeric-up';
+      default:
+        return 'fa-exclamation-triangle';
+    }
   }
 } 
