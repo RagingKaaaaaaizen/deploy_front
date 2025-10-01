@@ -11,6 +11,10 @@
                     </div>
                 </div>
                 <div class="header-actions">
+                    <button type="button" class="btn btn-info me-2" routerLink="/pc/templates">
+                        <i class="fas fa-clipboard-list"></i>
+                        Manage Templates
+                    </button>
                     <button type="button" class="btn btn-primary" (click)="openAddPCModal()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                         <i class="fas fa-plus"></i>
                         Add PC
