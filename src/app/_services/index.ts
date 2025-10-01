@@ -12,3 +12,4 @@ export * from './dispose.service';
 export * from './activity-log.service';
 export * from './analytics.service';
 export * from './approval-request.service';
+export * from './pc-build-template.service';
