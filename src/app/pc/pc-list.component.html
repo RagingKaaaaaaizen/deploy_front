@@ -149,6 +149,14 @@
                                 {{ location.name }}
                             </option>
                         </select>
+                        <select class="form-select" [(ngModel)]="selectedTemplateId" (change)="onTemplateFilterChange()">
+                            <option [ngValue]="null">
+                                <i class="fas fa-clipboard-list"></i> Compare with Template
+                            </option>
+                            <option *ngFor="let template of templates" [ngValue]="template.id">
+                                📋 {{ template.name }}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -218,6 +226,22 @@
                                      <small class="d-block text-muted" *ngIf="getComponentStatus(pc.id).componentCount > 0">
                                          {{ getComponentStatus(pc.id).componentCount }} component(s)
                                      </small>
+                                     <!-- Template Comparison Badge -->
+                                     <div *ngIf="selectedTemplateId && getPCComparison(pc.id)" class="mt-2">
+                                         <span class="badge" [ngClass]="getComparisonBadgeClass(pc.id)">
+                                             <i class="fas" [ngClass]="getComparisonIcon(pc.id)"></i>
+                                             {{ getPCComparison(pc.id)?.matches ? 'Template Match' : getPCComparison(pc.id)?.matchPercentage + '% Match' }}
+                                         </span>
+                                         <small class="d-block text-muted" *ngIf="!getPCComparison(pc.id)?.matches">
+                                             {{ getPCComparison(pc.id)?.mismatchCount }} mismatch(es)
+                                         </small>
+                                     </div>
+                                     <div *ngIf="selectedTemplateId && loadingComparisons" class="mt-2">
+                                         <span class="badge bg-secondary">
+                                             <span class="spinner-border spinner-border-sm me-1"></span>
+                                             Comparing...
+                                         </span>
+                                     </div>
                                  </td>
                                  <td data-label="Created">
                                      <span class="created-date">

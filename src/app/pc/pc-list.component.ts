@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 
-import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService, CategoryService, ItemService } from '@app/_services';
-import { Role } from '@app/_models';
+import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService, CategoryService, ItemService, PCBuildTemplateService } from '@app/_services';
+import { Role, PCBuildTemplate, PCTemplateComparison } from '@app/_models';
 
 @Component({
   selector: 'app-pc-list',
@@ -650,6 +650,12 @@ export class PCListComponent implements OnInit {
   selectedCategories: any[] = [];
   defaultComponents: { [categoryId: number]: number } = {};
 
+  // Template comparison properties
+  templates: PCBuildTemplate[] = [];
+  selectedTemplateId: number | null = null;
+  pcComparisons: Map<number, PCTemplateComparison> = new Map();
+  loadingComparisons = false;
+
   constructor(
     private router: Router,
     private pcService: PCService,
@@ -660,7 +666,8 @@ export class PCListComponent implements OnInit {
     private analyticsService: AnalyticsService,
     private formBuilder: FormBuilder,
     private categoryService: CategoryService,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private templateService: PCBuildTemplateService
   ) { 
     this.pcForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -686,6 +693,7 @@ export class PCListComponent implements OnInit {
     this.loadCategories();
     this.loadItems();
     this.loadRoomLocations();
+    this.loadTemplates();
   }
 
   loadPCs() {
@@ -1201,6 +1209,84 @@ export class PCListComponent implements OnInit {
           this.pcLoading = false;
         }
       });
+  }
+
+  // Template Comparison Methods
+  loadTemplates() {
+    this.templateService.getAll()
+      .pipe(first())
+      .subscribe({
+        next: (templates) => {
+          this.templates = templates;
+        },
+        error: (error) => {
+          console.error('Error loading templates:', error);
+        }
+      });
+  }
+
+  onTemplateFilterChange() {
+    if (this.selectedTemplateId) {
+      this.compareAllPCsWithTemplate();
+    } else {
+      this.pcComparisons.clear();
+    }
+    this.applyFilters();
+  }
+
+  compareAllPCsWithTemplate() {
+    if (!this.selectedTemplateId) {
+      return;
+    }
+
+    this.loadingComparisons = true;
+    const pcIds = this.pcs.map(pc => pc.id);
+
+    this.templateService.comparePCs(pcIds, this.selectedTemplateId)
+      .pipe(first())
+      .subscribe({
+        next: (comparisons) => {
+          this.pcComparisons.clear();
+          comparisons.forEach(comp => {
+            this.pcComparisons.set(comp.pcId, comp);
+          });
+          this.loadingComparisons = false;
+        },
+        error: (error) => {
+          this.alertService.error('Error comparing PCs with template: ' + error);
+          this.loadingComparisons = false;
+        }
+      });
+  }
+
+  getPCComparison(pcId: number): PCTemplateComparison | undefined {
+    return this.pcComparisons.get(pcId);
+  }
+
+  getComparisonBadgeClass(pcId: number): string {
+    const comparison = this.getPCComparison(pcId);
+    if (!comparison) return '';
+
+    if (comparison.matches) {
+      return 'bg-success';
+    } else if (comparison.matchPercentage >= 70) {
+      return 'bg-warning';
+    } else {
+      return 'bg-danger';
+    }
+  }
+
+  getComparisonIcon(pcId: number): string {
+    const comparison = this.getPCComparison(pcId);
+    if (!comparison) return '';
+
+    if (comparison.matches) {
+      return 'fa-check-circle';
+    } else if (comparison.matchPercentage >= 70) {
+      return 'fa-exclamation-triangle';
+    } else {
+      return 'fa-times-circle';
+    }
   }
 
   ngOnDestroy() {
