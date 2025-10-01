@@ -27,7 +27,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "src/app/pc/pc-template-styles.css"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
@@ -130,7 +131,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "src/app/pc/pc-template-styles.css"
             ],
             "scripts": []
           }

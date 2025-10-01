@@ -228,17 +228,22 @@
                                      </small>
                                      <!-- Template Comparison Badge -->
                                      <div *ngIf="selectedTemplateId && getPCComparison(pc.id)" class="mt-2">
-                                         <span class="badge" [ngClass]="getComparisonBadgeClass(pc.id)">
+                                         <span class="match-badge" [ngClass]="{
+                                           'perfect-match': getPCComparison(pc.id)?.matches,
+                                           'partial-match': !getPCComparison(pc.id)?.matches && getPCComparison(pc.id)?.matchPercentage >= 70,
+                                           'poor-match': !getPCComparison(pc.id)?.matches && getPCComparison(pc.id)?.matchPercentage < 70
+                                         }">
                                              <i class="fas" [ngClass]="getComparisonIcon(pc.id)"></i>
-                                             {{ getPCComparison(pc.id)?.matches ? 'Template Match' : getPCComparison(pc.id)?.matchPercentage + '% Match' }}
+                                             {{ getPCComparison(pc.id)?.matches ? 'Perfect Match' : getPCComparison(pc.id)?.matchPercentage + '% Match' }}
                                          </span>
-                                         <small class="d-block text-muted" *ngIf="!getPCComparison(pc.id)?.matches">
-                                             {{ getPCComparison(pc.id)?.mismatchCount }} mismatch(es)
+                                         <small class="d-block text-muted mt-1" *ngIf="!getPCComparison(pc.id)?.matches">
+                                             <i class="fas fa-exclamation-circle me-1"></i>
+                                             {{ getPCComparison(pc.id)?.mismatchCount }} component(s) need attention
                                          </small>
                                      </div>
                                      <div *ngIf="selectedTemplateId && loadingComparisons" class="mt-2">
-                                         <span class="badge bg-secondary">
-                                             <span class="spinner-border spinner-border-sm me-1"></span>
+                                         <span class="template-loading">
+                                             <span class="template-spinner"></span>
                                              Comparing...
                                          </span>
                                      </div>

@@ -2,6 +2,12 @@
     padding: 20px 0;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     min-height: 100vh;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .page-header {
@@ -10,6 +16,18 @@
     padding: 30px;
     margin-bottom: 30px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .header-content {
@@ -31,6 +49,7 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: pulse 2s infinite;
 }
 
 .page-title {
@@ -51,12 +70,48 @@
     gap: 10px;
 }
 
+.header-actions .btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-actions .btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.header-actions .btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
 .filters-section {
     background: white;
     border-radius: 16px;
     padding: 25px;
     margin-bottom: 25px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .search-box {
@@ -69,25 +124,47 @@
     top: 50%;
     transform: translateY(-50%);
     color: #667eea;
+    animation: pulse 2s infinite;
 }
 
 .search-box .form-control {
     padding-left: 45px;
     border-radius: 25px;
     border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
 }
 
+.search-box .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Use shared template-card styles with additional enhancements */
 .template-card {
     border: none;
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
-.template-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+.template-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), transparent);
+    border-radius: 0 16px 0 100%;
+    transition: all 0.3s ease;
+}
+
+.template-card:hover::after {
+    width: 120px;
+    height: 120px;
 }
 
 .template-meta {
@@ -97,21 +174,66 @@
     margin-top: 15px;
 }
 
+.template-meta .badge {
+    animation: badgePop 0.3s ease-out;
+}
+
+@keyframes badgePop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 .action-buttons {
     display: flex;
     gap: 8px;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    transition: all 0.2s ease;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+.action-buttons .btn:active {
+    transform: translateY(0);
 }
 
 .empty-state {
     text-align: center;
     padding: 60px 20px;
     color: #6c757d;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .empty-state i {
     font-size: 4rem;
     color: #dee2e6;
     margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .template-card {
+        margin-bottom: 20px;
+    }
+    
+    .action-buttons {
+        gap: 4px;
+    }
 }
 
