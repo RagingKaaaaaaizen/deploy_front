@@ -15,7 +15,8 @@ NODE_OPTIONS=--max_old_space_size=8192
 - **Build Command:** `npm ci --legacy-peer-deps && npm run build:prod`
 - **Output Path:** `./dist/angular-signup-verification-boilerplate`
 - **Auto Deploy:** Enabled for automatic deployments
-- **Memory Optimization:** 8GB memory allocation for build process
+- **Memory Optimization:** 8GB memory allocation via NODE_OPTIONS environment variable
+- **Angular CLI:** Uses npm's bin resolution (not hardcoded paths)
 
 ### **Production Optimizations Applied:**
 
