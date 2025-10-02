@@ -13,7 +13,7 @@
                 <button class="btn btn-outline-secondary" routerLink="/pc">
                     <i class="fas fa-arrow-left"></i> Back to PCs
                 </button>
-                <button class="btn btn-success" (click)="addTemplate()" *ngIf="hasRole([Role.Admin])">
+                <button class="btn btn-success" (click)="addTemplate()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
                     <i class="fas fa-plus"></i> Create Template
                 </button>
             </div>
@@ -70,13 +70,13 @@
                         <button class="btn btn-sm btn-primary" (click)="viewStats(template.id!)" title="View Statistics">
                             <i class="fas fa-chart-bar"></i>
                         </button>
-                        <button class="btn btn-sm btn-warning" (click)="editTemplate(template.id!)" *ngIf="hasRole([Role.Admin])" title="Edit">
+                        <button class="btn btn-sm btn-warning" (click)="editTemplate(template.id!)" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-secondary" (click)="duplicateTemplate(template)" *ngIf="hasRole([Role.Admin])" title="Duplicate">
+                        <button class="btn btn-sm btn-secondary" (click)="duplicateTemplate(template)" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" title="Duplicate">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" (click)="deleteTemplate(template)" *ngIf="hasRole([Role.Admin])" title="Delete">
+                        <button class="btn btn-sm btn-danger" (click)="deleteTemplate(template)" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -90,7 +90,7 @@
         <i class="fas fa-clipboard-list"></i>
         <h4>No Templates Found</h4>
         <p>Create your first PC build template to get started</p>
-        <button class="btn btn-primary" (click)="addTemplate()" *ngIf="hasRole([Role.Admin])">
+        <button class="btn btn-primary" (click)="addTemplate()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
             <i class="fas fa-plus"></i> Create Template
         </button>
     </div>
