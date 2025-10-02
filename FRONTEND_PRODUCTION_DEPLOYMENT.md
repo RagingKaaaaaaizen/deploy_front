@@ -6,17 +6,18 @@
 
 ```bash
 API_URL=https://computer-lab-inventory-backend-klzb.onrender.com
-NODE_ENV=production
-NODE_OPTIONS=--max_old_space_size=8192
 ```
+
+**Note:** `NODE_ENV=production` is NOT set during build to ensure devDependencies (including Angular CLI) are installed. The `NODE_OPTIONS` is set inline in the build command.
 
 ### **Build Configuration:**
 
-- **Build Command:** `npm ci --legacy-peer-deps && npm run build:prod`
+- **Build Command:** `NODE_OPTIONS=--max_old_space_size=8192 npm ci --legacy-peer-deps && npm run build:prod`
 - **Output Path:** `./dist/angular-signup-verification-boilerplate`
 - **Auto Deploy:** Enabled for automatic deployments
-- **Memory Optimization:** 8GB memory allocation via NODE_OPTIONS environment variable
+- **Memory Optimization:** 8GB memory allocation via inline NODE_OPTIONS
 - **Angular CLI:** Uses npm's bin resolution (not hardcoded paths)
+- **DevDependencies:** Installed during build (NODE_ENV not set to allow this)
 
 ### **Production Optimizations Applied:**
 

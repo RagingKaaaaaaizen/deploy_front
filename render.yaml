@@ -2,13 +2,9 @@ services:
   - type: web
     name: computer-lab-inventory-frontend
     env: static
-    buildCommand: npm ci --legacy-peer-deps && npm run build:prod
+    buildCommand: NODE_OPTIONS=--max_old_space_size=8192 npm ci --legacy-peer-deps && npm run build:prod
     staticPublishPath: ./dist/angular-signup-verification-boilerplate
     autoDeploy: true
     envVars:
       - key: API_URL
         value: https://computer-lab-inventory-backend-klzb.onrender.com
-      - key: NODE_ENV
-        value: production
-      - key: NODE_OPTIONS
-        value: --max_old_space_size=8192
