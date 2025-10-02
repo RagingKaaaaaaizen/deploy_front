@@ -97,8 +97,8 @@ export class PCBuildTemplateEditorComponent implements OnInit {
 
     addComponent() {
         this.selectedComponents.push({
-            categoryId: 0,
-            itemId: 0,
+            categoryId: null,
+            itemId: null,
             quantity: 1,
             remarks: ''
         });
