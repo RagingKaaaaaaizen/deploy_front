@@ -6,13 +6,15 @@
     "start": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng serve --open",
     "start:dev": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng serve --configuration=development",
     "build": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration=production",
-    "build:prod": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration=production",
+    "build:prod": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration=production --aot --build-optimizer --optimization --source-map=false",
     "build:dev": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration=development",
+    "build:render": "npm ci --legacy-peer-deps && npm run build:prod",
     "test": "ng test",
     "lint": "ng lint",
     "clean": "rm -rf dist node_modules/.cache",
     "clean:all": "rm -rf dist node_modules package-lock.json && npm install",
-    "clean:install": "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps"
+    "clean:install": "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps",
+    "postinstall": "echo 'Frontend dependencies installed successfully'"
   },
   "private": true,
   "overrides": {
