@@ -2,7 +2,7 @@ services:
   - type: web
     name: computer-lab-inventory-frontend
     env: static
-    buildCommand: NODE_OPTIONS=--max_old_space_size=8192 npm ci --legacy-peer-deps && npm run build:prod
+    buildCommand: NODE_OPTIONS=--max_old_space_size=8192 npm ci --include=dev --legacy-peer-deps && npm run build:prod
     staticPublishPath: ./dist/angular-signup-verification-boilerplate
     autoDeploy: true
     envVars:

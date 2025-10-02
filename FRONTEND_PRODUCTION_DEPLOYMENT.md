@@ -12,12 +12,12 @@ API_URL=https://computer-lab-inventory-backend-klzb.onrender.com
 
 ### **Build Configuration:**
 
-- **Build Command:** `NODE_OPTIONS=--max_old_space_size=8192 npm ci --legacy-peer-deps && npm run build:prod`
+- **Build Command:** `NODE_OPTIONS=--max_old_space_size=8192 npm ci --include=dev --legacy-peer-deps && npm run build:prod`
 - **Output Path:** `./dist/angular-signup-verification-boilerplate`
 - **Auto Deploy:** Enabled for automatic deployments
 - **Memory Optimization:** 8GB memory allocation via inline NODE_OPTIONS
-- **Angular CLI:** Uses npm's bin resolution (not hardcoded paths)
-- **DevDependencies:** Installed during build (NODE_ENV not set to allow this)
+- **Angular CLI:** Uses `npx` for reliable command resolution
+- **DevDependencies:** Explicitly installed with `--include=dev` flag
 
 ### **Production Optimizations Applied:**
 
@@ -55,8 +55,8 @@ API_URL=https://computer-lab-inventory-backend-klzb.onrender.com
 
 ### **Build Process:**
 
-1. **Install Dependencies:** `npm ci --legacy-peer-deps`
-2. **Production Build:** `npm run build:prod`
+1. **Install Dependencies:** `npm ci --include=dev --legacy-peer-deps` (includes devDependencies)
+2. **Production Build:** `npm run build:prod` (uses `npx ng build`)
 3. **Optimize Bundle:** AOT compilation, tree shaking, minification
 4. **Deploy Static Files:** Serve from `./dist/angular-signup-verification-boilerplate`
 
@@ -82,15 +82,15 @@ API_URL=https://computer-lab-inventory-backend-klzb.onrender.com
 ### **Testing Production Build Locally:**
 
 ```bash
-# Install dependencies
-npm ci --legacy-peer-deps
+# Install dependencies (including devDependencies)
+npm ci --include=dev --legacy-peer-deps
 
-# Build for production
+# Build for production (uses npx ng build)
 npm run build:prod
 
 # Test the build
 cd dist/angular-signup-verification-boilerplate
-# Serve with any static server (e.g., http-server, serve)
+# Serve with any static server (e.g., npx http-server, npx serve)
 ```
 
 ### **Environment Configuration:**
