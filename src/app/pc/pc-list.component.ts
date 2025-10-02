@@ -849,10 +849,6 @@ export class PCListComponent implements OnInit {
     this.router.navigate(['/stocks'], { queryParams: { pcId } });
   }
 
-  testNavigation() {
-    console.log('Testing navigation to /pc/add');
-    this.router.navigate(['/pc/add']);
-  }
 
   // Pagination methods
   get totalPages(): number {
