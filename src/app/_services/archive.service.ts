@@ -122,6 +122,39 @@ export class ArchiveService {
     return this.http.post<ReportData>(`${baseUrl}/generate-report`, request);
   }
 
+  // Enhanced Analytics Methods
+  getTopUsedCategories(limit: number = 10): Observable<any[]> {
+    return this.http.get<any[]>(`${baseUrl}/top-categories?limit=${limit}`);
+  }
+
+  getMostReplacedComponents(limit: number = 10): Observable<any[]> {
+    return this.http.get<any[]>(`${baseUrl}/most-replaced-components?limit=${limit}`);
+  }
+
+  getAverageComponentLifespan(): Observable<any[]> {
+    return this.http.get<any[]>(`${baseUrl}/average-lifespan`);
+  }
+
+  getComponentReplacementPatterns(): Observable<any> {
+    return this.http.get<any>(`${baseUrl}/replacement-patterns`);
+  }
+
+  getAdvancedAnalytics(): Observable<any> {
+    return this.http.get<any>(`${baseUrl}/advanced-analytics`);
+  }
+
+  getPendingRequests(): Observable<any[]> {
+    return this.http.get<any[]>(`${baseUrl}/pending-requests`);
+  }
+
+  getAutomatedReportSchedule(): Observable<any> {
+    return this.http.get<any>(`${baseUrl}/automated-schedule`);
+  }
+
+  setAutomatedReportSchedule(schedule: any): Observable<any> {
+    return this.http.post<any>(`${baseUrl}/automated-schedule`, schedule);
+  }
+
   // Check if report already exists for the given period
   checkReportExists(type: 'weekly' | 'monthly', startDate: Date, endDate: Date): StoredReport | null {
     const reports = this.storedReports.value;

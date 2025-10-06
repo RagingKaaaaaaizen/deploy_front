@@ -14,6 +14,7 @@ const stocksModule = () => import('./stocks/stocks.module').then(x => x.StocksMo
 const pcModule = () => import('./pc/pc.module').then(x => x.PCModule);
 const disposeModule = () => import('./dispose/dispose.module').then(x => x.DisposeModule);
 const archiveModule = () => import('./archive/archive.module').then(x => x.ArchiveModule);
+const analyticsModule = () => import('./analytics/analytics.module').then(x => x.AnalyticsModule);
 const approvalsModule = () => import('./approvals/approvals.module').then(x => x.ApprovalsModule);
 
 const routes: Routes = [
@@ -30,6 +31,7 @@ const routes: Routes = [
     
     { path: 'activity', loadChildren: () => import('./activity/activity.module').then(x => x.ActivityModule), canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
     { path: 'archive', loadChildren: archiveModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
+    { path: 'analytics', loadChildren: analyticsModule, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
 
     { path: '**', redirectTo: '' }
 ];

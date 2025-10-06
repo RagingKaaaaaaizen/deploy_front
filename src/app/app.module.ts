@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor, ErrorInterceptor, appInitializer } from './_helpers';
 import { AccountService } from './_services';
 import { AppComponent } from './app.component';
-import { AlertComponent, NavComponent, ProfessionalTableComponent } from './_components';
+import { AlertComponent, NavComponent, ProfessionalTableComponent, NotificationBellComponent } from './_components';
 import { HomeComponent } from './home';
 
 @NgModule({
@@ -32,6 +32,7 @@ import { HomeComponent } from './home';
         AlertComponent,
         NavComponent,
         ProfessionalTableComponent,
+        NotificationBellComponent,
         HomeComponent
     ],
     providers: [

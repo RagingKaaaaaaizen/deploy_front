@@ -13,3 +13,5 @@ export * from './activity-log.service';
 export * from './analytics.service';
 export * from './approval-request.service';
 export * from './pc-build-template.service';
+export * from './notification.service';
+export * from './archive.service';

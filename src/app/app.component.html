@@ -4,6 +4,18 @@
 
     <!-- Main Content Area -->
     <div class="flex-fill overflow-auto" [ngStyle]="{ 'margin-left': account ? '240px' : '0' }">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar" *ngIf="account">
+            <div class="navbar-content">
+                <div class="navbar-left">
+                    <h4 class="page-title">Computer Lab Inventory System</h4>
+                </div>
+                <div class="navbar-right">
+                    <app-notification-bell></app-notification-bell>
+                </div>
+            </div>
+        </div>
+
         <!-- subnav router outlet -->
         <router-outlet name="subnav"></router-outlet>
 

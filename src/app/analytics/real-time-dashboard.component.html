@@ -1,0 +1,138 @@
+<div class="realtime-container">
+  <!-- Header -->
+  <div class="realtime-header">
+    <div class="realtime-title">
+      <i class="fas fa-chart-line"></i>
+      📊 Real-Time Analytics Dashboard
+    </div>
+    <div class="realtime-subtitle">
+      Live monitoring of inventory patterns, component usage, and system performance
+    </div>
+    <div class="live-indicator" *ngIf="isLive">
+      <div class="live-dot"></div>
+      <span>LIVE - Auto-refreshing every {{ refreshInterval / 1000 }}s</span>
+    </div>
+  </div>
+
+  <!-- Refresh Controls -->
+  <div class="refresh-controls">
+    <button class="btn btn-primary" (click)="loadRealTimeData()" [disabled]="loading">
+      <i class="fas fa-sync-alt"></i>
+      Refresh Now
+    </button>
+    <button class="btn" [class]="isLive ? 'btn-warning' : 'btn-success'" (click)="toggleLiveMode()">
+      <i class="fas" [class]="isLive ? 'fa-pause' : 'fa-play'"></i>
+      {{ isLive ? 'Pause Live Updates' : 'Start Live Updates' }}
+    </button>
+    <select class="btn btn-secondary" (change)="onIntervalChange($event)">
+      <option value="10">10s</option>
+      <option value="30" selected>30s</option>
+      <option value="60">1m</option>
+      <option value="300">5m</option>
+    </select>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Real-time Metrics -->
+  <div class="metrics-grid" *ngIf="realTimeData && !loading">
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-boxes"></i>
+      </div>
+      <div class="metric-value">{{ formatNumber(realTimeData.totalItems || 0) }}</div>
+      <div class="metric-label">Total Items</div>
+      <div class="metric-change positive">+5% from last hour</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="metric-value">{{ formatNumber(realTimeData.lowStockItems || 0) }}</div>
+      <div class="metric-label">Low Stock Items</div>
+      <div class="metric-change negative">+2 from last hour</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="metric-value">{{ formatNumber(realTimeData.outOfStockItems || 0) }}</div>
+      <div class="metric-label">Out of Stock</div>
+      <div class="metric-change negative">+1 from last hour</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-hourglass-half"></i>
+      </div>
+      <div class="metric-value">{{ formatNumber(realTimeData.pendingRequests || 0) }}</div>
+      <div class="metric-label">Pending Requests</div>
+      <div class="metric-change positive">-3 from last hour</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="metric-value">{{ getTimeAgo(realTimeData.lastUpdated) }}</div>
+      <div class="metric-label">Last Updated</div>
+      <div class="metric-change positive">Live data</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="metric-value">{{ formatNumber(getTopCategoriesLength()) }}</div>
+      <div class="metric-label">Active Categories</div>
+      <div class="metric-change positive">Stable</div>
+    </div>
+  </div>
+
+  <!-- Real-time Charts -->
+  <div class="charts-grid" *ngIf="realTimeData && !loading">
+    <!-- Stock Trends Chart -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <i class="fas fa-chart-line"></i>
+        Real-time Stock Trends
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="stockTrendsChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Category Distribution Chart -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <i class="fas fa-chart-pie"></i>
+        Live Category Distribution
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="categoryDistributionChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Activity Chart -->
+    <div class="chart-container">
+      <div class="chart-title">
+        <i class="fas fa-chart-bar"></i>
+        Recent Activity
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="activityChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Data State -->
+  <div class="no-data" *ngIf="!realTimeData && !loading">
+    <i class="fas fa-chart-line"></i>
+    <div>No real-time data available</div>
+  </div>
+</div>

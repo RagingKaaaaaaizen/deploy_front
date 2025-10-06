@@ -162,6 +162,18 @@ import { takeUntil } from 'rxjs/operators';
             </a>
           </li>
 
+          <!-- Analytics Dashboard -->
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+            <a class="nav-link" 
+               routerLink="/analytics" 
+               routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+              <i class="fas fa-chart-line"></i>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Analytics</span>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Analytics</span>
+            </a>
+          </li>
+
           <!-- Manage Accounts -->
           <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
             <a class="nav-link" 

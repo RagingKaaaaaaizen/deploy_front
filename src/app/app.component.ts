@@ -312,6 +312,36 @@ import { Account, Role } from './_models';
       font-size: 1rem;
     }
 
+    /* Top Navigation Bar */
+    .top-navbar {
+      background: white;
+      border-bottom: 1px solid #e9ecef;
+      padding: 15px 30px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-left .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
     /* Responsive utilities */
     @media (max-width: 768px) {
       .container {
@@ -328,6 +358,14 @@ import { Account, Role } from './_models';
 
       .stats-grid {
         grid-template-columns: 1fr;
+      }
+
+      .top-navbar {
+        padding: 10px 15px;
+      }
+
+      .navbar-left .page-title {
+        font-size: 1.2rem;
       }
     }
   `]
