@@ -69,7 +69,7 @@ import { AlertService } from '@app/_services';
 })
 export class AlertComponent implements OnInit, OnDestroy {
     @Input() id = 'default-alert';
-    @Input() fade = true;
+    @Input() fade = false;
 
     alerts: Alert[] = [];
     alertSubscription: Subscription;
@@ -94,10 +94,8 @@ export class AlertComponent implements OnInit, OnDestroy {
                 // add alert to array
                 this.alerts.push(alert);
 
-                // auto close alert after 30 seconds
-                if (alert.autoClose) {
-                    setTimeout(() => this.removeAlert(alert), 30000);
-                }
+                // auto close only if explicitly requested
+                if (alert.autoClose) setTimeout(() => this.removeAlert(alert), 30000);
             });
 
         // clear alerts on location change

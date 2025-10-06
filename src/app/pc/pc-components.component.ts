@@ -1413,13 +1413,26 @@ export class PCComponentsComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (result) => {
-          this.alertService.success(`Successfully replaced ${result.replacedCount} component(s)`);
+          const details = Array.isArray(result?.details) && result.details.length
+            ? `<ul>${result.details.map((d: any) => `<li>${d}</li>`).join('')}</ul>`
+            : '';
+          this.alertService.success(`Successfully replaced ${result.replacedCount} component(s). ${details}`);
           this.loadComponents(this.pc.id);
           this.compareWithTemplate(); // Refresh comparison
           this.loading = false;
         },
         error: (error) => {
-          this.alertService.error('Error applying template: ' + error);
+          // Try to parse structured backend error reasons
+          let reason = '';
+          const err = error?.error || error;
+          if (err?.reason) {
+            reason = `Reason: ${err.reason}`;
+          } else if (err?.errors && Array.isArray(err.errors)) {
+            reason = `<ul>${err.errors.map((e: any) => `<li>${e.message || e}</li>`).join('')}</ul>`;
+          } else if (typeof err === 'string') {
+            reason = err;
+          }
+          this.alertService.error(`Error applying template. ${reason || 'Please check stock availability or try again.'}`);
           this.loading = false;
         }
       });

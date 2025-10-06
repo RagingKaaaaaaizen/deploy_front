@@ -34,7 +34,10 @@ export class AlertService {
     // core alert method
     alert(alert: Alert) {
         alert.id = alert.id || this.defaultId;
+        // default to not auto-close so users can read messages
         alert.autoClose = (alert.autoClose === undefined ? false : alert.autoClose);
+        // only fade when autoClosing; persistent alerts shouldn't fade away
+        (alert as any).fade = !!alert.autoClose;
         this.subject.next(alert);
     }
 
