@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { first, finalize } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 
 import { AccountService, AlertService, PCService, PCComponentService, RoomLocationService, AnalyticsService, CategoryService, ItemService, PCBuildTemplateService } from '@app/_services';
@@ -636,6 +636,7 @@ export class PCListComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 10;
   Math = Math;
+  loadingPCs = false;
 
   // Modal properties
   showAddPCModal = false;
@@ -698,8 +699,9 @@ export class PCListComponent implements OnInit {
 
   loadPCs() {
     console.log('PC List Component - loadPCs called');
+    this.loadingPCs = true;
     this.pcService.getAll()
-      .pipe(first())
+      .pipe(first(), finalize(() => { this.loadingPCs = false; }))
       .subscribe({
         next: (pcs) => {
           console.log('PC List Component - PCs loaded:', pcs);
@@ -778,6 +780,37 @@ export class PCListComponent implements OnInit {
     this.applyFilters();
   }
 
+  // Filter chip helpers
+  clearSearch() {
+    this.searchTerm = '';
+    this.applyFilters();
+  }
+
+  clearStatusFilter() {
+    this.selectedStatus = '';
+    this.applyFilters();
+  }
+
+  clearLocationFilter() {
+    this.selectedLocation = '';
+    this.applyFilters();
+  }
+
+  clearTemplateFilter() {
+    this.selectedTemplateId = null;
+    this.pcComparisons.clear();
+    this.applyFilters();
+  }
+
+  clearAllFilters() {
+    this.searchTerm = '';
+    this.selectedStatus = '';
+    this.selectedLocation = '';
+    this.selectedTemplateId = null;
+    this.pcComparisons.clear();
+    this.applyFilters();
+  }
+
   refreshData() {
     this.loadData();
     this.alertService.success('Data refreshed successfully');
@@ -807,6 +840,18 @@ export class PCListComponent implements OnInit {
   getLocationName(locationId: number): string {
     const location = this.locations.find(l => l.id === locationId);
     return location ? location.name : 'Unknown Location';
+  }
+
+  getSelectedLocationName(): string {
+    if (!this.selectedLocation) return '';
+    const id = Number(this.selectedLocation);
+    return this.getLocationName(id);
+  }
+
+  getTemplateNameById(id: number | null): string {
+    if (!id) return '';
+    const template = this.templates.find(t => t.id === id);
+    return template ? template.name : 'Selected';
   }
 
   hasRole(roles: Role[]): boolean {
