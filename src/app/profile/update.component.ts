@@ -336,6 +336,7 @@ export class UpdateComponent implements OnInit {
     deleting = false;
     message = '';
     error = '';
+    stickyTemplateEditorEnabled = true;
 
     constructor(
         private formBuilder: UntypedFormBuilder,
@@ -356,6 +357,9 @@ export class UpdateComponent implements OnInit {
         }, {
             validator: MustMatch('password', 'confirmPassword')
         });
+
+        const pref = localStorage.getItem('ui.stickyTemplateEditor');
+        this.stickyTemplateEditorEnabled = pref !== 'false';
     }
 
     // convenience getter for easy access to form fields
@@ -408,5 +412,12 @@ export class UpdateComponent implements OnInit {
                     }
                 });
         }
+    }
+
+    onToggleStickyTemplateEditor(event: Event) {
+        const checked = (event.target as HTMLInputElement).checked;
+        this.stickyTemplateEditorEnabled = checked;
+        localStorage.setItem('ui.stickyTemplateEditor', checked ? 'true' : 'false');
+        this.alertService.success(`Sticky template editor ${checked ? 'enabled' : 'disabled'}.`, { autoClose: true });
     }
 }

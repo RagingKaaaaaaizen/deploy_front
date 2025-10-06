@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { PCBuildTemplate, PCBuildTemplateComponent } from '@app/_models';
     selector: 'app-pc-build-template-editor',
     templateUrl: './pc-build-template-editor.component.html'
 })
-export class PCBuildTemplateEditorComponent implements OnInit {
+export class PCBuildTemplateEditorComponent implements OnInit, AfterViewInit {
     form: FormGroup;
     templateId: number;
     isAddMode: boolean;
@@ -24,6 +24,10 @@ export class PCBuildTemplateEditorComponent implements OnInit {
     categories: any[] = [];
     items: any[] = [];
     selectedComponents: PCBuildTemplateComponent[] = [];
+    enableStickyUi = true;
+
+    @ViewChildren('componentsHeader, templateInfoCard, componentRow') stickyEls!: QueryList<ElementRef<HTMLElement>>;
+    private componentsContainerEl?: HTMLElement;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -50,6 +54,17 @@ export class PCBuildTemplateEditorComponent implements OnInit {
         if (!this.isAddMode) {
             this.loadTemplate();
         }
+        // Check profile preference (localStorage flag can be toggled from Profile)
+        const pref = localStorage.getItem('ui.stickyTemplateEditor');
+        this.enableStickyUi = pref !== 'false';
+    }
+
+    ngAfterViewInit(): void {
+        // Capture container to scroll to component list on add
+        setTimeout(() => {
+            const header = (this.stickyEls?.find((ref: any) => ref.nativeElement?.classList.contains('card-header')) as any)?.nativeElement as HTMLElement;
+            this.componentsContainerEl = header?.parentElement as HTMLElement;
+        });
     }
 
     loadCategories() {
@@ -101,6 +116,18 @@ export class PCBuildTemplateEditorComponent implements OnInit {
             itemId: null,
             quantity: 1,
             remarks: ''
+        });
+        // Auto-scroll newly added component into view if header is out of viewport
+        setTimeout(() => {
+            if (!this.enableStickyUi) return;
+            const lastRow = this.getLastComponentRow();
+            if (lastRow) {
+                const rect = lastRow.getBoundingClientRect();
+                const inView = rect.top >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+                if (!inView) {
+                    lastRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         });
     }
 
@@ -200,6 +227,14 @@ export class PCBuildTemplateEditorComponent implements OnInit {
 
     cancel() {
         this.router.navigate(['/pc/templates']);
+    }
+
+    private getLastComponentRow(): HTMLElement | null {
+        const rows = (this.stickyEls || new QueryList<ElementRef<HTMLElement>>())
+            .toArray()
+            .map(r => r.nativeElement)
+            .filter(el => el.classList.contains('component-row'));
+        return rows.length ? rows[rows.length - 1] : null;
     }
 }
 

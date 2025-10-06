@@ -430,3 +430,25 @@
     }
 }
 
+/* Sticky helpers for template editor when user enables the feature */
+.sticky-info {
+    position: sticky;
+    top: 0;
+    z-index: 101;
+}
+
+.sticky-components-header {
+    position: sticky;
+    top: 70px; /* below info card height */
+    z-index: 100;
+}
+
+.sticky-actions {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    z-index: 102;
+}
+

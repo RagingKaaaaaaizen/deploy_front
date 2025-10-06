@@ -190,5 +190,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="form-card">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-cog"></i> UI Preferences</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group d-flex align-items-center justify-content-between">
+                        <div>
+                            <label class="form-label mb-0">
+                                <i class="fas fa-thumbtack"></i>
+                                Sticky Template Editor Controls
+                            </label>
+                            <div class="form-text">Keep template info, add components button, and actions sticky while editing templates.</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="stickyTemplateEditorToggle" [checked]="stickyTemplateEditorEnabled" (change)="onToggleStickyTemplateEditor($event)">
+                            <label class="form-check-label" for="stickyTemplateEditorToggle">{{ stickyTemplateEditorEnabled ? 'Enabled' : 'Disabled' }}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
