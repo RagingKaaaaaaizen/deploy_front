@@ -155,6 +155,11 @@ export class ArchiveService {
     return this.http.post<any>(`${baseUrl}/automated-schedule`, schedule);
   }
 
+  // Test method to verify analytics API connection
+  testAnalyticsConnection(): Observable<any> {
+    return this.http.get<any>(`${baseUrl}/test`);
+  }
+
   // Check if report already exists for the given period
   checkReportExists(type: 'weekly' | 'monthly', startDate: Date, endDate: Date): StoredReport | null {
     const reports = this.storedReports.value;

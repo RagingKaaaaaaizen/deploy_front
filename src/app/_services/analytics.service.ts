@@ -41,7 +41,7 @@ export interface StockTimelineData {
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private baseUrl = environment.apiUrl;
+  private baseUrl = `${environment.apiUrl}/api`;
 
   constructor(
     private http: HttpClient,

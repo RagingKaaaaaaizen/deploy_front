@@ -479,6 +479,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
     this.updateCharts();
   }
 
+
   formatNumber(value: any, decimals: number = 0): string {
     if (typeof value === 'number') {
       return value.toFixed(decimals);
