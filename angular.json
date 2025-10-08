@@ -28,6 +28,7 @@
             ],
             "styles": [
               "src/styles.less",
+              "src/styles/tw-bridge.css",
               "src/app/pc/pc-template-styles.css"
             ],
             "scripts": [],
@@ -132,6 +133,7 @@
             ],
             "styles": [
               "src/styles.less",
+              "src/styles/tw-bridge.css",
               "src/app/pc/pc-template-styles.css"
             ],
             "scripts": []
