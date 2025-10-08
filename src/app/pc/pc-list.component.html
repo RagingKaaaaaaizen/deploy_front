@@ -1,22 +1,22 @@
-<div class="list-container">
-    <div class="container">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-5">
+    <div class="max-w-7xl mx-auto px-4">
         <!-- Page Header -->
-        <div class="page-header">
-            <div class="header-content">
-                <div class="header-title">
-                    <i class="fas fa-desktop"></i>
+        <div class="bg-white rounded-2xl p-8 mb-8 shadow-lg border border-gray-100">
+            <div class="flex justify-between items-center flex-wrap gap-5">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-desktop text-5xl bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent"></i>
                     <div>
-                        <h1 class="page-title">PC Management</h1>
-                        <p class="page-subtitle">Manage and track your computer systems</p>
+                        <h1 class="text-4xl font-bold text-gray-800 mb-1">PC Management</h1>
+                        <p class="text-gray-600 text-lg">Manage and track your computer systems</p>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <button type="button" class="btn btn-info me-2" routerLink="/pc/templates">
-                        <i class="fas fa-clipboard-list"></i>
+                <div class="flex gap-3 flex-wrap">
+                    <button type="button" class="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition bg-info text-white hover:bg-cyan-600 shadow-md" routerLink="/pc/templates">
+                        <i class="fas fa-clipboard-list mr-2"></i>
                         Manage Templates
                     </button>
-                    <button type="button" class="btn btn-primary" (click)="openAddPCModal()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                        <i class="fas fa-plus"></i>
+                    <button type="button" class="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition bg-primary text-white hover:bg-primary-600 shadow-md" (click)="openAddPCModal()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                        <i class="fas fa-plus mr-2"></i>
                         Add PC
                     </button>
                 </div>
@@ -24,90 +24,90 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+            <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden border-t-4 border-indigo-500">
+                <div class="text-4xl mb-4 bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent">
                     <i class="fas fa-desktop"></i>
                 </div>
-                <div class="stat-number">{{ pcs.length }}</div>
-                <div class="stat-label">Total PCs</div>
+                <div class="text-4xl font-bold text-gray-800 mb-2">{{ pcs.length }}</div>
+                <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Total PCs</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">
+            <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden border-t-4 border-green-500">
+                <div class="text-4xl mb-4 bg-gradient-to-br from-green-500 to-teal-500 bg-clip-text text-transparent">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <div class="stat-number">{{ getActiveCount() }}</div>
-                <div class="stat-label">Active PCs</div>
+                <div class="text-4xl font-bold text-gray-800 mb-2">{{ getActiveCount() }}</div>
+                <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Active PCs</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">
+            <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden border-t-4 border-yellow-500">
+                <div class="text-4xl mb-4 bg-gradient-to-br from-yellow-500 to-orange-500 bg-clip-text text-transparent">
                     <i class="fas fa-tools"></i>
                 </div>
-                <div class="stat-number">{{ getMaintenanceCount() }}</div>
-                <div class="stat-label">In Maintenance</div>
+                <div class="text-4xl font-bold text-gray-800 mb-2">{{ getMaintenanceCount() }}</div>
+                <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">In Maintenance</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">
+            <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden border-t-4 border-blue-500">
+                <div class="text-4xl mb-4 bg-gradient-to-br from-blue-500 to-cyan-500 bg-clip-text text-transparent">
                     <i class="fas fa-sync-alt"></i>
                 </div>
-                <div class="stat-number">{{ getAutoUpdatedCount() }}</div>
-                <div class="stat-label">Auto-Updated</div>
+                <div class="text-4xl font-bold text-gray-800 mb-2">{{ getAutoUpdatedCount() }}</div>
+                <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Auto-Updated</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">
+            <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center relative overflow-hidden border-t-4 border-purple-500">
+                <div class="text-4xl mb-4 bg-gradient-to-br from-purple-500 to-pink-500 bg-clip-text text-transparent">
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
-                <div class="stat-number">{{ getUniqueLocations() }}</div>
-                <div class="stat-label">Locations</div>
+                <div class="text-4xl font-bold text-gray-800 mb-2">{{ getUniqueLocations() }}</div>
+                <div class="text-gray-600 text-sm font-medium uppercase tracking-wide">Locations</div>
             </div>
         </div>
 
         <!-- PC Export Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5><i class="fas fa-download text-primary me-2"></i> Export PC Reports</h5>
+        <div class="rounded-lg bg-white shadow-card mb-6">
+            <div class="border-b border-gray-200 px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <h5 class="text-lg font-semibold text-gray-800"><i class="fas fa-download text-primary mr-2"></i> Export PC Reports</h5>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-primary mb-3">
-                            <i class="fas fa-file-excel text-success me-2"></i>PC List Export (Excel)
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h6 class="text-primary font-semibold mb-3">
+                            <i class="fas fa-file-excel text-success mr-2"></i>PC List Export (Excel)
                         </h6>
                         <button 
-                            class="btn btn-success btn-sm me-2" 
+                            class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition bg-success text-white hover:bg-green-600 shadow-sm" 
                             (click)="downloadPCList()">
-                            <i class="fas fa-file-excel me-1"></i>
+                            <i class="fas fa-file-excel mr-2"></i>
                             Download PC List
                         </button>
-                        <small class="text-muted d-block mt-1">
+                        <small class="text-gray-600 block mt-2">
                             Exports complete PC inventory with component details and status
                         </small>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="text-primary mb-3">
-                            <i class="fas fa-file-word text-primary me-2"></i>PC Analysis Reports (Word)
+                    <div>
+                        <h6 class="text-primary font-semibold mb-3">
+                            <i class="fas fa-file-word text-primary mr-2"></i>PC Analysis Reports (Word)
                         </h6>
-                        <div class="btn-group-vertical d-block">
+                        <div class="flex flex-col gap-2">
                             <button 
-                                class="btn btn-outline-primary btn-sm mb-1" 
+                                class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white" 
                                 (click)="downloadWeeklyPCAnalysis()">
-                                <i class="fas fa-file-word me-1"></i>
+                                <i class="fas fa-file-word mr-2"></i>
                                 Weekly Analysis
                             </button>
                             <button 
-                                class="btn btn-outline-primary btn-sm mb-1" 
+                                class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white" 
                                 (click)="downloadMonthlyPCAnalysis()">
-                                <i class="fas fa-file-word me-1"></i>
+                                <i class="fas fa-file-word mr-2"></i>
                                 Monthly Analysis
                             </button>
                             <button 
-                                class="btn btn-outline-primary btn-sm" 
+                                class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white" 
                                 (click)="downloadYearlyPCAnalysis()">
-                                <i class="fas fa-file-word me-1"></i>
+                                <i class="fas fa-file-word mr-2"></i>
                                 Yearly Analysis
                             </button>
                         </div>
-                        <small class="text-muted d-block mt-1">
+                        <small class="text-gray-600 block mt-2">
                             Exports detailed PC analysis with maintenance information in Word format
                         </small>
                     </div>
@@ -116,141 +116,137 @@
         </div>
 
         <!-- Filters and Search -->
-        <div class="filters-section">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            placeholder="Search PCs..."
-                            [(ngModel)]="searchTerm"
-                            (input)="onSearch()"
-                        >
-                    </div>
+        <div class="bg-white rounded-2xl p-6 mb-6 shadow-card border border-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-indigo-500 z-10"></i>
+                    <input 
+                        type="text" 
+                        class="w-full pl-12 pr-4 py-3 rounded-full border-2 border-gray-200 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition" 
+                        placeholder="Search PCs..."
+                        [(ngModel)]="searchTerm"
+                        (input)="onSearch()"
+                    >
                 </div>
-                <div class="col-md-6">
-                    <div class="filter-controls">
-                        <select class="form-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
-                            <option value="">All Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                            <option value="Maintenance">Maintenance</option>
-                            <option value="Retired">Retired</option>
-                        </select>
-                        <select class="form-select" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
-                            <option value="">All Locations</option>
-                            <option *ngFor="let location of locations" [value]="location.id">
-                                {{ location.name }}
-                            </option>
-                        </select>
-                        <select class="form-select" [(ngModel)]="selectedTemplateId" (change)="onTemplateFilterChange()">
-                            <option [ngValue]="null">
-                                <i class="fas fa-clipboard-list"></i> Compare with Template
-                            </option>
-                            <option *ngFor="let template of templates" [ngValue]="template.id">
-                                📋 {{ template.name }}
-                            </option>
-                        </select>
-                        <button class="btn btn-outline-secondary" type="button" (click)="clearAllFilters()">
-                            Clear All
-                        </button>
-                    </div>
+                <div class="flex gap-3 flex-wrap">
+                    <select class="flex-1 min-w-[140px] rounded-full border-2 border-gray-200 px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Retired">Retired</option>
+                    </select>
+                    <select class="flex-1 min-w-[140px] rounded-full border-2 border-gray-200 px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition" [(ngModel)]="selectedLocation" (change)="onFilterChange()">
+                        <option value="">All Locations</option>
+                        <option *ngFor="let location of locations" [value]="location.id">
+                            {{ location.name }}
+                        </option>
+                    </select>
+                    <select class="flex-1 min-w-[140px] rounded-full border-2 border-gray-200 px-4 py-3 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition" [(ngModel)]="selectedTemplateId" (change)="onTemplateFilterChange()">
+                        <option [ngValue]="null">
+                            <i class="fas fa-clipboard-list"></i> Compare with Template
+                        </option>
+                        <option *ngFor="let template of templates" [ngValue]="template.id">
+                            📋 {{ template.name }}
+                        </option>
+                    </select>
+                    <button class="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition border border-gray-500 text-gray-600 hover:bg-gray-600 hover:text-white" type="button" (click)="clearAllFilters()">
+                        Clear All
+                    </button>
                 </div>
             </div>
             <!-- Active filter chips -->
-            <div class="mt-3" *ngIf="searchTerm || selectedStatus || selectedLocation || selectedTemplateId">
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <small class="text-muted me-2">Filters:</small>
-                    <span class="badge bg-light text-dark border" *ngIf="searchTerm">
+            <div class="mt-4" *ngIf="searchTerm || selectedStatus || selectedLocation || selectedTemplateId">
+                <div class="flex flex-wrap gap-2 items-center">
+                    <small class="text-gray-500 mr-2">Filters:</small>
+                    <span class="inline-flex items-center gap-2 bg-gray-100 text-gray-800 border border-gray-300 rounded-full px-3 py-1.5 text-sm" *ngIf="searchTerm">
                         Search: "{{ searchTerm }}"
-                        <button class="btn btn-sm btn-link text-decoration-none" (click)="clearSearch()" aria-label="Clear search">✕</button>
+                        <button class="hover:text-red-600 transition" (click)="clearSearch()" aria-label="Clear search">✕</button>
                     </span>
-                    <span class="badge bg-light text-dark border" *ngIf="selectedStatus">
+                    <span class="inline-flex items-center gap-2 bg-gray-100 text-gray-800 border border-gray-300 rounded-full px-3 py-1.5 text-sm" *ngIf="selectedStatus">
                         Status: {{ selectedStatus }}
-                        <button class="btn btn-sm btn-link text-decoration-none" (click)="clearStatusFilter()" aria-label="Clear status filter">✕</button>
+                        <button class="hover:text-red-600 transition" (click)="clearStatusFilter()" aria-label="Clear status filter">✕</button>
                     </span>
-                    <span class="badge bg-light text-dark border" *ngIf="selectedLocation">
+                    <span class="inline-flex items-center gap-2 bg-gray-100 text-gray-800 border border-gray-300 rounded-full px-3 py-1.5 text-sm" *ngIf="selectedLocation">
                         Location: {{ getSelectedLocationName() }}
-                        <button class="btn btn-sm btn-link text-decoration-none" (click)="clearLocationFilter()" aria-label="Clear location filter">✕</button>
+                        <button class="hover:text-red-600 transition" (click)="clearLocationFilter()" aria-label="Clear location filter">✕</button>
                     </span>
-                    <span class="badge bg-light text-dark border" *ngIf="selectedTemplateId">
+                    <span class="inline-flex items-center gap-2 bg-gray-100 text-gray-800 border border-gray-300 rounded-full px-3 py-1.5 text-sm" *ngIf="selectedTemplateId">
                         Template: {{ getTemplateNameById(selectedTemplateId) || 'Selected' }}
-                        <button class="btn btn-sm btn-link text-decoration-none" (click)="clearTemplateFilter()" aria-label="Clear template filter">✕</button>
+                        <button class="hover:text-red-600 transition" (click)="clearTemplateFilter()" aria-label="Clear template filter">✕</button>
                     </span>
                 </div>
             </div>
         </div>
 
         <!-- PC Table -->
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="fas fa-list"></i> PC Systems</h5>
-                <div class="table-actions">
-                    <button class="btn btn-sm btn-outline-secondary" (click)="refreshData()">
-                        <i class="fas fa-sync-alt"></i>
+        <div class="rounded-lg bg-white shadow-card mb-6">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-5 rounded-t-lg flex justify-between items-center">
+                <h5 class="text-lg font-semibold"><i class="fas fa-list mr-2"></i> PC Systems</h5>
+                <div class="flex gap-3">
+                    <button class="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition bg-white/20 hover:bg-white/30 text-white" (click)="refreshData()">
+                        <i class="fas fa-sync-alt mr-2"></i>
                         Refresh
                     </button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="p-0">
                 <!-- Loading state -->
-                <div class="d-flex justify-content-center my-4" *ngIf="loadingPCs">
-                    <div class="spinner-border text-primary" role="status" aria-live="polite" aria-label="Loading PCs">
-                        <span class="visually-hidden">Loading...</span>
+                <div class="flex justify-center my-8" *ngIf="loadingPCs">
+                    <div class="inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" role="status" aria-live="polite" aria-label="Loading PCs">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead style="position: sticky; top: 0; z-index: 1;">
-                            <tr>
-                                <th><i class="fas fa-desktop"></i> PC Name</th>
-                                <th><i class="fas fa-map-marker-alt"></i> Location</th>
-                                <th><i class="fas fa-info-circle"></i> Status</th>
-                                <th><i class="fas fa-microchip"></i> Component Status</th>
-                                <th><i class="fas fa-calendar"></i> Created</th>
-                                <th><i class="fas fa-cogs"></i> Actions</th>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 sticky top-0 z-10">
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"><i class="fas fa-desktop mr-1"></i> PC Name</th>
+                                <th class="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"><i class="fas fa-map-marker-alt mr-1"></i> Location</th>
+                                <th class="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"><i class="fas fa-info-circle mr-1"></i> Status</th>
+                                <th class="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"><i class="fas fa-microchip mr-1"></i> Component Status</th>
+                                <th class="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"><i class="fas fa-calendar mr-1"></i> Created</th>
+                                <th class="px-4 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"><i class="fas fa-cogs mr-1"></i> Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                                                         <tr *ngFor="let pc of paginatedPCs" class="pc-row">
-                                 <td data-label="PC Name">
-                                     <div class="pc-info">
-                                         <strong>{{ pc.name }}</strong>
-                                         <small class="d-block text-muted" *ngIf="pc.notes">
+                                                         <tr *ngFor="let pc of paginatedPCs" class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                 <td data-label="PC Name" class="px-4 py-4">
+                                     <div class="flex flex-col">
+                                         <strong class="text-gray-800 font-semibold">{{ pc.name }}</strong>
+                                         <small class="text-gray-500 text-xs mt-1" *ngIf="pc.notes">
                                              {{ pc.notes }}
                                          </small>
                                      </div>
                                  </td>
-                                 <td data-label="Location">
-                                     <span class="location-badge">
+                                 <td data-label="Location" class="px-4 py-4">
+                                     <span class="inline-block px-3 py-1.5 rounded-full text-sm font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
                                          {{ getLocationName(pc.roomLocationId) }}
                                      </span>
                                  </td>
-                                 <td data-label="Status">
-                                     <span class="status-badge" [ngClass]="{
-                                         'badge-success': pc.status === 'Active',
-                                         'badge-warning': pc.status === 'Maintenance',
-                                         'badge-secondary': pc.status === 'Inactive',
-                                         'badge-danger': pc.status === 'Retired'
+                                 <td data-label="Status" class="px-4 py-4">
+                                     <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold text-center min-w-[100px]" [ngClass]="{
+                                         'bg-gradient-to-r from-green-500 to-teal-500 text-white': pc.status === 'Active',
+                                         'bg-gradient-to-r from-yellow-500 to-orange-500 text-white': pc.status === 'Maintenance',
+                                         'bg-gradient-to-r from-gray-500 to-gray-600 text-white': pc.status === 'Inactive',
+                                         'bg-gradient-to-r from-red-500 to-pink-600 text-white': pc.status === 'Retired'
                                      }">
-                                         <i class="fas fa-circle"></i> {{ pc.status }}
+                                         <i class="fas fa-circle text-xs"></i> {{ pc.status }}
                                      </span>
-                                     <small class="d-block text-muted mt-1" *ngIf="getComponentStatus(pc.id).status !== 'No Components'">
+                                     <small class="block text-gray-500 text-xs mt-1" *ngIf="getComponentStatus(pc.id).status !== 'No Components'">
                                          <i class="fas fa-sync-alt"></i> Auto-updated based on components
                                      </small>
                                  </td>
-                                 <td data-label="Component Status">
-                                     <span class="status-badge" [ngClass]="{
-                                         'badge-success': getComponentStatus(pc.id).status === 'Working',
-                                         'badge-warning': getComponentStatus(pc.id).status === 'Maintenance',
-                                         'badge-danger': getComponentStatus(pc.id).status === 'Not Working',
-                                         'badge-secondary': getComponentStatus(pc.id).status === 'No Components'
+                                 <td data-label="Component Status" class="px-4 py-4">
+                                     <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold text-center min-w-[100px]" [ngClass]="{
+                                         'bg-gradient-to-r from-green-500 to-teal-500 text-white': getComponentStatus(pc.id).status === 'Working',
+                                         'bg-gradient-to-r from-yellow-500 to-orange-500 text-white': getComponentStatus(pc.id).status === 'Maintenance',
+                                         'bg-gradient-to-r from-red-500 to-pink-600 text-white': getComponentStatus(pc.id).status === 'Not Working',
+                                         'bg-gradient-to-r from-gray-500 to-gray-600 text-white': getComponentStatus(pc.id).status === 'No Components'
                                      }">
                                          <i class="fas fa-microchip"></i> {{ getComponentStatus(pc.id).status }}
                                      </span>
-                                     <small class="d-block text-muted" *ngIf="getComponentStatus(pc.id).componentCount > 0">
+                                     <small class="block text-gray-500 text-xs mt-1" *ngIf="getComponentStatus(pc.id).componentCount > 0">
                                          {{ getComponentStatus(pc.id).componentCount }} component(s)
                                      </small>
                                      <!-- Template Comparison Badge -->
@@ -275,28 +271,28 @@
                                          </span>
                                      </div>
                                  </td>
-                                 <td data-label="Created">
-                                     <span class="created-date">
+                                 <td data-label="Created" class="px-4 py-4">
+                                     <span class="text-sm text-gray-600 font-medium">
                                          {{ pc.createdAt | date:'short' }}
                                      </span>
                                  </td>
-                                 <td data-label="Actions">
-                                     <div class="action-buttons">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" aria-label="View PC details"
-                                                (click)="viewPC(pc.id)" title="View Details">
+                                 <td data-label="Actions" class="px-4 py-4">
+                                     <div class="flex gap-2 flex-wrap justify-center">
+                                        <button type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white shadow-sm" aria-label="View PC details"
+                                                 (click)="viewPC(pc.id)" title="View Details">
                                              <i class="fas fa-eye"></i>
                                          </button>
-                                        <button type="button" class="btn btn-sm btn-outline-info" aria-label="View PC components"
-                                                (click)="viewComponents(pc.id)" title="View Components">
+                                        <button type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition border border-info text-cyan-600 hover:bg-info hover:text-white shadow-sm" aria-label="View PC components"
+                                                 (click)="viewComponents(pc.id)" title="View Components">
                                              <i class="fas fa-microchip"></i>
                                          </button>
-                                        <button type="button" class="btn btn-sm btn-outline-warning" aria-label="Edit PC"
-                                                (click)="editPC(pc.id)" title="Edit PC"
+                                        <button type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition border border-warning text-yellow-600 hover:bg-warning hover:text-white shadow-sm" aria-label="Edit PC"
+                                                 (click)="editPC(pc.id)" title="Edit PC"
                                                  *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                                              <i class="fas fa-edit"></i>
                                          </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" aria-label="Delete PC"
-                                                (click)="deletePC(pc.id)" title="Delete PC"
+                                        <button type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition border border-danger text-red-600 hover:bg-danger hover:text-white shadow-sm" aria-label="Delete PC"
+                                                 (click)="deletePC(pc.id)" title="Delete PC"
                                                  *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                                              <i class="fas fa-trash"></i>
                                          </button>
@@ -304,11 +300,11 @@
                                  </td>
                              </tr>
                             <tr *ngIf="paginatedPCs.length === 0">
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="empty-state">
-                                        <i class="fas fa-desktop"></i>
-                                        <h4>No PCs found</h4>
-                                        <p>Try adjusting your search or filters</p>
+                                <td colspan="6" class="text-center py-12">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fas fa-desktop text-6xl text-gray-300 mb-4"></i>
+                                        <h4 class="text-gray-700 text-lg font-semibold mb-2">No PCs found</h4>
+                                        <p class="text-gray-500">Try adjusting your search or filters</p>
                                     </div>
                                 </td>
                             </tr>
@@ -319,22 +315,30 @@
         </div>
 
         <!-- Pagination -->
-        <div class="pagination-section" *ngIf="filteredPCs.length > 0">
-            <div class="pagination-info">
+        <div class="bg-white rounded-2xl p-6 shadow-card flex justify-between items-center flex-wrap gap-5 border border-gray-100" *ngIf="filteredPCs.length > 0">
+            <div class="text-gray-600 text-sm font-medium">
                 Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredPCs.length) }} of {{ filteredPCs.length }} entries
             </div>
             <nav aria-label="PC pagination">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" [class.disabled]="currentPage === 1">
-                        <a class="page-link" (click)="previousPage()">
+                <ul class="flex gap-1">
+                    <li [class.opacity-50]="currentPage === 1" [class.pointer-events-none]="currentPage === 1">
+                        <a class="inline-flex items-center justify-center w-10 h-10 rounded-full text-indigo-500 hover:bg-indigo-50 transition cursor-pointer font-medium" (click)="previousPage()">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     </li>
-                    <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
-                        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                    <li *ngFor="let page of getPageNumbers()">
+                        <a class="inline-flex items-center justify-center w-10 h-10 rounded-full font-medium transition cursor-pointer" 
+                           [class.bg-gradient-to-r]="page === currentPage"
+                           [class.from-indigo-500]="page === currentPage"
+                           [class.to-purple-600]="page === currentPage"
+                           [class.text-white]="page === currentPage"
+                           [class.shadow-md]="page === currentPage"
+                           [class.text-indigo-500]="page !== currentPage"
+                           [class.hover:bg-indigo-50]="page !== currentPage"
+                           (click)="goToPage(page)">{{ page }}</a>
                     </li>
-                    <li class="page-item" [class.disabled]="currentPage === totalPages">
-                        <a class="page-link" (click)="nextPage()">
+                    <li [class.opacity-50]="currentPage === totalPages" [class.pointer-events-none]="currentPage === totalPages">
+                        <a class="inline-flex items-center justify-center w-10 h-10 rounded-full text-indigo-500 hover:bg-indigo-50 transition cursor-pointer font-medium" (click)="nextPage()">
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>
@@ -345,158 +349,148 @@
 </div>
 
 <!-- Add PC Modal -->
-<div class="modal fade show" *ngIf="showAddPCModal" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-desktop me-2"></i>Add New PC
-                </h5>
-                <button type="button" class="btn-close" (click)="closeAddPCModal()"></button>
-            </div>
-            <div class="modal-body">
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" *ngIf="showAddPCModal" tabindex="-1">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 flex justify-between items-center rounded-t-2xl z-10">
+            <h5 class="text-xl font-semibold">
+                <i class="fas fa-desktop mr-2"></i>Add New PC
+            </h5>
+            <button type="button" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition" (click)="closeAddPCModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
                 <form [formGroup]="pcForm" (ngSubmit)="onSubmitPC()">
                     <!-- PC Basic Information -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0">
-                                <i class="fas fa-info-circle me-2"></i>PC Information
+                    <div class="rounded-lg bg-white border border-gray-200 mb-4">
+                        <div class="border-b border-gray-200 px-4 py-3 bg-gray-50">
+                            <h6 class="text-base font-semibold text-gray-800">
+                                <i class="fas fa-info-circle mr-2"></i>PC Information
                             </h6>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">PC Name *</label>
-                                        <input type="text" class="form-control" formControlName="name" 
-                                               placeholder="Enter PC name">
-                                        <div *ngIf="submitted && pcForm.get('name')?.errors?.['required']" 
-                                             class="text-danger small">PC Name is required</div>
-                                    </div>
+                        <div class="p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">PC Name *</label>
+                                    <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" formControlName="name" 
+                                           placeholder="Enter PC name">
+                                    <div *ngIf="submitted && pcForm.get('name')?.errors?.['required']" 
+                                         class="text-red-600 text-sm mt-1">PC Name is required</div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <label class="form-label">Room Location *</label>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" 
-                                                    (click)="loadRoomLocations()" title="Refresh room locations">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
-                                        </div>
-                                        <select class="form-select" formControlName="roomLocationId">
-                                            <option value="">Select Room Location</option>
-                                            <option *ngFor="let location of roomLocations" [value]="location.id">
-                                                {{ location.name }}
-                                            </option>
-                                        </select>
-                                        <div *ngIf="submitted && pcForm.get('roomLocationId')?.errors?.['required']" 
-                                             class="text-danger small">Room Location is required</div>
-                                        <small class="form-text text-muted" *ngIf="roomLocations.length === 0">
-                                            <i class="fas fa-exclamation-triangle text-warning"></i>
-                                            No room locations available. Click refresh or contact administrator.
-                                        </small>
-                                        <small class="form-text text-info" *ngIf="roomLocations.length > 0">
-                                            <i class="fas fa-info-circle"></i>
-                                            {{ roomLocations.length }} room location(s) available
-                                        </small>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label class="block text-sm font-medium text-gray-700">Room Location *</label>
+                                        <button type="button" class="inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-semibold transition border border-gray-400 text-gray-600 hover:bg-gray-600 hover:text-white" 
+                                                (click)="loadRoomLocations()" title="Refresh room locations">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
                                     </div>
+                                    <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" formControlName="roomLocationId">
+                                        <option value="">Select Room Location</option>
+                                        <option *ngFor="let location of roomLocations" [value]="location.id">
+                                            {{ location.name }}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && pcForm.get('roomLocationId')?.errors?.['required']" 
+                                         class="text-red-600 text-sm mt-1">Room Location is required</div>
+                                    <small class="text-gray-600 text-xs block mt-1" *ngIf="roomLocations.length === 0">
+                                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                                        No room locations available. Click refresh or contact administrator.
+                                    </small>
+                                    <small class="text-info text-xs block mt-1" *ngIf="roomLocations.length > 0">
+                                        <i class="fas fa-info-circle"></i>
+                                        {{ roomLocations.length }} room location(s) available
+                                    </small>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Status</label>
-                                        <select class="form-select" formControlName="status">
-                                            <option value="Active">🟢 Active</option>
-                                            <option value="Inactive">⚪ Inactive</option>
-                                            <option value="Maintenance">🟡 Maintenance</option>
-                                            <option value="Retired">🔴 Retired</option>
-                                        </select>
-                                    </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                    <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" formControlName="status">
+                                        <option value="Active">🟢 Active</option>
+                                        <option value="Inactive">⚪ Inactive</option>
+                                        <option value="Maintenance">🟡 Maintenance</option>
+                                        <option value="Retired">🔴 Retired</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Notes</label>
-                                        <textarea class="form-control" formControlName="notes" rows="2" 
-                                                  placeholder="Optional notes about this PC"></textarea>
-                                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                                    <textarea class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" formControlName="notes" rows="2" 
+                                              placeholder="Optional notes about this PC"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Debug Information (Remove in production) -->
-                    <div class="card mb-4 border-warning" *ngIf="roomLocations.length > 0">
-                        <div class="card-header bg-warning text-dark">
-                            <h6 class="mb-0">
-                                <i class="fas fa-bug me-2"></i>Debug: Room Locations Data
+                    <div class="rounded-lg bg-yellow-50 border-2 border-warning mb-4" *ngIf="roomLocations.length > 0">
+                        <div class="border-b border-warning bg-warning text-gray-900 px-4 py-3">
+                            <h6 class="text-base font-semibold">
+                                <i class="fas fa-bug mr-2"></i>Debug: Room Locations Data
                             </h6>
                         </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
+                        <div class="p-4">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-100">
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Description</th>
+                                            <th class="px-3 py-2 text-left font-semibold">ID</th>
+                                            <th class="px-3 py-2 text-left font-semibold">Name</th>
+                                            <th class="px-3 py-2 text-left font-semibold">Description</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let location of roomLocations">
-                                            <td>{{ location.id }}</td>
-                                            <td>{{ location.name }}</td>
-                                            <td>{{ location.description || 'No description' }}</td>
+                                        <tr *ngFor="let location of roomLocations" class="border-t border-gray-200">
+                                            <td class="px-3 py-2">{{ location.id }}</td>
+                                            <td class="px-3 py-2">{{ location.name }}</td>
+                                            <td class="px-3 py-2">{{ location.description || 'No description' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <small class="text-muted">
+                            <small class="text-gray-600 mt-2 block">
                                 <strong>Selected Value:</strong> {{ pcForm.value.roomLocationId || 'None selected' }}
                             </small>
                         </div>
                     </div>
 
                     <!-- Default Components Configuration -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0">
-                                <i class="fas fa-microchip me-2"></i>Default Components Configuration
+                    <div class="rounded-lg bg-white border border-gray-200 mb-4">
+                        <div class="border-b border-gray-200 px-4 py-3 bg-gray-50">
+                            <h6 class="text-base font-semibold text-gray-800">
+                                <i class="fas fa-microchip mr-2"></i>Default Components Configuration
                             </h6>
-                            <small class="text-muted">Set the default components for this PC. Components matching these defaults will be marked as "Component Match".</small>
+                            <small class="text-gray-600 block mt-1">Set the default components for this PC. Components matching these defaults will be marked as "Component Match".</small>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Category Selection -->
-                                <div class="col-md-12 mb-4">
-                                    <label class="form-label">Select Categories for Default Components</label>
-                                    <div class="row">
-                                        <div class="col-md-3" *ngFor="let category of categories">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       [value]="category.id" 
-                                                       (change)="onCategorySelect(category, $event)"
-                                                       [id]="'category_' + category.id">
-                                                <label class="form-check-label" [for]="'category_' + category.id">
-                                                    {{ category.name }}
-                                                </label>
-                                            </div>
-                                        </div>
+                        <div class="p-4">
+                            <!-- Category Selection -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Select Categories for Default Components</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div *ngFor="let category of categories" class="flex items-center">
+                                        <input type="checkbox" 
+                                               class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                                               [value]="category.id" 
+                                               (change)="onCategorySelect(category, $event)"
+                                               [id]="'category_' + category.id">
+                                        <label class="ml-2 text-sm text-gray-700 cursor-pointer" [for]="'category_' + category.id">
+                                            {{ category.name }}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Selected Categories with Items -->
-                            <div *ngFor="let selectedCategory of selectedCategories" class="card border-primary mb-3">
-                                <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0">
-                                        <i class="fas fa-tag me-2"></i>{{ selectedCategory.name }} - Default Component
+                            <div *ngFor="let selectedCategory of selectedCategories" class="rounded-lg border-2 border-primary mb-3">
+                                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3 rounded-t-lg">
+                                    <h6 class="text-base font-semibold">
+                                        <i class="fas fa-tag mr-2"></i>{{ selectedCategory.name }} - Default Component
                                     </h6>
                                 </div>
-                                <div class="card-body">
+                                <div class="p-4">
                                     <div class="mb-3">
-                                        <label class="form-label">Select Default {{ selectedCategory.name }} *</label>
-                                        <select class="form-select" 
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Select Default {{ selectedCategory.name }} *</label>
+                                        <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" 
                                                 [(ngModel)]="defaultComponents[selectedCategory.id]"
                                                 [ngModelOptions]="{standalone: true}">
                                             <option value="">Select {{ selectedCategory.name }}</option>
@@ -506,28 +500,28 @@
                                                 <span *ngIf="item.brand"> - {{ item.brand.name }}</span>
                                             </option>
                                         </select>
-                                        <small class="form-text text-muted">
+                                        <small class="text-gray-600 text-xs block mt-1">
                                             Components matching this default will be marked as "Component Match" when added to the PC.
                                         </small>
                                     </div>
                                 </div>
                             </div>
 
-                            <div *ngIf="selectedCategories.length === 0" class="text-center text-muted p-4">
-                                <i class="fas fa-info-circle fa-2x mb-2"></i>
+                            <div *ngIf="selectedCategories.length === 0" class="text-center text-gray-500 p-8">
+                                <i class="fas fa-info-circle text-4xl mb-3 block"></i>
                                 <p>Select categories above to configure default components for this PC.</p>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="closeAddPCModal()">
-                    <i class="fas fa-times me-1"></i>Cancel
+            <div class="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end gap-3 border-t border-gray-200 rounded-b-2xl">
+                <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-gray-500 text-white hover:bg-gray-600" (click)="closeAddPCModal()">
+                    <i class="fas fa-times mr-2"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" (click)="onSubmitPC()" [disabled]="pcLoading">
-                    <i *ngIf="pcLoading" class="fas fa-spinner fa-spin me-1"></i>
-                    <i *ngIf="!pcLoading" class="fas fa-save me-1"></i>
+                <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600" (click)="onSubmitPC()" [disabled]="pcLoading">
+                    <i *ngIf="pcLoading" class="fas fa-spinner fa-spin mr-2"></i>
+                    <i *ngIf="!pcLoading" class="fas fa-save mr-2"></i>
                     {{ pcLoading ? 'Creating...' : 'Create PC' }}
                 </button>
             </div>
