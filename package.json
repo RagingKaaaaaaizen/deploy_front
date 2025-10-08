@@ -14,7 +14,8 @@
     "clean": "rm -rf dist node_modules/.cache",
     "clean:all": "rm -rf dist node_modules package-lock.json && npm install",
     "clean:install": "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps",
-    "postinstall": "echo 'Frontend dependencies installed successfully'"
+    "postinstall": "echo 'Frontend dependencies installed successfully'",
+    "guard:bootstrap": "node scripts/bootstrap-guard.cjs"
   },
   "private": true,
   "overrides": {
