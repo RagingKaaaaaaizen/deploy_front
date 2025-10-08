@@ -337,6 +337,7 @@ export class UpdateComponent implements OnInit {
     message = '';
     error = '';
     stickyTemplateEditorEnabled = true;
+    analyticsEnabled = false;
 
     constructor(
         private formBuilder: UntypedFormBuilder,
@@ -360,6 +361,9 @@ export class UpdateComponent implements OnInit {
 
         const pref = localStorage.getItem('ui.stickyTemplateEditor');
         this.stickyTemplateEditorEnabled = pref !== 'false';
+        
+        const analyticsPref = localStorage.getItem('ui.analyticsEnabled');
+        this.analyticsEnabled = analyticsPref === 'true';
     }
 
     // convenience getter for easy access to form fields
@@ -419,5 +423,12 @@ export class UpdateComponent implements OnInit {
         this.stickyTemplateEditorEnabled = checked;
         localStorage.setItem('ui.stickyTemplateEditor', checked ? 'true' : 'false');
         this.alertService.success(`Sticky template editor ${checked ? 'enabled' : 'disabled'}.`, { autoClose: true });
+    }
+
+    onToggleAnalytics(event: Event) {
+        const checked = (event.target as HTMLInputElement).checked;
+        this.analyticsEnabled = checked;
+        localStorage.setItem('ui.analyticsEnabled', checked ? 'true' : 'false');
+        this.alertService.success(`Analytics section ${checked ? 'enabled' : 'disabled'}.`, { autoClose: true });
     }
 }

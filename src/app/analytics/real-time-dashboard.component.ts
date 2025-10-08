@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArchiveService } from '../_services/archive.service';
 import { AlertService } from '../_services/alert.service';
-import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { Subject, interval } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-Chart.register(...registerables);
 
 @Component({
   selector: 'app-real-time-dashboard',
@@ -254,13 +251,94 @@ Chart.register(...registerables);
       transform: none !important;
     }
 
+    .data-sections {
+      margin-top: 30px;
+    }
+
+    .data-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .data-section h3 {
+      color: #333;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .data-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .data-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .data-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+
+    .data-percentage {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+
+    .activity-item i {
+      font-size: 1.2rem;
+    }
+
+    .activity-item span {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .activity-item small {
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    .text-success { color: #28a745; }
+    .text-danger { color: #dc3545; }
+    .text-info { color: #17a2b8; }
+    .text-warning { color: #ffc107; }
+
     @media (max-width: 768px) {
       .realtime-container {
         padding: 20px;
-      }
-
-      .charts-grid {
-        grid-template-columns: 1fr;
       }
 
       .realtime-title {
@@ -270,6 +348,10 @@ Chart.register(...registerables);
       .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
     }
   `]
 })
@@ -278,7 +360,6 @@ export class RealTimeDashboardComponent implements OnInit, OnDestroy {
   isLive = true;
   refreshInterval = 30000; // 30 seconds
   private destroy$ = new Subject<void>();
-  private charts: { [key: string]: Chart } = {};
   
   // Real-time data
   realTimeData: any = {
@@ -306,7 +387,6 @@ export class RealTimeDashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    Object.values(this.charts).forEach(chart => chart.destroy());
   }
 
   private startAutoRefresh(): void {
@@ -336,7 +416,6 @@ export class RealTimeDashboardComponent implements OnInit, OnDestroy {
       };
       
       this.loading = false;
-      this.updateCharts();
     }).catch(error => {
       this.loading = false;
       this.alertService.error('Error loading real-time data: ' + (error.error?.message || error.message || 'Unknown error'));
@@ -366,187 +445,7 @@ export class RealTimeDashboardComponent implements OnInit, OnDestroy {
     this.setRefreshInterval(value);
   }
 
-  private updateCharts(): void {
-    setTimeout(() => {
-      this.createRealTimeCharts();
-    }, 100);
-  }
 
-  private createRealTimeCharts(): void {
-    this.createStockTrendsChart();
-    this.createCategoryDistributionChart();
-    this.createActivityChart();
-  }
-
-  private createStockTrendsChart(): void {
-    const canvas = document.getElementById('stockTrendsChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
-    // Generate sample real-time data
-    const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
-    const stockData = Array.from({length: 24}, () => Math.floor(Math.random() * 100) + 50);
-    const disposalData = Array.from({length: 24}, () => Math.floor(Math.random() * 20) + 5);
-
-    const config: ChartConfiguration = {
-      type: 'line',
-      data: {
-        labels: hours,
-        datasets: [
-          {
-            label: 'Stock Additions',
-            data: stockData,
-            borderColor: 'rgba(54, 162, 235, 1)',
-            backgroundColor: 'rgba(54, 162, 235, 0.1)',
-            tension: 0.4,
-            fill: true
-          },
-          {
-            label: 'Disposals',
-            data: disposalData,
-            borderColor: 'rgba(255, 99, 132, 1)',
-            backgroundColor: 'rgba(255, 99, 132, 0.1)',
-            tension: 0.4,
-            fill: true
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Real-time Stock Trends (24h)',
-            font: { size: 16, weight: 'bold' }
-          },
-          legend: {
-            position: 'top'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Quantity'
-            }
-          }
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart'
-        }
-      }
-    };
-
-    if (this.charts['stockTrends']) {
-      this.charts['stockTrends'].destroy();
-    }
-    this.charts['stockTrends'] = new Chart(canvas, config);
-  }
-
-  private createCategoryDistributionChart(): void {
-    const canvas = document.getElementById('categoryDistributionChart') as HTMLCanvasElement;
-    if (!canvas || !this.realTimeData.topCategories) return;
-
-    const data = this.realTimeData.topCategories.slice(0, 6);
-    const config: ChartConfiguration = {
-      type: 'doughnut',
-      data: {
-        labels: data.map(item => item.category),
-        datasets: [{
-          data: data.map(item => item.usage),
-          backgroundColor: [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-            '#9966FF', '#FF9F40'
-          ],
-          borderWidth: 2,
-          borderColor: '#fff'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              padding: 20,
-              usePointStyle: true
-            }
-          },
-          title: {
-            display: true,
-            text: 'Category Distribution (Live)',
-            font: { size: 16, weight: 'bold' }
-          }
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart'
-        }
-      }
-    };
-
-    if (this.charts['categoryDistribution']) {
-      this.charts['categoryDistribution'].destroy();
-    }
-    this.charts['categoryDistribution'] = new Chart(canvas, config);
-  }
-
-  private createActivityChart(): void {
-    const canvas = document.getElementById('activityChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
-    // Generate sample activity data
-    const activities = ['Stock Added', 'Item Disposed', 'PC Updated', 'Request Approved', 'Component Replaced'];
-    const activityCounts = Array.from({length: 5}, () => Math.floor(Math.random() * 50) + 10);
-
-    const config: ChartConfiguration = {
-      type: 'bar',
-      data: {
-        labels: activities,
-        datasets: [{
-          label: 'Activity Count',
-          data: activityCounts,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          title: {
-            display: true,
-            text: 'Recent Activity (Live)',
-            font: { size: 16, weight: 'bold' }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 5
-            }
-          }
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeInOutQuart'
-        }
-      }
-    };
-
-    if (this.charts['activity']) {
-      this.charts['activity'].destroy();
-    }
-    this.charts['activity'] = new Chart(canvas, config);
-  }
 
   formatNumber(value: any, decimals: number = 0): string {
     if (typeof value === 'number') {

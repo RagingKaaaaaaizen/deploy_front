@@ -163,7 +163,7 @@ import { takeUntil } from 'rxjs/operators';
           </li>
 
           <!-- Analytics Dashboard -->
-          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin]) && analyticsEnabled">
             <a class="nav-link" 
                routerLink="/analytics" 
                routerLinkActive="active"
@@ -626,6 +626,7 @@ export class NavComponent implements OnInit, OnDestroy {
   pendingCount = 0;
   openDropdowns: Set<string> = new Set();
   isModalOpen = false;
+  analyticsEnabled = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -649,6 +650,10 @@ export class NavComponent implements OnInit, OnDestroy {
         }
       }, 1000);
     }
+    
+    // Check analytics preference
+    const analyticsPref = localStorage.getItem('ui.analyticsEnabled');
+    this.analyticsEnabled = analyticsPref === 'true';
     
     // Listen for modal state changes
     this.listenForModalEvents();

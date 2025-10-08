@@ -94,38 +94,55 @@
     </div>
   </div>
 
-  <!-- Real-time Charts -->
-  <div class="charts-grid" *ngIf="realTimeData && !loading">
-    <!-- Stock Trends Chart -->
-    <div class="chart-container">
-      <div class="chart-title">
-        <i class="fas fa-chart-line"></i>
-        Real-time Stock Trends
-      </div>
-      <div class="chart-wrapper">
-        <canvas id="stockTrendsChart"></canvas>
-      </div>
-    </div>
-
-    <!-- Category Distribution Chart -->
-    <div class="chart-container">
-      <div class="chart-title">
-        <i class="fas fa-chart-pie"></i>
-        Live Category Distribution
-      </div>
-      <div class="chart-wrapper">
-        <canvas id="categoryDistributionChart"></canvas>
+  <!-- Real-time Data Display -->
+  <div class="data-sections" *ngIf="realTimeData && !loading">
+    <!-- Top Categories -->
+    <div class="data-section" *ngIf="realTimeData.topCategories && realTimeData.topCategories.length > 0">
+      <h3><i class="fas fa-chart-pie"></i> Top Categories</h3>
+      <div class="data-grid">
+        <div class="data-item" *ngFor="let category of realTimeData.topCategories.slice(0, 6)">
+          <div class="data-name">{{ category.category }}</div>
+          <div class="data-value">{{ formatNumber(category.usage) }}</div>
+          <div class="data-percentage">{{ category.percentage }}%</div>
+        </div>
       </div>
     </div>
 
-    <!-- Activity Chart -->
-    <div class="chart-container">
-      <div class="chart-title">
-        <i class="fas fa-chart-bar"></i>
-        Recent Activity
+    <!-- Most Replaced Components -->
+    <div class="data-section" *ngIf="realTimeData.mostReplaced && realTimeData.mostReplaced.length > 0">
+      <h3><i class="fas fa-chart-bar"></i> Most Replaced Components</h3>
+      <div class="data-grid">
+        <div class="data-item" *ngFor="let component of realTimeData.mostReplaced.slice(0, 6)">
+          <div class="data-name">{{ component.name }}</div>
+          <div class="data-value">{{ formatNumber(component.replacementCount) }}</div>
+        </div>
       </div>
-      <div class="chart-wrapper">
-        <canvas id="activityChart"></canvas>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="data-section">
+      <h3><i class="fas fa-history"></i> Recent Activity</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <i class="fas fa-plus-circle text-success"></i>
+          <span>Stock added: 15 new items</span>
+          <small>2 minutes ago</small>
+        </div>
+        <div class="activity-item">
+          <i class="fas fa-minus-circle text-danger"></i>
+          <span>Item disposed: 3 components</span>
+          <small>5 minutes ago</small>
+        </div>
+        <div class="activity-item">
+          <i class="fas fa-check-circle text-info"></i>
+          <span>Request approved: PC setup</span>
+          <small>8 minutes ago</small>
+        </div>
+        <div class="activity-item">
+          <i class="fas fa-sync-alt text-warning"></i>
+          <span>Component replaced: RAM module</span>
+          <small>12 minutes ago</small>
+        </div>
       </div>
     </div>
   </div>
