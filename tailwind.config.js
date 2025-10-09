@@ -4,7 +4,18 @@ module.exports = {
     "./src/**/*.{html,ts}",
     "./node_modules/flowbite/**/*.js"
   ],
+  corePlugins: {
+    // Customize core plugins to avoid autoprefixer warnings
+  },
   theme: {
+    alignItems: {
+      // Override default values to use flex-start/flex-end for better browser support
+      'start': 'flex-start',
+      'end': 'flex-end',
+      'center': 'center',
+      'baseline': 'baseline',
+      'stretch': 'stretch',
+    },
     extend: {
       colors: {
         primary: { DEFAULT: '#0d6efd', 600: '#0b5ed7' },

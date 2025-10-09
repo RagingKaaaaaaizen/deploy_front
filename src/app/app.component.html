@@ -1,28 +1,73 @@
-﻿<div class="d-flex" [ngClass]="{ 'bg-light': account }">
+﻿<div class="flex min-h-screen bg-gray-50" [ngClass]="{ 'bg-gray-50': account }">
     <!-- Sidebar Navigation -->
     <app-nav *ngIf="account"></app-nav>
 
+    <!-- Mobile Menu Button -->
+    <button *ngIf="account" 
+            class="mobile-menu-btn fixed top-4 left-4 z-[1002] bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-full w-12 h-12 hidden lg:hidden items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300"
+            (click)="toggleMobileMenu()"
+            aria-label="Toggle mobile menu">
+        <i class="fas fa-bars text-lg"></i>
+    </button>
+
     <!-- Main Content Area -->
-    <div class="flex-fill overflow-auto" [ngStyle]="{ 'margin-left': account ? '240px' : '0' }">
+    <div class="flex-1 overflow-auto transition-all duration-300" 
+         [ngClass]="{ 'ml-0 md:ml-60': account }">
+        
         <!-- Top Navigation Bar -->
-        <div class="top-navbar" *ngIf="account">
-            <div class="navbar-content">
-                <div class="navbar-left">
-                    <h4 class="page-title">Computer Lab Inventory System</h4>
+        <div *ngIf="account" 
+             class="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 md:px-6 lg:px-8 py-4 shadow-sm">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <!-- Mobile menu button (visible on mobile) -->
+                    <button class="lg:hidden text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                            (click)="toggleMobileMenu()"
+                            aria-label="Toggle menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h4 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 font-montserrat">
+                        Computer Lab Inventory System
+                    </h4>
                 </div>
-                <div class="navbar-right">
+                <div class="flex items-center gap-3">
                     <app-notification-bell></app-notification-bell>
                 </div>
             </div>
         </div>
 
-        <!-- subnav router outlet -->
+        <!-- Subnav router outlet -->
         <router-outlet name="subnav"></router-outlet>
 
-        <!-- global alert -->
-        <alert></alert>
+        <!-- Global alert -->
+        <div class="px-4 md:px-6 lg:px-8 pt-4">
+            <alert></alert>
+        </div>
 
-        <!-- main router outlet -->
-        <router-outlet></router-outlet>
+        <!-- Main router outlet -->
+        <div class="px-4 md:px-6 lg:px-8 py-6">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>
+
+<!-- Additional mobile responsive styles -->
+<style>
+    /* Mobile menu button visibility */
+    @media (max-width: 1024px) {
+        .mobile-menu-btn {
+            display: flex !important;
+        }
+    }
+
+    /* Ensure proper spacing on mobile */
+    @media (max-width: 768px) {
+        .flex-1 {
+            margin-left: 0 !important;
+        }
+    }
+
+    /* Smooth transitions */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+</style>
