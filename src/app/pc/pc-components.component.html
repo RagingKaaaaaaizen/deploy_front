@@ -1,67 +1,65 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex flex-wrap -mx-2">
+    <div class="w-full px-2">
       <!-- PC Header -->
-      <div class="pc-header mb-4">
-        <div class="d-flex justify-content-between align-items-center">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-8 rounded-2xl mb-6 shadow-lg">
+        <div class="flex justify-between items-center flex-wrap gap-4">
           <div>
-            <h2 class="mb-1">
-              <i class="fas fa-desktop text-primary"></i> 
+            <h2 class="text-3xl font-bold mb-2">
+              <i class="fas fa-desktop mr-2"></i> 
               {{ pc?.name || 'PC Components' }}
             </h2>
-            <p class="text-muted mb-0">
-              <i class="fas fa-barcode"></i> 
+            <p class="text-white/90 mb-0">
+              <i class="fas fa-barcode mr-1"></i> 
               {{ pc?.serialNumber || 'No Serial' }} | 
-              <span class="badge" [ngClass]="{
-                'badge-success': pc?.status === 'Active',
-                'badge-warning': pc?.status === 'Maintenance',
-                'badge-secondary': pc?.status === 'Inactive',
-                'badge-danger': pc?.status === 'Retired'
+              <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium" [ngClass]="{
+                'bg-green-100 text-green-800': pc?.status === 'Active',
+                'bg-yellow-100 text-yellow-800': pc?.status === 'Maintenance',
+                'bg-gray-200 text-gray-700': pc?.status === 'Inactive',
+                'bg-red-100 text-red-800': pc?.status === 'Retired'
               }">{{ pc?.status || 'Unknown' }}</span>
             </p>
           </div>
-          <div>
-            <a routerLink="/pc" class="btn btn-outline-secondary me-2">
-              <i class="fas fa-arrow-left"></i> Back to PCs
+          <div class="flex gap-3">
+            <a routerLink="/pc" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition border border-white/30 text-white hover:bg-white/20">
+              <i class="fas fa-arrow-left mr-2"></i> Back to PCs
             </a>
-            <button type="button" class="btn btn-primary" (click)="addComponent()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-              <i class="fas fa-plus"></i> Add Component
+            <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white text-indigo-600 hover:bg-gray-100" (click)="addComponent()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+              <i class="fas fa-plus mr-2"></i> Add Component
             </button>
           </div>
         </div>
       </div>
 
       <!-- PC Status Card -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div class="status-indicator me-3" [ngClass]="{
-                  'status-working': getPCStatus().class === 'text-success',
-                  'status-warning': getPCStatus().class === 'text-warning',
-                  'status-danger': getPCStatus().class === 'text-danger',
-                  'status-info': getPCStatus().class === 'text-muted'
-                }">
-                  <i class="fas" [ngClass]="{
-                    'fa-check-circle': getPCStatus().class === 'text-success',
-                    'fa-exclamation-triangle': getPCStatus().class === 'text-warning',
-                    'fa-times-circle': getPCStatus().class === 'text-danger',
-                    'fa-info-circle': getPCStatus().class === 'text-muted'
-                  }"></i>
-                </div>
-                <div class="flex-grow-1">
-                  <h5 class="mb-1">PC Status: {{ getPCStatus().status }}</h5>
-                  <p class="mb-0 text-muted">
-                    <span *ngIf="getPCStatus().hasIssues" class="badge badge-danger me-2">
-                      <i class="fas fa-exclamation-triangle"></i> Issues Detected
-                    </span>
-                    <span *ngIf="!getPCStatus().hasIssues && components.length > 0" class="badge badge-success me-2">
-                      <i class="fas fa-check-circle"></i> All Components Working
-                    </span>
-                    {{ components.length }} components installed
-                  </p>
-                </div>
+      <div class="mb-6">
+        <div class="rounded-lg bg-white shadow-card border-0">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl mr-4" [ngClass]="{
+                'bg-gradient-to-br from-green-500 to-teal-500 text-white': getPCStatus().class === 'text-success',
+                'bg-gradient-to-br from-yellow-500 to-orange-500 text-white': getPCStatus().class === 'text-warning',
+                'bg-gradient-to-br from-red-500 to-pink-600 text-white': getPCStatus().class === 'text-danger',
+                'bg-gradient-to-br from-cyan-500 to-purple-600 text-white': getPCStatus().class === 'text-muted'
+              }">
+                <i class="fas" [ngClass]="{
+                  'fa-check-circle': getPCStatus().class === 'text-success',
+                  'fa-exclamation-triangle': getPCStatus().class === 'text-warning',
+                  'fa-times-circle': getPCStatus().class === 'text-danger',
+                  'fa-info-circle': getPCStatus().class === 'text-muted'
+                }"></i>
+              </div>
+              <div class="flex-grow">
+                <h5 class="text-lg font-semibold mb-1">PC Status: {{ getPCStatus().status }}</h5>
+                <p class="mb-0 text-gray-600 flex items-center gap-2">
+                  <span *ngIf="getPCStatus().hasIssues" class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800">
+                    <i class="fas fa-exclamation-triangle mr-1"></i> Issues Detected
+                  </span>
+                  <span *ngIf="!getPCStatus().hasIssues && components.length > 0" class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800">
+                    <i class="fas fa-check-circle mr-1"></i> All Components Working
+                  </span>
+                  {{ components.length }} components installed
+                </p>
               </div>
             </div>
           </div>
@@ -69,35 +67,34 @@
       </div>
 
       <!-- Template Comparison Panel -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">
-                  <i class="fas fa-clipboard-list"></i> Template Comparison
-                </h6>
-                <button class="btn btn-sm btn-light" (click)="toggleComparisonPanel()">
-                  <i class="fas" [ngClass]="showComparisonPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                </button>
-              </div>
+      <div class="mb-6">
+        <div class="rounded-lg bg-white shadow-card border-0">
+          <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-lg">
+            <div class="flex justify-between items-center">
+              <h6 class="text-base font-semibold">
+                <i class="fas fa-clipboard-list mr-2"></i> Template Comparison
+              </h6>
+              <button class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition text-white" (click)="toggleComparisonPanel()">
+                <i class="fas" [ngClass]="showComparisonPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
             </div>
-            <div class="card-body" *ngIf="showComparisonPanel">
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <label>Select Template to Compare:</label>
-                  <select class="form-control" [(ngModel)]="selectedTemplateId" (change)="compareWithTemplate()">
+          </div>
+            <div class="p-6" *ngIf="showComparisonPanel">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
+                <div class="md:col-span-8">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Select Template to Compare:</label>
+                  <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" [(ngModel)]="selectedTemplateId" (change)="compareWithTemplate()">
                     <option [ngValue]="null">-- Select a Template --</option>
                     <option *ngFor="let template of templates" [ngValue]="template.id">
                       {{ template.name }} ({{ template.components?.length || 0 }} components)
                     </option>
                   </select>
                 </div>
-                <div class="col-md-4 d-flex align-items-end">
-                  <button class="btn btn-primary w-100" (click)="compareWithTemplate()" 
+                <div class="md:col-span-4 flex items-end">
+                  <button class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600 w-full" (click)="compareWithTemplate()" 
                           [disabled]="!selectedTemplateId || comparingTemplate">
-                    <span *ngIf="comparingTemplate" class="spinner-border spinner-border-sm me-1"></span>
-                    <i *ngIf="!comparingTemplate" class="fas fa-sync-alt"></i>
+                    <span *ngIf="comparingTemplate" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                    <i *ngIf="!comparingTemplate" class="fas fa-sync-alt mr-2"></i>
                     {{ comparingTemplate ? 'Comparing...' : 'Compare' }}
                   </button>
                 </div>
@@ -219,55 +216,46 @@
             </div>
           </div>
         </div>
-      </div>
 
       <!-- System Info Card -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-info text-white">
-              <h6 class="mb-0">
-                <i class="fas fa-info-circle"></i> Stock-Based Component System
-              </h6>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-6">
-                  <p class="mb-2">
-                    <strong>How it works:</strong> Only items with available stock quantities can be added as components.
-                  </p>
-                  <div class="row text-center">
-                    <div class="col-4">
-                      <div class="stat-box">
-                        <div class="stat-number text-primary">{{ availableItems.length }}</div>
-                        <div class="stat-label">Available Items</div>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="stat-box">
-                        <div class="stat-number text-success">{{ allStocks.length }}</div>
-                        <div class="stat-label">Total Stocks</div>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="stat-box">
-                        <div class="stat-number text-warning">{{ availableStocksCount }}</div>
-                        <div class="stat-label">Available Stocks</div>
-                      </div>
-                    </div>
+      <div class="mb-6">
+        <div class="rounded-lg bg-white shadow-card border-0">
+          <div class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-4 rounded-t-lg">
+            <h6 class="text-base font-semibold">
+              <i class="fas fa-info-circle mr-2"></i> Stock-Based Component System
+            </h6>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="mb-4 text-gray-700">
+                  <strong>How it works:</strong> Only items with available stock quantities can be added as components.
+                </p>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                  <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+                    <div class="text-3xl font-bold text-primary mb-1">{{ availableItems.length }}</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wide">Available Items</div>
+                  </div>
+                  <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+                    <div class="text-3xl font-bold text-success mb-1">{{ allStocks.length }}</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wide">Total Stocks</div>
+                  </div>
+                  <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+                    <div class="text-3xl font-bold text-warning mb-1">{{ availableStocksCount }}</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wide">Available Stocks</div>
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <div class="alert alert-warning mb-2">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Stock Deduction:</strong> Adding components will deduct from stock quantities, just like disposal.
-                  </div>
-                  <div class="alert alert-info mb-0">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Debug Info:</strong> 
-                    Stock data: {{ allStocks.length > 0 ? 'Loaded' : 'Not loaded' }} | 
-                    Items: {{ items.length > 0 ? 'Loaded' : 'Not loaded' }}
-                  </div>
+              </div>
+              <div>
+                <div class="p-4 rounded-lg border-l-4 border-warning bg-yellow-50 mb-3">
+                  <i class="fas fa-exclamation-triangle text-warning mr-2"></i>
+                  <strong>Stock Deduction:</strong> Adding components will deduct from stock quantities, just like disposal.
+                </div>
+                <div class="p-4 rounded-lg border-l-4 border-info bg-blue-50">
+                  <i class="fas fa-info-circle text-info mr-2"></i>
+                  <strong>Debug Info:</strong> 
+                  Stock data: {{ allStocks.length > 0 ? 'Loaded' : 'Not loaded' }} | 
+                  Items: {{ items.length > 0 ? 'Loaded' : 'Not loaded' }}
                 </div>
               </div>
             </div>
@@ -276,28 +264,27 @@
       </div>
 
       <!-- Add Component Form -->
-      <div class="row mb-4" *ngIf="showAddForm">
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white">
-              <h5 class="mb-0">
-                <i class="fas fa-plus"></i> Add New Component
-              </h5>
-            </div>
-            <div class="card-body">
+      <div class="mb-6" *ngIf="showAddForm">
+        <div class="rounded-lg bg-white shadow-card border-0">
+          <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-lg">
+            <h5 class="text-lg font-semibold">
+              <i class="fas fa-plus mr-2"></i> Add New Component
+            </h5>
+          </div>
+            <div class="p-6">
               <form (ngSubmit)="saveComponent()" #componentForm="ngForm">
-                <div class="row">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <!-- Category Selection -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">
-                      <i class="fas fa-list text-primary"></i> Category *
+                  <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">
+                      <i class="fas fa-list text-primary mr-1"></i> Category *
                     </label>
                     <select 
-                      class="form-select" 
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" 
                       [(ngModel)]="selectedCategoryId" 
                       name="categoryId" 
                       required 
-                      [ngClass]="{ 'is-invalid': submitted && !selectedCategoryId }"
+                      [ngClass]="{ 'border-red-500 ring-2 ring-red-300': submitted && !selectedCategoryId }"
                       (change)="onCategoryChange()"
                     >
                       <option value="">Select Component Category</option>
@@ -305,22 +292,22 @@
                         {{ category.name }}
                       </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && !selectedCategoryId">
+                    <div class="text-red-600 text-sm mt-1" *ngIf="submitted && !selectedCategoryId">
                       Please select a category first
                     </div>
                   </div>
 
                   <!-- Item Selection (filtered by category) -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">
-                      <i class="fas fa-tag text-primary"></i> Item *
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">
+                      <i class="fas fa-tag text-primary mr-1"></i> Item *
                     </label>
                     <select 
-                      class="form-select" 
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" 
                       [(ngModel)]="newComponent.itemId" 
                       name="itemId" 
                       required 
-                      [ngClass]="{ 'is-invalid': submitted && !newComponent.itemId }"
+                      [ngClass]="{ 'border-red-500 ring-2 ring-red-300': submitted && !newComponent.itemId }"
                       (change)="onItemChange()"
                       [disabled]="!selectedCategoryId"
                     >
@@ -330,19 +317,19 @@
                         <span *ngIf="item.brand"> ({{ item.brand.name }})</span>
                       </option>
                     </select>
-                    <div class="invalid-feedback" *ngIf="submitted && !newComponent.itemId">
+                    <div class="text-red-600 text-sm mt-1" *ngIf="submitted && !newComponent.itemId">
                       Please select an item
                     </div>
-                    <small class="form-text text-muted" *ngIf="selectedCategoryId && filteredAvailableItems.length === 0">
+                    <small class="text-gray-600 text-xs mt-1 block" *ngIf="selectedCategoryId && filteredAvailableItems.length === 0">
                       <i class="fas fa-exclamation-triangle text-warning"></i>
                       No items with available stock found for this category.
                     </small>
                     
                     <!-- Stock Status Display -->
                     <div *ngIf="newComponent.itemId" class="mt-3">
-                      <div class="alert" [ngClass]="getStockAlertClass(newComponent.itemId)">
-                        <div class="d-flex align-items-center">
-                          <i class="fas fa-database me-2"></i>
+                      <div class="p-3 rounded-lg border-l-4" [ngClass]="getStockAlertClass(newComponent.itemId)">
+                        <div class="flex items-center">
+                          <i class="fas fa-database mr-2"></i>
                           <div>
                             <strong>Stock Status:</strong> {{ getStockGuidance(newComponent.itemId) }}
                             <br>
@@ -352,8 +339,8 @@
                       </div>
                       
                       <!-- Debug Information -->
-                      <div class="mt-2 p-3 bg-light border rounded">
-                        <small class="text-muted">
+                      <div class="mt-2 p-3 bg-gray-100 border border-gray-200 rounded">
+                        <small class="text-gray-600">
                           <strong>Debug Info:</strong><br>
                           Stock entries: {{ getStockDebugInfo(newComponent.itemId).matchingStocks }} | 
                           Available stocks: {{ getStockDebugInfo(newComponent.itemId).availableStocks }} | 
@@ -362,58 +349,58 @@
                       </div>
                     </div>
                   </div>
+                </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <!-- Quantity -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">
-                      <i class="fas fa-sort-numeric-up text-primary"></i> Quantity *
+                  <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">
+                      <i class="fas fa-sort-numeric-up text-primary mr-1"></i> Quantity *
                     </label>
                     <input 
                       type="number" 
-                      class="form-control" 
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" 
                       [(ngModel)]="newComponent.quantity" 
                       name="quantity" 
                       required 
                       min="1" 
                       [max]="getAvailableQuantity(newComponent.itemId)"
                       (blur)="onQuantityChange()"
-                      [ngClass]="{ 'is-invalid': submitted && (!newComponent.quantity || newComponent.quantity <= 0) }"
+                      [ngClass]="{ 'border-red-500 ring-2 ring-red-300': submitted && (!newComponent.quantity || newComponent.quantity <= 0) }"
                       placeholder="Enter quantity"
                     >
-                    <div class="invalid-feedback" *ngIf="submitted && (!newComponent.quantity || newComponent.quantity <= 0)">
+                    <div class="text-red-600 text-sm mt-1" *ngIf="submitted && (!newComponent.quantity || newComponent.quantity <= 0)">
                       Quantity must be greater than 0
                     </div>
-                    <small class="form-text text-muted">
+                    <small class="text-gray-600 text-xs mt-1 block">
                       <i class="fas fa-info-circle"></i>
                       Cannot exceed available stock quantity (Max: {{ getAvailableQuantity(newComponent.itemId) }})
                     </small>
                   </div>
-                </div>
 
-                <div class="row">
                   <!-- Price -->
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">
-                      <i class="fas fa-dollar-sign text-primary"></i> Price (per unit) *
+                  <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">
+                      <i class="fas fa-dollar-sign text-primary mr-1"></i> Price (per unit) *
                     </label>
                     <input 
                       type="number" 
-                      class="form-control" 
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" 
                       [(ngModel)]="newComponent.price" 
                       name="price" 
                       required 
                       step="0.01"
                       [ngClass]="{ 
-                        'is-invalid': submitted && (!newComponent.price || newComponent.price <= 0),
-                        'border-success': newComponent.price && newComponent.stockId,
-                        'border-warning': !newComponent.price
+                        'border-red-500 ring-2 ring-red-300': submitted && (!newComponent.price || newComponent.price <= 0),
+                        'border-green-500': newComponent.price && newComponent.stockId,
+                        'border-yellow-500': !newComponent.price
                       }"
                       placeholder="Enter price"
                     >
-                    <div class="invalid-feedback" *ngIf="submitted && (!newComponent.price || newComponent.price <= 0)">
+                    <div class="text-red-600 text-sm mt-1" *ngIf="submitted && (!newComponent.price || newComponent.price <= 0)">
                       Price must be greater than 0
                     </div>
-                    <small class="form-text" [ngClass]="{'text-success': newComponent.price && newComponent.stockId, 'text-muted': !newComponent.price}">
+                    <small class="text-xs mt-1 block" [ngClass]="{'text-success': newComponent.price && newComponent.stockId, 'text-gray-600': !newComponent.price}">
                       <i class="fas fa-check-circle" *ngIf="newComponent.price && newComponent.stockId"></i>
                       <i class="fas fa-info-circle" *ngIf="!newComponent.price"></i>
                       {{ newComponent.price && newComponent.stockId ? getPriceSourceInfo() : 'Price will be auto-filled when item is selected' }}
@@ -421,12 +408,12 @@
                   </div>
 
                   <!-- Status -->
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">
-                      <i class="fas fa-cogs text-primary"></i> Status *
+                  <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">
+                      <i class="fas fa-cogs text-primary mr-1"></i> Status *
                     </label>
                     <select 
-                      class="form-select" 
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" 
                       [(ngModel)]="newComponent.status" 
                       name="status" 
                       required
@@ -436,38 +423,38 @@
                       <option value="Not Working">Not Working</option>
                       <option value="Maintenance">Maintenance</option>
                     </select>
-                    <small class="form-text text-muted">
+                    <small class="text-gray-600 text-xs mt-1 block">
                       Select the current status of this component
                     </small>
                   </div>
 
                   <!-- Total Price (Read-only) -->
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">
-                      <i class="fas fa-calculator text-primary"></i> Total Price
+                  <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">
+                      <i class="fas fa-calculator text-primary mr-1"></i> Total Price
                     </label>
                     <input 
                       type="number" 
-                      class="form-control" 
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-100 cursor-not-allowed" 
                       [value]="newComponent.totalPrice || ''" 
                       readonly
                       [disabled]="true"
                       placeholder="Auto-calculated"
                     >
-                    <small class="form-text text-muted">
+                    <small class="text-gray-600 text-xs mt-1 block">
                       Automatically calculated (Price × Quantity)
                     </small>
                   </div>
                 </div>
 
                 <!-- Form Actions -->
-                <div class="d-flex justify-content-end gap-2">
-                  <button type="button" class="btn btn-outline-secondary" (click)="cancelAdd()">
-                    <i class="fas fa-times"></i> Cancel
+                <div class="flex justify-end gap-2 mt-6">
+                  <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition border border-gray-500 text-gray-600 hover:bg-gray-600 hover:text-white" (click)="cancelAdd()">
+                    <i class="fas fa-times mr-2"></i> Cancel
                   </button>
-                  <button type="submit" class="btn btn-primary" [disabled]="componentForm.invalid || loading">
-                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-                    <i *ngIf="!loading" class="fas fa-save me-2"></i>
+                  <button type="submit" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600" [disabled]="componentForm.invalid || loading">
+                    <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                    <i *ngIf="!loading" class="fas fa-save mr-2"></i>
                     {{ loading ? 'Adding...' : 'Add Component' }}
                   </button>
                 </div>
@@ -475,64 +462,62 @@
             </div>
           </div>
         </div>
-      </div>
 
       <!-- Components Table -->
-      <div class="row">
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-              <h5 class="mb-0">
-                <i class="fas fa-microchip"></i> Current Components
-              </h5>
-              <div>
-                <button class="btn btn-sm btn-outline-light" (click)="refreshData()">
-                  <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-              </div>
+      <div class="mb-6">
+        <div class="rounded-lg bg-white shadow-card border-0">
+          <div class="bg-gradient-to-r from-gray-700 to-gray-800 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+            <h5 class="text-lg font-semibold">
+              <i class="fas fa-microchip mr-2"></i> Current Components
+            </h5>
+            <div>
+              <button class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-semibold transition bg-white/20 hover:bg-white/30 text-white" (click)="refreshData()">
+                <i class="fas fa-sync-alt mr-1"></i> Refresh
+              </button>
             </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                  <thead class="table-dark">
-                    <tr>
-                      <th><i class="fas fa-box"></i> Item</th>
-                      <th><i class="fas fa-sort-numeric-up"></i> Quantity</th>
-                      <th><i class="fas fa-dollar-sign"></i> Price</th>
-                      <th><i class="fas fa-calculator"></i> Total</th>
-                      <th><i class="fas fa-cogs"></i> Status</th>
-                      <th><i class="fas fa-tools"></i> Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let component of components" [ngClass]="getComponentRowClass(component)">
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <div class="component-icon me-2">
-                            <i class="fas fa-microchip text-primary"></i>
+          </div>
+          <div class="p-0">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-800 text-white">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-box mr-1"></i> Item</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-sort-numeric-up mr-1"></i> Quantity</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-dollar-sign mr-1"></i> Price</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-calculator mr-1"></i> Total</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-cogs mr-1"></i> Status</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-tools mr-1"></i> Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let component of components" [ngClass]="getComponentRowClass(component)" class="border-b border-gray-100 hover:bg-gray-50 transition">
+                      <td class="px-4 py-4">
+                        <div class="flex items-center">
+                          <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-primary mr-3">
+                            <i class="fas fa-microchip"></i>
                           </div>
                           <div>
-                            <strong>{{ getItemNameFromComponent(component) }}</strong>
+                            <strong class="text-gray-800">{{ getItemNameFromComponent(component) }}</strong>
                             <br>
-                            <small class="text-muted" *ngIf="component.remarks">
+                            <small class="text-gray-500" *ngIf="component.remarks">
                               {{ component.remarks }}
                             </small>
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <span class="badge bg-primary">{{ component.quantity }}</span>
+                      <td class="px-4 py-4">
+                        <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-primary text-white">{{ component.quantity }}</span>
                       </td>
-                      <td>
-                        <span class="text-success fw-bold">php{{ component.price | number:'1.2-2' }}</span>
+                      <td class="px-4 py-4">
+                        <span class="text-success font-bold">php{{ component.price | number:'1.2-2' }}</span>
                       </td>
-                      <td>
-                        <span class="text-info fw-bold">php{{ component.totalPrice | number:'1.2-2' }}</span>
+                      <td class="px-4 py-4">
+                        <span class="text-info font-bold">php{{ component.totalPrice | number:'1.2-2' }}</span>
                       </td>
-                      <td>
+                      <td class="px-4 py-4">
                         <select [(ngModel)]="component.status" 
                                 (change)="updateComponentStatus(component)"
-                                class="form-select form-select-sm"
+                                class="rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                 [ngClass]="getStatusClass(component.status)">
                           <option value="Working">Working</option>
                           <option value="Missing">Missing</option>
@@ -540,32 +525,32 @@
                           <option value="Maintenance">Maintenance</option>
                         </select>
                       </td>
-                      <td>
-                        <div class="btn-group" role="group" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                          <button type="button" class="btn btn-sm btn-outline-warning" 
+                      <td class="px-4 py-4">
+                        <div class="flex gap-1" role="group" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                          <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md text-sm font-semibold transition border border-warning text-yellow-600 hover:bg-warning hover:text-white" 
                                   (click)="returnToStock(component.id)" 
                                   title="Return to Stock">
                             <i class="fas fa-undo"></i>
                           </button>
-                          <button type="button" class="btn btn-sm btn-outline-danger" 
+                          <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-md text-sm font-semibold transition border border-danger text-red-600 hover:bg-danger hover:text-white" 
                                   (click)="removeComponent(component.id)" 
                                   title="Remove Component">
                             <i class="fas fa-trash"></i>
                           </button>
                         </div>
-                        <span class="text-muted" *ngIf="!hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                        <span class="text-gray-500" *ngIf="!hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
                           <i class="fas fa-eye"></i> View Only
                         </span>
                       </td>
                     </tr>
                     <tr *ngIf="components.length === 0">
-                      <td colspan="6" class="text-center py-5">
-                        <div class="empty-state">
-                          <i class="fas fa-microchip fa-3x text-muted mb-3"></i>
-                          <h5 class="text-muted">No components found</h5>
-                          <p class="text-muted">This PC doesn't have any components yet.</p>
-                          <button type="button" class="btn btn-primary" (click)="addComponent()">
-                            <i class="fas fa-plus"></i> Add First Component
+                      <td colspan="6" class="text-center py-12">
+                        <div class="flex flex-col items-center justify-center">
+                          <i class="fas fa-microchip text-6xl text-gray-300 mb-4"></i>
+                          <h5 class="text-gray-700 text-lg font-semibold mb-2">No components found</h5>
+                          <p class="text-gray-500 mb-4">This PC doesn't have any components yet.</p>
+                          <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600" (click)="addComponent()">
+                            <i class="fas fa-plus mr-2"></i> Add First Component
                           </button>
                         </div>
                       </td>
@@ -576,55 +561,46 @@
             </div>
           </div>
         </div>
-      </div>
 
       <!-- Stats Cards -->
-      <div class="row mt-4">
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm stat-card">
-            <div class="card-body text-center">
-              <div class="stat-icon bg-primary text-white">
-                <i class="fas fa-microchip"></i>
-              </div>
-              <div class="stat-number text-primary">{{ components.length }}</div>
-              <div class="stat-label">Total Components</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl mx-auto mb-4">
+              <i class="fas fa-microchip"></i>
             </div>
+            <div class="text-3xl font-bold text-primary mb-2">{{ components.length }}</div>
+            <div class="text-gray-600 text-sm uppercase tracking-wide">Total Components</div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm stat-card">
-            <div class="card-body text-center">
-              <div class="stat-icon bg-success text-white">
-                <i class="fas fa-dollar-sign"></i>
-              </div>
-              <div class="stat-number text-success">php{{ getTotalValue() | number:'1.0-0' }}</div>
-              <div class="stat-label">Total Value</div>
+        <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-success text-white flex items-center justify-center text-2xl mx-auto mb-4">
+              <i class="fas fa-dollar-sign"></i>
             </div>
+            <div class="text-3xl font-bold text-success mb-2">php{{ getTotalValue() | number:'1.0-0' }}</div>
+            <div class="text-gray-600 text-sm uppercase tracking-wide">Total Value</div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm stat-card">
-            <div class="card-body text-center">
-              <div class="stat-icon bg-info text-white">
-                <i class="fas fa-tags"></i>
-              </div>
-              <div class="stat-number text-info">{{ getUniqueCategories() }}</div>
-              <div class="stat-label">Categories</div>
+        <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-info text-white flex items-center justify-center text-2xl mx-auto mb-4">
+              <i class="fas fa-tags"></i>
             </div>
+            <div class="text-3xl font-bold text-info mb-2">{{ getUniqueCategories() }}</div>
+            <div class="text-gray-600 text-sm uppercase tracking-wide">Categories</div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm stat-card">
-            <div class="card-body text-center">
-              <div class="stat-icon bg-warning text-white">
-                <i class="fas fa-sort-numeric-up"></i>
-              </div>
-              <div class="stat-number text-warning">{{ getTotalQuantity() }}</div>
-              <div class="stat-label">Total Items</div>
+        <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-warning text-white flex items-center justify-center text-2xl mx-auto mb-4">
+              <i class="fas fa-sort-numeric-up"></i>
             </div>
+            <div class="text-3xl font-bold text-warning mb-2">{{ getTotalQuantity() }}</div>
+            <div class="text-gray-600 text-sm uppercase tracking-wide">Total Items</div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div> 
+      </div> <!-- Close stats grid -->
+    </div> <!-- Close w-full px-2 -->
+  </div> <!-- Close flex flex-wrap -->
+</div> <!-- Close max-w-7xl container -->
