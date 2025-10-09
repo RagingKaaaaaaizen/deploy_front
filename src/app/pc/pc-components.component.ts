@@ -1280,14 +1280,17 @@ export class PCComponentsComponent implements OnInit {
   }
 
   // Modal methods for stock selection
+  showStockSelectionModal = false;
+  
   openStockSelectionModal() {
     this.stockSearchTerm = '';
     this.selectedStockEntry = null;
     this.filteredStockEntries = this.allStocks.filter(stock => stock.quantity > 0);
-    
-    // Show the modal using Bootstrap
-    const modal = new (window as any).bootstrap.Modal(document.getElementById('stockSelectionModal'));
-    modal.show();
+    this.showStockSelectionModal = true;
+  }
+  
+  closeStockSelectionModal() {
+    this.showStockSelectionModal = false;
   }
 
   filterStockEntries() {
@@ -1324,10 +1327,7 @@ export class PCComponentsComponent implements OnInit {
       this.onQuantityChange(); // Recalculate total price
       
       // Close the modal
-      const modal = (window as any).bootstrap.Modal.getInstance(document.getElementById('stockSelectionModal'));
-      if (modal) {
-        modal.hide();
-      }
+      this.closeStockSelectionModal();
       
       this.alertService.success(`Selected: ${this.getItemName(this.selectedStockEntry.itemId)}`);
     }
