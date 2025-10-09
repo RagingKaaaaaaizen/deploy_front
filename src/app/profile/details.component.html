@@ -1,18 +1,18 @@
-﻿<div class="profile-container">
-    <div class="container">
+﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-8">
+    <div class="max-w-5xl mx-auto px-4">
         <!-- Page Header -->
-        <div class="page-header">
-            <div class="header-content">
-                <div class="header-title">
-                    <i class="fas fa-user"></i>
+        <div class="bg-white rounded-2xl p-8 mb-8 shadow-lg border border-gray-100">
+            <div class="flex justify-between items-center flex-wrap gap-5">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-user text-5xl bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent"></i>
                     <div>
-                        <h1 class="page-title">My Profile</h1>
-                        <p class="page-subtitle">View and manage your account information</p>
+                        <h1 class="text-4xl font-bold text-gray-800 mb-1">My Profile</h1>
+                        <p class="text-gray-600 text-lg">View and manage your account information</p>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <a routerLink="update" class="btn btn-primary">
-                        <i class="fas fa-edit"></i>
+                <div>
+                    <a routerLink="update" class="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition bg-primary text-white hover:bg-primary-600 shadow-md">
+                        <i class="fas fa-edit mr-2"></i>
                         Edit Profile
                     </a>
                 </div>
@@ -20,171 +20,156 @@
         </div>
 
         <!-- Profile Card -->
-        <div class="profile-card">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-user-circle"></i> Account Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="profile-info">
-                        <!-- Profile Avatar -->
-                        <div class="profile-avatar">
-                            <div class="avatar-circle">
-                                <i class="fas fa-user"></i>
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4">
+                <h5 class="text-lg font-semibold"><i class="fas fa-user-circle mr-2"></i> Account Information</h5>
+            </div>
+            <div class="p-8">
+                    <!-- Profile Avatar -->
+                    <div class="flex justify-center mb-8">
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-5xl shadow-xl">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+
+                    <!-- Profile Details -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-id-badge text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Full Name</span>
+                            </div>
+                            <div class="text-gray-800 font-semibold">
+                                {{account.title}} {{account.firstName}} {{account.lastName}}
                             </div>
                         </div>
 
-                        <!-- Profile Details -->
-                        <div class="profile-details">
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-id-badge"></i>
-                                    Full Name
-                                </div>
-                                <div class="detail-value">
-                                    {{account.title}} {{account.firstName}} {{account.lastName}}
-                                </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-envelope text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Email Address</span>
                             </div>
-
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Email Address
-                                </div>
-                                <div class="detail-value">
-                                    {{account.email}}
-                                </div>
+                            <div class="text-gray-800 font-semibold">
+                                {{account.email}}
                             </div>
+                        </div>
 
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-user-tag"></i>
-                                    Role
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-primary">{{account.role || 'No Role'}}</span>
-                                </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-user-tag text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Role</span>
                             </div>
-
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="fas fa-circle"></i>
-                                    Account Status
-                                </div>
-                                <div class="detail-value">
-                                    <span *ngIf="account.isActive === true" class="badge badge-success">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        Active
-                                    </span>
-                                    <span *ngIf="account.isActive === false" class="badge badge-danger">
-                                        <i class="fas fa-times-circle me-1"></i>
-                                        Inactive
-                                    </span>
-                                    <span *ngIf="account.isActive === null || account.isActive === undefined" class="badge badge-warning">
-                                        <i class="fas fa-question-circle me-1"></i>
-                                        Unknown Status
-                                    </span>
-                                </div>
+                            <div>
+                                <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-primary text-white">{{account.role || 'No Role'}}</span>
                             </div>
+                        </div>
 
-                            <div class="detail-row" *ngIf="account.verified">
-                                <div class="detail-label">
-                                    <i class="fas fa-calendar-check"></i>
-                                    Email Verified
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-success">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        {{account.verified | date:'mediumDate'}}
-                                    </span>
-                                </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-circle text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Account Status</span>
                             </div>
-
-                            <div class="detail-row" *ngIf="!account.verified">
-                                <div class="detail-label">
-                                    <i class="fas fa-calendar-times"></i>
-                                    Email Verification
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-warning">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        Not Verified
-                                    </span>
-                                </div>
+                            <div>
+                                <span *ngIf="account.isActive === true" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Active
+                                </span>
+                                <span *ngIf="account.isActive === false" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Inactive
+                                </span>
+                                <span *ngIf="account.isActive === null || account.isActive === undefined" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-question-circle mr-1"></i>
+                                    Unknown Status
+                                </span>
                             </div>
+                        </div>
 
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg" *ngIf="account.verified">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-calendar-check text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Email Verified</span>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    {{account.verified | date:'mediumDate'}}
+                                </span>
+                            </div>
+                        </div>
 
-                            <div class="detail-row" *ngIf="account.status">
-                                <div class="detail-label">
-                                    <i class="fas fa-info-circle"></i>
-                                    Account Status
-                                </div>
-                                <div class="detail-value">
-                                    <span class="badge badge-info">{{account.status}}</span>
-                                </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg" *ngIf="!account.verified">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-calendar-times text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Email Verification</span>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    Not Verified
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg" *ngIf="account.status">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <i class="fas fa-info-circle text-indigo-500 text-xl"></i>
+                                <span class="font-medium">Account Status</span>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-info text-white">{{account.status}}</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Quick Actions -->
-                    <div class="quick-actions">
-                        <div class="action-buttons">
-                            <a routerLink="update" class="btn btn-outline-primary">
-                                <i class="fas fa-edit me-2"></i>
-                                Edit Profile
-                            </a>
-                            <button class="btn btn-outline-secondary">
-                                <i class="fas fa-key me-2"></i>
-                                Change Password
-                            </button>
-                            <button class="btn btn-outline-info">
-                                <i class="fas fa-download me-2"></i>
-                                Export Data
-                            </button>
-                        </div>
-                    </div>
+                <!-- Quick Actions -->
+                <div class="mt-8 flex flex-wrap gap-3 justify-center">
+                    <a routerLink="update" class="inline-flex items-center justify-center rounded-md px-5 py-2.5 font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white">
+                        <i class="fas fa-edit mr-2"></i>
+                        Edit Profile
+                    </a>
+                    <button class="inline-flex items-center justify-center rounded-md px-5 py-2.5 font-semibold transition border border-gray-500 text-gray-600 hover:bg-gray-600 hover:text-white">
+                        <i class="fas fa-key mr-2"></i>
+                        Change Password
+                    </button>
+                    <button class="inline-flex items-center justify-center rounded-md px-5 py-2.5 font-semibold transition border border-info text-cyan-600 hover:bg-info hover:text-white">
+                        <i class="fas fa-download mr-2"></i>
+                        Export Data
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Account Statistics -->
-        <div class="stats-section">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>Account Status</h3>
-                            <p *ngIf="account.isActive === true">Active Account</p>
-                            <p *ngIf="account.isActive === false">Inactive Account</p>
-                            <p *ngIf="account.isActive === null || account.isActive === undefined">Status Unknown</p>
-                        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+            <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl mb-4">
+                        <i class="fas fa-calendar-alt"></i>
                     </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Account Status</h3>
+                    <p class="text-gray-600" *ngIf="account.isActive === true">Active Account</p>
+                    <p class="text-gray-600" *ngIf="account.isActive === false">Inactive Account</p>
+                    <p class="text-gray-600" *ngIf="account.isActive === null || account.isActive === undefined">Status Unknown</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>Account Security</h3>
-                            <p *ngIf="account.verified">Email Verified</p>
-                            <p *ngIf="!account.verified">Email Not Verified</p>
-                        </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-white text-2xl mb-4">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Account Security</h3>
+                    <p class="text-gray-600" *ngIf="account.verified">Email Verified</p>
+                    <p class="text-gray-600" *ngIf="!account.verified">Email Not Verified</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>User Role</h3>
-                            <p>{{account.role || 'No Role Assigned'}}</p>
-                        </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-2xl mb-4">
+                        <i class="fas fa-user-tie"></i>
                     </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">User Role</h3>
+                    <p class="text-gray-600">{{account.role || 'No Role Assigned'}}</p>
                 </div>
             </div>
         </div>
