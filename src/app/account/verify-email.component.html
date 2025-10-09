@@ -1,9 +1,136 @@
-﻿<h3 class="card-header">Verify Email</h3>
-<div class="card-body">
-    <div *ngIf="emailStatus == EmailStatus.Verifying">
-        Verifying...
-    </div>
-    <div *ngIf="emailStatus == EmailStatus.Failed">
-        Verification failed, you can also verify your account using the <a routerLink="forgot-password">forgot password</a> page.
+﻿<div class="verify-email-page fixed inset-0 w-screen h-screen bg-gradient-to-br from-green-500 via-emerald-600 to-teal-700 flex items-center justify-center overflow-hidden">
+    <div class="w-full max-w-md px-6">
+        <!-- Verifying State -->
+        <div *ngIf="emailStatus == EmailStatus.Verifying" class="bg-white rounded-3xl shadow-2xl p-8 animate-fade-in">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <!-- Animated Icon -->
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full shadow-lg mb-6">
+                    <i class="fas fa-spinner fa-spin text-3xl text-green-600"></i>
+                </div>
+                
+                <!-- Title -->
+                <h1 class="text-2xl font-black text-gray-900 mb-3 font-akira">Verifying Email</h1>
+                <p class="text-gray-600 text-sm font-inter leading-relaxed">
+                    Please wait while we verify your email address...
+                </p>
+            </div>
+
+            <!-- Loading Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-2 rounded-full animate-pulse" style="width: 70%"></div>
+            </div>
+        </div>
+
+        <!-- Failed State -->
+        <div *ngIf="emailStatus == EmailStatus.Failed" class="bg-white rounded-3xl shadow-2xl p-8 animate-fade-in">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <!-- Error Icon -->
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-full shadow-lg mb-6">
+                    <i class="fas fa-times-circle text-3xl text-red-600"></i>
+                </div>
+                
+                <!-- Title -->
+                <h1 class="text-2xl font-black text-gray-900 mb-3 font-akira">Verification Failed</h1>
+                <p class="text-gray-600 text-sm font-inter leading-relaxed mb-6">
+                    We couldn't verify your email address. The link may have expired or is invalid.
+                </p>
+            </div>
+
+            <!-- Error Details -->
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl mr-3 mt-0.5"></i>
+                    <div class="text-sm text-red-700 font-inter">
+                        <p class="font-semibold mb-1">What you can do:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Request a new verification email</li>
+                            <li>Use the forgot password page to reset your account</li>
+                            <li>Contact support if the problem persists</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="space-y-3">
+                <a 
+                    routerLink="../forgot-password"
+                    class="block w-full bg-red-600 text-white py-3 rounded-xl font-bold text-base text-center hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 font-akira"
+                >
+                    <i class="fas fa-key mr-2"></i>
+                    Reset Password
+                </a>
+                
+                <a 
+                    routerLink="../login"
+                    class="block w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-bold text-base text-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 font-montserrat"
+                >
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Login
+                </a>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="text-center mt-6 text-white/90">
+            <p class="text-sm font-inter">
+                Need help? Contact <a href="mailto:support&#64;benedicto.edu" class="underline hover:text-white font-semibold">support&#64;benedicto.edu</a>
+            </p>
+        </div>
     </div>
 </div>
+
+<!-- Custom Styles -->
+<style>
+/* Aggressive fullscreen reset */
+.verify-email-page {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 9999 !important;
+}
+
+/* Reset any parent container constraints */
+body:has(.verify-email-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+html:has(.verify-email-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.app-container:has(.verify-email-page) {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+</style>
