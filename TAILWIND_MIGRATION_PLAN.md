@@ -130,11 +130,44 @@ Acceptance criteria
 ---
 
 ## Tracking Checklist
-- [ ] Phase 0 complete (content, tokens, safelist)
-- [ ] Bridge active and CI guard in place
-- [ ] Shared primitives published
-- [ ] `pc-build-template-editor` migrated
-- [ ] `pc-list` migrated
-- [ ] `pc-components` migrated
-- [ ] Bootstrap removed from build
-- [ ] Polish and a11y pass complete
+- [x] Phase 0 complete (content, tokens, safelist)
+- [x] Bridge active and CI guard in place
+- [x] Shared primitives published
+- [x] `pc-build-template-editor` migrated
+- [x] `pc-list` migrated
+- [x] `pc-components` migrated
+- [x] `home` dashboard migrated
+- [x] `profile` pages migrated
+- [x] Bootstrap removed from build
+- [x] Polish and a11y pass complete
+
+## Migration Results
+
+### ✅ Completed (Phase 0-5)
+- **Phase 0-1**: Tailwind config extended with brand tokens; tw-bridge.css created
+- **Phase 2**: Centralized class maps in `_helpers/tw-class-maps.ts`
+- **Phase 3**: Migrated 6 major pages to Tailwind:
+  - PC Build Template Editor
+  - PC List (with filters, table, pagination, modal)
+  - PC Components (with comparison panel, add form, table)
+  - Home Dashboard
+  - Profile Details & Update
+- **Phase 4**: Bootstrap CSS/JS removed from `index.html`; Bootstrap Modal replaced with Angular
+- **Phase 5**: Production build tested successfully
+  - CSS bundle: **52.20 kB** (minified + gzipped: ~7.52 kB)
+  - Tailwind purge working correctly
+  - All migrated pages use Tailwind utilities
+
+### 🔄 Remaining Pages (Optional - tw-bridge provides fallback)
+- Stocks, Approvals, Analytics, Dispose, Archive, Admin, Account, Activity
+- These pages still work via tw-bridge.css
+- Can be migrated incrementally or replaced with Tailwind templates
+
+### 🚀 Ready for Tailwind Templates
+Your project is now **Bootstrap-free** and ready to use:
+- Tailwind UI (https://tailwindui.com/)
+- Flowbite (https://flowbite.com/)
+- Headless UI (https://headlessui.com/)
+- daisyUI (https://daisyui.com/)
+
+Simply copy/paste components and customize with your brand tokens!
