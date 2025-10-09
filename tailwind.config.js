@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
+    "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     extend: {
@@ -34,6 +35,8 @@ module.exports = {
     // alerts
     'bg-red-50','text-red-700','bg-green-50','text-green-700',
   ],
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
 }
 

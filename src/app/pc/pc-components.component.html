@@ -41,25 +41,25 @@
                 'bg-gradient-to-br from-yellow-500 to-orange-500 text-white': getPCStatus().class === 'text-warning',
                 'bg-gradient-to-br from-red-500 to-pink-600 text-white': getPCStatus().class === 'text-danger',
                 'bg-gradient-to-br from-cyan-500 to-purple-600 text-white': getPCStatus().class === 'text-muted'
-              }">
-                <i class="fas" [ngClass]="{
-                  'fa-check-circle': getPCStatus().class === 'text-success',
-                  'fa-exclamation-triangle': getPCStatus().class === 'text-warning',
-                  'fa-times-circle': getPCStatus().class === 'text-danger',
-                  'fa-info-circle': getPCStatus().class === 'text-muted'
-                }"></i>
-              </div>
+                }">
+                  <i class="fas" [ngClass]="{
+                    'fa-check-circle': getPCStatus().class === 'text-success',
+                    'fa-exclamation-triangle': getPCStatus().class === 'text-warning',
+                    'fa-times-circle': getPCStatus().class === 'text-danger',
+                    'fa-info-circle': getPCStatus().class === 'text-muted'
+                  }"></i>
+                </div>
               <div class="flex-grow">
                 <h5 class="text-lg font-semibold mb-1">PC Status: {{ getPCStatus().status }}</h5>
                 <p class="mb-0 text-gray-600 flex items-center gap-2">
                   <span *ngIf="getPCStatus().hasIssues" class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800">
                     <i class="fas fa-exclamation-triangle mr-1"></i> Issues Detected
-                  </span>
+                    </span>
                   <span *ngIf="!getPCStatus().hasIssues && components.length > 0" class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800">
                     <i class="fas fa-check-circle mr-1"></i> All Components Working
-                  </span>
-                  {{ components.length }} components installed
-                </p>
+                    </span>
+                    {{ components.length }} components installed
+                  </p>
               </div>
             </div>
           </div>
@@ -73,12 +73,12 @@
             <div class="flex justify-between items-center">
               <h6 class="text-base font-semibold">
                 <i class="fas fa-clipboard-list mr-2"></i> Template Comparison
-              </h6>
+                </h6>
               <button class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition text-white" (click)="toggleComparisonPanel()">
-                <i class="fas" [ngClass]="showComparisonPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-              </button>
+                  <i class="fas" [ngClass]="showComparisonPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+              </div>
             </div>
-          </div>
             <div class="p-6" *ngIf="showComparisonPanel">
               <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
                 <div class="md:col-span-8">
@@ -212,10 +212,10 @@
 
               <div *ngIf="!comparisonResult && selectedTemplateId" class="text-center text-muted py-4">
                 <i class="fas fa-info-circle"></i> Click "Compare" to see how this PC matches the template
-              </div>
             </div>
           </div>
         </div>
+      </div>
 
       <!-- System Info Card -->
       <div class="mb-6">
@@ -223,39 +223,39 @@
           <div class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-4 rounded-t-lg">
             <h6 class="text-base font-semibold">
               <i class="fas fa-info-circle mr-2"></i> Stock-Based Component System
-            </h6>
-          </div>
+              </h6>
+            </div>
           <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p class="mb-4 text-gray-700">
-                  <strong>How it works:</strong> Only items with available stock quantities can be added as components.
-                </p>
+                    <strong>How it works:</strong> Only items with available stock quantities can be added as components.
+                  </p>
                 <div class="grid grid-cols-3 gap-3 text-center">
                   <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
                     <div class="text-3xl font-bold text-primary mb-1">{{ availableItems.length }}</div>
                     <div class="text-xs text-gray-600 uppercase tracking-wide">Available Items</div>
-                  </div>
+                      </div>
                   <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
                     <div class="text-3xl font-bold text-success mb-1">{{ allStocks.length }}</div>
                     <div class="text-xs text-gray-600 uppercase tracking-wide">Total Stocks</div>
-                  </div>
+                    </div>
                   <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
                     <div class="text-3xl font-bold text-warning mb-1">{{ availableStocksCount }}</div>
                     <div class="text-xs text-gray-600 uppercase tracking-wide">Available Stocks</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
               <div>
                 <div class="p-4 rounded-lg border-l-4 border-warning bg-yellow-50 mb-3">
                   <i class="fas fa-exclamation-triangle text-warning mr-2"></i>
-                  <strong>Stock Deduction:</strong> Adding components will deduct from stock quantities, just like disposal.
-                </div>
+                    <strong>Stock Deduction:</strong> Adding components will deduct from stock quantities, just like disposal.
+                  </div>
                 <div class="p-4 rounded-lg border-l-4 border-info bg-blue-50">
                   <i class="fas fa-info-circle text-info mr-2"></i>
-                  <strong>Debug Info:</strong> 
-                  Stock data: {{ allStocks.length > 0 ? 'Loaded' : 'Not loaded' }} | 
-                  Items: {{ items.length > 0 ? 'Loaded' : 'Not loaded' }}
+                    <strong>Debug Info:</strong> 
+                    Stock data: {{ allStocks.length > 0 ? 'Loaded' : 'Not loaded' }} | 
+                    Items: {{ items.length > 0 ? 'Loaded' : 'Not loaded' }}
                 </div>
               </div>
             </div>
@@ -269,8 +269,8 @@
           <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-lg">
             <h5 class="text-lg font-semibold">
               <i class="fas fa-plus mr-2"></i> Add New Component
-            </h5>
-          </div>
+              </h5>
+            </div>
             <div class="p-6">
               <form (ngSubmit)="saveComponent()" #componentForm="ngForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -347,9 +347,9 @@
                           Total stocks loaded: {{ getStockDebugInfo(newComponent.itemId).totalStocks }}
                         </small>
                       </div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <!-- Quantity -->
@@ -376,7 +376,7 @@
                       <i class="fas fa-info-circle"></i>
                       Cannot exceed available stock quantity (Max: {{ getAvailableQuantity(newComponent.itemId) }})
                     </small>
-                  </div>
+                </div>
 
                   <!-- Price -->
                   <div>
@@ -459,9 +459,9 @@
                   </button>
                 </div>
               </form>
-            </div>
           </div>
         </div>
+      </div>
 
       <!-- Components Table -->
       <div class="mb-6">
@@ -469,13 +469,13 @@
           <div class="bg-gradient-to-r from-gray-700 to-gray-800 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
             <h5 class="text-lg font-semibold">
               <i class="fas fa-microchip mr-2"></i> Current Components
-            </h5>
-            <div>
+              </h5>
+              <div>
               <button class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-semibold transition bg-white/20 hover:bg-white/30 text-white" (click)="refreshData()">
                 <i class="fas fa-sync-alt mr-1"></i> Refresh
-              </button>
+                </button>
+              </div>
             </div>
-          </div>
           <div class="p-0">
             <div class="overflow-x-auto">
               <table class="w-full">
@@ -487,9 +487,9 @@
                     <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-calculator mr-1"></i> Total</th>
                     <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-cogs mr-1"></i> Status</th>
                     <th class="px-4 py-3 text-left text-sm font-semibold"><i class="fas fa-tools mr-1"></i> Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+                    </tr>
+                  </thead>
+                  <tbody>
                     <tr *ngFor="let component of components" [ngClass]="getComponentRowClass(component)" class="border-b border-gray-100 hover:bg-gray-50 transition">
                       <td class="px-4 py-4">
                         <div class="flex items-center">
@@ -557,49 +557,49 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
             </div>
           </div>
         </div>
+      </div>
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div class="p-6 text-center">
             <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl mx-auto mb-4">
-              <i class="fas fa-microchip"></i>
-            </div>
+                <i class="fas fa-microchip"></i>
+              </div>
             <div class="text-3xl font-bold text-primary mb-2">{{ components.length }}</div>
             <div class="text-gray-600 text-sm uppercase tracking-wide">Total Components</div>
+            </div>
           </div>
-        </div>
         <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div class="p-6 text-center">
             <div class="w-16 h-16 rounded-full bg-success text-white flex items-center justify-center text-2xl mx-auto mb-4">
-              <i class="fas fa-dollar-sign"></i>
-            </div>
+                <i class="fas fa-dollar-sign"></i>
+              </div>
             <div class="text-3xl font-bold text-success mb-2">php{{ getTotalValue() | number:'1.0-0' }}</div>
             <div class="text-gray-600 text-sm uppercase tracking-wide">Total Value</div>
+            </div>
           </div>
-        </div>
         <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div class="p-6 text-center">
             <div class="w-16 h-16 rounded-full bg-info text-white flex items-center justify-center text-2xl mx-auto mb-4">
-              <i class="fas fa-tags"></i>
-            </div>
+                <i class="fas fa-tags"></i>
+              </div>
             <div class="text-3xl font-bold text-info mb-2">{{ getUniqueCategories() }}</div>
             <div class="text-gray-600 text-sm uppercase tracking-wide">Categories</div>
+            </div>
           </div>
-        </div>
         <div class="rounded-lg bg-white shadow-card border-0 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div class="p-6 text-center">
             <div class="w-16 h-16 rounded-full bg-warning text-white flex items-center justify-center text-2xl mx-auto mb-4">
-              <i class="fas fa-sort-numeric-up"></i>
-            </div>
+                <i class="fas fa-sort-numeric-up"></i>
+              </div>
             <div class="text-3xl font-bold text-warning mb-2">{{ getTotalQuantity() }}</div>
             <div class="text-gray-600 text-sm uppercase tracking-wide">Total Items</div>
+            </div>
           </div>
-        </div>
       </div> <!-- Close stats grid -->
     </div> <!-- Close w-full px-2 -->
   </div> <!-- Close flex flex-wrap -->
