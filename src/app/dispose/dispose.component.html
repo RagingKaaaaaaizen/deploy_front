@@ -1,159 +1,193 @@
 
 
 <!-- Add Disposal Modal -->
-<div class="modal-overlay" *ngIf="showAddDisposalModal" (click)="closeAddDisposalModal()">
-  <div class="modal-container" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="header-content">
-        <div class="header-title">
-          <i class="fas fa-trash-alt"></i>
+<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" *ngIf="showAddDisposalModal" (click)="closeAddDisposalModal()">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+    <div class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-8 py-6">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div class="flex items-center">
+          <div class="w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-2xl">
+            <i class="fas fa-trash-alt"></i>
+          </div>
           <div>
-            <h1 class="page-title">{{ isEditMode ? 'Edit Disposal Record' : (disposalId ? 'View Disposal Record' : 'Dispose Items') }}</h1>
-            <p class="page-subtitle">Manage inventory disposal records</p>
+            <h1 class="text-2xl font-black text-white font-akira mb-1">{{ isEditMode ? 'Edit Disposal Record' : (disposalId ? 'View Disposal Record' : 'Dispose Items') }}</h1>
+            <p class="text-white/80 font-inter">Manage inventory disposal records</p>
           </div>
         </div>
-        <div class="header-actions">
-          <a routerLink="/dispose" class="btn btn-outline-secondary">
-            <i class="fas fa-list"></i>
+        <div class="flex gap-3">
+          <a routerLink="/dispose" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white/20 hover:bg-white/30 text-white">
+            <i class="fas fa-list mr-2"></i>
             View Disposals
           </a>
-          <button class="btn btn-close" (click)="closeAddDisposalModal()">
+          <button class="inline-flex items-center justify-center rounded-full w-10 h-10 font-semibold transition bg-white/20 hover:bg-white/30 text-white" (click)="closeAddDisposalModal()">
             <i class="fas fa-times"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="modal-body">
+    <div class="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
       <!-- Available Stock Alert -->
-      <div class="alert alert-info" *ngIf="availableStock > 0">
-        <strong>Available Stock:</strong> {{ availableStock }} items
-        <button type="button" class="btn btn-sm btn-outline-info ms-2" (click)="refreshStockData()" title="Refresh Stock Data">
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6" *ngIf="availableStock > 0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+            <span class="text-blue-800 font-semibold">Available Stock: {{ availableStock }} items</span>
+          </div>
+          <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-semibold transition bg-blue-100 text-blue-700 hover:bg-blue-200" (click)="refreshStockData()" title="Refresh Stock Data">
+            <i class="fas fa-sync-alt mr-1"></i> Refresh
+          </button>
+        </div>
       </div>
 
       <!-- No Stock Available Alert -->
-      <div class="alert alert-warning" *ngIf="availableStock === 0 && form.value.itemId">
-        <strong>No stock available</strong> for the selected item.
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6" *ngIf="availableStock === 0 && form.value.itemId">
+        <div class="flex items-center">
+          <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+          <span class="text-yellow-800 font-semibold">No stock available for the selected item.</span>
+        </div>
       </div>
 
       <!-- Error Alert -->
-      <div class="alert alert-danger" *ngIf="error">
-        {{ error }}
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6" *ngIf="error">
+        <div class="flex items-center">
+          <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+          <span class="text-red-800 font-semibold">{{ error }}</span>
+        </div>
       </div>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                 <!-- Item Selection -->
-         <div class="mb-3">
-           <label class="form-label">
-             <i class="fas fa-box"></i> Item
-           </label>
-           <select formControlName="itemId" class="form-control" 
-                   [ngClass]="{ 'is-invalid': submitted && f.itemId.errors }"
-                   [disabled]="loading">
-             <option value="">Select Item</option>
-             <option *ngFor="let item of items" [value]="item.id">
-               {{ item.name }}
-             </option>
-           </select>
-           <div *ngIf="submitted && f.itemId.errors" class="invalid-feedback">
-             <div *ngIf="f.itemId.errors.required">Item is required</div>
-           </div>
-         </div>
-
-         <!-- Quantity -->
-         <div class="mb-3">
-           <label class="form-label">
-             <i class="fas fa-sort-numeric-up"></i> Quantity to Dispose
-           </label>
-           <input type="number" formControlName="quantity" class="form-control" 
-                  [ngClass]="{ 'is-invalid': (submitted && f.quantity.errors) || f.quantity.errors?.insufficientStock }"
-                  min="1"
-                  [max]="availableStock"
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Item Selection -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-box mr-2 text-indigo-600"></i> Item
+          </label>
+          <select formControlName="itemId" 
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter"
+                  [class.border-red-300]="submitted && f.itemId.errors"
+                  [class.focus:border-red-500]="submitted && f.itemId.errors"
+                  [class.focus:ring-red-100]="submitted && f.itemId.errors"
                   [disabled]="loading">
-           <div *ngIf="submitted && f.quantity.errors" class="invalid-feedback">
-             <div *ngIf="f.quantity.errors.required">Quantity is required</div>
-             <div *ngIf="f.quantity.errors.min">Quantity must be at least 1</div>
-             <div *ngIf="f.quantity.errors.insufficientStock">
-               Cannot dispose {{ f.quantity.value }} items. Only {{ f.quantity.errors.availableStock }} items available.
-             </div>
-           </div>
-           <div *ngIf="f.quantity.errors?.insufficientStock && !submitted" class="text-danger small">
-             <i class="fas fa-exclamation-triangle"></i>
-             Cannot dispose {{ f.quantity.value }} items. Only {{ f.quantity.errors.availableStock }} items available.
-           </div>
-           <small class="form-text text-muted" *ngIf="availableStock > 0">
-             Maximum available: {{ availableStock }} items
-           </small>
-           <small class="form-text text-warning" *ngIf="availableStock === 0 && form.value.itemId">
-             <i class="fas fa-exclamation-circle"></i> No stock available for disposal
-           </small>
-         </div>
+            <option value="">Select Item</option>
+            <option *ngFor="let item of items" [value]="item.id">
+              {{ item.name }}
+            </option>
+          </select>
+          <div *ngIf="submitted && f.itemId.errors" class="text-red-600 text-sm">
+            <div *ngIf="f.itemId.errors.required">Item is required</div>
+          </div>
+        </div>
 
-         <!-- Location -->
-         <div class="mb-3">
-           <label class="form-label">
-             <i class="fas fa-map-marker-alt"></i> Storage Location
-           </label>
-           <select formControlName="locationId" class="form-control" 
-                   [ngClass]="{ 'is-invalid': submitted && f.locationId.errors }"
-                   [disabled]="loading">
-             <option value="">Select Location</option>
-             <option *ngFor="let location of locations" [value]="location.id">
-               {{ location.name }}
-             </option>
-           </select>
-           <div *ngIf="submitted && f.locationId.errors" class="invalid-feedback">
-             <div *ngIf="f.locationId.errors.required">Location is required</div>
-           </div>
-         </div>
+        <!-- Quantity -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-sort-numeric-up mr-2 text-indigo-600"></i> Quantity to Dispose
+          </label>
+          <input type="number" formControlName="quantity" 
+                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter"
+                 [class.border-red-300]="(submitted && f.quantity.errors) || f.quantity.errors?.insufficientStock"
+                 [class.focus:border-red-500]="(submitted && f.quantity.errors) || f.quantity.errors?.insufficientStock"
+                 [class.focus:ring-red-100]="(submitted && f.quantity.errors) || f.quantity.errors?.insufficientStock"
+                 min="1"
+                 [max]="availableStock"
+                 [disabled]="loading">
+          <div *ngIf="submitted && f.quantity.errors" class="text-red-600 text-sm">
+            <div *ngIf="f.quantity.errors.required">Quantity is required</div>
+            <div *ngIf="f.quantity.errors.min">Quantity must be at least 1</div>
+            <div *ngIf="f.quantity.errors.insufficientStock">
+              Cannot dispose {{ f.quantity.value }} items. Only {{ f.quantity.errors.availableStock }} items available.
+            </div>
+          </div>
+          <div *ngIf="f.quantity.errors?.insufficientStock && !submitted" class="text-red-600 text-sm">
+            <i class="fas fa-exclamation-triangle mr-1"></i>
+            Cannot dispose {{ f.quantity.value }} items. Only {{ f.quantity.errors.availableStock }} items available.
+          </div>
+          <div class="text-gray-500 text-sm" *ngIf="availableStock > 0">
+            Maximum available: {{ availableStock }} items
+          </div>
+          <div class="text-yellow-600 text-sm" *ngIf="availableStock === 0 && form.value.itemId">
+            <i class="fas fa-exclamation-circle mr-1"></i> No stock available for disposal
+          </div>
+        </div>
 
-         <!-- Disposal Value -->
-         <div class="mb-3">
-           <label class="form-label">
-             <i class="fas fa-dollar-sign"></i> Disposal Value (total)
-           </label>
-           <input type="number" formControlName="disposalValue" class="form-control" 
-                  [ngClass]="{ 'is-invalid': submitted && f.disposalValue.errors }"
-                  step="0.01" min="0.01"
+        <!-- Location -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i> Storage Location
+          </label>
+          <select formControlName="locationId" 
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter"
+                  [class.border-red-300]="submitted && f.locationId.errors"
+                  [class.focus:border-red-500]="submitted && f.locationId.errors"
+                  [class.focus:ring-red-100]="submitted && f.locationId.errors"
                   [disabled]="loading">
-           <div *ngIf="submitted && f.disposalValue.errors" class="invalid-feedback">
-             <div *ngIf="f.disposalValue.errors.required">Disposal value is required</div>
-             <div *ngIf="f.disposalValue.errors.min">Disposal value must be greater than 0</div>
-           </div>
-           <small class="form-text text-muted">
-             Total value for all items being disposed (auto-calculated as price × quantity)
-             <span *ngIf="selectedItemPrice > 0" class="text-info">
-               <br>💡 Latest item price: {{ selectedItemPrice | currency:'PHP':'symbol' }} per item
-             </span>
-           </small>
-         </div>
+            <option value="">Select Location</option>
+            <option *ngFor="let location of locations" [value]="location.id">
+              {{ location.name }}
+            </option>
+          </select>
+          <div *ngIf="submitted && f.locationId.errors" class="text-red-600 text-sm">
+            <div *ngIf="f.locationId.errors.required">Location is required</div>
+          </div>
+        </div>
 
-         <!-- Reason -->
-         <div class="mb-3">
-           <label class="form-label">
-             <i class="fas fa-comment"></i> Reason
-           </label>
-           <textarea formControlName="reason" class="form-control" rows="3"
-                     placeholder="Reason for disposal, condition, etc."
-                     [disabled]="loading"></textarea>
+        <!-- Disposal Value -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-dollar-sign mr-2 text-indigo-600"></i> Disposal Value (total)
+          </label>
+          <input type="number" formControlName="disposalValue" 
+                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter"
+                 [class.border-red-300]="submitted && f.disposalValue.errors"
+                 [class.focus:border-red-500]="submitted && f.disposalValue.errors"
+                 [class.focus:ring-red-100]="submitted && f.disposalValue.errors"
+                 step="0.01" min="0.01"
+                 [disabled]="loading">
+          <div *ngIf="submitted && f.disposalValue.errors" class="text-red-600 text-sm">
+            <div *ngIf="f.disposalValue.errors.required">Disposal value is required</div>
+            <div *ngIf="f.disposalValue.errors.min">Disposal value must be greater than 0</div>
+          </div>
+          <div class="text-gray-500 text-sm">
+            Total value for all items being disposed (auto-calculated as price × quantity)
+            <div *ngIf="selectedItemPrice > 0" class="text-blue-600 mt-1">
+              💡 Latest item price: {{ selectedItemPrice | currency:'PHP':'symbol' }} per item
+            </div>
+          </div>
+        </div>
+
+        <!-- Reason -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">
+            <i class="fas fa-comment mr-2 text-indigo-600"></i> Reason
+          </label>
+          <textarea formControlName="reason" 
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter resize-none"
+                    rows="3"
+                    placeholder="Reason for disposal, condition, etc."
+                    [disabled]="loading"></textarea>
          </div>
 
         <!-- Buttons -->
-        <div class="mb-3">
-          <button *ngIf="!disposalId || isEditMode" type="submit" class="btn btn-danger" 
+        <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200">
+          <button *ngIf="!disposalId || isEditMode" 
+                  type="submit" 
+                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition bg-danger text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed" 
                   [disabled]="loading || form.invalid || f.quantity.errors?.insufficientStock">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+            <div *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
             {{ isEditMode ? 'Update Disposal' : 'Dispose Items' }}
           </button>
-          <button *ngIf="!disposalId && !isEditMode" type="button" class="btn btn-warning ms-2" 
+          <button *ngIf="!disposalId && !isEditMode" 
+                  type="button" 
+                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition bg-warning text-white hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed" 
                   (click)="disposeAll()" 
                   [disabled]="loading || availableStock === 0 || !form.value.itemId">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+            <div *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
             Dispose All Available
           </button>
-          <button type="button" class="btn btn-secondary ms-2" (click)="closeAddDisposalModal()" [class.disabled]="loading">
+          <button type="button" 
+                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50" 
+                  (click)="closeAddDisposalModal()" 
+                  [disabled]="loading">
             Cancel
           </button>
         </div>
