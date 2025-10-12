@@ -1,28 +1,28 @@
-﻿<div class="dashboard-container">
-    <div class="container">
+﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-8">
+    <div class="max-w-7xl mx-auto px-4">
         <!-- Welcome Section -->
-        <div class="welcome-section mb-4">
-            <div class="welcome-card">
-                <div class="welcome-content">
-                    <h1 class="welcome-title">
-                        <i class="fas fa-tachometer-alt text-primary me-3"></i>
+        <div class="mb-6">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl p-8 shadow-xl">
+                <div class="text-center">
+                    <h1 class="text-4xl font-bold mb-3">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
                         Welcome to Inventory Pro
                     </h1>
-                    <p class="welcome-subtitle">
+                    <p class="text-xl text-white/90 mb-6">
                         Manage your computer lab inventory efficiently and effectively
                     </p>
-                    <div class="welcome-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-boxes text-primary"></i>
-                            <span>{{stats?.totalItems || 0}} Items</span>
+                    <div class="flex justify-center gap-8 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-boxes text-2xl"></i>
+                            <span class="text-lg font-semibold">{{stats?.totalItems || 0}} Items</span>
                         </div>
-                        <div class="stat-item">
-                            <i class="fas fa-desktop text-success"></i>
-                            <span>{{stats?.totalPCs || 0}} PCs</span>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-desktop text-2xl"></i>
+                            <span class="text-lg font-semibold">{{stats?.totalPCs || 0}} PCs</span>
                         </div>
-                        <div class="stat-item">
-                            <i class="fas fa-users text-info"></i>
-                            <span>{{stats?.totalUsers || 0}} Users</span>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-users text-2xl"></i>
+                            <span class="text-lg font-semibold">{{stats?.totalUsers || 0}} Users</span>
                         </div>
                     </div>
                 </div>
@@ -30,163 +30,145 @@
         </div>
 
         <!-- Quick Stats -->
-        <div class="quick-stats-section mb-4">
-            <div class="row">
-                <div class="col-md-3 col-sm-6 mb-3" *ngFor="let stat of quickStats">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i [class]="stat.icon"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="stat-number">{{stat.value}}</div>
-                            <div class="stat-label">{{stat.label}}</div>
-                        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+            <div *ngFor="let stat of quickStats" class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <div class="flex items-center">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl mr-4">
+                        <i [class]="stat.icon"></i>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-gray-800">{{stat.value}}</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wide">{{stat.label}}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Summary Metrics -->
-        <div class="summary-metrics-section mb-4">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="metric-card">
-                        <div class="metric-header">
-                            <h5><i class="fas fa-chart-pie text-primary me-2"></i> Stock Overview</h5>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-item">
-                                <span class="metric-label">Total Stock:</span>
-                                <span class="metric-value">{{stats?.totalStock || 0}}</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">In Use:</span>
-                                <span class="metric-value">{{stats?.inUse || 0}}</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Available:</span>
-                                <span class="metric-value">{{stats?.available || 0}}</span>
-                            </div>
-                        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="border-b border-gray-200 pb-3 mb-4">
+                    <h5 class="text-lg font-semibold text-gray-800"><i class="fas fa-chart-pie text-primary mr-2"></i> Stock Overview</h5>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-700 font-medium">Total Stock:</span>
+                        <span class="text-2xl font-bold text-gray-800">{{stats?.totalStock || 0}}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-700 font-medium">In Use:</span>
+                        <span class="text-2xl font-bold text-gray-800">{{stats?.inUse || 0}}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-700 font-medium">Available:</span>
+                        <span class="text-2xl font-bold text-gray-800">{{stats?.available || 0}}</span>
                     </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <div class="metric-card">
-                        <div class="metric-header">
-                            <h5><i class="fas fa-exclamation-triangle text-warning me-2"></i> Alerts</h5>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-item">
-                                <span class="metric-label">Low Stock Items:</span>
-                                <span class="metric-value text-warning">{{stats?.lowStock || 0}}</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Out of Stock:</span>
-                                <span class="metric-value text-danger">{{stats?.outOfStock || 0}}</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Pending Requests:</span>
-                                <span class="metric-value text-info">{{stats?.pendingRequests || 0}}</span>
-                            </div>
-                        </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="border-b border-gray-200 pb-3 mb-4">
+                    <h5 class="text-lg font-semibold text-gray-800"><i class="fas fa-exclamation-triangle text-warning mr-2"></i> Alerts</h5>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
+                        <span class="text-gray-700 font-medium">Low Stock Items:</span>
+                        <span class="text-2xl font-bold text-warning">{{stats?.lowStock || 0}}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                        <span class="text-gray-700 font-medium">Out of Stock:</span>
+                        <span class="text-2xl font-bold text-danger">{{stats?.outOfStock || 0}}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                        <span class="text-gray-700 font-medium">Pending Requests:</span>
+                        <span class="text-2xl font-bold text-info">{{stats?.pendingRequests || 0}}</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Analytics Section -->
-        <div class="analytics-section mb-4">
-            <div class="row">
-                <div class="col-md-8 mb-3">
-                    <div class="analytics-card">
-                        <div class="analytics-header">
-                            <h5><i class="fas fa-chart-line text-primary me-2"></i> Recent Activity</h5>
-                        </div>
-                        <div class="analytics-content">
-                            <div class="activity-list">
-                                <div class="activity-item" *ngFor="let activity of recentActivity">
-                                    <div class="activity-icon">
-                                        <i [class]="activity.icon"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <div class="activity-message">{{activity.message}}</div>
-                                        <div class="activity-time">{{activity.timestamp | date:'medium'}}</div>
-                                    </div>
-                                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="border-b border-gray-200 pb-3 mb-4">
+                        <h5 class="text-lg font-semibold text-gray-800"><i class="fas fa-chart-line text-primary mr-2"></i> Recent Activity</h5>
+                    </div>
+                    <div class="space-y-3">
+                        <div *ngFor="let activity of recentActivity" class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mr-4 flex-shrink-0">
+                                <i [class]="activity.icon"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <div class="text-gray-800 font-medium">{{activity.message}}</div>
+                                <div class="text-sm text-gray-500 mt-1">{{activity.timestamp | date:'medium'}}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="analytics-card">
-                        <div class="analytics-header">
-                            <h5><i class="fas fa-clock text-info me-2"></i> Quick Actions</h5>
-                        </div>
-                        <div class="analytics-content">
-                            <div class="quick-actions">
-                                <button class="btn btn-primary btn-sm mb-2 w-100" routerLink="/add">
-                                    <i class="fas fa-plus me-2"></i>Add Item
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm mb-2 w-100" routerLink="/stocks">
-                                    <i class="fas fa-boxes me-2"></i>View Stock
-                                </button>
-                                <button class="btn btn-outline-success btn-sm mb-2 w-100" routerLink="/pc">
-                                    <i class="fas fa-desktop me-2"></i>PC Management
-                                </button>
-                                <button class="btn btn-outline-info btn-sm w-100" routerLink="/reports">
-                                    <i class="fas fa-chart-bar me-2"></i>Generate Report
-                                </button>
-                            </div>
-                        </div>
+            </div>
+            <div>
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="border-b border-gray-200 pb-3 mb-4">
+                        <h5 class="text-lg font-semibold text-gray-800"><i class="fas fa-clock text-info mr-2"></i> Quick Actions</h5>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <button class="inline-flex items-center justify-center rounded-md px-4 py-3 font-semibold transition bg-primary text-white hover:bg-primary-600 shadow-sm w-full" routerLink="/add">
+                            <i class="fas fa-plus mr-2"></i>Add Item
+                        </button>
+                        <button class="inline-flex items-center justify-center rounded-md px-4 py-3 font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white w-full" routerLink="/stocks">
+                            <i class="fas fa-boxes mr-2"></i>View Stock
+                        </button>
+                        <button class="inline-flex items-center justify-center rounded-md px-4 py-3 font-semibold transition border border-success text-green-600 hover:bg-success hover:text-white w-full" routerLink="/pc">
+                            <i class="fas fa-desktop mr-2"></i>PC Management
+                        </button>
+                        <button class="inline-flex items-center justify-center rounded-md px-4 py-3 font-semibold transition border border-info text-cyan-600 hover:bg-info hover:text-white w-full" routerLink="/reports">
+                            <i class="fas fa-chart-bar mr-2"></i>Generate Report
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Permissions Section -->
-        <div class="permissions-section mb-4" *ngIf="account">
-            <div class="permissions-card">
-                <div class="permissions-header">
-                    <h5><i class="fas fa-user-shield text-success me-2"></i> Your Permissions</h5>
+        <div class="mb-6" *ngIf="account">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="border-b border-gray-200 pb-3 mb-4">
+                    <h5 class="text-lg font-semibold text-gray-800"><i class="fas fa-user-shield text-success mr-2"></i> Your Permissions</h5>
                 </div>
-                <div class="permissions-content">
-                    <div class="permission-item">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <span>Role: {{account.role}}</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                        <i class="fas fa-check-circle text-success mr-3 text-xl"></i>
+                        <span class="text-gray-700 font-medium">Role: {{account.role}}</span>
                     </div>
-                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <span>Can manage inventory</span>
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                        <i class="fas fa-check-circle text-success mr-3 text-xl"></i>
+                        <span class="text-gray-700 font-medium">Can manage inventory</span>
                     </div>
-                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <span>Can add/edit items</span>
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                        <i class="fas fa-check-circle text-success mr-3 text-xl"></i>
+                        <span class="text-gray-700 font-medium">Can add/edit items</span>
                     </div>
-                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <span>Can manage users</span>
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin])">
+                        <i class="fas fa-check-circle text-success mr-3 text-xl"></i>
+                        <span class="text-gray-700 font-medium">Can manage users</span>
                     </div>
-                    <div class="permission-item" *ngIf="hasRole([Role.SuperAdmin])">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <span>Can view all reports</span>
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin])">
+                        <i class="fas fa-check-circle text-success mr-3 text-xl"></i>
+                        <span class="text-gray-700 font-medium">Can view all reports</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="quick-actions-section">
-            <div class="row">
-                <div class="col-md-3 col-sm-6 mb-3" *ngFor="let action of quickActions">
-                    <div class="action-card" [routerLink]="action.route">
-                        <div class="action-icon">
-                            <i [class]="action.icon"></i>
-                        </div>
-                        <div class="action-content">
-                            <h6>{{action.title}}</h6>
-                            <p>{{action.description}}</p>
-                        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div *ngFor="let action of quickActions" [routerLink]="action.route" class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl mb-4">
+                        <i [class]="action.icon"></i>
                     </div>
+                    <h6 class="text-base font-semibold text-gray-800 mb-2">{{action.title}}</h6>
+                    <p class="text-sm text-gray-600">{{action.description}}</p>
                 </div>
             </div>
         </div>
