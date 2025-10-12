@@ -1,32 +1,44 @@
-<div class="archive-container">
-  <!-- Header Section -->
-  <div class="archive-header">
-    <div class="archive-title">
-      <i class="fas fa-archive"></i>
-      Archive Reports
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-6">
+        <div class="flex items-center">
+          <div class="w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-2xl">
+            <i class="fas fa-archive"></i>
+          </div>
+          <div>
+            <h1 class="text-3xl font-black text-white font-akira mb-1">Archive Reports</h1>
+            <p class="text-white/80 font-inter">Generate professional PDF reports for inventory management</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="archive-subtitle">
-      Generate professional PDF reports for inventory management
-    </div>
-  </div>
 
-  <!-- Statistics Section -->
-  <div class="statistics-section" *ngIf="reportStatistics">
-    <div class="statistics-grid">
-      <div class="statistic-card">
-        <div class="statistic-number">{{ reportStatistics.totalReports }}</div>
-        <div class="statistic-label">Total Reports</div>
+    <!-- Statistics Section -->
+    <div *ngIf="reportStatistics" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-file-alt text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-indigo-600 font-akira mb-1">{{ reportStatistics.totalReports }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Total Reports</div>
       </div>
-      <div class="statistic-card">
-        <div class="statistic-number">${{ formatNumber(reportStatistics.totalValue, 0) }}</div>
-        <div class="statistic-label">Total Value</div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-dollar-sign text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-green-600 font-akira mb-1">${{ formatNumber(reportStatistics.totalValue, 0) }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Total Value</div>
       </div>
-      <div class="statistic-card">
-        <div class="statistic-number">{{ reportStatistics.mostRecentReport?.generatedDate | date:'MMM dd' || 'N/A' }}</div>
-        <div class="statistic-label">Latest Report</div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-calendar-alt text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-blue-600 font-akira mb-1">{{ reportStatistics.mostRecentReport?.generatedDate | date:'MMM dd' || 'N/A' }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Latest Report</div>
       </div>
     </div>
-  </div>
 
   <!-- Report Generation Cards -->
   <div class="report-cards">
