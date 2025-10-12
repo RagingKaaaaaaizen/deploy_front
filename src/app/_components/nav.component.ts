@@ -29,7 +29,6 @@ import { takeUntil } from 'rxjs/operators';
             <span class="text-blue-600 font-akira">B</span>
             <span class="text-orange-500 font-akira">C</span>
           </div>
-          <span class="brand-text font-akira" *ngIf="!isCollapsed || isMobile">Benedicto College</span>
         </div>
         <div class="header-actions">
           <button class="toggle-btn mobile-toggle" 
@@ -40,14 +39,38 @@ import { takeUntil } from 'rxjs/operators';
         </div>
       </div>
 
-      <!-- User Profile Section -->
+      <!-- User Profile Section with Dropdown -->
       <div class="user-profile" *ngIf="accountService.accountValue">
-        <div class="user-avatar">
+        <div class="user-avatar cursor-pointer" (click)="toggleDropdown('profile')">
           <i class="fas fa-user-circle"></i>
         </div>
         <div class="user-info" *ngIf="!isCollapsed || isMobile">
           <div class="user-name font-montserrat">{{ accountService.accountValue.firstName }} {{ accountService.accountValue.lastName }}</div>
           <div class="user-role font-inter">{{ accountService.accountValue.role }}</div>
+        </div>
+        <div class="profile-dropdown" *ngIf="!isCollapsed || isMobile">
+          <i class="fas fa-chevron-down dropdown-arrow cursor-pointer" 
+             [class.rotated]="isDropdownOpen('profile')"
+             (click)="toggleDropdown('profile')"></i>
+        </div>
+        
+        <!-- Profile Dropdown Menu -->
+        <div class="profile-dropdown-menu" 
+             [class.show]="isDropdownOpen('profile')"
+             *ngIf="(!isCollapsed || isMobile) && isDropdownOpen('profile')">
+          <a class="profile-dropdown-item" routerLink="/profile" (click)="closeMobileSidebar()">
+            <i class="fas fa-user"></i>
+            <span>View Profile</span>
+          </a>
+          <a class="profile-dropdown-item" routerLink="/profile/update" (click)="closeMobileSidebar()">
+            <i class="fas fa-edit"></i>
+            <span>Edit Profile</span>
+          </a>
+          <div class="profile-dropdown-divider"></div>
+          <button class="profile-dropdown-item logout-option" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 
@@ -188,28 +211,8 @@ import { takeUntil } from 'rxjs/operators';
             </a>
           </li>
 
-          <!-- Profile -->
-          <li class="nav-item">
-            <a class="nav-link" 
-               routerLink="/profile" 
-               routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-              <i class="fas fa-user"></i>
-              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Profile</span>
-              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Profile</span>
-            </a>
-          </li>
         </ul>
       </nav>
-
-      <!-- Sidebar Footer -->
-      <div class="sidebar-footer">
-        <button class="logout-btn" (click)="logout()">
-          <i class="fas fa-sign-out-alt"></i>
-          <span class="font-inter" *ngIf="!isCollapsed || isMobile">Logout</span>
-          <span class="tooltip" *ngIf="isCollapsed && !isMobile">Logout</span>
-        </button>
-      </div>
     </div>
   `,
   styles: [`
@@ -343,6 +346,15 @@ import { takeUntil } from 'rxjs/operators';
       border-bottom: 1px solid #e5e7eb;
       min-height: 80px;
       background: #f9fafb;
+      position: relative;
+    }
+
+    .user-avatar {
+      transition: all 0.3s ease;
+    }
+
+    .user-avatar.cursor-pointer {
+      cursor: pointer;
     }
 
     .user-avatar i {
@@ -366,6 +378,60 @@ import { takeUntil } from 'rxjs/operators';
       font-size: 0.8rem;
       color: #6b7280;
       text-transform: capitalize;
+    }
+
+    .profile-dropdown {
+      margin-left: auto;
+    }
+
+    .profile-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .profile-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: #374151;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .profile-dropdown-item:hover {
+      background: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .profile-dropdown-item.logout-option:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .profile-dropdown-divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 4px 0;
+    }
+
+    .profile-dropdown-item i {
+      width: 16px;
+      text-align: center;
     }
 
     .sidebar-nav {
@@ -551,37 +617,6 @@ import { takeUntil } from 'rxjs/operators';
       visibility: visible;
     }
 
-    .sidebar-footer {
-      padding: 20px;
-      border-top: 1px solid #e5e7eb;
-      background: #f9fafb;
-    }
-
-    .logout-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      background: #f3f4f6;
-      border: none;
-      color: #6b7280;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      font-weight: 500;
-    }
-
-    .logout-btn:hover {
-      background: #fee2e2;
-      color: #dc2626;
-      transform: translateY(-1px);
-    }
-
-    .logout-btn i {
-      font-size: 1.1rem;
-    }
 
     /* Responsive Design */
     @media (max-width: 768px) {

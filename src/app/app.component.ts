@@ -329,11 +329,35 @@ import { Account, Role } from './_models';
       align-items: center;
     }
 
-    .navbar-left .page-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #333;
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f2937;
       margin: 0;
+      line-height: 1.2;
+    }
+
+    .system-subtitle {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin: 0;
+      line-height: 1.2;
     }
 
     .navbar-right {
@@ -364,8 +388,16 @@ import { Account, Role } from './_models';
         padding: 10px 15px;
       }
 
-      .navbar-left .page-title {
-        font-size: 1.2rem;
+      .navbar-brand {
+        gap: 8px;
+      }
+
+      .brand-title {
+        font-size: 1rem;
+      }
+
+      .system-subtitle {
+        font-size: 0.7rem;
       }
     }
   `]
