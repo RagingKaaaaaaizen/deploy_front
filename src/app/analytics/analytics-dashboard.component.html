@@ -1,42 +1,65 @@
-<div class="analytics-container">
-  <!-- Header -->
-  <div class="analytics-header">
-    <div class="analytics-title">
-      <i class="fas fa-chart-line"></i>
-      📊 Advanced Analytics Dashboard
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Header -->
+    <div class="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-6">
+        <div class="flex items-center">
+          <div class="w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-2xl">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div>
+            <h1 class="text-3xl font-black text-white font-akira mb-1">📊 Advanced Analytics Dashboard</h1>
+            <p class="text-white/80 font-inter">Comprehensive insights into inventory patterns, component usage, and system performance</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="analytics-subtitle">
-      Comprehensive insights into inventory patterns, component usage, and system performance
-    </div>
-  </div>
 
-  <!-- Summary Statistics -->
-  <div class="summary-stats" *ngIf="advancedAnalytics">
-    <div class="summary-card">
-      <div class="summary-number">{{ advancedAnalytics.topCategories?.length || 0 }}</div>
-      <div class="summary-label">Top Categories</div>
+    <!-- Summary Statistics -->
+    <div *ngIf="advancedAnalytics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-tags text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-indigo-600 font-akira mb-1">{{ advancedAnalytics.topCategories?.length || 0 }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Top Categories</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exchange-alt text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-orange-600 font-akira mb-1">{{ advancedAnalytics.mostReplacedComponents?.length || 0 }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Replaced Components</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-clock text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-green-600 font-akira mb-1">{{ advancedAnalytics.averageLifespan?.length || 0 }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Lifespan Categories</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-hourglass-half text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-yellow-600 font-akira mb-1">{{ advancedAnalytics.pendingRequests?.length || 0 }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Pending Requests</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-blue-600 font-akira mb-1">{{ advancedAnalytics.lowStockItems?.length || 0 }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Low Stock Items</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-times-circle text-white text-2xl"></i>
+        </div>
+        <div class="text-3xl font-bold text-red-600 font-akira mb-1">{{ advancedAnalytics.outOfStockItems?.length || 0 }}</div>
+        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Out of Stock</div>
+      </div>
     </div>
-    <div class="summary-card">
-      <div class="summary-number">{{ advancedAnalytics.mostReplacedComponents?.length || 0 }}</div>
-      <div class="summary-label">Replaced Components</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-number">{{ advancedAnalytics.averageLifespan?.length || 0 }}</div>
-      <div class="summary-label">Lifespan Categories</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-number">{{ advancedAnalytics.pendingRequests?.length || 0 }}</div>
-      <div class="summary-label">Pending Requests</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-number">{{ advancedAnalytics.lowStockItems?.length || 0 }}</div>
-      <div class="summary-label">Low Stock Items</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-number">{{ advancedAnalytics.outOfStockItems?.length || 0 }}</div>
-      <div class="summary-label">Out of Stock</div>
-    </div>
-  </div>
 
   <!-- Loading State -->
   <div class="loading" *ngIf="loading">
