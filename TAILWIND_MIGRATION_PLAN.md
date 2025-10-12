@@ -130,11 +130,15 @@ Acceptance criteria
 ---
 
 ## Tracking Checklist
-- [ ] Phase 0 complete (content, tokens, safelist)
-- [ ] Bridge active and CI guard in place
-- [ ] Shared primitives published
-- [ ] `pc-build-template-editor` migrated
-- [ ] `pc-list` migrated
-- [ ] `pc-components` migrated
+- [x] Phase 0 complete (content, tokens, safelist)
+- [x] Bridge active and CI guard in place
+- [x] Shared primitives published (tw-class-maps.ts)
+- [x] `pc-build-template-editor` migrated
+- [x] `pc-list` migrated
+- [x] `pc-components` migrated
+- [x] `home` dashboard migrated
+- [x] `profile` pages migrated
+- [x] `stocks` pages migrated
+- [ ] Remaining modules migrated (approvals, analytics, dispose, archive, admin, account, activity)
 - [ ] Bootstrap removed from build
 - [ ] Polish and a11y pass complete

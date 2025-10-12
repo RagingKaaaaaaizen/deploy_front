@@ -68,34 +68,36 @@ import { takeUntil } from 'rxjs/operators';
           </li>
 
           <!-- Inventory Dropdown -->
-          <li class="nav-item dropdown" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" 
-               href="#" 
-               id="inventoryDropdown" 
-               role="button" 
-               data-bs-toggle="dropdown" 
-               aria-expanded="false"
+          <li class="nav-item" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
+            <a class="nav-link cursor-pointer" 
+               (click)="toggleDropdown('inventory')"
                [class.active]="isDropdownOpen('inventory')">
-              <i class="fas fa-boxes me-2 text-primary"></i>
-              <span *ngIf="!isCollapsed || isMobile">Inventory</span>
+              <i class="fas fa-boxes"></i>
+              <span class="font-inter" *ngIf="!isCollapsed || isMobile">Inventory</span>
+              <i class="fas fa-chevron-down dropdown-arrow ml-auto" 
+                 [class.rotated]="isDropdownOpen('inventory')"
+                 *ngIf="!isCollapsed || isMobile"></i>
+              <span class="tooltip" *ngIf="isCollapsed && !isMobile">Inventory</span>
             </a>
-            <ul class="dropdown-menu shadow border-0" aria-labelledby="inventoryDropdown">
-              <li>
-                <a class="dropdown-item d-flex align-items-center" 
+            <ul class="dropdown-menu" 
+                [class.show]="isDropdownOpen('inventory')"
+                *ngIf="!isCollapsed || isMobile">
+              <li class="dropdown-item">
+                <a class="nav-link" 
                    routerLink="/stocks" 
                    routerLinkActive="active"
                    (click)="closeMobileSidebar()">
-                  <i class="fas fa-boxes me-2 text-success"></i>
-                  <span>Stocks</span>
+                  <i class="fas fa-boxes"></i>
+                  <span class="font-inter">Stock Management</span>
                 </a>
               </li>
-              <li>
-                <a class="dropdown-item d-flex align-items-center" 
+              <li class="dropdown-item">
+                <a class="nav-link" 
                    routerLink="/dispose" 
                    routerLinkActive="active"
                    (click)="closeMobileSidebar()">
-                  <i class="fas fa-trash-alt me-2 text-danger"></i>
-                  <span>Dispose</span>
+                  <i class="fas fa-trash-alt"></i>
+                  <span class="font-inter">Dispose</span>
                 </a>
               </li>
             </ul>
@@ -395,6 +397,10 @@ import { takeUntil } from 'rxjs/operators';
       font-weight: 500;
     }
 
+    .nav-link.cursor-pointer {
+      cursor: pointer;
+    }
+
     .nav-link:hover {
       background: #f3f4f6;
       border-left-color: #3b82f6;
@@ -424,6 +430,10 @@ import { takeUntil } from 'rxjs/operators';
 
     .dropdown-arrow.rotated {
       transform: rotate(180deg);
+    }
+
+    .ml-auto {
+      margin-left: auto;
     }
 
     .dropdown-menu {
@@ -470,6 +480,22 @@ import { takeUntil } from 'rxjs/operators';
     .dropdown-item a i {
       font-size: 1rem;
       width: 16px;
+    }
+
+    .dropdown-item .nav-link {
+      padding: 10px 20px 10px 50px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .dropdown-item .nav-link:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .dropdown-item .nav-link.active {
+      background: #eff6ff;
+      color: #1d4ed8;
     }
 
     .badge {
