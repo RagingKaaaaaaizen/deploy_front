@@ -1,7 +1,8 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 
 import { AccountService } from './_services';
 import { Account, Role } from './_models';
+import { NavComponent } from './_components/nav.component';
 
 @Component({ 
   selector: 'app', 
@@ -329,6 +330,12 @@ import { Account, Role } from './_models';
       align-items: center;
     }
 
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .navbar-toggle {
       background: none;
       border: none;
@@ -344,12 +351,6 @@ import { Account, Role } from './_models';
     .navbar-toggle:hover {
       background: #f3f4f6;
       color: #374151;
-    }
-
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
 
     .brand-logo {
@@ -419,28 +420,40 @@ import { Account, Role } from './_models';
     }
   `]
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
     Role = Role;
     account: Account;
+    
+    @ViewChild('navComponent') navComponent: NavComponent;
 
-    constructor(private accountService: AccountService) {
+    constructor(private accountService: AccountService, private cdr: ChangeDetectorRef) {
         this.accountService.account.subscribe(x => this.account = x);
     }
     
+    ngAfterViewInit() {
+        // Trigger change detection after view is initialized
+        this.cdr.detectChanges();
+    }
+    
     toggleMobileMenu() {
-        // This will be handled by the nav component
-        const navComponent = document.querySelector('app-nav') as any;
-        if (navComponent && navComponent.toggleMobileSidebar) {
-            navComponent.toggleMobileSidebar();
+        if (this.navComponent) {
+            this.navComponent.toggleMobileSidebar();
         }
     }
     
     toggleSidebar() {
-        // This will be handled by the nav component
-        const navComponent = document.querySelector('app-nav') as any;
-        if (navComponent && navComponent.toggleSidebar) {
-            navComponent.toggleSidebar();
+        if (this.navComponent) {
+            this.navComponent.toggleSidebar();
+            this.cdr.detectChanges();
         }
+    }
+    
+    isSidebarCollapsed(): boolean {
+        return this.navComponent ? this.navComponent.isCollapsed : false;
+    }
+    
+    isSidebarMobile(): boolean {
+        return this.navComponent ? this.navComponent.isMobile : false;
     }
     
     logout() {
