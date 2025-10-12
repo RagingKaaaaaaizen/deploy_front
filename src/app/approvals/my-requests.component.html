@@ -1,20 +1,24 @@
-<div class="list-container">
-  <div class="container-fluid">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-8">
+  <div class="max-w-7xl mx-auto px-4">
     <!-- Page Header -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-title">
-          <i class="fas fa-user-clock"></i>
-          <div>
-            <h1 class="page-title">My Requests</h1>
-            <p class="page-subtitle">Track the status of your submitted requests</p>
+    <div class="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-6">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-2xl">
+              <i class="fas fa-user-clock"></i>
+            </div>
+            <div>
+              <h1 class="text-3xl font-black text-white font-akira mb-1">My Requests</h1>
+              <p class="text-white/80 font-inter">Track the status of your submitted requests</p>
+            </div>
           </div>
-        </div>
-        <div class="header-actions">
-          <a routerLink="/approvals" class="btn btn-secondary" *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-            <i class="fas fa-clipboard-check"></i>
-            All Requests
-          </a>
+          <div *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
+            <a routerLink="/approvals" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white/20 hover:bg-white/30 text-white">
+              <i class="fas fa-clipboard-check mr-2"></i>
+              All Requests
+            </a>
+          </div>
         </div>
       </div>
     </div>
