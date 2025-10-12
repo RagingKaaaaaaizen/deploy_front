@@ -329,6 +329,23 @@ import { Account, Role } from './_models';
       align-items: center;
     }
 
+    .navbar-toggle {
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      margin-right: 12px;
+    }
+
+    .navbar-toggle:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
     .navbar-brand {
       display: flex;
       align-items: center;
@@ -415,6 +432,14 @@ export class AppComponent {
         const navComponent = document.querySelector('app-nav') as any;
         if (navComponent && navComponent.toggleMobileSidebar) {
             navComponent.toggleMobileSidebar();
+        }
+    }
+    
+    toggleSidebar() {
+        // This will be handled by the nav component
+        const navComponent = document.querySelector('app-nav') as any;
+        if (navComponent && navComponent.toggleSidebar) {
+            navComponent.toggleSidebar();
         }
     }
     
