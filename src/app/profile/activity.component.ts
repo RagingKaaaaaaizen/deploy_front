@@ -32,6 +32,7 @@ export class ActivityComponent implements OnInit {
     
     actions = Object.values(ActivityAction);
     entityTypes = Object.values(EntityType);
+    filterTimeout: any;
 
     constructor(
         private activityLogService: ActivityLogService,
@@ -61,19 +62,19 @@ export class ActivityComponent implements OnInit {
         // Priority order: selected user > input userId > entity > all
         if (this.selectedUserId && this.canViewOtherUserLogs()) {
             // Admin viewing specific user's logs
-            observable = this.activityLogService.getUserActivity(Number(this.selectedUserId), this.pageSize, offset);
+            observable = this.activityLogService.getUserActivity(Number(this.selectedUserId), this.pageSize, offset, this.filters);
         } else if (this.userId) {
             // Component input userId
-            observable = this.activityLogService.getUserActivity(this.userId, this.pageSize, offset);
+            observable = this.activityLogService.getUserActivity(this.userId, this.pageSize, offset, this.filters);
         } else if (this.entityType && this.entityId) {
-            // Entity-specific logs
+            // Entity-specific logs (filters not applicable for entity-specific logs)
             observable = this.activityLogService.getEntityActivity(this.entityType, this.entityId, this.pageSize);
         } else if (this.canViewOtherUserLogs()) {
             // Admin viewing all logs
             observable = this.activityLogService.getAllActivity(this.pageSize, offset, this.filters);
         } else {
             // Regular user viewing their own logs
-            observable = this.activityLogService.getMyActivity(this.pageSize, offset);
+            observable = this.activityLogService.getMyActivity(this.pageSize, offset, this.filters);
         }
         
         observable.subscribe({
@@ -107,6 +108,14 @@ export class ActivityComponent implements OnInit {
     clearFilters() {
         this.filters = { action: '', entityType: '' };
         this.loadLogs(true);
+    }
+
+    onFilterChange() {
+        // Auto-apply filters when they change (with a small delay to avoid excessive requests)
+        clearTimeout(this.filterTimeout);
+        this.filterTimeout = setTimeout(() => {
+            this.loadLogs(true);
+        }, 300);
     }
 
     getActionDisplayName(action: string): string {
