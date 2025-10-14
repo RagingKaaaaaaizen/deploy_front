@@ -333,24 +333,24 @@ import { NavComponent } from './_components/nav.component';
     .navbar-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .navbar-toggle {
       background: none;
       border: none;
       color: #6b7280;
-      font-size: 1.2rem;
+      font-size: 1rem;
       cursor: pointer;
-      padding: 8px;
+      padding: 6px;
       border-radius: 6px;
       transition: all 0.3s ease;
-      margin-right: 12px;
+      margin-right: 8px;
       display: inline-flex !important;
       align-items: center;
       justify-content: center;
-      min-width: 40px;
-      min-height: 40px;
+      min-width: 32px;
+      min-height: 32px;
       visibility: visible !important;
       opacity: 1 !important;
     }
@@ -377,7 +377,7 @@ import { NavComponent } from './_components/nav.component';
     }
 
     .brand-title {
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #1f2937;
       margin: 0;
@@ -385,7 +385,7 @@ import { NavComponent } from './_components/nav.component';
     }
 
     .system-subtitle {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       color: #6b7280;
       margin: 0;
       line-height: 1.2;

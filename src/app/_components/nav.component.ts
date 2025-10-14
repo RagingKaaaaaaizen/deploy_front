@@ -273,17 +273,17 @@ import { takeUntil } from 'rxjs/operators';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px;
+      padding: 16px;
       border-bottom: 1px solid #e5e7eb;
-      min-height: 80px;
+      min-height: 64px;
       background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1.5rem;
+      gap: 8px;
+      font-size: 1.25rem;
       font-weight: bold;
     }
 
@@ -291,7 +291,7 @@ import { takeUntil } from 'rxjs/operators';
       display: flex;
       align-items: center;
       gap: 2px;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 900;
     }
 
@@ -309,16 +309,16 @@ import { takeUntil } from 'rxjs/operators';
       background: #f3f4f6;
       border: none;
       color: #6b7280;
-      font-size: 1.2rem;
+      font-size: 1rem;
       cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
+      padding: 6px;
+      border-radius: 6px;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
     }
 
     .toggle-btn:hover {
@@ -342,10 +342,10 @@ import { takeUntil } from 'rxjs/operators';
     .user-profile {
       display: flex;
       align-items: center;
-      padding: 20px;
-      gap: 12px;
+      padding: 16px;
+      gap: 10px;
       border-bottom: 1px solid #e5e7eb;
-      min-height: 80px;
+      min-height: 64px;
       background: #f9fafb;
       position: relative;
     }
@@ -359,7 +359,7 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .user-avatar i {
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: #3b82f6;
     }
 
@@ -370,13 +370,13 @@ import { takeUntil } from 'rxjs/operators';
 
     .user-name {
       font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
+      font-size: 0.8rem;
+      margin-bottom: 2px;
       color: #1f2937;
     }
 
     .user-role {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       color: #6b7280;
       text-transform: capitalize;
     }
@@ -454,8 +454,8 @@ import { takeUntil } from 'rxjs/operators';
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 15px;
-      padding: 12px 20px;
+      gap: 12px;
+      padding: 10px 16px;
       color: #374151;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -483,8 +483,8 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .nav-link i {
-      font-size: 1.1rem;
-      width: 20px;
+      font-size: 1rem;
+      width: 18px;
       text-align: center;
       transition: all 0.3s ease;
     }
@@ -525,12 +525,12 @@ import { takeUntil } from 'rxjs/operators';
     .dropdown-item a {
       display: flex;
       align-items: center;
-      gap: 15px;
-      padding: 10px 20px 10px 50px;
+      gap: 12px;
+      padding: 8px 16px 8px 40px;
       color: #6b7280;
       text-decoration: none;
       transition: all 0.3s ease;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
 
     .dropdown-item a:hover {
