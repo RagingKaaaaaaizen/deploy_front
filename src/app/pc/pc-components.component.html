@@ -145,8 +145,8 @@
                     </div>
                     
                     <div *ngIf="!comparisonResult.matches && hasRole([Role.SuperAdmin, Role.Admin])">
-                      <button class="btn btn-success template-action-btn" (click)="applyTemplate(true)" [disabled]="loading">
-                        <i class="fas fa-sync-alt me-1"></i> Replace All
+                      <button class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed" (click)="applyTemplate(true)" [disabled]="loading">
+                        <i class="fas fa-sync-alt mr-1"></i> Replace All
                       </button>
                     </div>
                   </div>
@@ -157,8 +157,8 @@
                   <h6 class="mb-3">
                     <i class="fas fa-list-ul me-2"></i>Detailed Mismatch Analysis
                   </h6>
-                  <div class="table-responsive">
-                    <table class="table table-sm mismatch-table">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
                       <thead>
                         <tr>
                           <th>Category</th>

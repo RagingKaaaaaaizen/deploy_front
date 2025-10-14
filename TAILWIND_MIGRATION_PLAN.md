@@ -139,6 +139,12 @@ Acceptance criteria
 - [x] `home` dashboard migrated
 - [x] `profile` pages migrated
 - [x] `stocks` pages migrated
-- [ ] Remaining modules migrated (approvals, analytics, dispose, archive, admin, account, activity)
+- [x] `approvals` module migrated
+- [x] `analytics` module migrated
+- [x] `dispose` module migrated
+- [x] `archive` module migrated
+- [x] `admin` module migrated
+- [x] `account` module migrated (register removed, verify-email, reset-password, forgot-password, layout)
+- [x] `activity` module migrated
 - [ ] Bootstrap removed from build
 - [ ] Polish and a11y pass complete
