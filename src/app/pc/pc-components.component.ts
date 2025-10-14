@@ -1288,7 +1288,7 @@ export class PCComponentsComponent implements OnInit {
     this.filteredStockEntries = this.allStocks.filter(stock => stock.quantity > 0);
     this.showStockSelectionModal = true;
   }
-  
+    
   closeStockSelectionModal() {
     this.showStockSelectionModal = false;
   }

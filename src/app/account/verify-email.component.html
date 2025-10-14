@@ -16,9 +16,9 @@
         </div>
 
         <!-- Failed State -->
-        <div *ngIf="emailStatus == EmailStatus.Failed" class="bg-red-50 border border-red-200 rounded-xl p-6">
+        <div *ngIf="emailStatus == EmailStatus.Failed" class="bg-red-50 border border-red-200 rounded-xl p-6" role="alert" aria-live="assertive">
             <div class="flex items-start">
-                <i class="fas fa-exclamation-circle text-red-600 text-2xl mr-3 mt-1"></i>
+                <i class="fas fa-exclamation-circle text-red-600 text-2xl mr-3 mt-1" aria-hidden="true"></i>
                 <div>
                     <p class="text-red-800 font-semibold mb-2">Verification Failed</p>
                     <p class="text-red-700 font-inter text-sm">
