@@ -233,8 +233,9 @@ import { takeUntil } from 'rxjs/operators';
     }
 
     .sidebar.modal-blur {
-      filter: blur(4px);
-      opacity: 0.7;
+      /* Remove blur effect - modal overlay already handles backdrop */
+      /* filter: blur(4px); */
+      /* opacity: 0.7; */
     }
 
     .sidebar.collapsed {
@@ -776,14 +777,11 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   toggleSidebar() {
-    console.log('Nav toggleSidebar called, isMobile:', this.isMobile, 'isCollapsed:', this.isCollapsed);
     // Always allow toggle on desktop, handle mobile separately
     if (!this.isMobile) {
       this.isCollapsed = !this.isCollapsed;
-      console.log('Desktop toggle - new isCollapsed:', this.isCollapsed);
     } else {
       // On mobile, toggle the mobile sidebar instead
-      console.log('Mobile toggle');
       this.toggleMobileSidebar();
     }
   }

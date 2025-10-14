@@ -718,6 +718,8 @@ import { Role } from '../_models';
        align-items: center;
        padding: 20px;
        animation: fadeIn 0.3s ease-out;
+       /* Ensure modal overlay doesn't interfere with sidebar */
+       pointer-events: auto;
      }
 
      @keyframes fadeIn {
