@@ -11,4 +11,5 @@ export class Account {
     status?: string;
     jwtToken?: string;
     verified?: Date;
+    lastLogin?: Date;
 }
