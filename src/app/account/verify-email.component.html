@@ -1,9 +1,32 @@
-﻿<h3 class="card-header">Verify Email</h3>
-<div class="card-body">
-    <div *ngIf="emailStatus == EmailStatus.Verifying">
-        Verifying...
-    </div>
-    <div *ngIf="emailStatus == EmailStatus.Failed">
-        Verification failed, you can also verify your account using the <a routerLink="forgot-password">forgot password</a> page.
+﻿<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-envelope-open-text text-white text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 font-akira mb-2">Verify Email</h3>
+            <p class="text-gray-600 font-inter">Confirming your email address</p>
+        </div>
+
+        <!-- Verifying State -->
+        <div *ngIf="emailStatus == EmailStatus.Verifying" class="text-center py-8">
+            <div class="inline-block w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p class="text-gray-700 font-inter text-lg">Verifying your email...</p>
+        </div>
+
+        <!-- Failed State -->
+        <div *ngIf="emailStatus == EmailStatus.Failed" class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-circle text-red-600 text-2xl mr-3 mt-1"></i>
+                <div>
+                    <p class="text-red-800 font-semibold mb-2">Verification Failed</p>
+                    <p class="text-red-700 font-inter text-sm">
+                        Verification failed, you can also verify your account using the 
+                        <a routerLink="forgot-password" class="text-blue-600 hover:text-blue-700 font-bold underline">forgot password</a> page.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
