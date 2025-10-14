@@ -751,9 +751,19 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   checkScreenSize() {
+    const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 768;
-    if (!this.isMobile) {
+    
+    // If switching from mobile to desktop, close mobile sidebar and reset collapsed state
+    if (wasMobile && !this.isMobile) {
       this.isMobileOpen = false;
+      // Reset collapsed state to false on desktop for better UX
+      this.isCollapsed = false;
+    }
+    
+    // If switching from desktop to mobile, close any open dropdowns
+    if (!wasMobile && this.isMobile) {
+      this.openDropdowns.clear();
     }
   }
 
@@ -766,8 +776,15 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   toggleSidebar() {
+    console.log('Nav toggleSidebar called, isMobile:', this.isMobile, 'isCollapsed:', this.isCollapsed);
+    // Always allow toggle on desktop, handle mobile separately
     if (!this.isMobile) {
       this.isCollapsed = !this.isCollapsed;
+      console.log('Desktop toggle - new isCollapsed:', this.isCollapsed);
+    } else {
+      // On mobile, toggle the mobile sidebar instead
+      console.log('Mobile toggle');
+      this.toggleMobileSidebar();
     }
   }
 

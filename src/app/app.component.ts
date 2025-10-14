@@ -346,11 +346,24 @@ import { NavComponent } from './_components/nav.component';
       border-radius: 6px;
       transition: all 0.3s ease;
       margin-right: 12px;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      min-height: 40px;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
 
     .navbar-toggle:hover {
       background: #f3f4f6;
       color: #374151;
+    }
+
+    /* Ensure toggle button is always visible */
+    .navbar-toggle {
+      position: relative !important;
+      z-index: 1001 !important;
     }
 
     .brand-logo {
