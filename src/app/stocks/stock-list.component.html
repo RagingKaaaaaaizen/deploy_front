@@ -512,10 +512,11 @@
         <i class="fas fa-times"></i>
         Cancel
       </button>
-      <button type="button" class="btn btn-primary" [disabled]="stockLoading" (click)="debugSubmitButton($event); onFormSubmit($event)">
-        <i class="fas fa-save"></i>
+      <button type="button" class="btn btn-primary" [disabled]="stockLoading" (click)="onAddStockClick($event)">
+        <div *ngIf="stockLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+        <i *ngIf="!stockLoading" class="fas fa-save mr-2"></i>
         <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>
-        <span *ngIf="stockLoading">Adding...</span>
+        <span *ngIf="stockLoading">Adding Stock Items...</span>
       </button>
     </div>
   </div>

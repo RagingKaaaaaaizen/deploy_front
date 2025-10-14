@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, forkJoin, of, from } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { StockService } from './stock.service';
 import { ItemService } from './item.service';
@@ -370,9 +370,9 @@ export class AnalyticsService {
       stocks: this.stockService.getAll().pipe(catchError(() => of([]))),
       items: this.itemService.getAll().pipe(catchError(() => of([])))
     }).pipe(
-      map(data => {
+      switchMap(data => {
         const stockData = this.prepareStockListForExcel(data.stocks, data.items);
-        this.exportToExcel(stockData, 'Stock_List_' + this.getCurrentDateString());
+        return from(this.exportToExcel(stockData, 'Stock_List_' + this.getCurrentDateString()));
       })
     );
   }
@@ -380,24 +380,24 @@ export class AnalyticsService {
   // Word document downloads for reports
   downloadWeeklyStockReport(): Observable<void> {
     return this.getStockAdditionsOverTime(7).pipe(
-      map(data => {
-        this.exportToWord(data, 'Weekly', 'Weekly_Stock_Report_' + this.getCurrentDateString());
+      switchMap(data => {
+        return from(this.exportToWord(data, 'Weekly', 'Weekly_Stock_Report_' + this.getCurrentDateString()));
       })
     );
   }
 
   downloadMonthlyStockReport(): Observable<void> {
     return this.getStockAdditionsOverTime(30).pipe(
-      map(data => {
-        this.exportToWord(data, 'Monthly', 'Monthly_Stock_Report_' + this.getCurrentDateString());
+      switchMap(data => {
+        return from(this.exportToWord(data, 'Monthly', 'Monthly_Stock_Report_' + this.getCurrentDateString()));
       })
     );
   }
 
   downloadYearlyStockReport(): Observable<void> {
     return this.getStockAdditionsOverTime(365).pipe(
-      map(data => {
-        this.exportToWord(data, 'Yearly', 'Yearly_Stock_Report_' + this.getCurrentDateString());
+      switchMap(data => {
+        return from(this.exportToWord(data, 'Yearly', 'Yearly_Stock_Report_' + this.getCurrentDateString()));
       })
     );
   }
@@ -408,33 +408,33 @@ export class AnalyticsService {
       pcs: this.pcService.getAll().pipe(catchError(() => of([]))),
       components: this.pcComponentService.getAll().pipe(catchError(() => of([])))
     }).pipe(
-      map(data => {
+      switchMap(data => {
         const pcData = this.preparePCListForExcel(data.pcs, data.components);
-        this.exportToExcel(pcData, 'PC_List_' + this.getCurrentDateString());
+        return from(this.exportToExcel(pcData, 'PC_List_' + this.getCurrentDateString()));
       })
     );
   }
 
   downloadWeeklyPCAnalysis(): Observable<void> {
     return this.getPCAnalysisData(7).pipe(
-      map(data => {
-        this.exportToWord(data, 'Weekly', 'Weekly_PC_Analysis_' + this.getCurrentDateString());
+      switchMap(data => {
+        return from(this.exportToWord(data, 'Weekly', 'Weekly_PC_Analysis_' + this.getCurrentDateString()));
       })
     );
   }
 
   downloadMonthlyPCAnalysis(): Observable<void> {
     return this.getPCAnalysisData(30).pipe(
-      map(data => {
-        this.exportToWord(data, 'Monthly', 'Monthly_PC_Analysis_' + this.getCurrentDateString());
+      switchMap(data => {
+        return from(this.exportToWord(data, 'Monthly', 'Monthly_PC_Analysis_' + this.getCurrentDateString()));
       })
     );
   }
 
   downloadYearlyPCAnalysis(): Observable<void> {
     return this.getPCAnalysisData(365).pipe(
-      map(data => {
-        this.exportToWord(data, 'Yearly', 'Yearly_PC_Analysis_' + this.getCurrentDateString());
+      switchMap(data => {
+        return from(this.exportToWord(data, 'Yearly', 'Yearly_PC_Analysis_' + this.getCurrentDateString()));
       })
     );
   }
@@ -858,39 +858,51 @@ export class AnalyticsService {
     return htmlContent;
   }
 
-  private exportToExcel(data: any[], filename: string): void {
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Report');
-    
-    // Auto-size columns
-    const colWidths = data[0].map((col: string, index: number) => {
-      const maxLength = Math.max(...data.map(row => String(row[index] || '').length));
-      return { wch: Math.min(Math.max(maxLength + 2, 10), 50) };
+  private exportToExcel(data: any[], filename: string): Promise<void> {
+    return new Promise((resolve) => {
+      const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Report');
+      
+      // Auto-size columns
+      const colWidths = data[0].map((col: string, index: number) => {
+        const maxLength = Math.max(...data.map(row => String(row[index] || '').length));
+        return { wch: Math.min(Math.max(maxLength + 2, 10), 50) };
+      });
+      ws['!cols'] = colWidths;
+      
+      // Save the file and resolve when download starts
+      XLSX.writeFile(wb, `${filename}.xlsx`);
+      
+      // Add a small delay to ensure download has started
+      setTimeout(() => resolve(), 100);
     });
-    ws['!cols'] = colWidths;
-    
-    // Save the file
-    XLSX.writeFile(wb, `${filename}.xlsx`);
   }
 
-  private exportToWord(data: any[], period: string, filename: string): void {
-    let htmlContent: string;
-    
-    // Check if this is PC analysis data (has pc property) or stock data
-    if (data.length > 0 && data[0].pc) {
-      htmlContent = this.createPCAnalysisWordContent(data, period);
-    } else {
-      htmlContent = this.createWordHTMLContent(data, period);
-    }
-    
-    const blob = new Blob([htmlContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${filename}.docx`;
-    link.click();
-    window.URL.revokeObjectURL(url);
+  private exportToWord(data: any[], period: string, filename: string): Promise<void> {
+    return new Promise((resolve) => {
+      let htmlContent: string;
+      
+      // Check if this is PC analysis data (has pc property) or stock data
+      if (data.length > 0 && data[0].pc) {
+        htmlContent = this.createPCAnalysisWordContent(data, period);
+      } else {
+        htmlContent = this.createWordHTMLContent(data, period);
+      }
+      
+      const blob = new Blob([htmlContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${filename}.docx`;
+      link.click();
+      
+      // Add a small delay to ensure download has started
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        resolve();
+      }, 100);
+    });
   }
 
   private getCurrentDateString(): string {

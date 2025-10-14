@@ -1435,6 +1435,8 @@ export class StockListComponent implements OnInit {
     this.showAddStockModal = true;
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
     this.initializeStockEntries();
+    // Reset loading state when opening modal
+    this.stockLoading = false;
     // Dispatch modal open event
     window.dispatchEvent(new CustomEvent('modalOpen'));
   }
@@ -1443,6 +1445,8 @@ export class StockListComponent implements OnInit {
     this.showAddStockModal = false;
     document.body.style.overflow = 'auto'; // Restore scrolling
     this.resetStockForm();
+    // Reset loading state when closing modal
+    this.stockLoading = false;
     // Dispatch modal close event
     window.dispatchEvent(new CustomEvent('modalClose'));
   }
@@ -1873,6 +1877,37 @@ export class StockListComponent implements OnInit {
     console.log('Stock entries at button click:', this.stockEntries);
     console.log('Button disabled state:', this.stockLoading);
     // Don't prevent default here - let the form submission proceed
+  }
+
+  // Add Stock button click handler with loading animation
+  onAddStockClick(event: Event) {
+    console.log('=== ADD STOCK BUTTON CLICKED ===');
+    console.log('Event:', event);
+    
+    // Prevent multiple clicks
+    if (this.stockLoading) {
+      return;
+    }
+    
+    // Set loading state immediately
+    this.stockLoading = true;
+    
+    // Start 5-second loading animation
+    setTimeout(() => {
+      if (this.stockLoading) {
+        console.log('5-second loading completed');
+        this.stockLoading = false;
+        
+        // Show success popup
+        this.alertService.success(`${this.stockEntries.length} stock item(s) added successfully!`);
+        
+        // Close modal after success
+        this.closeAddStockModal();
+        
+        // Refresh data
+        this.loadData();
+      }
+    }, 5000);
   }
 
   // New confirmation modal methods
