@@ -100,7 +100,7 @@
             <thead class="table-light">
               <tr>
                 <th class="text-center">
-                  <i class="fas fa-box me-1 text-primary"></i> Item
+                  <i class="fas fa-box me-1 text-primary"></i> Item Name
                 </th>
                 <th class="text-center">
                   <i class="fas fa-tag me-1 text-primary"></i> Category
@@ -112,22 +112,7 @@
                   <i class="fas fa-map-marker-alt me-1 text-primary"></i> Location
                 </th>
                 <th class="text-center">
-                  <i class="fas fa-sort-numeric-up me-1 text-primary"></i> Qty
-                </th>
-                <th class="text-center">
-                  <i class="fas fa-dollar-sign me-1 text-primary"></i> Price
-                </th>
-                <th class="text-center">
-                  <i class="fas fa-calculator me-1 text-primary"></i> Total
-                </th>
-                <th class="text-center">
-                  <i class="fas fa-clock me-1 text-primary"></i> Date
-                </th>
-                <th class="text-center">
-                  <i class="fas fa-user me-1 text-primary"></i> Created By
-                </th>
-                <th class="text-center">
-                  <i class="fas fa-desktop me-1 text-primary"></i> Status
+                  <i class="fas fa-sort-numeric-up me-1 text-primary"></i> Quantity
                 </th>
                 <th class="text-center">
                   <i class="fas fa-cogs me-1 text-primary"></i> Actions
@@ -136,143 +121,75 @@
             </thead>
             <tbody>
               <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId">
-                <td class="text-center">
-                  <div class="item-info">
-                    <strong class="font-montserrat text-sm font-semibold">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
-                    <small class="block text-gray-600 font-inter text-sm" *ngIf="stock.item?.description">
-                      {{ stock.item.description }}
-                    </small>
-                    <small class="block text-gray-500 font-inter text-sm" *ngIf="stock.disposal">
-                      <strong>Disposal Info:</strong><br>
-                      Reason: {{ stock.disposal.reason || 'No reason' }}<br>
-                      Date: {{ stock.disposal.disposalDate | date:'MMM dd, yyyy' }}<br>
-                      <span *ngIf="stock.disposal.returnedToStock" class="text-green-600">
-                        <i class="fas fa-check-circle"></i> Returned to Stock
-                      </span>
-                    </small>
-                  </div>
+                <!-- Item Name -->
+                <td class="text-center align-middle">
+                  <strong class="font-montserrat text-sm font-semibold">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
                 </td>
-                <td class="text-center">
-                  <span class="category-badge text-sm font-medium">
+                
+                <!-- Category -->
+                <td class="text-center align-middle">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     {{ stock.item?.category?.name || getCategoryName(stock) }}
                   </span>
                 </td>
-                <td class="text-center" data-label="Brand">
-                  <span class="brand-badge text-sm font-medium">
+                
+                <!-- Brand -->
+                <td class="text-center align-middle">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                     {{ stock.item?.brand?.name || getBrandName(stock) }}
                   </span>
                 </td>
-                <td class="text-center" data-label="Location">
-                  <span class="location-badge text-sm font-medium">
+                
+                <!-- Location -->
+                <td class="text-center align-middle">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <i class="fas fa-map-marker-alt mr-1"></i>
                     {{ stock.location?.name || getLocationNameByStock(stock) }}
-                    <small class="block text-gray-500 font-inter text-xs" *ngIf="stock.location?.description">
-                      {{ stock.location.description }}
-                    </small>
                   </span>
                 </td>
-                <td class="text-center" data-label="Quantity">
-                  <div class="quantity-info">
-                    <span class="quantity-badge text-sm font-semibold" [ngClass]="{
-                      'quantity-positive': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
-                      'quantity-negative': stock.disposeId && !stock.disposal?.returnedToStock,
-                      'quantity-zero': stock.quantity === 0
-                    }">
-                      {{ stock.quantity }}
-                    </span>
-                    <div class="stock-summary" *ngIf="isItemEffectivelyAvailable(stock)">
-                      <strong>Stock Summary:</strong><br>
-                      Total: {{ getStockSummary(stock.itemId).total }} | 
-                      Available: {{ getStockSummary(stock.itemId).available }} | 
-                      In Use: {{ getStockSummary(stock.itemId).inUse }}
-                    </div>
-                    <small class="block text-gray-500 mt-1" *ngIf="stock.disposeId && stock.disposal && stock.disposal.returnedToStock">
-                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <i class="fas fa-undo mr-1"></i> Returned {{ stock.quantity }} from disposal
-                      </span>
-                    </small>
-                    <small class="block text-gray-500 mt-1" *ngIf="stock.disposal && !stock.disposal.returnedToStock">
-                      <strong>Disposal Value:</strong> php{{ stock.disposal.disposalValue | number:'1.2-2' }}<br>
-                      <strong>Total Value:</strong> php{{ (stock.disposal.disposalValue * stock.quantity) | number:'1.2-2' }}
-                    </small>
-                  </div>
-                </td>
-                <td class="text-center" data-label="Price">
-                  <span class="price-value text-sm font-semibold">
-                    php{{ stock.price | number:'1.2-2' }}
+                
+                <!-- Quantity -->
+                <td class="text-center align-middle">
+                  <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold" [ngClass]="{
+                    'bg-green-100 text-green-800': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
+                    'bg-red-100 text-red-800': stock.disposeId && !stock.disposal?.returnedToStock,
+                    'bg-gray-100 text-gray-800': stock.quantity === 0
+                  }">
+                    {{ stock.quantity }}
                   </span>
                 </td>
-                <td class="font-inter w-24 text-right" data-label="Total">
-                  <span class="total-price text-sm font-semibold">
-                    php{{ (stock.price * stock.quantity) | number:'1.2-2' }}
-                  </span>
-                </td>
-                <td class="text-center" data-label="Time & Date">
-                  <div class="time-date-info">
-                    <span class="date-badge text-sm font-medium">
-                      {{ stock.createdAt | date:'MMM dd, yyyy' }}
-                    </span>
-                    <small class="block text-gray-500 mt-1 text-sm">
-                      {{ stock.createdAt | date:'HH:mm:ss' }}
-                    </small>
-                    <small class="block text-gray-500" *ngIf="stock.disposeId && stock.disposal && !stock.disposal.returnedToStock">
-                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                        <i class="fas fa-trash-alt mr-1"></i> Disposal
-                      </span>
-                    </small>
-                  </div>
-                </td>
-                <td class="text-center" data-label="Created By">
-                  <div class="user-info">
-                    <span class="user-badge font-montserrat text-sm font-medium" *ngIf="stock.user">
-                      {{ stock.user.firstName }} {{ stock.user.lastName }}
-                    </span>
-                    <span class="user-badge text-gray-500 font-inter text-sm font-medium" *ngIf="!stock.user">
-                      Unknown User
-                    </span>
-                    <small class="block text-gray-500 mt-1 font-inter text-xs" *ngIf="stock.user?.email">
-                      {{ stock.user.email }}
-                    </small>
-                  </div>
-                </td>
-                <td class="text-center" data-label="In Use">
-                  <div class="in-use-info">
-                    <span *ngIf="isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                      <i class="fas fa-desktop mr-1"></i> In Use
-                    </span>
-                    <span *ngIf="!isItemInUse(stock.itemId)" class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                      <i class="fas fa-box mr-1"></i> Available
-                    </span>
-                    <small class="block text-gray-500 mt-1 font-inter text-xs">
-                      {{ getInUseDetails(stock.itemId) }}
-                    </small>
-                  </div>
-                </td>
-                <td class="text-center" data-label="Actions">
-                  <div class="flex flex-row gap-1 justify-center">
-                    <button type="button" class="btn btn-outline-primary px-2 py-2"
-                            (click)="openViewStockModal(stock)" title="View Details">
-                      <i class="fas fa-eye text-sm"></i>
+                
+                <!-- Actions -->
+                <td class="text-center align-middle">
+                  <div class="flex flex-row gap-2 justify-center">
+                    <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
+                            (click)="openViewStockModal(stock)" title="View Full Details">
+                      <i class="fas fa-eye mr-1"></i>
+                      View
                     </button>
-                    <button type="button" class="btn btn-outline-warning px-2 py-2"
+                    <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border border-yellow-200"
                             (click)="openEditStockModal(stock)" title="Edit Stock"
                             *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                      <i class="fas fa-edit text-sm"></i>
+                      <i class="fas fa-edit mr-1"></i>
+                      Edit
                     </button>
-                    <button type="button" class="btn btn-outline-info px-2 py-2"
+                    <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200"
                             (click)="navigateToDispose(stock)" title="Dispose Stock"
                             *ngIf="isItemEffectivelyAvailable(stock) && hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                      <i class="fas fa-recycle text-sm"></i>
+                      <i class="fas fa-recycle mr-1"></i>
+                      Dispose
                     </button>
-                    <button type="button" class="btn btn-outline-danger px-2 py-2"
+                    <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition bg-red-50 text-red-700 hover:bg-red-100 border border-red-200"
                             (click)="confirmDeleteStock(stock)" title="Delete Stock Entry"
                             *ngIf="hasRole([Role.SuperAdmin, Role.Admin])">
-                      <i class="fas fa-trash text-sm"></i>
+                      <i class="fas fa-trash mr-1"></i>
+                      Delete
                     </button>
                   </div>
                 </td>
               </tr>
               <tr *ngIf="filteredStocks.length === 0">
-                <td colspan="11" class="px-4 py-8 text-center text-gray-500">
+                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
                   <div class="empty-state">
                     <i class="fas fa-box-open text-4xl mb-4"></i>
                     <h4 class="text-lg font-semibold mb-2 font-montserrat">No stock entries found</h4>
