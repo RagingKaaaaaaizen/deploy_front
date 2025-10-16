@@ -1319,7 +1319,7 @@ export class DisposeListComponent implements OnInit {
   initForm() {
     this.form = this.formBuilder.group({
       stockEntryId: ['', Validators.required],
-      quantity: [{value: '', disabled: true}, [Validators.required, Validators.min(1), this.validateQuantity.bind(this)]],
+      quantity: ['', [Validators.required, Validators.min(1), this.validateQuantity.bind(this)]],
       locationId: ['', Validators.required],
       reason: ['']
     });
@@ -1357,13 +1357,9 @@ export class DisposeListComponent implements OnInit {
       console.log('Stock entry ID changed to:', stockEntryId);
       if (stockEntryId) {
         this.checkSelectedStockQuantity(stockEntryId);
-        // Enable quantity field when stock entry is selected
-        this.form.get('quantity')?.enable();
       } else {
         this.availableStock = 0;
         this.selectedItemPrice = 0;
-        // Disable quantity field when no stock entry is selected
-        this.form.get('quantity')?.disable();
         console.log('No stock entry selected, available stock set to 0');
       }
     });
@@ -1818,9 +1814,7 @@ export class DisposeListComponent implements OnInit {
     const stockEntryId = this.form.get('stockEntryId')?.value;
     if (!stockEntryId) return 'No stock entry selected';
     
-    // Convert to number for comparison since HTML select values are strings
-    const numericStockEntryId = Number(stockEntryId);
-    const selectedStock = this.availableStockEntries.find(stock => stock.id === numericStockEntryId);
+    const selectedStock = this.availableStockEntries.find(stock => stock.id === stockEntryId);
     if (!selectedStock) return 'Stock entry not found';
     
     return selectedStock.location?.name || 'Location not available';

@@ -326,7 +326,8 @@
                 <i class="fas fa-boxes"></i> Select Stock Entry
               </label>
                                          <select formControlName="stockEntryId" class="form-control" 
-                      [ngClass]="{ 'is-invalid': submitted && f.stockEntryId.errors }">
+                      [ngClass]="{ 'is-invalid': submitted && f.stockEntryId.errors }"
+                      [disabled]="loading">
                 <option value="">Select Stock Entry</option>
                 <option *ngFor="let stock of availableStockEntries" [value]="stock.id">
                   {{ stock.item?.name || 'Unknown Item' }} ({{ stock.item?.category?.name }}) - {{ stock.quantity }} units - ₱{{ stock.price | number:'1.2-2' }} each - {{ stock.location?.name }} - {{ stock.createdAt | date:'MMM dd, yyyy HH:mm' }}
@@ -349,6 +350,7 @@
                       [ngClass]="{ 'is-invalid': submitted && f.quantity.errors }"
                       min="1"
                       [max]="availableStock"
+                      [disabled]="loading || !form.value.stockEntryId"
                       placeholder="Enter quantity to dispose">
              <div *ngIf="submitted && f.quantity.errors" class="invalid-feedback">
                <div *ngIf="f.quantity.errors.required">Quantity is required</div>
@@ -386,7 +388,8 @@
               <i class="fas fa-comment"></i> Reason
             </label>
                          <textarea formControlName="reason" class="form-control" rows="3"
-                       placeholder="Reason for disposal, condition, etc."></textarea>
+                       placeholder="Reason for disposal, condition, etc."
+                       [disabled]="loading"></textarea>
           </div>
 
           <!-- Buttons -->
