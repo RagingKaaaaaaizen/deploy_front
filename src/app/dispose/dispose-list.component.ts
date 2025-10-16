@@ -1705,7 +1705,9 @@ export class DisposeListComponent implements OnInit {
     const formData = this.form.value;
     
     // Get the selected stock entry to validate and get additional data
-    const selectedStock = this.availableStockEntries.find(stock => stock.id === formData.stockEntryId);
+    // Convert to number since HTML select returns string but stock.id is number
+    const numericStockEntryId = Number(formData.stockEntryId);
+    const selectedStock = this.availableStockEntries.find(stock => stock.id === numericStockEntryId);
     
     if (!selectedStock) {
       this.alertService.error('Selected stock entry not found');
@@ -1814,7 +1816,9 @@ export class DisposeListComponent implements OnInit {
     const stockEntryId = this.form.get('stockEntryId')?.value;
     if (!stockEntryId) return 'No stock entry selected';
     
-    const selectedStock = this.availableStockEntries.find(stock => stock.id === stockEntryId);
+    // Convert to number since HTML select returns string but stock.id is number
+    const numericStockEntryId = Number(stockEntryId);
+    const selectedStock = this.availableStockEntries.find(stock => stock.id === numericStockEntryId);
     if (!selectedStock) return 'Stock entry not found';
     
     return selectedStock.location?.name || 'Location not available';
