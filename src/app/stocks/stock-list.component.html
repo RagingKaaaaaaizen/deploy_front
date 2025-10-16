@@ -1,29 +1,29 @@
-<div class="max-w-7xl mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 py-6">
   <div class="flex flex-wrap -mx-2">
     <div class="w-full px-2">
     <!-- Page Header -->
-    <div class="bg-white rounded-2xl shadow-lg border-0 mb-6">
-      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-6 rounded-t-2xl">
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+    <div class="bg-white rounded-2xl shadow-lg border-0 mb-4">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-2xl">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
           <div class="flex items-center">
-            <div class="w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-2xl">
+            <div class="w-14 h-14 bg-white/20 text-white rounded-full flex items-center justify-center mr-3 text-xl">
               <i class="fas fa-boxes"></i>
             </div>
             <div>
-              <h1 class="text-3xl font-black text-white font-akira mb-1">Stock Management</h1>
-              <small class="text-white/80 font-inter">Manage and track your inventory stock levels</small>
+              <h1 class="text-2xl font-black text-white font-akira mb-1">Stock Management</h1>
+              <small class="text-white/80 font-inter text-sm">Manage and track your inventory stock levels</small>
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
-            <a routerLink="/dispose" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white text-red-600 hover:bg-gray-100 shadow-sm" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
-              <i class="fas fa-trash-alt mr-2"></i>
+            <a routerLink="/dispose" class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-white text-red-600 hover:bg-gray-100 shadow-sm text-sm" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer])">
+              <i class="fas fa-trash-alt mr-1"></i>
               View Disposals
             </a>
-            <a routerLink="/pc" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white text-gray-700 hover:bg-gray-100 shadow-sm">
-              <i class="fas fa-desktop mr-2"></i> View PCs
+            <a routerLink="/pc" class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-white text-gray-700 hover:bg-gray-100 shadow-sm text-sm">
+              <i class="fas fa-desktop mr-1"></i> View PCs
             </a>
-            <button class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-warning text-white hover:bg-yellow-600 shadow-sm" (click)="openAddStockModal()">
-              <i class="fas fa-plus mr-2"></i>
+            <button class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-warning text-white hover:bg-yellow-600 shadow-sm text-sm" (click)="openAddStockModal()">
+              <i class="fas fa-plus mr-1"></i>
               Add Stock
             </button>
           </div>
@@ -32,20 +32,20 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-          <i class="fas fa-minus-circle text-white text-2xl"></i>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-minus-circle text-white text-xl"></i>
         </div>
-        <div class="text-3xl font-bold text-gray-900 font-akira mb-1">{{ getDisposalsCount() }}</div>
-        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Stock Disposals</div>
+        <div class="text-2xl font-bold text-gray-900 font-akira mb-1">{{ getDisposalsCount() }}</div>
+        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Stock Disposals</div>
       </div>
-      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-          <i class="fas fa-dollar-sign text-white text-2xl"></i>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-dollar-sign text-white text-xl"></i>
         </div>
-        <div class="text-3xl font-bold text-gray-900 font-akira mb-1">php{{ getTotalValue() | number:'1.0-0' }}</div>
-        <div class="text-sm text-gray-600 font-inter uppercase tracking-wide">Total Value</div>
+        <div class="text-2xl font-bold text-gray-900 font-akira mb-1">php{{ getTotalValue() | number:'1.0-0' }}</div>
+        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Total Value</div>
       </div>
     </div>
 
