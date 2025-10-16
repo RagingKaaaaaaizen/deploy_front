@@ -1,18 +1,18 @@
-<div class="max-w-7xl mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 py-6">
   <div class="flex flex-wrap -mx-2">
     <div class="w-full px-2">
       <!-- PC Header -->
-      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-8 rounded-2xl mb-6 shadow-lg">
-        <div class="flex justify-between items-center flex-wrap gap-4">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-2xl mb-4 shadow-lg">
+        <div class="flex justify-between items-center flex-wrap gap-3">
           <div>
-            <h2 class="text-3xl font-bold mb-2">
+            <h2 class="text-2xl font-bold mb-2">
               <i class="fas fa-desktop mr-2"></i> 
               {{ pc?.name || 'PC Components' }}
             </h2>
-            <p class="text-white/90 mb-0">
+            <p class="text-white/90 mb-0 text-sm">
               <i class="fas fa-barcode mr-1"></i> 
               {{ pc?.serialNumber || 'No Serial' }} | 
-              <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium" [ngClass]="{
+              <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium" [ngClass]="{
                 'bg-green-100 text-green-800': pc?.status === 'Active',
                 'bg-yellow-100 text-yellow-800': pc?.status === 'Maintenance',
                 'bg-gray-200 text-gray-700': pc?.status === 'Inactive',
@@ -20,23 +20,23 @@
               }">{{ pc?.status || 'Unknown' }}</span>
             </p>
           </div>
-          <div class="flex gap-3">
-            <a routerLink="/pc" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition border border-white/30 text-white hover:bg-white/20">
-              <i class="fas fa-arrow-left mr-2"></i> Back to PCs
+          <div class="flex gap-2">
+            <a routerLink="/pc" class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition border border-white/30 text-white hover:bg-white/20 text-sm">
+              <i class="fas fa-arrow-left mr-1"></i> Back to PCs
             </a>
-            <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white text-indigo-600 hover:bg-gray-100" (click)="addComponent()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-              <i class="fas fa-plus mr-2"></i> Add Component
+            <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-white text-indigo-600 hover:bg-gray-100 text-sm" (click)="addComponent()" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+              <i class="fas fa-plus mr-1"></i> Add Component
             </button>
           </div>
         </div>
       </div>
 
       <!-- PC Status Card -->
-      <div class="mb-6">
+      <div class="mb-4">
         <div class="rounded-lg bg-white shadow-card border-0">
-          <div class="p-6">
+          <div class="p-4">
             <div class="flex items-center">
-              <div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl mr-4" [ngClass]="{
+              <div class="w-14 h-14 rounded-full flex items-center justify-center text-xl mr-3" [ngClass]="{
                 'bg-gradient-to-br from-green-500 to-teal-500 text-white': getPCStatus().class === 'text-success',
                 'bg-gradient-to-br from-yellow-500 to-orange-500 text-white': getPCStatus().class === 'text-warning',
                 'bg-gradient-to-br from-red-500 to-pink-600 text-white': getPCStatus().class === 'text-danger',
@@ -50,12 +50,12 @@
                   }"></i>
                 </div>
               <div class="flex-grow">
-                <h5 class="text-lg font-semibold mb-1">PC Status: {{ getPCStatus().status }}</h5>
-                <p class="mb-0 text-gray-600 flex items-center gap-2">
-                  <span *ngIf="getPCStatus().hasIssues" class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-red-100 text-red-800">
+                <h5 class="text-base font-semibold mb-1">PC Status: {{ getPCStatus().status }}</h5>
+                <p class="mb-0 text-gray-600 flex items-center gap-2 text-sm">
+                  <span *ngIf="getPCStatus().hasIssues" class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800">
                     <i class="fas fa-exclamation-triangle mr-1"></i> Issues Detected
                     </span>
-                  <span *ngIf="!getPCStatus().hasIssues && components.length > 0" class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800">
+                  <span *ngIf="!getPCStatus().hasIssues && components.length > 0" class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800">
                     <i class="fas fa-check-circle mr-1"></i> All Components Working
                     </span>
                     {{ components.length }} components installed
@@ -67,23 +67,23 @@
       </div>
 
       <!-- Template Comparison Panel -->
-      <div class="mb-6">
+      <div class="mb-4">
         <div class="rounded-lg bg-white shadow-card border-0">
-          <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-lg">
+          <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3 rounded-t-lg">
             <div class="flex justify-between items-center">
-              <h6 class="text-base font-semibold">
+              <h6 class="text-sm font-semibold">
                 <i class="fas fa-clipboard-list mr-2"></i> Template Comparison
                 </h6>
-              <button class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition text-white" (click)="toggleComparisonPanel()">
-                  <i class="fas" [ngClass]="showComparisonPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              <button class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 transition text-white" (click)="toggleComparisonPanel()">
+                  <i class="fas text-sm" [ngClass]="showComparisonPanel ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 </button>
               </div>
             </div>
-            <div class="p-6" *ngIf="showComparisonPanel">
-              <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
+            <div class="p-4" *ngIf="showComparisonPanel">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-3">
                 <div class="md:col-span-8">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Select Template to Compare:</label>
-                  <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" [(ngModel)]="selectedTemplateId" (change)="compareWithTemplate()">
+                  <label class="block text-xs font-medium text-gray-700 mb-1">Select Template to Compare:</label>
+                  <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm" [(ngModel)]="selectedTemplateId" (change)="compareWithTemplate()">
                     <option [ngValue]="null">-- Select a Template --</option>
                     <option *ngFor="let template of templates" [ngValue]="template.id">
                       {{ template.name }} ({{ template.components?.length || 0 }} components)
@@ -91,10 +91,10 @@
                   </select>
                 </div>
                 <div class="md:col-span-4 flex items-end">
-                  <button class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600 w-full" (click)="compareWithTemplate()" 
+                  <button class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600 w-full text-sm" (click)="compareWithTemplate()" 
                           [disabled]="!selectedTemplateId || comparingTemplate">
-                    <span *ngIf="comparingTemplate" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                    <i *ngIf="!comparingTemplate" class="fas fa-sync-alt mr-2"></i>
+                    <span *ngIf="comparingTemplate" class="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                    <i *ngIf="!comparingTemplate" class="fas fa-sync-alt mr-1"></i>
                     {{ comparingTemplate ? 'Comparing...' : 'Compare' }}
                   </button>
                 </div>
