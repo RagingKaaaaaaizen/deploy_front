@@ -1,17 +1,17 @@
-﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-8">
+﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-6">
     <div class="max-w-5xl mx-auto px-4">
         <!-- Page Header -->
-        <div class="bg-white rounded-2xl p-8 mb-8 shadow-lg border border-gray-100">
-            <div class="flex justify-between items-center flex-wrap gap-5">
-                <div class="flex items-center gap-4">
-                    <i class="fas fa-user text-5xl bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent"></i>
+        <div class="bg-white rounded-2xl p-6 mb-6 shadow-lg border border-gray-100">
+            <div class="flex justify-between items-center flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-user text-4xl bg-gradient-to-br from-indigo-500 to-purple-600 bg-clip-text text-transparent"></i>
                     <div>
-                        <h1 class="text-4xl font-bold text-gray-800 mb-1">My Profile</h1>
-                        <p class="text-gray-600 text-lg">View and manage your account information</p>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-1">My Profile</h1>
+                        <p class="text-gray-600 text-base">View and manage your account information</p>
                     </div>
                 </div>
                 <div>
-                    <a routerLink="update" class="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition bg-primary text-white hover:bg-primary-600 shadow-md">
+                    <a routerLink="update" class="inline-flex items-center justify-center rounded-full px-4 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600 shadow-md text-sm">
                         <i class="fas fa-edit mr-2"></i>
                         Edit Profile
                     </a>
@@ -21,23 +21,23 @@
 
         <!-- Profile Card -->
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4">
-                <h5 class="text-lg font-semibold"><i class="fas fa-user-circle mr-2"></i> Account Information</h5>
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3">
+                <h5 class="text-base font-semibold"><i class="fas fa-user-circle mr-2"></i> Account Information</h5>
             </div>
-            <div class="p-8">
+            <div class="p-6">
                     <!-- Profile Avatar -->
-                    <div class="flex justify-center mb-8">
-                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-5xl shadow-xl">
+                    <div class="flex justify-center mb-6">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl shadow-xl">
                             <i class="fas fa-user"></i>
                         </div>
                     </div>
 
                     <!-- Profile Details -->
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center gap-3 text-gray-700">
-                                <i class="fas fa-id-badge text-indigo-500 text-xl"></i>
-                                <span class="font-medium">Full Name</span>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i class="fas fa-id-badge text-indigo-500 text-lg"></i>
+                                <span class="font-medium text-sm">Full Name</span>
                             </div>
                             <div class="text-gray-800 font-semibold">
                                 {{account.title}} {{account.firstName}} {{account.lastName}}
