@@ -2,7 +2,7 @@
 
 <!-- Add Disposal Modal -->
 <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" *ngIf="showAddDisposalModal" (click)="closeAddDisposalModal()">
-  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-hidden" (click)="$event.stopPropagation()">
     <div class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-4">
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
         <div class="flex items-center">
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+    <div class="p-6 overflow-y-auto max-h-[calc(95vh-140px)]">
       <!-- Available Stock Alert -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4" *ngIf="availableStock > 0">
         <div class="flex items-center justify-between">

@@ -186,12 +186,14 @@
                 <td class="font-inter text-center align-middle" data-label="Actions">
                   <div class="flex flex-row gap-1 justify-center">
                     <button class="inline-flex items-center justify-center w-8 h-8 rounded-md transition bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
-                            (click)="viewDisposal(disposal.id!)" title="View Full Details">
+                            (click)="viewDisposal(disposal.id!)" title="View Full Details"
+                            [disabled]="!disposal.id">
                       <i class="fas fa-eye text-sm"></i>
                     </button>
                     <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
                             class="inline-flex items-center justify-center w-8 h-8 rounded-md transition bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border border-yellow-200"
-                            (click)="editDisposal(disposal.id!)" title="Edit Disposal">
+                            (click)="editDisposal(disposal.id!)" title="Edit Disposal"
+                            [disabled]="!disposal.id">
                       <i class="fas fa-edit text-sm"></i>
                     </button>
                     <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 

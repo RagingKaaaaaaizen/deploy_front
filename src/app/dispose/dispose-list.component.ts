@@ -1445,7 +1445,12 @@ export class DisposeListComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (disposals) => {
-          console.log('Disposals loaded:', disposals);
+          console.log('=== DISPOSALS LOADED ===');
+          console.log('Total disposals received:', disposals.length);
+          console.log('First disposal object:', disposals[0]);
+          console.log('First disposal ID:', disposals[0]?.id);
+          console.log('First disposal ID type:', typeof disposals[0]?.id);
+          
           // Filter out disposals with 0 quantity or fully returned to stock
           this.disposals = disposals.filter(disposal => {
             const shouldShow = disposal.quantity > 0 && !disposal.returnedToStock;
@@ -1626,13 +1631,45 @@ export class DisposeListComponent implements OnInit {
   }
 
   viewDisposal(id: number) {
-    console.log('View disposal clicked for ID:', id);
-    this.router.navigate(['/dispose/view', id]);
+    console.log('=== VIEW DISPOSAL CLICKED ===');
+    console.log('ID received:', id);
+    console.log('ID type:', typeof id);
+    console.log('Current route:', this.router.url);
+    
+    if (!id) {
+      console.error('No ID provided for view disposal');
+      this.alertService.error('Invalid disposal ID');
+      return;
+    }
+    
+    try {
+      this.router.navigate(['/dispose/view', id]);
+      console.log('Navigation attempted to:', `/dispose/view/${id}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      this.alertService.error('Failed to navigate to disposal view');
+    }
   }
 
   editDisposal(id: number) {
-    console.log('Edit disposal clicked for ID:', id);
-    this.router.navigate(['/dispose/edit', id]);
+    console.log('=== EDIT DISPOSAL CLICKED ===');
+    console.log('ID received:', id);
+    console.log('ID type:', typeof id);
+    console.log('Current route:', this.router.url);
+    
+    if (!id) {
+      console.error('No ID provided for edit disposal');
+      this.alertService.error('Invalid disposal ID');
+      return;
+    }
+    
+    try {
+      this.router.navigate(['/dispose/edit', id]);
+      console.log('Navigation attempted to:', `/dispose/edit/${id}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      this.alertService.error('Failed to navigate to disposal edit');
+    }
   }
 
   deleteDisposal(id: number) {

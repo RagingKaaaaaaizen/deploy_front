@@ -394,12 +394,18 @@ export class DisposeComponent implements OnInit {
      document.body.style.overflow = 'hidden'; // Prevent background scrolling
    }
 
-   closeAddDisposalModal() {
-     this.showAddDisposalModal = false;
-     document.body.style.overflow = 'auto'; // Restore scrolling
-     // Reset form when closing modal
-     this.resetForm();
-   }
+  closeAddDisposalModal() {
+    this.showAddDisposalModal = false;
+    document.body.style.overflow = 'auto'; // Restore scrolling
+    
+    // If we're in edit/view mode, navigate back to disposal list
+    if (this.isEditMode || this.disposalId) {
+      this.router.navigate(['/dispose']);
+    }
+    
+    // Reset form when closing modal
+    this.resetForm();
+  }
 
   private resetForm() {
     this.form.reset();
@@ -526,7 +532,10 @@ export class DisposeComponent implements OnInit {
     this.loading = true;
     this.disposeService.getById(id).subscribe({
       next: (disposal) => {
-        console.log('Loaded disposal for edit:', disposal);
+        console.log('=== LOADING DISPOSAL FOR EDIT ===');
+        console.log('Disposal data:', disposal);
+        console.log('Form before patch:', this.form.value);
+        
         this.form.patchValue({
           itemId: disposal.itemId,
           quantity: disposal.quantity,
@@ -535,9 +544,14 @@ export class DisposeComponent implements OnInit {
           reason: disposal.reason
         });
         
+        console.log('Form after patch:', this.form.value);
+        
         // Get price and available stock for the item
         this.getItemPrice(disposal.itemId);
         this.checkAvailableStock(disposal.itemId);
+        
+        // Open modal for editing
+        this.showAddDisposalModal = true;
         
         this.loading = false;
       },
@@ -568,6 +582,9 @@ export class DisposeComponent implements OnInit {
         
         // Disable form for view mode
         this.form.disable();
+        
+        // Open modal for viewing
+        this.showAddDisposalModal = true;
         
         this.loading = false;
       },
