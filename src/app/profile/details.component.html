@@ -36,11 +36,21 @@
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-2 text-gray-700">
-                                <i class="fas fa-id-badge text-indigo-500 text-lg"></i>
+                                <i class="fas fa-user text-indigo-500 text-lg"></i>
                                 <span class="font-medium text-sm">Full Name</span>
                             </div>
                             <div class="text-gray-800 font-semibold">
-                                {{account.title}} {{account.firstName}} {{account.lastName}}
+                                {{account.firstName}} {{account.lastName}}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg" *ngIf="account.preferredUsername">
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i class="fas fa-at text-indigo-500 text-lg"></i>
+                                <span class="font-medium text-sm">Preferred Username</span>
+                            </div>
+                            <div class="text-gray-800 font-semibold">
+                                {{account.preferredUsername}}
                             </div>
                         </div>
 

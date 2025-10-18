@@ -2,7 +2,7 @@
 
 export class Account {
     id: string;
-    title: string;
+    title?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -12,4 +12,5 @@ export class Account {
     jwtToken?: string;
     verified?: Date;
     lastLogin?: Date;
+    preferredUsername?: string;
 }

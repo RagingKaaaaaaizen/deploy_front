@@ -43,27 +43,7 @@
                     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="profile-form">
                         <!-- Name Section -->
                         <div class="form-row">
-                            <div class="form-group col-md-2">
-                                <label class="form-label">
-                                    <i class="fas fa-id-badge"></i>
-                                    Title
-                                </label>
-                                <select 
-                                    formControlName="title" 
-                                    class="form-control" 
-                                    [ngClass]="{ 'is-invalid': submitted && f.title.errors }"
-                                >
-                                    <option value="">Select Title</option>
-                                    <option value="Mr">Mr</option>
-                                    <option value="Mrs">Mrs</option>
-                                    <option value="Miss">Miss</option>
-                                    <option value="Ms">Ms</option>
-                                </select>
-                                <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
-                                    <div *ngIf="f.title.errors.required">Title is required</div>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label class="form-label">
                                     <i class="fas fa-user"></i>
                                     First Name
@@ -79,7 +59,7 @@
                                     <div *ngIf="f.firstName.errors.required">First Name is required</div>
                                 </div>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label class="form-label">
                                     <i class="fas fa-user"></i>
                                     Last Name
@@ -94,6 +74,25 @@
                                 <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
                                     <div *ngIf="f.lastName.errors.required">Last Name is required</div>
                                 </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">
+                                    <i class="fas fa-at"></i>
+                                    Preferred Username
+                                </label>
+                                <input 
+                                    type="text" 
+                                    formControlName="preferredUsername" 
+                                    class="form-control" 
+                                    [ngClass]="{ 'is-invalid': submitted && f.preferredUsername.errors }"
+                                    placeholder="Enter preferred username"
+                                />
+                                <div *ngIf="submitted && f.preferredUsername.errors" class="invalid-feedback">
+                                    <div *ngIf="f.preferredUsername.errors.required">Preferred Username is required</div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    This will be displayed as your display name
+                                </small>
                             </div>
                         </div>
 

@@ -24,7 +24,12 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let account of accounts" class="hover:bg-gray-50 transition">
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{account.title}} {{account.firstName}} {{account.lastName}}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                        <div class="font-semibold">{{account.firstName}} {{account.lastName}}</div>
+                        <div class="text-xs text-gray-500" *ngIf="account.preferredUsername">
+                            &#64;{{account.preferredUsername}}
+                        </div>
+                    </td>
                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{{account.email}}</td>
                     <td class="px-4 py-3 whitespace-nowrap">
                         <span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium" 
