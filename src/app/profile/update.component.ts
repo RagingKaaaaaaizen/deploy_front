@@ -352,8 +352,9 @@ export class UpdateComponent implements OnInit {
             title: [this.account.title, Validators.required],
             firstName: [this.account.firstName, Validators.required],
             lastName: [this.account.lastName, Validators.required],
+            preferredUsername: [this.account.preferredUsername, Validators.required],
             email: [this.account.email, [Validators.required, Validators.email]],
-            password: ['', [Validators.minLength(6)]],
+            password: [''],
             confirmPassword: ['']
         }, {
             validator: MustMatch('password', 'confirmPassword')
@@ -379,8 +380,15 @@ export class UpdateComponent implements OnInit {
             return;
         }
 
+        // Prepare form data - only include password if it's provided
+        const formData = { ...this.form.value };
+        if (!formData.password) {
+            delete formData.password;
+            delete formData.confirmPassword;
+        }
+
         this.loading = true;
-        this.accountService.update(this.account.id, this.form.value)
+        this.accountService.update(this.account.id, formData)
             .pipe(first())
             .subscribe({
                 next: () => {

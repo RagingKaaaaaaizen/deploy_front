@@ -45,7 +45,7 @@ import { takeUntil } from 'rxjs/operators';
           <i class="fas fa-user-circle"></i>
         </div>
         <div class="user-info" *ngIf="!isCollapsed || isMobile">
-          <div class="user-name font-montserrat">{{ accountService.accountValue.firstName }} {{ accountService.accountValue.lastName }}</div>
+          <div class="user-name font-montserrat">{{ accountService.accountValue.preferredUsername || (accountService.accountValue.firstName + ' ' + accountService.accountValue.lastName) }}</div>
           <div class="user-role font-inter">{{ accountService.accountValue.role }}</div>
         </div>
         <div class="profile-dropdown" *ngIf="!isCollapsed || isMobile">

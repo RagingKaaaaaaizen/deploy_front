@@ -136,7 +136,6 @@
                                         placeholder="Enter new password"
                                     />
                                     <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                                        <div *ngIf="f.password.errors.required">Password is required</div>
                                         <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
                                     </div>
                                     <small class="form-text text-muted">
