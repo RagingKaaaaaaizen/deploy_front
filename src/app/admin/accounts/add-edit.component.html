@@ -1,97 +1,285 @@
-﻿<h1 *ngIf="isAddMode">Create Account</h1>
-<h1 *ngIf="!isAddMode && !isViewMode">Edit Account</h1>
-<h1 *ngIf="!isAddMode && isViewMode">View Account</h1>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="form-row">
-        <div class="form-group col">
-            <label>Title</label>
-            <select formControlName="title" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
-                <option value=""></option>
-                <option value="Mr">Mr</option>
-                <option value="Mrs">Mrs</option>
-                <option value="Miss">Miss</option>
-                <option value="Ms">Ms</option>
-            </select>
-            <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
-                <div *ngIf="f.title.errors.required">Title is required</div>
-            </div>
-        </div>
-        <div class="form-group col-5">
-            <label>First Name</label>
-            <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
-            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-                <div *ngIf="f.firstName.errors.required">First Name is required</div>
-            </div>
-        </div>
-        <div class="form-group col-5">
-            <label>Last Name</label>
-            <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
-            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-                <div *ngIf="f.lastName.errors.required">Last Name is required</div>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-7">
-            <label>Email</label>
-            <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
-            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                <div *ngIf="f.email.errors.required">Email is required</div>
-                <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
-            </div>
-        </div>
-        <div class="form-group col">
-            <label>Role</label>
-            <select formControlName="role" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
-                <option [value]="Role.SuperAdmin">SuperAdmin</option>
-                <option [value]="Role.Admin">Admin</option>
-                <option [value]="Role.Staff">Staff</option>
-                <option [value]="Role.Viewer">Viewer</option>
-            </select>
-            <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
-                <div *ngIf="f.role.errors.required">Role is required</div>
+﻿<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Page Header -->
+        <div class="bg-white rounded-2xl shadow-lg border-0 mb-6">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-2xl">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div class="flex items-center">
+                        <div class="w-14 h-14 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-xl">
+                            <i class="fas fa-user-plus" *ngIf="isAddMode"></i>
+                            <i class="fas fa-user-edit" *ngIf="!isAddMode && !isViewMode"></i>
+                            <i class="fas fa-user" *ngIf="!isAddMode && isViewMode"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-black text-white font-akira mb-1">
+                                <span *ngIf="isAddMode">Create Account</span>
+                                <span *ngIf="!isAddMode && !isViewMode">Edit Account</span>
+                                <span *ngIf="!isAddMode && isViewMode">View Account</span>
+                            </h1>
+                            <p class="text-white/80 font-inter text-sm">
+                                <span *ngIf="isAddMode">Add a new user account to the system</span>
+                                <span *ngIf="!isAddMode && !isViewMode">Update account information</span>
+                                <span *ngIf="!isAddMode && isViewMode">View account details</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <a routerLink="/admin/accounts" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Back to Accounts
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="form-group col">
-            <label>Status</label>
-            <select formControlName="status" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-            </select>
-            <div *ngIf="submitted && f.status.errors" class="invalid-feedback">
-                <div *ngIf="f.status.errors.required">Status is required</div>
+        <!-- Account Form -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+                <h5 class="text-lg font-semibold text-gray-900 flex items-center gap-2 font-montserrat">
+                    <i class="fas fa-user-cog text-indigo-600"></i> 
+                    Account Information
+                </h5>
+            </div>
+            <div class="p-6">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+                    <!-- Personal Information Section -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <h6 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 font-montserrat">
+                            <i class="fas fa-user text-indigo-600"></i>
+                            Personal Information
+                        </h6>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <!-- Title -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-id-badge text-indigo-600"></i> 
+                                    Title <span class="text-red-500">*</span>
+                                </label>
+                                <select formControlName="title" 
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                        [class.border-red-500]="submitted && f.title.errors"
+                                        [disabled]="isViewMode">
+                                    <option value="">Select Title</option>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.title.errors">
+                                    <div *ngIf="f.title.errors.required">Title is required</div>
+                                </div>
+                            </div>
+                            
+                            <!-- First Name -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-signature text-indigo-600"></i> 
+                                    First Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       formControlName="firstName" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.firstName.errors"
+                                       [disabled]="isViewMode"
+                                       placeholder="Enter first name" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.firstName.errors">
+                                    <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Last Name -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-signature text-indigo-600"></i> 
+                                    Last Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       formControlName="lastName" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.lastName.errors"
+                                       [disabled]="isViewMode"
+                                       placeholder="Enter last name" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.lastName.errors">
+                                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Account Details Section -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <h6 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 font-montserrat">
+                            <i class="fas fa-cog text-indigo-600"></i>
+                            Account Details
+                        </h6>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <!-- Email -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-envelope text-indigo-600"></i> 
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" 
+                                       formControlName="email" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.email.errors"
+                                       [disabled]="isViewMode"
+                                       placeholder="Enter email address" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.email.errors">
+                                    <div *ngIf="f.email.errors.required">Email is required</div>
+                                    <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Role -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-user-tag text-indigo-600"></i> 
+                                    Role <span class="text-red-500">*</span>
+                                </label>
+                                <select formControlName="role" 
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                        [class.border-red-500]="submitted && f.role.errors"
+                                        [disabled]="isViewMode">
+                                    <option value="">Select Role</option>
+                                    <option [value]="Role.SuperAdmin">SuperAdmin</option>
+                                    <option [value]="Role.Admin">Admin</option>
+                                    <option [value]="Role.Staff">Staff</option>
+                                    <option [value]="Role.Viewer">Viewer</option>
+                                </select>
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.role.errors">
+                                    <div *ngIf="f.role.errors.required">Role is required</div>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-toggle-on text-indigo-600"></i> 
+                                    Status <span class="text-red-500">*</span>
+                                </label>
+                                <select formControlName="status" 
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                        [class.border-red-500]="submitted && f.status.errors"
+                                        [disabled]="isViewMode">
+                                    <option value="">Select Status</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.status.errors">
+                                    <div *ngIf="f.status.errors.required">Status is required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Password Section -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200" *ngIf="!isAddMode">
+                        <h6 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2 font-montserrat">
+                            <i class="fas fa-lock text-indigo-600"></i>
+                            Change Password
+                        </h6>
+                        <p class="text-gray-600 text-sm mb-4">Leave blank to keep the same password</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <!-- Password -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-key text-indigo-600"></i> 
+                                    Password <span class="text-red-500" *ngIf="isAddMode">*</span>
+                                </label>
+                                <input type="password" 
+                                       formControlName="password" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.password.errors"
+                                       [disabled]="isViewMode"
+                                       placeholder="Enter password" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.password.errors">
+                                    <div *ngIf="f.password.errors.required">Password is required</div>
+                                    <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-key text-indigo-600"></i> 
+                                    Confirm Password <span class="text-red-500" *ngIf="isAddMode">*</span>
+                                </label>
+                                <input type="password" 
+                                       formControlName="confirmPassword" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.confirmPassword.errors"
+                                       [disabled]="isViewMode"
+                                       placeholder="Confirm password" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.confirmPassword.errors">
+                                    <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                                    <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Section for Add Mode -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200" *ngIf="isAddMode">
+                        <h6 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 font-montserrat">
+                            <i class="fas fa-lock text-indigo-600"></i>
+                            Account Password
+                        </h6>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <!-- Password -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-key text-indigo-600"></i> 
+                                    Password <span class="text-red-500">*</span>
+                                </label>
+                                <input type="password" 
+                                       formControlName="password" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.password.errors"
+                                       placeholder="Enter password" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.password.errors">
+                                    <div *ngIf="f.password.errors.required">Password is required</div>
+                                    <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <i class="fas fa-key text-indigo-600"></i> 
+                                    Confirm Password <span class="text-red-500">*</span>
+                                </label>
+                                <input type="password" 
+                                       formControlName="confirmPassword" 
+                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                                       [class.border-red-500]="submitted && f.confirmPassword.errors"
+                                       placeholder="Confirm password" />
+                                <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.confirmPassword.errors">
+                                    <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                                    <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Form Actions -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+                        <a *ngIf="!isViewMode" routerLink="/admin/accounts" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancel
+                        </a>
+                        <a *ngIf="isViewMode" routerLink="/admin/accounts" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-indigo-600 text-white hover:bg-indigo-700">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Back to List
+                        </a>
+                        <button *ngIf="!isViewMode" 
+                                [disabled]="loading || form.invalid" 
+                                class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                            <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                            <i *ngIf="!loading" class="fas fa-save mr-2"></i>
+                            {{ loading ? 'Saving...' : (isAddMode ? 'Create Account' : 'Update Account') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <div *ngIf="!isAddMode">
-        <h3 class="pt-3">Change Password</h3>
-        <p>Leave blank to keep the same password</p>
-    </div>
-    <div class="form-row">
-        <div class="form-group col">
-            <label>Password</label>
-            <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                <div *ngIf="f.password.errors.required">Password is required</div>
-                <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
-            </div>
-        </div>
-        <div class="form-group col">
-            <label>Confirm Password</label>
-            <input type="password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-            <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
-                <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
-                <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <button *ngIf="!isViewMode" [disabled]="loading" class="btn btn-primary">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Save
-        </button>
-        <a *ngIf="!isViewMode" routerLink="/admin/accounts" class="btn btn-link">Cancel</a>
-        <a *ngIf="isViewMode" routerLink="/admin/accounts" class="btn btn-primary">Back to List</a>
-    </div>
-</form>
+</div>
