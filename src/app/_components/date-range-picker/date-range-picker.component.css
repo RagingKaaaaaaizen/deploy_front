@@ -1,0 +1,15 @@
+/* Date input styling improvements */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(50%);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: invert(30%);
+}
+
+/* Focus state for better accessibility */
+input[type="date"]:focus {
+  outline: none;
+}
+

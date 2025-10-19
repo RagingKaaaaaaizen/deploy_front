@@ -59,10 +59,16 @@
             </div>
         </div>
 
-        <!-- Compact Filters -->
+        <!-- Filters -->
         <div *ngIf="showFilters" class="bg-white rounded-xl shadow-md border border-gray-200 p-4 mb-4">
-            <div class="flex flex-col lg:flex-row lg:items-end gap-3">
-                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-filter text-indigo-600"></i>
+                <h3 class="text-sm font-semibold text-gray-700">Filters</h3>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Action & Entity Type Filters -->
+                <div class="lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3">
                     <div>
                         <label for="actionFilter" class="block text-xs font-medium text-gray-700 mb-1">Action</label>
                         <select id="actionFilter" 
@@ -88,18 +94,31 @@
                         </select>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button class="inline-flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-xs font-medium"
-                            (click)="applyFilters()">
-                        <i class="fas fa-filter mr-1"></i>
-                        Apply Filters
-                    </button>
-                    <button class="inline-flex items-center px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-xs font-medium"
-                            (click)="clearFilters()">
-                        <i class="fas fa-times mr-1"></i>
-                        Clear
-                    </button>
+
+                <!-- Date Range Picker -->
+                <div class="lg:col-span-2">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Date Range</label>
+                    <app-date-range-picker
+                        [dateRange]="filters.dateRange"
+                        (dateRangeChange)="onDateRangeChange($event)"
+                        (apply)="applyDateRange($event)"
+                        (clear)="clearDateRange()">
+                    </app-date-range-picker>
                 </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+                <button class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                        (click)="applyFilters()">
+                    <i class="fas fa-filter mr-2"></i>
+                    Apply All Filters
+                </button>
+                <button class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                        (click)="clearFilters()">
+                    <i class="fas fa-times mr-2"></i>
+                    Clear All Filters
+                </button>
             </div>
         </div>
 

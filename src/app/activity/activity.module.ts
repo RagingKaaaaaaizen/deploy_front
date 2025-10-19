@@ -7,6 +7,7 @@ import { ActivityComponent } from '../profile/activity.component';
 import { ActivityRoutingModule } from './activity-routing.module';
 import { ActivityTimelineComponent } from '../_components/activity-timeline/activity-timeline.component';
 import { ActivityActionIconComponent } from '../_components/activity-action-icon/activity-action-icon.component';
+import { DateRangePickerComponent } from '../_components/date-range-picker/date-range-picker.component';
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { ActivityActionIconComponent } from '../_components/activity-action-icon
     declarations: [
         ActivityComponent,
         ActivityTimelineComponent,
-        ActivityActionIconComponent
+        ActivityActionIconComponent,
+        DateRangePickerComponent
     ]
 })
 export class ActivityModule { }

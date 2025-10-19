@@ -1,21 +1,21 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-6">
   <div class="max-w-7xl mx-auto px-4">
-    <!-- Header Section -->
+  <!-- Header Section -->
     <div class="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
       <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4">
         <div class="flex items-center">
           <div class="w-14 h-14 bg-white/20 text-white rounded-full flex items-center justify-center mr-3 text-xl">
-            <i class="fas fa-archive"></i>
+      <i class="fas fa-archive"></i>
           </div>
           <div>
             <h1 class="text-2xl font-black text-white font-akira mb-1">Archive Reports</h1>
             <p class="text-white/80 font-inter text-sm">Generate professional PDF reports for inventory management</p>
           </div>
-        </div>
-      </div>
     </div>
+    </div>
+  </div>
 
-    <!-- Statistics Section -->
+  <!-- Statistics Section -->
     <div *ngIf="reportStatistics" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -27,18 +27,18 @@
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-3">
           <i class="fas fa-dollar-sign text-white text-xl"></i>
-        </div>
+      </div>
         <div class="text-2xl font-bold text-green-600 font-akira mb-1">${{ formatNumber(reportStatistics.totalValue, 0) }}</div>
         <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Total Value</div>
       </div>
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
           <i class="fas fa-calendar-alt text-white text-xl"></i>
-        </div>
+      </div>
         <div class="text-2xl font-bold text-blue-600 font-akira mb-1">{{ reportStatistics.mostRecentReport?.generatedDate | date:'MMM dd' || 'N/A' }}</div>
         <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Latest Report</div>
-      </div>
     </div>
+  </div>
 
   <!-- Report Generation Cards -->
   <div class="report-cards">

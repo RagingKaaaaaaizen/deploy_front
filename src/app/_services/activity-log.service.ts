@@ -14,6 +14,12 @@ export class ActivityLogService {
         let params = `limit=${limit}&offset=${offset}`;
         if (filters?.entityType) params += `&entityType=${filters.entityType}`;
         if (filters?.action) params += `&action=${filters.action}`;
+        if (filters?.dateRange?.startDate) {
+            params += `&startDate=${filters.dateRange.startDate.toISOString()}`;
+        }
+        if (filters?.dateRange?.endDate) {
+            params += `&endDate=${filters.dateRange.endDate.toISOString()}`;
+        }
         
         return this.http.get<ActivityLog[]>(`${this.baseUrl}/my-activity?${params}`);
     }
@@ -22,6 +28,12 @@ export class ActivityLogService {
         let params = `limit=${limit}&offset=${offset}`;
         if (filters?.entityType) params += `&entityType=${filters.entityType}`;
         if (filters?.action) params += `&action=${filters.action}`;
+        if (filters?.dateRange?.startDate) {
+            params += `&startDate=${filters.dateRange.startDate.toISOString()}`;
+        }
+        if (filters?.dateRange?.endDate) {
+            params += `&endDate=${filters.dateRange.endDate.toISOString()}`;
+        }
         
         return this.http.get<ActivityLog[]>(`${this.baseUrl}/user/${userId}?${params}`);
     }
@@ -31,6 +43,12 @@ export class ActivityLogService {
         if (filters?.userId) params += `&userId=${filters.userId}`;
         if (filters?.entityType) params += `&entityType=${filters.entityType}`;
         if (filters?.action) params += `&action=${filters.action}`;
+        if (filters?.dateRange?.startDate) {
+            params += `&startDate=${filters.dateRange.startDate.toISOString()}`;
+        }
+        if (filters?.dateRange?.endDate) {
+            params += `&endDate=${filters.dateRange.endDate.toISOString()}`;
+        }
         
         return this.http.get<ActivityLog[]>(`${this.baseUrl}?${params}`);
     }

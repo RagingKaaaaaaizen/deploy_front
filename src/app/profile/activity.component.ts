@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { ActivityLogService, AccountService, ActivityActionService } from '@app/_services';
 import { ActivityLog, ActivityAction, EntityType, Account } from '@app/_models';
+import { DateRange } from '@app/_components/date-range-picker/date-range-picker.component';
 
 @Component({
     selector: 'app-activity-log',
@@ -27,7 +28,8 @@ export class ActivityComponent implements OnInit, OnChanges {
     
     filters = {
         action: '',
-        entityType: ''
+        entityType: '',
+        dateRange: { startDate: null, endDate: null } as DateRange
     };
     
     actions = Object.values(ActivityAction);
@@ -116,7 +118,25 @@ export class ActivityComponent implements OnInit, OnChanges {
     }
 
     clearFilters() {
-        this.filters = { action: '', entityType: '' };
+        this.filters = { 
+            action: '', 
+            entityType: '',
+            dateRange: { startDate: null, endDate: null }
+        };
+        this.loadLogs(true);
+    }
+
+    onDateRangeChange(dateRange: DateRange) {
+        this.filters.dateRange = dateRange;
+    }
+
+    applyDateRange(dateRange: DateRange) {
+        this.filters.dateRange = dateRange;
+        this.loadLogs(true);
+    }
+
+    clearDateRange() {
+        this.filters.dateRange = { startDate: null, endDate: null };
         this.loadLogs(true);
     }
 
