@@ -1,0 +1,78 @@
+<div class="relative" [class.min-h-[200px]]="loading">
+  <div *ngIf="!loading && logs.length > 0" class="space-y-6">
+    <div *ngFor="let group of groupedLogs" class="relative">
+      <!-- Date Separator -->
+      <div class="sticky top-0 z-10 -ml-6 mb-4 flex items-center">
+        <span class="bg-indigo-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+          {{ group.relativeDate }}
+        </span>
+        <div class="flex-grow border-t border-gray-200 ml-4"></div>
+      </div>
+
+      <!-- Timeline Items -->
+      <div class="relative pl-8 border-l-2 border-gray-200 space-y-6">
+        <div *ngFor="let log of group.logs" class="relative mb-6">
+          <!-- Timeline Dot -->
+          <div class="absolute -left-2.5 top-0 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+               [ngClass]="getActionConfig(log.action).dotColorClass"></div>
+
+          <!-- Activity Card -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <app-activity-action-icon [action]="log.action" size="sm"></app-activity-action-icon>
+                  <h3 class="font-semibold text-gray-900 text-sm">
+                    <span *ngIf="showUserInfo && log.user">
+                      {{ log.user.firstName }} {{ log.user.lastName }}
+                    </span>
+                    <span *ngIf="!showUserInfo && log.entityName">
+                      {{ log.entityName }}
+                    </span>
+                    <span class="ml-1" [ngClass]="getActionConfig(log.action).colorClass">
+                      {{ getActionConfig(log.action).label }}
+                    </span>
+                  </h3>
+                  <span *ngIf="log.entityName && showUserInfo" class="font-medium text-indigo-600 text-xs">"{{ log.entityName }}"</span>
+                </div>
+
+                <div class="flex items-center gap-3 text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-tag"></i>
+                    {{ getEntityTypeDisplayName(log.entityType) }}
+                    <span *ngIf="log.entityId" class="font-mono">#{{ log.entityId }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-clock"></i>
+                    {{ getRelativeTime(log.createdAt) }} ({{ log.createdAt | date:'medium' }})
+                  </div>
+                </div>
+              </div>
+
+              <button class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                      (click)="viewDetails(log)"
+                      title="View Details">
+                <i class="fas fa-eye text-gray-600 text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Logs Message -->
+  <div class="flex flex-col items-center justify-center py-8 text-center" *ngIf="logs.length === 0 && !loading">
+    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+      <i class="fas fa-info-circle text-gray-400 text-lg"></i>
+    </div>
+    <h3 class="text-base font-semibold text-gray-700 mb-1">No activity logs found</h3>
+    <p class="text-gray-500 text-sm">There are no activity logs to display at this time.</p>
+  </div>
+
+  <!-- Loading Message -->
+  <div class="flex flex-col items-center justify-center py-8 text-center" *ngIf="loading && logs.length === 0">
+    <div class="inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+    <p class="text-gray-600 font-inter text-sm">Loading activity logs...</p>
+  </div>
+</div>

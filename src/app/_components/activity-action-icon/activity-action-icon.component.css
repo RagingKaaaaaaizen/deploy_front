@@ -1,0 +1,48 @@
+/* Activity Action Icon Component Styles */
+.activity-action-icon {
+  transition: all 0.2s ease-in-out;
+}
+
+.activity-action-icon:hover {
+  transform: scale(1.05);
+}
+
+/* Ensure proper spacing and alignment */
+.flex.items-center {
+  display: flex;
+  align-items: center;
+}
+
+/* Icon container styling */
+.rounded-full {
+  border-radius: 50%;
+}
+
+/* Icon sizing */
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+/* Container sizing */
+.w-6.h-6 {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.w-8.h-8 {
+  width: 2rem;
+  height: 2rem;
+}
+
+.w-10.h-10 {
+  width: 2.5rem;
+  height: 2.5rem;
+}

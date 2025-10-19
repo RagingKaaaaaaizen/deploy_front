@@ -10,6 +10,7 @@ export * from './pc-component.service';
 export * from './room-location.service';
 export * from './dispose.service';
 export * from './activity-log.service';
+export * from './activity-action.service';
 export * from './analytics.service';
 export * from './approval-request.service';
 export * from './pc-build-template.service';

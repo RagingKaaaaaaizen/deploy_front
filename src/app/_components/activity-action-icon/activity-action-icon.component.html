@@ -1,0 +1,11 @@
+<div class="flex items-center">
+  <!-- Action Icon Container -->
+  <div class="flex items-center justify-center rounded-full border-2 {{ actionConfig.bgColor }} {{ actionConfig.borderColor }} {{ containerSize }}">
+    <i class="{{ actionConfig.icon }} {{ actionConfig.color }} {{ iconSize }}"></i>
+  </div>
+  
+  <!-- Action Label (optional) -->
+  <span *ngIf="showLabel" class="ml-2 text-sm font-medium {{ actionConfig.color }}">
+    {{ actionConfig.label }}
+  </span>
+</div>

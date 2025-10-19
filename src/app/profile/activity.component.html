@@ -70,7 +70,7 @@
                                 [(ngModel)]="filters.action"
                                 (ngModelChange)="onFilterChange()">
                             <option value="">All Actions</option>
-                            <option *ngFor="let action of actions" [value]="action">
+                            <option *ngFor="let action of filteredActions" [value]="action">
                                 {{ getActionDisplayName(action) }}
                             </option>
                         </select>
@@ -103,56 +103,26 @@
             </div>
         </div>
 
-        <!-- Activity Logs -->
+        <!-- Activity Timeline -->
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3">
                 <h2 class="text-base font-semibold flex items-center gap-2 font-montserrat">
-                    <i class="fas fa-list text-sm"></i>
-                    Activity History
+                    <i class="fas fa-history text-sm"></i>
+                    Activity Timeline
                 </h2>
             </div>
             
-            <div class="p-4">
-                <!-- Activity Log Items -->
-                <div *ngIf="!loading && logs.length > 0" class="space-y-3">
-                    <div *ngFor="let log of logs" class="border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow duration-200">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <div class="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-user text-indigo-600 text-xs"></i>
-                                    </div>
-                                    <h3 class="font-semibold text-gray-900 text-sm">
-                                        {{ log.user?.firstName }} {{ log.user?.lastName }}
-                                    </h3>
-                                    <span class="text-gray-500 text-xs">{{ getActionDisplayName(log.action) }}</span>
-                                    <span *ngIf="log.entityName" class="font-medium text-indigo-600 text-xs">"{{ log.entityName }}"</span>
-                                </div>
-                                
-                                <div class="flex items-center gap-3 text-xs text-gray-500">
-                                    <div class="flex items-center gap-1">
-                                        <i class="fas fa-tag"></i>
-                                        {{ getEntityTypeDisplayName(log.entityType) }}
-                                        <span *ngIf="log.entityId" class="font-mono">#{{ log.entityId }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <i class="fas fa-clock"></i>
-                                        {{ log.createdAt | date:'medium' }}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <button class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                                    (click)="viewDetails(log)"
-                                    title="View Details">
-                                <i class="fas fa-eye text-gray-600 text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="p-6">
+                <!-- Timeline Component -->
+                <app-activity-timeline 
+                    [logs]="logs" 
+                    [loading]="loading"
+                    [showUserInfo]="true"
+                    [compact]="false">
+                </app-activity-timeline>
 
                 <!-- Load More Button -->
-                <div class="text-center mt-4" *ngIf="hasMore">
+                <div class="text-center mt-6" *ngIf="hasMore">
                     <button class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition border border-indigo-500 text-indigo-600 hover:bg-indigo-50 disabled:opacity-50 text-sm" 
                             (click)="loadMore()" 
                             [disabled]="loading">
@@ -160,21 +130,6 @@
                         <span *ngIf="!loading">Load More</span>
                         <span *ngIf="loading">Loading...</span>
                     </button>
-                </div>
-
-                <!-- No Logs Message -->
-                <div class="flex flex-col items-center justify-center py-8 text-center" *ngIf="logs.length === 0 && !loading">
-                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                        <i class="fas fa-info-circle text-gray-400 text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-semibold text-gray-700 mb-1">No activity logs found</h3>
-                    <p class="text-gray-500 text-sm">There are no activity logs to display at this time.</p>
-                </div>
-
-                <!-- Loading Message -->
-                <div class="flex flex-col items-center justify-center py-8 text-center" *ngIf="loading && logs.length === 0">
-                    <div class="inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-                    <p class="text-gray-600 font-inter text-sm">Loading activity logs...</p>
                 </div>
             </div>
         </div>

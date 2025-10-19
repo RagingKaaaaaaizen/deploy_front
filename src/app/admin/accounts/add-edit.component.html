@@ -63,9 +63,9 @@
                                        [disabled]="isViewMode"
                                        placeholder="Enter first name" />
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.firstName.errors">
-                                    <div *ngIf="f.firstName.errors.required">First Name is required</div>
-                                </div>
-                            </div>
+                <div *ngIf="f.firstName.errors.required">First Name is required</div>
+            </div>
+        </div>
                             
                             <!-- Last Name -->
                             <div class="space-y-2">
@@ -80,12 +80,12 @@
                                        [disabled]="isViewMode"
                                        placeholder="Enter last name" />
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.lastName.errors">
-                                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
-                                </div>
+                <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+            </div>
                             </div>
 
-                        </div>
-                    </div>
+        </div>
+    </div>
                     <!-- Account Details Section -->
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                         <h6 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 font-montserrat">
@@ -106,10 +106,10 @@
                                        [disabled]="isViewMode"
                                        placeholder="Enter email address" />
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.email.errors">
-                                    <div *ngIf="f.email.errors.required">Email is required</div>
-                                    <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
-                                </div>
-                            </div>
+                <div *ngIf="f.email.errors.required">Email is required</div>
+                <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+            </div>
+        </div>
                             
                             <!-- Role -->
                             <div class="space-y-2">
@@ -122,15 +122,15 @@
                                         [class.border-red-500]="submitted && f.role.errors"
                                         [disabled]="isViewMode">
                                     <option value="">Select Role</option>
-                                    <option [value]="Role.SuperAdmin">SuperAdmin</option>
-                                    <option [value]="Role.Admin">Admin</option>
-                                    <option [value]="Role.Staff">Staff</option>
-                                    <option [value]="Role.Viewer">Viewer</option>
-                                </select>
+                <option [value]="Role.SuperAdmin">SuperAdmin</option>
+                <option [value]="Role.Admin">Admin</option>
+                <option [value]="Role.Staff">Staff</option>
+                <option [value]="Role.Viewer">Viewer</option>
+            </select>
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.role.errors">
-                                    <div *ngIf="f.role.errors.required">Role is required</div>
-                                </div>
-                            </div>
+                <div *ngIf="f.role.errors.required">Role is required</div>
+            </div>
+        </div>
 
                             <!-- Status -->
                             <div class="space-y-2">
@@ -143,14 +143,14 @@
                                         [class.border-red-500]="submitted && f.status.errors"
                                         [disabled]="isViewMode">
                                     <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.status.errors">
-                                    <div *ngIf="f.status.errors.required">Status is required</div>
-                                </div>
-                            </div>
-                        </div>
+                <div *ngIf="f.status.errors.required">Status is required</div>
+            </div>
+        </div>
+    </div>
                     </div>
                     <!-- Password Section -->
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-200" *ngIf="!isAddMode">
@@ -196,7 +196,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+    </div>
 
                     <!-- Password Section for Add Mode -->
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-200" *ngIf="isAddMode">
@@ -217,10 +217,10 @@
                                        [class.border-red-500]="submitted && f.password.errors"
                                        placeholder="Enter password" />
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.password.errors">
-                                    <div *ngIf="f.password.errors.required">Password is required</div>
-                                    <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
-                                </div>
-                            </div>
+                <div *ngIf="f.password.errors.required">Password is required</div>
+                <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+            </div>
+        </div>
                             
                             <!-- Confirm Password -->
                             <div class="space-y-2">
@@ -234,11 +234,11 @@
                                        [class.border-red-500]="submitted && f.confirmPassword.errors"
                                        placeholder="Confirm password" />
                                 <div class="text-red-500 text-sm mt-1" *ngIf="submitted && f.confirmPassword.errors">
-                                    <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
-                                    <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
-                                </div>
-                            </div>
-                        </div>
+                <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+            </div>
+        </div>
+    </div>
                     </div>
                     <!-- Form Actions -->
                     <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
@@ -256,9 +256,9 @@
                             <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
                             <i *ngIf="!loading" class="fas fa-save mr-2"></i>
                             {{ loading ? 'Saving...' : (isAddMode ? 'Create Account' : 'Update Account') }}
-                        </button>
-                    </div>
-                </form>
+        </button>
+    </div>
+</form>
             </div>
         </div>
     </div>

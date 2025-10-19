@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ActivityLogService, AccountService } from '@app/_services';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { ActivityLogService, AccountService, ActivityActionService } from '@app/_services';
 import { ActivityLog, ActivityAction, EntityType, Account } from '@app/_models';
 
 @Component({
@@ -7,7 +7,7 @@ import { ActivityLog, ActivityAction, EntityType, Account } from '@app/_models';
     templateUrl: 'activity.component.html',
     styleUrls: ['activity.component.css']
 })
-export class ActivityComponent implements OnInit {
+export class ActivityComponent implements OnInit, OnChanges {
     @Input() userId?: number;
     @Input() entityType?: string;
     @Input() entityId?: number;
@@ -32,11 +32,13 @@ export class ActivityComponent implements OnInit {
     
     actions = Object.values(ActivityAction);
     entityTypes = Object.values(EntityType);
+    filteredActions: string[] = [];
     filterTimeout: any;
 
     constructor(
         private activityLogService: ActivityLogService,
-        private accountService: AccountService
+        private accountService: AccountService,
+        private activityActionService: ActivityActionService
     ) { }
 
     ngOnInit() {
@@ -44,7 +46,15 @@ export class ActivityComponent implements OnInit {
         if (this.isAdmin) {
             this.loadUsers();
         }
+        this.initializeFilteredActions();
         this.loadLogs();
+    }
+
+    ngOnChanges() {
+        // Reload logs when inputs change
+        if (this.userId !== undefined || this.entityType || this.entityId) {
+            this.loadLogs(true);
+        }
     }
 
     loadLogs(reset = false) {
@@ -111,6 +121,13 @@ export class ActivityComponent implements OnInit {
     }
 
     onFilterChange() {
+        // Update filtered actions when entity type changes
+        if (this.filters.entityType) {
+            this.updateFilteredActions();
+        } else {
+            this.initializeFilteredActions();
+        }
+        
         // Auto-apply filters when they change (with a small delay to avoid excessive requests)
         clearTimeout(this.filterTimeout);
         this.filterTimeout = setTimeout(() => {
@@ -119,8 +136,8 @@ export class ActivityComponent implements OnInit {
     }
 
     getActionDisplayName(action: string): string {
-        return action.replace(/_/g, ' ').toLowerCase()
-            .replace(/\b\w/g, l => l.toUpperCase());
+        const config = this.activityActionService.getActionConfig(action);
+        return config.label;
     }
 
     getEntityTypeDisplayName(entityType: string): string {
@@ -177,5 +194,74 @@ export class ActivityComponent implements OnInit {
         if (!this.selectedUserId) return '';
         const selectedUser = this.users.find(user => user.id === this.selectedUserId);
         return selectedUser ? `${selectedUser.title} ${selectedUser.firstName} ${selectedUser.lastName}` : 'Unknown User';
+    }
+
+    // Initialize filtered actions (show all actions initially)
+    initializeFilteredActions() {
+        this.filteredActions = [...this.actions];
+    }
+
+    // Update filtered actions based on selected entity type
+    updateFilteredActions() {
+        const entityType = this.filters.entityType;
+        
+        // Define which actions are relevant for each entity type
+        const entityActionMap: { [key: string]: string[] } = {
+            'ITEM': [
+                ActivityAction.CREATE_ITEM,
+                ActivityAction.UPDATE_ITEM,
+                ActivityAction.DELETE_ITEM,
+                ActivityAction.DISPOSE_ITEM,
+                ActivityAction.ADD_STOCK,
+                ActivityAction.UPDATE_STOCK
+            ],
+            'PC': [
+                ActivityAction.CREATE_PC,
+                ActivityAction.UPDATE_PC,
+                ActivityAction.ADD_PC_COMPONENT,
+                ActivityAction.REMOVE_PC_COMPONENT
+            ],
+            'PC_COMPONENT': [
+                ActivityAction.ADD_PC_COMPONENT,
+                ActivityAction.REMOVE_PC_COMPONENT
+            ],
+            'STOCK': [
+                ActivityAction.ADD_STOCK,
+                ActivityAction.UPDATE_STOCK
+            ],
+            'DISPOSE': [
+                ActivityAction.DISPOSE_ITEM
+            ],
+            'EMPLOYEE': [
+                ActivityAction.CREATE_EMPLOYEE,
+                ActivityAction.UPDATE_EMPLOYEE
+            ],
+            'DEPARTMENT': []
+        };
+
+        if (entityActionMap[entityType]) {
+            this.filteredActions = entityActionMap[entityType];
+        } else {
+            this.filteredActions = [...this.actions];
+        }
+
+        // Clear action filter if the currently selected action is not available for the selected entity type
+        if (this.filters.action && !this.filteredActions.includes(this.filters.action)) {
+            this.filters.action = '';
+        }
+    }
+
+    // Get entity type icon
+    getEntityTypeIcon(entityType: string): string {
+        const iconMap: { [key: string]: string } = {
+            'ITEM': 'fas fa-box',
+            'PC': 'fas fa-desktop',
+            'PC_COMPONENT': 'fas fa-microchip',
+            'STOCK': 'fas fa-warehouse',
+            'DISPOSE': 'fas fa-trash',
+            'EMPLOYEE': 'fas fa-user',
+            'DEPARTMENT': 'fas fa-building'
+        };
+        return iconMap[entityType] || 'fas fa-tag';
     }
 }

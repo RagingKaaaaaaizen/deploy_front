@@ -23,16 +23,16 @@
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3">
                 <h5 class="text-base font-semibold"><i class="fas fa-user-circle mr-2"></i> Account Information</h5>
-            </div>
+                </div>
             <div class="p-6">
-                    <!-- Profile Avatar -->
+                        <!-- Profile Avatar -->
                     <div class="flex justify-center mb-6">
                         <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl shadow-xl">
-                            <i class="fas fa-user"></i>
+                                <i class="fas fa-user"></i>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Profile Details -->
+                        <!-- Profile Details -->
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-2 text-gray-700">
@@ -48,104 +48,104 @@
                             <div class="flex items-center gap-2 text-gray-700">
                                 <i class="fas fa-at text-indigo-500 text-lg"></i>
                                 <span class="font-medium text-sm">Preferred Username</span>
-                            </div>
+                                </div>
                             <div class="text-gray-800 font-semibold">
                                 {{account.preferredUsername}}
+                                </div>
                             </div>
-                        </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-3 text-gray-700">
                                 <i class="fas fa-envelope text-indigo-500 text-xl"></i>
                                 <span class="font-medium">Email Address</span>
-                            </div>
+                                </div>
                             <div class="text-gray-800 font-semibold">
-                                {{account.email}}
+                                    {{account.email}}
+                                </div>
                             </div>
-                        </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-3 text-gray-700">
                                 <i class="fas fa-user-tag text-indigo-500 text-xl"></i>
                                 <span class="font-medium">Role</span>
-                            </div>
+                                </div>
                             <div>
                                 <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-primary text-white">{{account.role || 'No Role'}}</span>
+                                </div>
                             </div>
-                        </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-3 text-gray-700">
                                 <i class="fas fa-circle text-indigo-500 text-xl"></i>
                                 <span class="font-medium">Account Status</span>
-                            </div>
+                                </div>
                             <div>
                                 <span *ngIf="account.isActive === true" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-green-100 text-green-800">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    Active
-                                </span>
+                                        Active
+                                    </span>
                                 <span *ngIf="account.isActive === false" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-red-100 text-red-800">
                                     <i class="fas fa-times-circle mr-1"></i>
-                                    Inactive
-                                </span>
+                                        Inactive
+                                    </span>
                                 <span *ngIf="account.isActive === null || account.isActive === undefined" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-yellow-100 text-yellow-800">
                                     <i class="fas fa-question-circle mr-1"></i>
-                                    Unknown Status
-                                </span>
+                                        Unknown Status
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg" *ngIf="account.verified">
                             <div class="flex items-center gap-3 text-gray-700">
                                 <i class="fas fa-calendar-check text-indigo-500 text-xl"></i>
                                 <span class="font-medium">Email Verified</span>
-                            </div>
+                                </div>
                             <div>
                                 <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-green-100 text-green-800">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    {{account.verified | date:'mediumDate'}}
-                                </span>
+                                        {{account.verified | date:'mediumDate'}}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg" *ngIf="!account.verified">
                             <div class="flex items-center gap-3 text-gray-700">
                                 <i class="fas fa-calendar-times text-indigo-500 text-xl"></i>
                                 <span class="font-medium">Email Verification</span>
-                            </div>
+                                </div>
                             <div>
                                 <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-yellow-100 text-yellow-800">
                                     <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    Not Verified
-                                </span>
+                                        Not Verified
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg" *ngIf="account.status">
                             <div class="flex items-center gap-3 text-gray-700">
                                 <i class="fas fa-info-circle text-indigo-500 text-xl"></i>
                                 <span class="font-medium">Account Status</span>
-                            </div>
+                                </div>
                             <div>
                                 <span class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium bg-info text-white">{{account.status}}</span>
                             </div>
                         </div>
                     </div>
 
-                <!-- Quick Actions -->
+                    <!-- Quick Actions -->
                 <div class="mt-8 flex flex-wrap gap-3 justify-center">
                     <a routerLink="update" class="inline-flex items-center justify-center rounded-md px-5 py-2.5 font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white">
                         <i class="fas fa-edit mr-2"></i>
-                        Edit Profile
-                    </a>
+                                Edit Profile
+                            </a>
                     <button class="inline-flex items-center justify-center rounded-md px-5 py-2.5 font-semibold transition border border-gray-500 text-gray-600 hover:bg-gray-600 hover:text-white">
                         <i class="fas fa-key mr-2"></i>
-                        Change Password
-                    </button>
+                                Change Password
+                            </button>
                     <button class="inline-flex items-center justify-center rounded-md px-5 py-2.5 font-semibold transition border border-info text-cyan-600 hover:bg-info hover:text-white">
                         <i class="fas fa-download mr-2"></i>
-                        Export Data
-                    </button>
+                                Export Data
+                            </button>
                 </div>
             </div>
         </div>
@@ -155,29 +155,29 @@
             <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div class="flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl mb-4">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Account Status</h3>
                     <p class="text-gray-600" *ngIf="account.isActive === true">Active Account</p>
                     <p class="text-gray-600" *ngIf="account.isActive === false">Inactive Account</p>
                     <p class="text-gray-600" *ngIf="account.isActive === null || account.isActive === undefined">Status Unknown</p>
-                </div>
-            </div>
+                        </div>
+                    </div>
             <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div class="flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-white text-2xl mb-4">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Account Security</h3>
                     <p class="text-gray-600" *ngIf="account.verified">Email Verified</p>
                     <p class="text-gray-600" *ngIf="!account.verified">Email Not Verified</p>
-                </div>
-            </div>
+                        </div>
+                    </div>
             <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div class="flex flex-col items-center text-center">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-2xl mb-4">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
+                            <i class="fas fa-user-tie"></i>
+                        </div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">User Role</h3>
                     <p class="text-gray-600">{{account.role || 'No Role Assigned'}}</p>
                 </div>
