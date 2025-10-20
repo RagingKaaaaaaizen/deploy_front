@@ -123,7 +123,7 @@
               <tr *ngFor="let stock of paginatedStocks" [attr.data-item-id]="stock.itemId">
                 <!-- Item Name -->
                 <td class="text-center align-middle">
-                  <strong class="font-montserrat text-sm font-semibold">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
+                    <strong class="font-montserrat text-sm font-semibold">{{ stock.item?.name || getItemName(stock.itemId) }}</strong>
                 </td>
                 
                 <!-- Category -->
@@ -154,9 +154,9 @@
                     'bg-green-100 text-green-800': isItemEffectivelyAvailable(stock) && stock.quantity > 0,
                     'bg-red-100 text-red-800': stock.disposeId && !stock.disposal?.returnedToStock,
                     'bg-gray-100 text-gray-800': stock.quantity === 0
-                  }">
-                    {{ stock.quantity }}
-                  </span>
+                    }">
+                      {{ stock.quantity }}
+                    </span>
                 </td>
                 
                 <!-- Actions -->
@@ -243,20 +243,20 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-    </div>
+      </div>
 
     <div class="p-6 max-h-[calc(95vh-120px)] overflow-y-auto">
-      <!-- Add Stock Form Content -->
+        <!-- Add Stock Form Content -->
       <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
           <h5 class="text-lg font-semibold text-gray-900 flex items-center gap-2 font-montserrat">
             <i class="fas fa-edit text-indigo-600"></i> 
             Stock Information
-          </h5>
+            </h5>
           <button type="button" class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-green-600 text-white hover:bg-green-700 shadow-sm text-sm" (click)="addNewStockEntry()">
             <i class="fas fa-plus mr-1"></i> Add New Item
-          </button>
-        </div>
+            </button>
+          </div>
           <div class="p-6">
             <form (ngSubmit)="onFormSubmit($event)" #stockForm="ngForm" class="space-y-6">
               
@@ -406,17 +406,17 @@
                 <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
                   <i class="fas fa-receipt text-indigo-600"></i> 
                   Receipt Photo (Optional)
-                </label>
-                <input 
-                  type="file" 
+                    </label>
+                    <input 
+                      type="file" 
                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 font-inter" 
-                  accept="image/*"
-                  (change)="onReceiptFileSelected($event)"
-                  name="stock_receipt"
-                >
+                      accept="image/*"
+                      (change)="onReceiptFileSelected($event)"
+                      name="stock_receipt"
+                    >
                 <small class="text-gray-500 text-sm">
-                  Upload one receipt photo for all items in this stock entry (JPG, PNG, GIF - Max 5MB)
-                </small>
+                      Upload one receipt photo for all items in this stock entry (JPG, PNG, GIF - Max 5MB)
+                    </small>
               </div>
             </form>
           </div>
@@ -425,14 +425,14 @@
     <div class="flex flex-col sm:flex-row gap-3 p-6 border-t border-gray-200 bg-gray-50">
       <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300" (click)="closeAddStockModal()">
         <i class="fas fa-times mr-2"></i>
-        Cancel
-      </button>
+          Cancel
+        </button>
       <button type="button" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed" [disabled]="stockLoading" (click)="onAddStockClick($event)">
         <div *ngIf="stockLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
         <i *ngIf="!stockLoading" class="fas fa-save mr-2"></i>
-        <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>
+          <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>
         <span *ngIf="stockLoading">Adding Stock Items...</span>
-      </button>
+        </button>
     </div>
   </div>
 </div>

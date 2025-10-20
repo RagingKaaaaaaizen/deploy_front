@@ -163,14 +163,14 @@
                 <td class="font-inter text-center align-middle" data-label="Quantity">
                   <div class="flex flex-col items-center gap-1">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
-                      {{ disposal.quantity }}
-                    </span>
+                    {{ disposal.quantity }}
+                  </span>
                     <span *ngIf="disposal.returnedToStock" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      <i class="fas fa-check mr-1"></i> Returned
-                    </span>
+                    <i class="fas fa-check mr-1"></i> Returned
+                  </span>
                     <span *ngIf="disposal.quantity < disposal.originalQuantity" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                       <i class="fas fa-undo mr-1"></i> Partial
-                    </span>
+                  </span>
                   </div>
                 </td>
                 

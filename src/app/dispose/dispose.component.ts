@@ -13,341 +13,83 @@ import { first } from 'rxjs/operators';
   selector: 'app-dispose',
   templateUrl: './dispose.component.html',
   styles: [`
-    .form-control:focus {
-      border-color: #dc3545;
-      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    /* Custom animations for modal */
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-                   /* Enhanced Modal Styles */
-      .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 1050;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        animation: fadeIn 0.3s ease-out;
-        pointer-events: auto;
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
       }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
 
-     @keyframes fadeIn {
-       from {
-         opacity: 0;
-       }
-       to {
-         opacity: 1;
-       }
-     }
+    /* Ensure proper modal positioning */
+    .modal-overlay {
+      animation: modalFadeIn 0.3s ease-out;
+    }
 
-     .modal-container {
-       background: white;
-       border-radius: 20px;
-       box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-       max-width: 95%;
-       max-height: 95%;
-       width: 900px;
-       overflow: hidden;
-       display: flex;
-       flex-direction: column;
-       animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-       border: 1px solid rgba(255, 255, 255, 0.1);
-     }
+    .modal-container {
+      animation: modalSlideIn 0.3s ease-out;
+    }
 
-     @keyframes modalSlideIn {
-       from {
-         opacity: 0;
-         transform: translateY(-30px) scale(0.96);
-       }
-       to {
-         opacity: 1;
-         transform: translateY(0) scale(1);
-       }
-     }
+    /* Responsive modal positioning */
+    @media (max-width: 768px) {
+      .modal-overlay {
+        top: 60px !important;
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+      }
+    }
 
-     .modal-header {
-       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-       color: white;
-       padding: 30px;
-       border-radius: 20px 20px 0 0;
-       position: relative;
-       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-     }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .modal-overlay {
+        top: 80px !important;
+        left: 240px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+      }
+    }
 
-     .modal-header .header-content {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       flex-wrap: wrap;
-       gap: 20px;
-     }
+    /* Custom button styles for disposal actions */
+    .btn-dispose {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      border-color: #dc3545;
+      color: white;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
 
-     .modal-header .header-title {
-       display: flex;
-       align-items: center;
-       gap: 15px;
-     }
+    .btn-dispose:hover {
+      background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
 
-     .modal-header .header-title i {
-       font-size: 2.5rem;
-       color: white;
-     }
+    .btn-warning-custom {
+      background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+      border-color: #ffc107;
+      color: #212529;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
 
-     .modal-header .page-title {
-       font-size: 2.5rem;
-       font-weight: bold;
-       margin: 0 0 5px 0;
-     }
-
-     .modal-header .page-subtitle {
-       font-size: 1.1rem;
-       margin: 0;
-       opacity: 0.9;
-     }
-
-     .modal-header .header-actions {
-       display: flex;
-       gap: 10px;
-       flex-wrap: wrap;
-       align-items: center;
-     }
-
-     .modal-header .btn-close {
-       background: rgba(255, 255, 255, 0.15);
-       border: 2px solid rgba(255, 255, 255, 0.2);
-       color: white;
-       border-radius: 50%;
-       width: 45px;
-       height: 45px;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       font-size: 1.3rem;
-       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-       backdrop-filter: blur(10px);
-     }
-
-     .modal-header .btn-close:hover {
-       background: rgba(255, 255, 255, 0.25);
-       border-color: rgba(255, 255, 255, 0.4);
-       transform: scale(1.1) rotate(90deg);
-       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-     }
-
-     .modal-body {
-       flex: 1;
-       overflow-y: auto;
-       padding: 30px;
-       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-     }
-
-     /* Enhanced Form Styles */
-     .form-control {
-       border-radius: 12px;
-       border: 2px solid #e9ecef;
-       padding: 14px 18px;
-       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-       font-size: 0.95rem;
-       background: white;
-       color: #495057;
-     }
-
-     .form-control:focus {
-       border-color: #667eea;
-       box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-       background: white;
-       transform: translateY(-1px);
-       color: #495057;
-     }
-
-     .form-control:hover {
-       border-color: #667eea;
-       background: white;
-       color: #495057;
-     }
-
-     .form-control.is-invalid {
-       border-color: #dc3545;
-     }
-
-     .invalid-feedback {
-       font-size: 0.875rem;
-       color: #dc3545;
-       margin-top: 5px;
-     }
-
-     .form-label {
-       font-weight: 600;
-       color: #495057;
-       margin-bottom: 8px;
-       display: flex;
-       align-items: center;
-       gap: 8px;
-     }
-
-     .form-label i {
-       color: #667eea;
-     }
-
-     .form-text {
-       font-size: 0.875rem;
-       color: #6c757d;
-       margin-top: 5px;
-     }
-
-     .alert {
-       border-radius: 12px;
-       border: none;
-       padding: 15px 20px;
-       margin-bottom: 20px;
-       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-     }
-
-     .alert-info {
-       background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-       color: #0c5460;
-       border-left: 4px solid #17a2b8;
-     }
-
-     .alert-warning {
-       background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-       color: #856404;
-       border-left: 4px solid #ffc107;
-     }
-
-     .alert-danger {
-       background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-       color: #721c24;
-       border-left: 4px solid #dc3545;
-     }
-
-     .btn {
-       border-radius: 25px;
-       padding: 12px 24px;
-       font-weight: 600;
-       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-       border: 2px solid transparent;
-       font-size: 0.95rem;
-       min-width: 120px;
-     }
-
-     .btn:hover {
-       transform: translateY(-2px);
-       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-     }
-
-     .btn-danger {
-       background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-       border-color: #dc3545;
-       color: white;
-     }
-
-     .btn-danger:hover {
-       background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-       border-color: #c82333;
-       color: white;
-     }
-
-     .btn-warning {
-       background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-       border-color: #ffc107;
-       color: #212529;
-     }
-
-     .btn-warning:hover {
-       background: linear-gradient(135deg, #e0a800 0%, #d39e00 100%);
-       border-color: #e0a800;
-       color: #212529;
-     }
-
-     .btn-secondary {
-       background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-       border-color: #6c757d;
-       color: white;
-     }
-
-     .btn-secondary:hover {
-       background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
-       border-color: #5a6268;
-       color: white;
-     }
-
-     .btn-outline-info {
-       background: transparent;
-       border-color: #17a2b8;
-       color: #17a2b8;
-     }
-
-     .btn-outline-info:hover {
-       background: #17a2b8;
-       border-color: #17a2b8;
-       color: white;
-     }
-
-     .btn-outline-secondary {
-       background: transparent;
-       border-color: #6c757d;
-       color: #6c757d;
-     }
-
-     .btn-outline-secondary:hover {
-       background: #6c757d;
-       border-color: #6c757d;
-       color: white;
-     }
-
-     .spinner-border-sm {
-       width: 1rem;
-       height: 1rem;
-     }
-
-     /* Responsive Modal */
-     @media (max-width: 768px) {
-       .modal-overlay {
-         padding: 10px;
-       }
-
-       .modal-container {
-         width: 100%;
-         max-height: 100%;
-         border-radius: 12px;
-       }
-
-       .modal-header {
-         padding: 20px;
-         border-radius: 12px 12px 0 0;
-       }
-
-       .modal-header .page-title {
-         font-size: 1.8rem;
-       }
-
-       .modal-header .header-content {
-         flex-direction: column;
-         text-align: center;
-       }
-
-       .modal-header .header-actions {
-         justify-content: center;
-         flex-direction: column;
-         width: 100%;
-       }
-
-       .modal-body {
-         padding: 15px;
-       }
-
-       .btn {
-         width: 100%;
-         margin-bottom: 10px;
-       }
-     }
+    .btn-warning-custom:hover {
+      background: linear-gradient(135deg, #e0a800 0%, #d39e00 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
   `]
 })
 export class DisposeComponent implements OnInit {

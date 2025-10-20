@@ -1,104 +1,288 @@
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h2>{{ isAddMode ? 'Add PC' : (isViewMode ? 'View PC' : 'Edit PC') }}</h2>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-6">
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Page Header -->
+        <div class="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4">
+                <div class="flex items-center">
+                    <div class="w-14 h-14 bg-white/20 text-white rounded-full flex items-center justify-center mr-3 text-xl">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black text-white font-akira mb-1">
+                            {{ isAddMode ? 'Add New PC' : (isViewMode ? 'View PC Details' : 'Edit PC Information') }}
+                        </h1>
+                        <p class="text-white/80 font-inter">
+                            {{ isAddMode ? 'Create a new PC entry in the system' : (isViewMode ? 'View detailed information about this PC' : 'Update PC information and settings') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PC Information Form -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                
-                <!-- PC Information -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5><i class="fas fa-desktop"></i> PC Information</h5>
+                <!-- Form Header -->
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fas fa-info-circle text-sm"></i>
+                        PC Information
+                    </h2>
+                </div>
+
+                <!-- Form Content -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Left Column -->
+                        <div class="space-y-6">
+                            <!-- PC Name -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-tag text-indigo-500 mr-2"></i>
+                                    PC Name <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    formControlName="name" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                    [class.border-red-500]="submitted && f.name.errors"
+                                    [class.focus:ring-red-500]="submitted && f.name.errors"
+                                    [class.focus:border-red-500]="submitted && f.name.errors"
+                                    placeholder="Enter PC name">
+                                <div *ngIf="submitted && f.name.errors" class="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span *ngIf="f.name.errors.required">PC Name is required</span>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label>PC Name *</label>
-                                        <input type="text" formControlName="name" class="form-control" 
-                                               [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
-                                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-                                            <div *ngIf="f.name.errors.required">PC Name is required</div>
+
+                            <!-- Serial Number -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-barcode text-indigo-500 mr-2"></i>
+                                    Serial Number
+                                </label>
+                                <input 
+                                    type="text" 
+                                    formControlName="serialNumber" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                    placeholder="Enter serial number">
+                            </div>
+
+                            <!-- Assigned To -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-user text-indigo-500 mr-2"></i>
+                                    Assigned To
+                                </label>
+                                <input 
+                                    type="text" 
+                                    formControlName="assignedTo" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                    placeholder="Enter assigned person or department">
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <label>Room Location *</label>
-                                        <select formControlName="roomLocationId" class="form-control" 
-                                                [ngClass]="{ 'is-invalid': submitted && f.roomLocationId.errors }">
+
+                        <!-- Right Column -->
+                        <div class="space-y-6">
+                            <!-- Room Location -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>
+                                    Room Location <span class="text-red-500">*</span>
+                                </label>
+                                <select 
+                                    formControlName="roomLocationId" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                    [class.border-red-500]="submitted && f.roomLocationId.errors"
+                                    [class.focus:ring-red-500]="submitted && f.roomLocationId.errors"
+                                    [class.focus:border-red-500]="submitted && f.roomLocationId.errors">
                                             <option value="">Select Room Location</option>
                                             <option *ngFor="let location of roomLocations" [value]="location.id">
                                                 {{ location.name }}
                                             </option>
                                         </select>
-                                        <div *ngIf="submitted && f.roomLocationId.errors" class="invalid-feedback">
-                                            <div *ngIf="f.roomLocationId.errors.required">Room Location is required</div>
-                                        </div>
+                                <div *ngIf="submitted && f.roomLocationId.errors" class="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span *ngIf="f.roomLocationId.errors.required">Room Location is required</span>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label>Serial Number</label>
-                                        <input type="text" formControlName="serialNumber" class="form-control" />
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label>Status</label>
-                                        <select formControlName="status" class="form-control" 
-                                                [ngClass]="{ 
-                                                    'is-invalid': submitted && f.status.errors,
-                                                    'border-success': f.status.value === 'Active',
-                                                    'border-warning': f.status.value === 'Maintenance',
-                                                    'border-secondary': f.status.value === 'Inactive',
-                                                    'border-danger': f.status.value === 'Retired'
-                                                }">
+                            <!-- Status -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-power-off text-indigo-500 mr-2"></i>
+                                    Status
+                                </label>
+                                <select 
+                                    formControlName="status" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                    [class.border-green-500]="f.status.value === 'Active'"
+                                    [class.border-yellow-500]="f.status.value === 'Maintenance'"
+                                    [class.border-gray-500]="f.status.value === 'Inactive'"
+                                    [class.border-red-500]="f.status.value === 'Retired'">
                                             <option value="Active">🟢 Active</option>
                                             <option value="Inactive">⚪ Inactive</option>
                                             <option value="Maintenance">🟡 Maintenance</option>
                                             <option value="Retired">🔴 Retired</option>
                                         </select>
-                                        <div *ngIf="submitted && f.status.errors" class="invalid-feedback">
-                                            <div *ngIf="f.status.errors.required">Status is required</div>
+                                <div class="mt-2 flex items-center gap-2 text-sm text-gray-600">
+                                    <i class="fas fa-info-circle text-indigo-500"></i>
+                                    <span>Select the current operational status of this PC</span>
+                                </div>
+                            </div>
+                        </div>
                                         </div>
-                                        <small class="form-text text-muted">
-                                            <i class="fas fa-info-circle"></i> 
-                                            Select the current operational status of this PC
-                                        </small>
+
+                    <!-- Notes Section -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-sticky-note text-indigo-500 mr-2"></i>
+                            Notes
+                        </label>
+                        <textarea 
+                            formControlName="notes" 
+                            rows="4"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 resize-none"
+                            placeholder="Enter any additional notes or comments about this PC"></textarea>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label>Assigned To</label>
-                                        <input type="text" formControlName="assignedTo" class="form-control" />
+                <!-- Action Buttons -->
+                <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                    <div class="flex flex-col sm:flex-row gap-3 justify-between items-center">
+                        <!-- Left side - Navigation -->
+                        <div class="flex gap-3">
+                            <a routerLink="/pc" 
+                               class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                {{ isViewMode ? 'Back to List' : 'Cancel' }}
+                            </a>
+                            <button type="button" 
+                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-cyan-700 bg-cyan-50 border border-cyan-300 rounded-lg hover:bg-cyan-100 hover:border-cyan-400 transition-colors duration-200"
+                                    (click)="goToStock()">
+                                <i class="fas fa-boxes mr-2"></i>
+                                View Stock
+                            </button>
+                        </div>
+
+                        <!-- Right side - Submit button -->
+                        <button 
+                            *ngIf="!isViewMode"
+                            type="submit"
+                            [disabled]="loading || !canSubmit()" 
+                            class="inline-flex items-center px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:ring-4 focus:ring-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                            <div *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            <i *ngIf="!loading" class="fas fa-save mr-2"></i>
+                            {{ isAddMode ? 'Create PC' : 'Update PC' }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- PC Cost Summary (for view mode) -->
+        <div *ngIf="isViewMode" class="mt-6 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-6 py-4">
+                <h2 class="text-lg font-semibold flex items-center gap-2">
+                    <i class="fas fa-calculator text-sm"></i>
+                    PC Cost Summary
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-gray-800 mb-1">{{ pcComponents.length }}</div>
+                        <div class="text-sm text-gray-600">Total Components</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-4 text-center border border-emerald-200">
+                        <div class="text-2xl font-bold text-emerald-700 mb-1">{{ formatCurrency(totalPCCost) }}</div>
+                        <div class="text-sm text-emerald-600">Total PC Cost</div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 text-center border border-blue-200">
+                        <div class="text-2xl font-bold text-blue-700 mb-1">
+                            {{ pcComponents.length > 0 ? formatCurrency(totalPCCost / pcComponents.length) : '₱0.00' }}
+                        </div>
+                        <div class="text-sm text-blue-600">Average Component Cost</div>
+                    </div>
+                </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Notes</label>
-                                    <textarea formControlName="notes" class="form-control" rows="3"></textarea>
+        <!-- PC Components Section (for view mode) -->
+        <div *ngIf="isViewMode" class="mt-6 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-green-500 to-teal-600 text-white px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fas fa-microchip text-sm"></i>
+                        PC Components
+                    </h2>
+                    <button class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-700 bg-green-100 border border-green-300 rounded-lg hover:bg-green-200 transition-colors duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Component
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- Loading State -->
+                <div *ngIf="loadingComponents" class="flex justify-center py-8">
+                    <div class="inline-block w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+
+                <!-- Components List -->
+                <div *ngIf="!loadingComponents && pcComponents.length > 0" class="space-y-4">
+                    <div *ngFor="let component of pcComponents" class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-microchip text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">{{ component.item?.name || 'Unknown Component' }}</h3>
+                                        <p class="text-sm text-gray-600">{{ component.item?.brand?.name || 'No Brand' }} - {{ component.item?.category?.name || 'No Category' }}</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
+                                    <div>
+                                        <span class="text-xs text-gray-500">Quantity</span>
+                                        <div class="font-medium">{{ component.quantity }}</div>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-gray-500">Unit Price</span>
+                                        <div class="font-medium">{{ formatCurrency(component.price || 0) }}</div>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-gray-500">Total Price</span>
+                                        <div class="font-medium text-green-600">{{ formatCurrency(component.totalPrice || 0) }}</div>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-gray-500">Status</span>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded-full" [ngClass]="{
+                                                'bg-green-500': component.status === 'Working',
+                                                'bg-yellow-500': component.status === 'Maintenance',
+                                                'bg-red-500': component.status === 'Not Working',
+                                                'bg-gray-500': component.status === 'Missing'
+                                            }"></div>
+                                            <span class="text-sm font-medium">{{ component.status }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group" *ngIf="!isViewMode">
-                    <button [disabled]="loading || !canSubmit()" class="btn btn-primary">
-                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                        {{ isAddMode ? 'Create PC' : 'Update PC' }}
-                    </button>
-                    <a routerLink="../" class="btn btn-link">Cancel</a>
-                    <button type="button" class="btn btn-info" (click)="goToStock()">
-                        <i class="fas fa-boxes"></i> View Stock
-                    </button>
-                </div>
-                <div class="form-group" *ngIf="isViewMode">
-                    <a routerLink="../" class="btn btn-primary">Back to List</a>
-                    <button type="button" class="btn btn-info" (click)="goToStock()">
-                        <i class="fas fa-boxes"></i> View Stock
+                <!-- Empty State -->
+                <div *ngIf="!loadingComponents && pcComponents.length === 0" class="text-center py-8">
+                    <i class="fas fa-microchip text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 mb-4">No components assigned to this PC yet.</p>
+                    <button class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-300 rounded-lg hover:bg-indigo-100 transition-colors duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Components
                     </button>
                 </div>
-            </form>
+                </div>
         </div>
     </div>
 </div> 

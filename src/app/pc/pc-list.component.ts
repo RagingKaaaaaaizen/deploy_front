@@ -871,7 +871,7 @@ export class PCListComponent implements OnInit {
   }
 
   editPC(id: number) {
-    this.router.navigate(['/pc', id, 'edit']);
+    this.router.navigate(['/pc', 'edit', id]);
   }
 
   deletePC(id: number) {

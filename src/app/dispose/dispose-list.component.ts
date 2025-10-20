@@ -1643,7 +1643,7 @@ export class DisposeListComponent implements OnInit {
     }
     
     try {
-      this.router.navigate(['/dispose/view', id]);
+    this.router.navigate(['/dispose/view', id]);
       console.log('Navigation attempted to:', `/dispose/view/${id}`);
     } catch (error) {
       console.error('Navigation error:', error);
@@ -1664,7 +1664,7 @@ export class DisposeListComponent implements OnInit {
     }
     
     try {
-      this.router.navigate(['/dispose/edit', id]);
+    this.router.navigate(['/dispose/edit', id]);
       console.log('Navigation attempted to:', `/dispose/edit/${id}`);
     } catch (error) {
       console.error('Navigation error:', error);

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { PCService, RoomLocationService, AlertService } from '@app/_services';
-import { PC } from '../_models/pc';
+import { PCService, RoomLocationService, AlertService, PCComponentService } from '@app/_services';
+import { PC, PCComponent } from '../_models';
 
 @Component({ templateUrl: 'pc-add-edit.component.html' })
 export class PCAddEditComponent implements OnInit {
@@ -14,6 +14,9 @@ export class PCAddEditComponent implements OnInit {
     loading = false;
     submitted = false;
     roomLocations: any[] = [];
+    pcComponents: PCComponent[] = [];
+    totalPCCost: number = 0;
+    loadingComponents = false;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -21,15 +24,17 @@ export class PCAddEditComponent implements OnInit {
         private router: Router,
         private pcService: PCService,
         private roomLocationService: RoomLocationService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private pcComponentService: PCComponentService
     ) { }
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
-        this.isViewMode = this.router.url.includes('/view/');
+        // Check if URL is /pc/:id (view mode) or /pc/edit/:id (edit mode)
+        this.isViewMode = this.router.url.includes('/pc/') && !this.router.url.includes('/edit/') && !this.router.url.includes('/add');
         
-        console.log('PC Add/Edit Component - ID:', this.id, 'isAddMode:', this.isAddMode, 'isViewMode:', this.isViewMode);
+        console.log('PC Add/Edit Component - ID:', this.id, 'isAddMode:', this.isAddMode, 'isViewMode:', this.isViewMode, 'URL:', this.router.url);
 
         this.form = this.formBuilder.group({
             name: ['', Validators.required],
@@ -42,8 +47,14 @@ export class PCAddEditComponent implements OnInit {
 
         this.loadRoomLocations();
 
-        if (!this.isAddMode) {
+        // Only load PC if we have a valid ID and we're not in add mode
+        if (!this.isAddMode && this.id) {
             this.loadPC();
+        }
+
+        // Load PC components and calculate cost for view mode
+        if (this.isViewMode && this.id) {
+            this.loadPCComponents();
         }
 
         // Disable form in view mode
@@ -84,6 +95,38 @@ export class PCAddEditComponent implements OnInit {
 
     goToStock() {
         this.router.navigate(['/stocks']);
+    }
+
+    loadPCComponents() {
+        if (!this.id) return;
+        
+        this.loadingComponents = true;
+        this.pcComponentService.getByPCId(this.id)
+            .pipe(first())
+            .subscribe({
+                next: (components) => {
+                    this.pcComponents = components;
+                    this.calculateTotalCost();
+                    this.loadingComponents = false;
+                },
+                error: (error) => {
+                    console.error('Error loading PC components:', error);
+                    this.loadingComponents = false;
+                }
+            });
+    }
+
+    calculateTotalCost() {
+        this.totalPCCost = this.pcComponents.reduce((total, component) => {
+            return total + (component.totalPrice || 0);
+        }, 0);
+    }
+
+    formatCurrency(amount: number): string {
+        return new Intl.NumberFormat('en-PH', {
+            style: 'currency',
+            currency: 'PHP'
+        }).format(amount);
     }
 
     onSubmit() {

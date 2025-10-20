@@ -1,8 +1,10 @@
 
 
 <!-- Add Disposal Modal -->
-<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" *ngIf="showAddDisposalModal" (click)="closeAddDisposalModal()">
-  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-hidden" (click)="$event.stopPropagation()">
+<div class="modal-overlay fixed top-20 left-72 right-4 bottom-4 bg-black/50 z-50 flex items-center justify-center backdrop-blur-sm" 
+     *ngIf="showAddDisposalModal" 
+     (click)="closeAddDisposalModal()">
+  <div class="modal-container bg-white rounded-2xl shadow-2xl w-full h-full max-h-full overflow-hidden" (click)="$event.stopPropagation()">
     <div class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-4">
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
         <div class="flex items-center">
@@ -171,21 +173,21 @@
         <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200">
           <button *ngIf="!disposalId || isEditMode" 
                   type="submit" 
-                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition bg-danger text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed" 
+                  class="btn-dispose inline-flex items-center justify-center px-6 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed" 
                   [disabled]="loading || form.invalid || f.quantity.errors?.insufficientStock">
             <div *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
             {{ isEditMode ? 'Update Disposal' : 'Dispose Items' }}
           </button>
           <button *ngIf="!disposalId && !isEditMode" 
                   type="button" 
-                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition bg-warning text-white hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed" 
+                  class="btn-warning-custom inline-flex items-center justify-center px-6 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed" 
                   (click)="disposeAll()" 
                   [disabled]="loading || availableStock === 0 || !form.value.itemId">
             <div *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
             Dispose All Available
           </button>
           <button type="button" 
-                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50" 
+                  class="inline-flex items-center justify-center px-6 py-3 font-semibold transition border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 rounded-lg" 
                   (click)="closeAddDisposalModal()" 
                   [disabled]="loading">
             Cancel
