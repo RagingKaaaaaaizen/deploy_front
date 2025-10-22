@@ -45,8 +45,11 @@ export class ActivityTimelineComponent implements OnInit, OnChanges {
     const groups: { [key: string]: ActivityLog[] } = {};
 
     this.logs.forEach(log => {
+      console.log('Processing log:', log);
       const logDate = new Date(log.createdAt);
+      console.log('Log date:', logDate, 'Is valid:', !isNaN(logDate.getTime()));
       const dateKey = format(logDate, 'yyyy-MM-dd');
+      console.log('Date key:', dateKey);
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }

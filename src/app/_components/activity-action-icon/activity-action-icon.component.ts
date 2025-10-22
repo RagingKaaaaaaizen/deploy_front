@@ -16,7 +16,8 @@ export class ActivityActionIconComponent implements OnInit, OnChanges {
     bgColor: 'bg-gray-100',
     borderColor: 'border-gray-200',
     icon: 'fas fa-circle',
-    label: ''
+    label: '',
+    dotColorClass: 'bg-gray-500'
   };
 
   constructor(private activityActionService: ActivityActionService) { }

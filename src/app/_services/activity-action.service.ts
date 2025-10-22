@@ -6,6 +6,7 @@ export interface ActionConfig {
   borderColor: string;
   icon: string;
   label: string;
+  dotColorClass?: string;
 }
 
 @Injectable({
@@ -20,7 +21,8 @@ export class ActivityActionService {
       bgColor: 'bg-green-100',
       borderColor: 'border-green-200',
       icon: 'fas fa-plus-circle',
-      label: 'Create Item'
+      label: 'Create Item',
+      dotColorClass: 'bg-green-500'
     },
     'CREATE_PC': {
       color: 'text-green-800',
@@ -103,7 +105,8 @@ export class ActivityActionService {
       bgColor: 'bg-orange-100',
       borderColor: 'border-orange-200',
       icon: 'fas fa-trash',
-      label: 'Dispose Item'
+      label: 'Dispose Item',
+      dotColorClass: 'bg-orange-500'
     },
 
     // LOGIN Actions - Purple
@@ -112,14 +115,24 @@ export class ActivityActionService {
       bgColor: 'bg-purple-100',
       borderColor: 'border-purple-200',
       icon: 'fas fa-sign-in-alt',
-      label: 'Login'
+      label: 'Login',
+      dotColorClass: 'bg-purple-500'
     },
     'LOGOUT': {
       color: 'text-purple-800',
       bgColor: 'bg-purple-100',
       borderColor: 'border-purple-200',
       icon: 'fas fa-sign-out-alt',
-      label: 'Logout'
+      label: 'Logout',
+      dotColorClass: 'bg-purple-500'
+    },
+    'RETURN_TO_STOCK': {
+      color: 'text-blue-800',
+      bgColor: 'bg-blue-100',
+      borderColor: 'border-blue-200',
+      icon: 'fas fa-undo',
+      label: 'Return to Stock',
+      dotColorClass: 'bg-blue-500'
     }
   };
 
@@ -189,7 +202,8 @@ export class ActivityActionService {
       bgColor: 'bg-gray-100',
       borderColor: 'border-gray-200',
       icon: 'fas fa-circle',
-      label: action.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+      label: action.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()),
+      dotColorClass: 'bg-gray-500'
     };
   }
 }
