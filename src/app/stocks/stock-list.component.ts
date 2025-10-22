@@ -1974,11 +1974,18 @@ export class StockListComponent implements OnInit {
   }
 
   proceedWithSave() {
+    console.log('=== PROCEED WITH SAVE CALLED ===');
+    console.log('Call stack:', new Error().stack);
+    console.log('stockLoading:', this.stockLoading);
+    console.log('showConfirmationModalFlag:', this.showConfirmationModalFlag);
+    
     // Prevent multiple clicks
     if (this.stockLoading) {
+      console.log('Blocked: stockLoading is true');
       return;
     }
     
+    console.log('Hiding confirmation modal and calling saveStock...');
     this.hideConfirmationModal();
     this.saveStock();
   }
