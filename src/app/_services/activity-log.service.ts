@@ -21,7 +21,9 @@ export class ActivityLogService {
             params += `&endDate=${filters.dateRange.endDate.toISOString()}`;
         }
         
-        return this.http.get<ActivityLog[]>(`${this.baseUrl}/my-activity?${params}`);
+        const url = `${this.baseUrl}/my-activity?${params}`;
+        console.log('Fetching activity logs from:', url);
+        return this.http.get<ActivityLog[]>(url);
     }
 
     getUserActivity(userId: number, limit = 50, offset = 0, filters?: any): Observable<ActivityLog[]> {

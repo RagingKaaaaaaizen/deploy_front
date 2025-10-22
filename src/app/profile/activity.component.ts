@@ -91,6 +91,7 @@ export class ActivityComponent implements OnInit, OnChanges {
         
         observable.subscribe({
             next: (newLogs) => {
+                console.log('Activity logs received:', newLogs);
                 if (reset) {
                     this.logs = newLogs;
                 } else {
