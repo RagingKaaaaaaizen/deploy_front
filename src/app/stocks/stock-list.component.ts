@@ -1863,12 +1863,16 @@ export class StockListComponent implements OnInit {
             this.alertService.success(`${validEntries.length} stock item(s) added successfully`);
           }
           
+          // Hide confirmation modal and close add stock modal
+          this.hideConfirmationModal();
           this.closeAddStockModal();
           this.loadData(); // Refresh the stock list
         },
         error: (error) => {
           this.stockLoading = false;
           this.alertService.error('Error adding stock items: ' + (error.message || error));
+          // Hide confirmation modal on error
+          this.hideConfirmationModal();
         }
       });
   }
@@ -2003,8 +2007,11 @@ export class StockListComponent implements OnInit {
       return;
     }
     
-    console.log('Hiding confirmation modal and calling saveStock...');
-    this.hideConfirmationModal();
+    console.log('Setting loading state and calling saveStock...');
+    // Set loading state immediately
+    this.stockLoading = true;
+    
+    // Don't hide modal yet - let the loading state show in the modal
     this.saveStock();
   }
 

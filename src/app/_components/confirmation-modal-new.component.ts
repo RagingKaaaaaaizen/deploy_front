@@ -4,10 +4,10 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angu
   selector: 'app-confirmation-modal-new',
   template: `
     <!-- Modal Overlay - Fixed positioning for popup -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
+    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4 modal-backdrop" 
          *ngIf="isVisible"
          (click)="!isLoading && onCancel()">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-hidden" 
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-hidden modal-shadow" 
            (click)="$event.stopPropagation()">
         
         <!-- Modal Header -->
@@ -81,13 +81,14 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angu
             <i class="fas fa-times mr-2"></i> Cancel
           </button>
           <button type="button" 
-                  class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed" 
+                  class="inline-flex items-center justify-center rounded-md px-6 py-3 font-semibold transition-all duration-200 bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed btn-loading" 
+                  [class.btn-loading]="isLoading"
                   [disabled]="isLoading"
                   (click)="onConfirm()">
-            <div *ngIf="isLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-            <i *ngIf="!isLoading" class="fas fa-paper-plane mr-2"></i> 
-            <span *ngIf="!isLoading">{{ confirmText }}</span>
-            <span *ngIf="isLoading">Processing...</span>
+            <div *ngIf="isLoading" class="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3 loading-spinner"></div>
+            <i *ngIf="!isLoading" class="fas fa-paper-plane mr-2 text-lg"></i> 
+            <span *ngIf="!isLoading" class="font-medium">{{ confirmText }}</span>
+            <span *ngIf="isLoading" class="font-medium">Processing Request...</span>
           </button>
         </div>
       </div>
@@ -95,43 +96,119 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angu
   `,
   styles: [`
     .items-summary {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      border: 2px solid #e9ecef;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #dee2e6;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
     
     .table {
       margin-bottom: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     
     .table th {
       border-top: none;
-      background: #495057;
+      background: linear-gradient(135deg, #495057 0%, #343a40 100%);
       color: white;
       font-weight: 600;
+      padding: 16px 12px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
-    .table-success th {
-      background: #28a745 !important;
+    .table td {
+      padding: 16px 12px;
+      vertical-align: middle;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    .table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    .table tbody tr:nth-child(even):hover {
+      background-color: #e9ecef;
     }
     
     .alert {
-      padding: 12px 16px;
-      border-radius: 6px;
+      padding: 16px 20px;
+      border-radius: 8px;
       border: 1px solid transparent;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     
     .alert-warning {
-      background-color: #fff3cd;
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
       border-color: #ffeaa7;
       color: #856404;
+      box-shadow: 0 2px 4px rgba(255, 234, 167, 0.3);
     }
     
     .alert-info {
-      background-color: #d1ecf1;
+      background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
       border-color: #bee5eb;
       color: #0c5460;
+      box-shadow: 0 2px 4px rgba(190, 229, 235, 0.3);
+    }
+    
+    .alert i {
+      font-size: 18px;
+    }
+    
+    /* Loading spinner animation */
+    .loading-spinner {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Button hover effects */
+    .btn-loading {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    /* Modal backdrop blur effect */
+    .modal-backdrop {
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    
+    /* Enhanced shadow for modal */
+    .modal-shadow {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
     }
   `]
 })
@@ -220,6 +297,20 @@ export class ConfirmationModalNewComponent implements OnInit, OnChanges {
   }
 
   onConfirm() {
+    console.log('ConfirmationModalNewComponent - Confirm button clicked');
+    console.log('Current loading state:', this.isLoading);
+    
+    // Prevent multiple clicks while loading
+    if (this.isLoading) {
+      console.log('Already loading, ignoring click');
+      return;
+    }
+    
+    // Set loading state
+    this.isLoading = true;
+    console.log('Setting loading state to true');
+    
+    // Emit the confirmation event
     this.confirmed.emit();
   }
 
