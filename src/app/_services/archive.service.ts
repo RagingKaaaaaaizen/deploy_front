@@ -277,29 +277,22 @@ export class ArchiveService {
     doc.text('Executive Summary', 20, yPosition);
     yPosition += 10;
     
-    // Filter active data
-    const summaryActiveStocks = reportData.stocks.filter(stock => 
-      stock && !stock.deleted && stock.quantity > 0
-    );
-    const summaryActiveDisposals = reportData.disposals.filter(disposal => 
-      disposal && !disposal.deleted && disposal.quantity > 0
-    );
-    
+    // Use same data as tables to prevent duplicates
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Total Stocks: ${summaryActiveStocks.length}`, 20, yPosition);
+    doc.text(`Total Stocks: ${reportData.stocks.length}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total Disposals: ${summaryActiveDisposals.length}`, 20, yPosition);
+    doc.text(`Total Disposals: ${reportData.disposals.length}`, 20, yPosition);
     yPosition += 7;
     doc.text(`Total PCs: ${reportData.summary.totalPCs}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total Value: $${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    doc.text(`Total Value: ₱${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Stock Value: $${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    doc.text(`Stock Value: ₱${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Disposal Value: $${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    doc.text(`Disposal Value: ₱${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`PC Value: $${(typeof reportData.summary.pcValue === 'number' ? reportData.summary.pcValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    doc.text(`PC Value: ₱${(typeof reportData.summary.pcValue === 'number' ? reportData.summary.pcValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 15;
 
     // Detailed Analysis section
@@ -364,12 +357,8 @@ export class ArchiveService {
       yPosition += 10;
     }
     
-    // Stocks section with improved table formatting (exclude deleted data)
-    const tableActiveStocks = reportData.stocks.filter(stock => 
-      stock && !stock.deleted && stock.quantity > 0
-    );
-    
-    if (tableActiveStocks.length > 0) {
+    // Stocks section - show all stocks without duplicate filtering
+    if (reportData.stocks.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -380,17 +369,13 @@ export class ArchiveService {
       doc.text('Detailed Stocks Report', 20, yPosition);
       yPosition += 15;
       
-      // Create simple table with proper spacing
-      this.createStocksTable(doc, tableActiveStocks, yPosition);
-      yPosition += (Math.ceil(tableActiveStocks.length / 8) * 8) + 20; // Calculate space needed
+      // Create simple table with all stocks
+      this.createStocksTable(doc, reportData.stocks, yPosition);
+      yPosition += (Math.ceil(reportData.stocks.length / 8) * 8) + 20; // Calculate space needed
     }
     
-    // Disposals section (only show if there are disposals and they're not deleted)
-    const tableActiveDisposals = reportData.disposals.filter(disposal => 
-      disposal && !disposal.deleted && disposal.quantity > 0
-    );
-    
-    if (tableActiveDisposals.length > 0) {
+    // Disposals section - show all disposals without duplicate filtering
+    if (reportData.disposals.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -401,9 +386,9 @@ export class ArchiveService {
       doc.text('Detailed Disposals Report', 20, yPosition);
       yPosition += 15;
       
-      // Create simple disposals table
-      this.createDisposalsTable(doc, tableActiveDisposals, yPosition);
-      yPosition += (Math.ceil(tableActiveDisposals.length / 8) * 8) + 20;
+      // Create simple disposals table with all disposals
+      this.createDisposalsTable(doc, reportData.disposals, yPosition);
+      yPosition += (Math.ceil(reportData.disposals.length / 8) * 8) + 20;
     }
     
     // PCs section with precise data
@@ -479,7 +464,7 @@ export class ArchiveService {
         xPosition += 35;
         
         const value = isStock ? receipt.totalPrice : receipt.totalValue;
-        doc.text(`$${(typeof value === 'number' ? value.toFixed(2) : '0.00')}`, xPosition, yPosition);
+        doc.text(`₱${(typeof value === 'number' ? value.toFixed(2) : '0.00')}`, xPosition, yPosition);
         yPosition += 8;
       });
     }
