@@ -427,7 +427,7 @@
         <i class="fas fa-times mr-2"></i>
           Cancel
         </button>
-      <button type="submit" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed" [disabled]="!isButtonEnabled" (click)="debugButtonClick($event)">
+      <button type="submit" class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
         <div *ngIf="stockLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
         <i *ngIf="!stockLoading" class="fas fa-save mr-2"></i>
           <span *ngIf="!stockLoading">Add {{ stockEntries.length }} Stock Item(s)</span>

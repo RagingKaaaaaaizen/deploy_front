@@ -1873,11 +1873,12 @@ export class StockListComponent implements OnInit {
 
   // Form submission method - triggers confirmation modal
   onFormSubmit(event: Event) {
-    console.log('=== FORM SUBMIT EVENT ===');
+    console.log('=== FORM SUBMIT EVENT TRIGGERED ===');
     console.log('Event:', event);
     console.log('Event target:', event.target);
     console.log('Event type:', event.type);
     console.log('Stock entries:', this.stockEntries);
+    console.log('Stock entries length:', this.stockEntries.length);
     console.log('Form validity:', event.target);
     console.log('Button disabled state - stockLoading:', this.stockLoading, 'showConfirmationModalFlag:', this.showConfirmationModalFlag);
     
@@ -1891,7 +1892,7 @@ export class StockListComponent implements OnInit {
       return;
     }
     
-    console.log('Showing confirmation modal...');
+    console.log('About to show confirmation modal...');
     this.showConfirmationModal();
   }
 
