@@ -1934,6 +1934,19 @@ export class StockListComponent implements OnInit {
   showConfirmationModal() {
     console.log('=== SHOW CONFIRMATION MODAL CALLED ===');
     console.log('Stock entries:', this.stockEntries);
+    console.log('Stock entries length:', this.stockEntries.length);
+    
+    // Log each entry in detail
+    this.stockEntries.forEach((entry, index) => {
+      console.log(`Entry ${index}:`, {
+        itemId: entry.itemId,
+        quantity: entry.quantity,
+        price: entry.price,
+        locationId: entry.locationId,
+        remarks: entry.remarks
+      });
+    });
+    
     this.stockSubmitted = true;
 
     // Validate all entries
@@ -1952,6 +1965,7 @@ export class StockListComponent implements OnInit {
     console.log('Valid entries count:', this.validStockEntries.length);
 
     if (this.validStockEntries.length === 0) {
+      console.log('No valid entries found - showing error');
       this.alertService.error('Please fill in at least one complete stock entry');
       return;
     }

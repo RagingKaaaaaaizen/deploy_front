@@ -3,11 +3,14 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angu
 @Component({
   selector: 'app-confirmation-modal',
   template: `
+    <!-- Modal Overlay -->
     <div class="modal fade" 
          [class.show]="isVisible" 
          [style.display]="isVisible ? 'block' : 'none'"
+         [style.z-index]="isVisible ? '9999' : '-1'"
          tabindex="-1" 
-         role="dialog">
+         role="dialog"
+         *ngIf="isVisible">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -90,6 +93,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angu
     <!-- Modal backdrop -->
     <div class="modal-backdrop fade" 
          [class.show]="isVisible" 
+         [style.z-index]="isVisible ? '9998' : '-1'"
          *ngIf="isVisible"
          (click)="!isLoading && onCancel()">
     </div>
