@@ -31,6 +31,10 @@ export interface ReportData {
     generationTime: Date;
     dataSource: string;
     filters: any;
+    includeStocks?: boolean;
+    includeDisposals?: boolean;
+    includePCs?: boolean;
+    includeDetailedAnalysis?: boolean;
   };
 }
 
@@ -79,6 +83,10 @@ export interface StoredReport {
     dataSource: string;
     filters: any;
     version: string;
+    includeStocks?: boolean;
+    includeDisposals?: boolean;
+    includePCs?: boolean;
+    includeDetailedAnalysis?: boolean;
   };
 }
 
@@ -258,7 +266,7 @@ export class ArchiveService {
   }
 
   // Generate PDF and return as blob for preview
-  generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date): Blob {
+  generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
     console.log('Generating PDF for report type:', reportType);
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
@@ -269,29 +277,35 @@ export class ArchiveService {
     // Add simple header without logo
     this.addSimpleHeader(doc, reportType);
     
-    // Filter data by date range if provided
-    let filteredStocks = reportData.stocks;
-    let filteredDisposals = reportData.disposals;
-    let filteredPCs = reportData.pcs;
+    // Filter data by date range and inclusion flags
+    let filteredStocks = includeStocks ? reportData.stocks : [];
+    let filteredDisposals = includeDisposals ? reportData.disposals : [];
+    let filteredPCs = includePCs ? reportData.pcs : [];
     
     if (startDate && endDate) {
-      // Filter stocks by date range
-      filteredStocks = reportData.stocks.filter(stock => {
-        const stockDate = new Date(stock.createdAt || stock.updatedAt);
-        return stockDate >= startDate && stockDate <= endDate;
-      });
+      // Filter stocks by date range (only if included)
+      if (includeStocks) {
+        filteredStocks = reportData.stocks.filter(stock => {
+          const stockDate = new Date(stock.createdAt || stock.updatedAt);
+          return stockDate >= startDate && stockDate <= endDate;
+        });
+      }
       
-      // Filter disposals by date range
-      filteredDisposals = reportData.disposals.filter(disposal => {
-        const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
-        return disposalDate >= startDate && disposalDate <= endDate;
-      });
+      // Filter disposals by date range (only if included)
+      if (includeDisposals) {
+        filteredDisposals = reportData.disposals.filter(disposal => {
+          const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
+          return disposalDate >= startDate && disposalDate <= endDate;
+        });
+      }
       
-      // Filter PCs by date range
-      filteredPCs = reportData.pcs.filter(pc => {
-        const pcDate = new Date(pc.createdAt || pc.updatedAt);
-        return pcDate >= startDate && pcDate <= endDate;
-      });
+      // Filter PCs by date range (only if included)
+      if (includePCs) {
+        filteredPCs = reportData.pcs.filter(pc => {
+          const pcDate = new Date(pc.createdAt || pc.updatedAt);
+          return pcDate >= startDate && pcDate <= endDate;
+        });
+      }
     }
     
     let yPosition = 50;
@@ -302,22 +316,49 @@ export class ArchiveService {
     doc.text('Executive Summary', 20, yPosition);
     yPosition += 10;
     
-    // Use filtered data for precise date reporting
+    // Use filtered data for precise date reporting - only show included data types
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Total Stocks: ${filteredStocks.length}`, 20, yPosition);
+    
+    if (includeStocks) {
+      doc.text(`Total Stocks: ${filteredStocks.length}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total Disposals: ${filteredDisposals.length}`, 20, yPosition);
+    }
+    
+    if (includeDisposals) {
+      doc.text(`Total Disposals: ${filteredDisposals.length}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total PCs: ${filteredPCs.length}`, 20, yPosition);
+    }
+    
+    if (includePCs) {
+      doc.text(`Total PCs: ${filteredPCs.length}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total Value: ₱${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    }
+    
+    // Calculate total value based on included data types
+    let totalValue = 0;
+    if (includeStocks) {
+      const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || 0), 0);
+      doc.text(`Stock Value: ₱${stockValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Stock Value: ₱${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, 20, yPosition);
+      totalValue += stockValue;
+    }
+    
+    if (includeDisposals) {
+      const disposalValue = filteredDisposals.reduce((sum, disposal) => sum + (disposal.totalValue || 0), 0);
+      doc.text(`Disposal Value: ₱${disposalValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Disposal Value: ₱${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, 20, yPosition);
+      totalValue += disposalValue;
+    }
+    
+    if (includePCs) {
+      const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || 0), 0);
+      doc.text(`PC Value: ₱${pcValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`PC Value: ₱${(typeof reportData.summary.pcValue === 'number' ? reportData.summary.pcValue.toFixed(2) : '0.00')}`, 20, yPosition);
+      totalValue += pcValue;
+    }
+    
+    doc.text(`Total Value: ₱${totalValue.toFixed(2)}`, 20, yPosition);
     yPosition += 15;
 
     // Detailed Analysis section
@@ -382,8 +423,8 @@ export class ArchiveService {
       yPosition += 10;
     }
     
-    // Stocks section - show filtered stocks for specific date range
-    if (filteredStocks.length > 0) {
+    // Stocks section - show only if included and has data
+    if (includeStocks && filteredStocks.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -399,8 +440,8 @@ export class ArchiveService {
       yPosition += (Math.ceil(filteredStocks.length / 8) * 8) + 20; // Calculate space needed
     }
     
-    // Disposals section - show filtered disposals for specific date range
-    if (filteredDisposals.length > 0) {
+    // Disposals section - show only if included and has data
+    if (includeDisposals && filteredDisposals.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -416,8 +457,8 @@ export class ArchiveService {
       yPosition += (Math.ceil(filteredDisposals.length / 8) * 8) + 20;
     }
     
-    // PCs section with filtered data for specific date range
-    if (filteredPCs.length > 0) {
+    // PCs section - show only if included and has data
+    if (includePCs && filteredPCs.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -805,11 +846,11 @@ export class ArchiveService {
     });
   }
 
-  downloadPDF(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date): void {
+  downloadPDF(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): void {
     try {
       console.log('Downloading PDF for report type:', reportType);
       console.log('Report data:', reportData);
-      const blob = this.generatePDFBlob(reportData, reportType, startDate, endDate);
+      const blob = this.generatePDFBlob(reportData, reportType, startDate, endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -826,7 +867,13 @@ export class ArchiveService {
     try {
       console.log('Downloading PDF for report:', report);
       console.log('Report data:', report.data);
-      this.downloadPDF(report.data, report.type, report.period.startDate, report.period.endDate);
+      // Use stored report's inclusion settings if available, otherwise use defaults
+      const includeStocks = report.metadata?.includeStocks !== false;
+      const includeDisposals = report.metadata?.includeDisposals !== false;
+      const includePCs = report.metadata?.includePCs !== false;
+      const includeDetailedAnalysis = report.metadata?.includeDetailedAnalysis === true;
+      
+      this.downloadPDF(report.data, report.type, report.period.startDate, report.period.endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
     } catch (error) {
       console.error('Error generating PDF for download:', error);
       alert('Error generating PDF download. Please check the console for details.');
@@ -838,7 +885,13 @@ export class ArchiveService {
     try {
       console.log('Previewing PDF for report:', report);
       console.log('Report data:', report.data);
-      const blob = this.generatePDFBlob(report.data, report.type, report.period.startDate, report.period.endDate);
+      // Use stored report's inclusion settings if available, otherwise use defaults
+      const includeStocks = report.metadata?.includeStocks !== false;
+      const includeDisposals = report.metadata?.includeDisposals !== false;
+      const includePCs = report.metadata?.includePCs !== false;
+      const includeDetailedAnalysis = report.metadata?.includeDetailedAnalysis === true;
+      
+      const blob = this.generatePDFBlob(report.data, report.type, report.period.startDate, report.period.endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
       // Clean up after a delay
