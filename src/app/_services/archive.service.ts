@@ -325,12 +325,16 @@ export class ArchiveService {
     doc.setFont('helvetica', 'normal');
     
     if (includeStocks) {
-      doc.text(`Total Stocks: ${filteredStocks.length}`, 20, yPosition);
+      // Calculate total quantity of stock items, not just count of entries
+      const totalStockQuantity = filteredStocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
+      doc.text(`Total Stocks: ${totalStockQuantity}`, 20, yPosition);
     yPosition += 7;
     }
     
     if (includeDisposals) {
-      doc.text(`Total Disposals: ${filteredDisposals.length}`, 20, yPosition);
+      // Calculate total quantity of disposed items, not just count of entries
+      const totalDisposalQuantity = filteredDisposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
+      doc.text(`Total Disposals: ${totalDisposalQuantity}`, 20, yPosition);
     yPosition += 7;
     }
     
@@ -342,21 +346,21 @@ export class ArchiveService {
     // Calculate total value based on included data types
     let totalValue = 0;
     if (includeStocks) {
-      const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || 0), 0);
+      const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
       doc.text(`Stock Value: ₱${stockValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
       totalValue += stockValue;
     }
     
     if (includeDisposals) {
-      const disposalValue = filteredDisposals.reduce((sum, disposal) => sum + (disposal.totalValue || 0), 0);
+      const disposalValue = filteredDisposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
       doc.text(`Disposal Value: ₱${disposalValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
       totalValue += disposalValue;
     }
     
     if (includePCs) {
-      const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || 0), 0);
+      const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
       doc.text(`PC Value: ₱${pcValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
       totalValue += pcValue;
@@ -674,10 +678,12 @@ export class ArchiveService {
       doc.text(location, xPos + 2, currentY + 5);
       xPos += colWidths[2];
       
-      // Value
+      // Value - calculate from price and quantity if totalPrice not available
       const value = typeof stock.totalPrice === 'number' ? 
-        `₱${stock.totalPrice.toFixed(2)}` : '₱0.00';
-      doc.text(value, xPos + 2, currentY + 5);
+        stock.totalPrice : 
+        (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
+          stock.price * stock.quantity : 0);
+      doc.text(`₱${value.toFixed(2)}`, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
       // Category
@@ -756,10 +762,12 @@ export class ArchiveService {
       doc.text(date, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
-      // Value
+      // Value - calculate from disposal value and quantity if totalValue not available
       const value = typeof disposal.totalValue === 'number' ? 
-        `₱${disposal.totalValue.toFixed(2)}` : '₱0.00';
-      doc.text(value, xPos + 2, currentY + 5);
+        disposal.totalValue : 
+        (typeof disposal.disposalValue === 'number' ? 
+          disposal.disposalValue : 0);
+      doc.text(`₱${value.toFixed(2)}`, xPos + 2, currentY + 5);
     });
   }
 
