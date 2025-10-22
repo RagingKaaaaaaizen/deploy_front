@@ -1763,24 +1763,26 @@ export class StockListComponent implements OnInit {
   }
 
   initializeStockEntries() {
+    console.log('=== INITIALIZING STOCK ENTRIES ===');
     this.stockEntries = [{
-      itemId: undefined,
-      quantity: undefined,
-      price: undefined,
-      locationId: undefined,
+      itemId: null,
+      quantity: null,
+      price: null,
+      locationId: null,
       remarks: ''
     }];
     this.stockReceiptFile = null;
+    console.log('Stock entries initialized:', this.stockEntries);
   }
 
   addNewStockEntry() {
     console.log('=== ADD NEW STOCK ENTRY BUTTON CLICKED ===');
     console.log('Current stock entries length:', this.stockEntries.length);
     this.stockEntries.push({
-      itemId: undefined,
-      quantity: undefined,
-      price: undefined,
-      locationId: undefined,
+      itemId: null,
+      quantity: null,
+      price: null,
+      locationId: null,
       remarks: ''
     });
     console.log('New stock entries length:', this.stockEntries.length);
