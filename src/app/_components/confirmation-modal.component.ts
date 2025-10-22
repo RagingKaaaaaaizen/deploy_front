@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -154,7 +154,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     }
   `]
 })
-export class ConfirmationModalComponent {
+export class ConfirmationModalComponent implements OnInit, OnChanges {
   @Input() isVisible = false;
   @Input() title = 'Confirm Action';
   @Input() message = 'Are you sure you want to proceed?';
@@ -168,6 +168,16 @@ export class ConfirmationModalComponent {
   
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
+
+  ngOnInit() {
+    console.log('ConfirmationModalComponent initialized');
+  }
+
+  ngOnChanges() {
+    console.log('ConfirmationModalComponent - isVisible changed to:', this.isVisible);
+    console.log('ConfirmationModalComponent - items:', this.items);
+    console.log('ConfirmationModalComponent - userRole:', this.userRole);
+  }
 
   get roleMessage(): string {
     if (this.userRole === 'SuperAdmin' || this.userRole === 'Admin') {

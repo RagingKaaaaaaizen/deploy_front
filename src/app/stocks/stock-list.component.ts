@@ -1861,12 +1861,23 @@ export class StockListComponent implements OnInit {
       });
   }
 
-  // Form submission debug method
+  // Form submission method - triggers confirmation modal
   onFormSubmit(event: Event) {
     console.log('=== FORM SUBMIT EVENT ===');
     console.log('Event:', event);
+    console.log('Stock entries:', this.stockEntries);
     console.log('Form validity:', event.target);
-    event.preventDefault(); // Prevent default submission
+    
+    // Prevent default form submission
+    event.preventDefault();
+    
+    // Prevent multiple submissions
+    if (this.stockLoading || this.showConfirmationModalFlag) {
+      console.log('Form submission blocked - already processing');
+      return;
+    }
+    
+    console.log('Showing confirmation modal...');
     this.showConfirmationModal();
   }
 
@@ -1927,6 +1938,9 @@ export class StockListComponent implements OnInit {
     }
 
     this.showConfirmationModalFlag = true;
+    console.log('Confirmation modal flag set to:', this.showConfirmationModalFlag);
+    console.log('Current user role:', this.currentUserRole);
+    console.log('Confirm button text:', this.confirmButtonText);
   }
 
   hideConfirmationModal() {
