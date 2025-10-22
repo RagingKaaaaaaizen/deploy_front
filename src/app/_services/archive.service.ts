@@ -198,7 +198,7 @@ export class ArchiveService {
     return this.generateReport(request);
   }
 
-  storeReport(reportData: ReportData, reportType: 'weekly' | 'monthly', startDate: Date, endDate: Date): StoredReport {
+  storeReport(reportData: ReportData, reportType: 'weekly' | 'monthly', startDate: Date, endDate: Date, inclusionSettings?: { includeStocks?: boolean; includeDisposals?: boolean; includePCs?: boolean; includeDetailedAnalysis?: boolean }): StoredReport {
     const weekNumber = this.getWeekNumber(startDate);
     const monthYear = this.getMonthYear(startDate);
     
@@ -221,12 +221,16 @@ export class ArchiveService {
         generationTime: new Date(),
         dataSource: 'Computer Lab Inventory System',
         filters: {
-          includeStocks: true,
-          includeDisposals: true,
-          includePCs: true,
-          detailedAnalysis: true
+          includeStocks: inclusionSettings?.includeStocks ?? true,
+          includeDisposals: inclusionSettings?.includeDisposals ?? true,
+          includePCs: inclusionSettings?.includePCs ?? true,
+          detailedAnalysis: inclusionSettings?.includeDetailedAnalysis ?? true
         },
-        version: '2.0.0'
+        version: '2.0.0',
+        includeStocks: inclusionSettings?.includeStocks ?? true,
+        includeDisposals: inclusionSettings?.includeDisposals ?? true,
+        includePCs: inclusionSettings?.includePCs ?? true,
+        includeDetailedAnalysis: inclusionSettings?.includeDetailedAnalysis ?? true
       }
     };
 

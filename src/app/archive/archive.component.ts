@@ -889,8 +889,13 @@ export class ArchiveComponent implements OnInit {
     .subscribe({
       next: (data) => {
         this.weeklyData = data;
-        // Store the report
-        this.archiveService.storeReport(data, 'weekly', selectedPeriod.startDate, selectedPeriod.endDate);
+        // Store the report with inclusion settings
+        this.archiveService.storeReport(data, 'weekly', selectedPeriod.startDate, selectedPeriod.endDate, {
+          includeStocks: this.weeklyForm.get('includeStocks')?.value,
+          includeDisposals: this.weeklyForm.get('includeDisposals')?.value,
+          includePCs: this.weeklyForm.get('includePCs')?.value,
+          includeDetailedAnalysis: this.weeklyForm.get('detailedAnalysis')?.value
+        });
         this.loadStoredReports();
         this.loadAvailablePeriods();
         this.loadReportStatistics();
@@ -935,8 +940,13 @@ export class ArchiveComponent implements OnInit {
     .subscribe({
       next: (data) => {
         this.monthlyData = data;
-        // Store the report
-        this.archiveService.storeReport(data, 'monthly', selectedPeriod.startDate, selectedPeriod.endDate);
+        // Store the report with inclusion settings
+        this.archiveService.storeReport(data, 'monthly', selectedPeriod.startDate, selectedPeriod.endDate, {
+          includeStocks: this.monthlyForm.get('includeStocks')?.value,
+          includeDisposals: this.monthlyForm.get('includeDisposals')?.value,
+          includePCs: this.monthlyForm.get('includePCs')?.value,
+          includeDetailedAnalysis: this.monthlyForm.get('detailedAnalysis')?.value
+        });
         this.loadStoredReports();
         this.loadAvailablePeriods();
         this.loadReportStatistics();
@@ -952,15 +962,39 @@ export class ArchiveComponent implements OnInit {
 
   downloadWeeklyPDF(): void {
     if (this.weeklyData) {
-      this.archiveService.downloadPDF(this.weeklyData, 'Weekly');
-      this.alertService.success('Weekly PDF report downloaded successfully!');
+      const selectedPeriod = this.selectedWeeklyPeriod || this.customWeeklyPeriod;
+      if (selectedPeriod) {
+        this.archiveService.downloadPDF(
+          this.weeklyData, 
+          'Weekly', 
+          selectedPeriod.startDate, 
+          selectedPeriod.endDate,
+          this.weeklyForm.get('includeStocks')?.value,
+          this.weeklyForm.get('includeDisposals')?.value,
+          this.weeklyForm.get('includePCs')?.value,
+          this.weeklyForm.get('detailedAnalysis')?.value
+        );
+        this.alertService.success('Weekly PDF report downloaded successfully!');
+      }
     }
   }
 
   downloadMonthlyPDF(): void {
     if (this.monthlyData) {
-      this.archiveService.downloadPDF(this.monthlyData, 'Monthly');
-      this.alertService.success('Monthly PDF report downloaded successfully!');
+      const selectedPeriod = this.selectedMonthlyPeriod || this.customMonthlyPeriod;
+      if (selectedPeriod) {
+        this.archiveService.downloadPDF(
+          this.monthlyData, 
+          'Monthly', 
+          selectedPeriod.startDate, 
+          selectedPeriod.endDate,
+          this.monthlyForm.get('includeStocks')?.value,
+          this.monthlyForm.get('includeDisposals')?.value,
+          this.monthlyForm.get('includePCs')?.value,
+          this.monthlyForm.get('detailedAnalysis')?.value
+        );
+        this.alertService.success('Monthly PDF report downloaded successfully!');
+      }
     }
   }
 
