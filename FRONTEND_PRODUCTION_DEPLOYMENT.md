@@ -5,7 +5,7 @@
 ### **Environment Variables (Already configured in render.yaml):**
 
 ```bash
-API_URL=https://computer-lab-inventory-backend-klzb.onrender.com
+API_URL=https://computer-lab-inventory-backend.onrender.com
 ```
 
 **Note:** `NODE_ENV=production` is NOT set during build to ensure devDependencies (including Angular CLI) are installed. The `NODE_OPTIONS` is set inline in the build command.
