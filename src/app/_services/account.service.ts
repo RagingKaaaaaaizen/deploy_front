@@ -43,7 +43,18 @@ export class AccountService {
     }
 
     logout() {
-        this.http.post<any>(`${baseUrl}/revoke-token`, {}, { withCredentials: true }).subscribe();
+        // The refresh token is sent via cookies (withCredentials: true)
+        // The backend will get it from req.cookies.refreshToken
+        this.http.post<any>(`${baseUrl}/revoke-token`, {}, { withCredentials: true }).subscribe({
+            next: () => {
+                // Successfully revoked token
+            },
+            error: (error) => {
+                // Don't block logout even if revoke fails
+                console.warn('Token revocation failed:', error);
+            }
+        });
+        
         this.stopRefreshTokenTimer();
         this.accountSubject.next(null);
         this.router.navigate(['/account/login']);

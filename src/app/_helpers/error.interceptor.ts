@@ -12,11 +12,24 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            // Don't auto-logout for analytics automated-schedule endpoint (SuperAdmin only)
-            const isAnalyticsAutomatedSchedule = request.url.includes('/analytics/automated-schedule');
+            // Don't auto-logout for analytics endpoints that require admin role
+            const isAnalyticsRestrictedEndpoint = request.url.includes('/analytics/') && (
+                request.url.includes('/automated-schedule') ||
+                request.url.includes('/low-stock-items') ||
+                request.url.includes('/out-of-stock-items') ||
+                request.url.includes('/pending-requests') ||
+                request.url.includes('/stock-by-location') ||
+                request.url.includes('/monthly-stock-additions') ||
+                request.url.includes('/monthly-disposals') ||
+                request.url.includes('/top-categories') ||
+                request.url.includes('/most-replaced-components') ||
+                request.url.includes('/average-lifespan') ||
+                request.url.includes('/replacement-patterns') ||
+                request.url.includes('/advanced-analytics')
+            );
             
-            if ([401, 403].includes(err.status) && this.accountService.accountValue && !isAnalyticsAutomatedSchedule) {
-                // auto logout if 401 or 403 response returned from api (except for analytics automated-schedule)
+            if ([401, 403].includes(err.status) && this.accountService.accountValue && !isAnalyticsRestrictedEndpoint) {
+                // auto logout if 401 or 403 response returned from api (except for analytics restricted endpoints)
                 this.accountService.logout();
             }
 

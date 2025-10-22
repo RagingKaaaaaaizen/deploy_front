@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, interval } from 'rxjs';
 import { environment } from '@environments/environment';
 import { first, take } from 'rxjs/operators';
+import { AccountService } from './account.service';
+import { Role } from '../_models';
 
 const baseUrl = `${environment.apiUrl}/api/analytics`;
 
@@ -58,7 +60,10 @@ export class NotificationService {
   });
   public settings$ = this.settings.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private accountService: AccountService
+  ) {
     this.loadNotifications();
     this.loadSettings();
     this.startPolling();
@@ -117,6 +122,11 @@ export class NotificationService {
   }
 
   private checkForNewNotifications(): void {
+    // Only check for admin-level notifications if user has admin role
+    if (!this.hasAdminRole()) {
+      return;
+    }
+
     // Check for low stock items
     this.http.get<any[]>(`${baseUrl}/low-stock-items?threshold=10`)
       .pipe(first())
@@ -126,7 +136,12 @@ export class NotificationService {
             this.createLowStockNotification(lowStockItems);
           }
         },
-        error: (error) => console.error('Error checking low stock:', error)
+        error: (error) => {
+          // Don't show error for 401/403 - user just doesn't have permission
+          if (error.status !== 401 && error.status !== 403) {
+            console.error('Error checking low stock:', error);
+          }
+        }
       });
 
     // Check for out of stock items
@@ -138,7 +153,12 @@ export class NotificationService {
             this.createOutOfStockNotification(outOfStockItems);
           }
         },
-        error: (error) => console.error('Error checking out of stock:', error)
+        error: (error) => {
+          // Don't show error for 401/403 - user just doesn't have permission
+          if (error.status !== 401 && error.status !== 403) {
+            console.error('Error checking out of stock:', error);
+          }
+        }
       });
 
     // Check for pending requests
@@ -150,8 +170,18 @@ export class NotificationService {
             this.createPendingRequestNotification(pendingRequests);
           }
         },
-        error: (error) => console.error('Error checking pending requests:', error)
+        error: (error) => {
+          // Don't show error for 401/403 - user just doesn't have permission
+          if (error.status !== 401 && error.status !== 403) {
+            console.error('Error checking pending requests:', error);
+          }
+        }
       });
+  }
+
+  private hasAdminRole(): boolean {
+    const account = this.accountService.accountValue;
+    return account && (account.role === Role.Admin || account.role === Role.SuperAdmin);
   }
 
   private createLowStockNotification(items: any[]): void {
