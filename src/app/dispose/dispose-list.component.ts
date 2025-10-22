@@ -1109,6 +1109,7 @@ export class DisposeListComponent implements OnInit {
   // Modal properties
   showAddDisposalModal = false;
   showReturnToStockModal = false;
+  showViewDisposalModal = false;
   form: FormGroup;
   returnForm: FormGroup;
   items: any[] = [];
@@ -1634,7 +1635,6 @@ export class DisposeListComponent implements OnInit {
     console.log('=== VIEW DISPOSAL CLICKED ===');
     console.log('ID received:', id);
     console.log('ID type:', typeof id);
-    console.log('Current route:', this.router.url);
     
     if (!id) {
       console.error('No ID provided for view disposal');
@@ -1642,13 +1642,23 @@ export class DisposeListComponent implements OnInit {
       return;
     }
     
-    try {
-    this.router.navigate(['/dispose/view', id]);
-      console.log('Navigation attempted to:', `/dispose/view/${id}`);
-    } catch (error) {
-      console.error('Navigation error:', error);
-      this.alertService.error('Failed to navigate to disposal view');
+    // Find the disposal by ID
+    const disposal = this.disposals.find(d => d.id === id);
+    if (!disposal) {
+      console.error('Disposal not found with ID:', id);
+      this.alertService.error('Disposal not found');
+      return;
     }
+    
+    // Set selected disposal and show modal
+    this.selectedDisposal = disposal;
+    this.showViewDisposalModal = true;
+    console.log('Showing disposal modal for:', disposal);
+  }
+
+  closeViewDisposalModal() {
+    this.showViewDisposalModal = false;
+    this.selectedDisposal = null;
   }
 
   editDisposal(id: number) {

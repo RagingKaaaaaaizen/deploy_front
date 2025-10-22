@@ -28,15 +28,20 @@
       </div>
     </div>
 
-    <div class="p-6 overflow-y-auto max-h-[calc(95vh-140px)]">
+    <div class="p-6 overflow-y-auto max-h-[calc(95vh-140px)] space-y-6">
       <!-- Available Stock Alert -->
-      <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4" *ngIf="availableStock > 0">
+      <div class="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-4 shadow-sm" *ngIf="availableStock > 0">
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <i class="fas fa-info-circle text-blue-600 mr-2 text-sm"></i>
-            <span class="text-blue-800 font-semibold text-sm">Available Stock: {{ availableStock }} items</span>
+            <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center mr-3">
+              <i class="fas fa-info-circle text-sm"></i>
+            </div>
+            <div>
+              <span class="text-blue-800 font-semibold text-sm block">Available Stock</span>
+              <span class="text-blue-600 font-bold text-lg">{{ availableStock }} items</span>
+            </div>
           </div>
-          <button type="button" class="inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-semibold transition bg-blue-100 text-blue-700 hover:bg-blue-200" (click)="refreshStockData()" title="Refresh Stock Data">
+          <button type="button" class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold transition bg-blue-500 text-white hover:bg-blue-600 shadow-sm" (click)="refreshStockData()" title="Refresh Stock Data">
             <i class="fas fa-sync-alt mr-1"></i> Refresh
           </button>
         </div>
@@ -58,10 +63,10 @@
         </div>
       </div>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
         <!-- Item Selection -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700">
+        <div class="space-y-3">
+          <label class="block text-sm font-semibold text-gray-700 flex items-center">
             <i class="fas fa-box mr-2 text-indigo-600"></i> Item
           </label>
           <select formControlName="itemId" 
@@ -81,8 +86,8 @@
         </div>
 
         <!-- Quantity -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700">
+        <div class="space-y-3">
+          <label class="block text-sm font-semibold text-gray-700 flex items-center">
             <i class="fas fa-sort-numeric-up mr-2 text-indigo-600"></i> Quantity to Dispose
           </label>
           <input type="number" formControlName="quantity" 
@@ -104,17 +109,17 @@
             <i class="fas fa-exclamation-triangle mr-1"></i>
             Cannot dispose {{ f.quantity.value }} items. Only {{ f.quantity.errors.availableStock }} items available.
           </div>
-          <div class="text-gray-500 text-sm" *ngIf="availableStock > 0">
-            Maximum available: {{ availableStock }} items
+          <div class="text-gray-500 text-sm mt-2" *ngIf="availableStock > 0">
+            <i class="fas fa-info-circle mr-1"></i> Maximum available: {{ availableStock }} items
           </div>
-          <div class="text-yellow-600 text-sm" *ngIf="availableStock === 0 && form.value.itemId">
+          <div class="text-yellow-600 text-sm mt-2" *ngIf="availableStock === 0 && form.value.itemId">
             <i class="fas fa-exclamation-circle mr-1"></i> No stock available for disposal
           </div>
         </div>
 
         <!-- Location -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700">
+        <div class="space-y-3">
+          <label class="block text-sm font-semibold text-gray-700 flex items-center">
             <i class="fas fa-map-marker-alt mr-2 text-indigo-600"></i> Storage Location
           </label>
           <select formControlName="locationId" 
@@ -134,8 +139,8 @@
         </div>
 
         <!-- Disposal Value -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700">
+        <div class="space-y-3">
+          <label class="block text-sm font-semibold text-gray-700 flex items-center">
             <i class="fas fa-dollar-sign mr-2 text-indigo-600"></i> Disposal Value (total)
           </label>
           <input type="number" formControlName="disposalValue" 
@@ -149,17 +154,17 @@
             <div *ngIf="f.disposalValue.errors.required">Disposal value is required</div>
             <div *ngIf="f.disposalValue.errors.min">Disposal value must be greater than 0</div>
           </div>
-          <div class="text-gray-500 text-sm">
-            Total value for all items being disposed (auto-calculated as price × quantity)
-            <div *ngIf="selectedItemPrice > 0" class="text-blue-600 mt-1">
-              💡 Latest item price: {{ selectedItemPrice | currency:'PHP':'symbol' }} per item
+          <div class="text-gray-500 text-sm mt-2">
+            <i class="fas fa-info-circle mr-1"></i> Total value for all items being disposed (auto-calculated as price × quantity)
+            <div *ngIf="selectedItemPrice > 0" class="text-blue-600 mt-2 flex items-center">
+              <i class="fas fa-lightbulb mr-1"></i> Latest item price: {{ selectedItemPrice | currency:'PHP':'symbol' }} per item
             </div>
           </div>
         </div>
 
         <!-- Reason -->
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-gray-700">
+        <div class="space-y-3">
+          <label class="block text-sm font-semibold text-gray-700 flex items-center">
             <i class="fas fa-comment mr-2 text-indigo-600"></i> Reason
           </label>
           <textarea formControlName="reason" 
@@ -170,7 +175,7 @@
          </div>
 
         <!-- Buttons -->
-        <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200">
+        <div class="flex flex-wrap gap-4 pt-8 border-t border-gray-200">
           <button *ngIf="!disposalId || isEditMode" 
                   type="submit" 
                   class="btn-dispose inline-flex items-center justify-center px-6 py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed" 

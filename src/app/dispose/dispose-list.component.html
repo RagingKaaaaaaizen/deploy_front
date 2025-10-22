@@ -508,4 +508,123 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- View Disposal Details Modal -->
+<div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
+     *ngIf="showViewDisposalModal" 
+     (click)="closeViewDisposalModal()">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-hidden" 
+       (click)="$event.stopPropagation()">
+    
+    <!-- Modal Header -->
+    <div class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-white/20 text-white rounded-full flex items-center justify-center mr-4 text-xl">
+            <i class="fas fa-trash-alt"></i>
+          </div>
+          <div>
+            <h4 class="text-xl font-bold text-white">Disposal Details</h4>
+            <p class="text-white/80 text-sm">View complete disposal information</p>
+          </div>
+        </div>
+        <button type="button" class="text-white/80 hover:text-white text-2xl" (click)="closeViewDisposalModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Modal Body -->
+    <div class="p-6 max-h-[calc(95vh-120px)] overflow-y-auto">
+      <div *ngIf="selectedDisposal" class="space-y-6">
+        
+        <!-- Item Information -->
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-6 shadow-sm">
+          <h5 class="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+            <i class="fas fa-box mr-2"></i> Item Information
+          </h5>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-blue-700">Item Name</label>
+              <p class="text-blue-900 font-semibold">{{ selectedDisposal.item?.name || 'Unknown Item' }}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-blue-700">Category</label>
+              <p class="text-blue-900">{{ selectedDisposal.item?.category?.name || 'No Category' }}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-blue-700">Brand</label>
+              <p class="text-blue-900">{{ selectedDisposal.item?.brand?.name || 'No Brand' }}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-blue-700">Storage Location</label>
+              <p class="text-blue-900">{{ selectedDisposal.location?.name || 'No Location' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disposal Details -->
+        <div class="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-xl p-6 shadow-sm">
+          <h5 class="text-lg font-semibold text-red-800 mb-4 flex items-center">
+            <i class="fas fa-trash-alt mr-2"></i> Disposal Details
+          </h5>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-red-700">Quantity Disposed</label>
+              <p class="text-red-900 font-bold text-xl">{{ selectedDisposal.quantity }} units</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-red-700">Disposal Value</label>
+              <p class="text-red-900 font-bold text-xl">{{ selectedDisposal.disposalValue | currency:'PHP':'symbol' }}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-red-700">Disposal Date</label>
+              <p class="text-red-900">{{ selectedDisposal.disposalDate | date:'medium' }}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-red-700">Disposed By</label>
+              <p class="text-red-900">{{ selectedDisposal.disposedBy?.firstName }} {{ selectedDisposal.disposedBy?.lastName }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reason -->
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-6 shadow-sm">
+          <h5 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-comment mr-2"></i> Disposal Reason
+          </h5>
+          <div class="bg-white rounded-lg p-4 border border-gray-200">
+            <p class="text-gray-700 leading-relaxed">{{ selectedDisposal.reason || 'No reason provided' }}</p>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-xl p-6 shadow-sm">
+          <h5 class="text-lg font-semibold text-green-800 mb-4 flex items-center">
+            <i class="fas fa-info-circle mr-2"></i> Additional Information
+          </h5>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-green-700">Created At</label>
+              <p class="text-green-900">{{ selectedDisposal.createdAt | date:'medium' }}</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-green-700">Last Updated</label>
+              <p class="text-green-900">{{ selectedDisposal.updatedAt | date:'medium' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal Footer -->
+    <div class="flex flex-col sm:flex-row gap-3 p-6 border-t border-gray-200 bg-gray-50">
+      <button type="button" 
+              class="inline-flex items-center justify-center rounded-md px-4 py-2 font-semibold transition bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300" 
+              (click)="closeViewDisposalModal()">
+        <i class="fas fa-times mr-2"></i> Close
+      </button>
+    </div>
+  </div>
 </div> 
