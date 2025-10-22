@@ -1181,4 +1181,60 @@ export class ArchiveComponent implements OnInit {
     }
     return decimals === 0 ? '0' : '0.00';
   }
+
+  // Helper methods for filtered data calculations
+  getFilteredStockCount(): number {
+    if (!this.weeklyData && !this.monthlyData) return 0;
+    const data = this.weeklyData || this.monthlyData;
+    if (!data || !data.stocks) return 0;
+    
+    // Calculate total quantity of stock items
+    return data.stocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
+  }
+
+  getFilteredDisposalCount(): number {
+    if (!this.weeklyData && !this.monthlyData) return 0;
+    const data = this.weeklyData || this.monthlyData;
+    if (!data || !data.disposals) return 0;
+    
+    // Calculate total quantity of disposed items
+    return data.disposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
+  }
+
+  getFilteredPCCount(): number {
+    if (!this.weeklyData && !this.monthlyData) return 0;
+    const data = this.weeklyData || this.monthlyData;
+    if (!data || !data.pcs) return 0;
+    
+    // Return count of PC entries
+    return data.pcs.length;
+  }
+
+  getFilteredTotalValue(): number {
+    if (!this.weeklyData && !this.monthlyData) return 0;
+    const data = this.weeklyData || this.monthlyData;
+    if (!data) return 0;
+    
+    let totalValue = 0;
+    
+    // Add stock values
+    if (data.stocks) {
+      totalValue += data.stocks.reduce((sum, stock) => 
+        sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
+    }
+    
+    // Add disposal values
+    if (data.disposals) {
+      totalValue += data.disposals.reduce((sum, disposal) => 
+        sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
+    }
+    
+    // Add PC values
+    if (data.pcs) {
+      totalValue += data.pcs.reduce((sum, pc) => 
+        sum + (pc.totalValue || pc.value || 0), 0);
+    }
+    
+    return totalValue;
+  }
 }

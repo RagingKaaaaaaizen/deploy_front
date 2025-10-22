@@ -16,29 +16,47 @@
   </div>
 
   <!-- Statistics Section -->
-    <div *ngIf="reportStatistics" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div *ngIf="reportStatistics" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <!-- Show filtered data if report is generated, otherwise show system totals -->
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <i class="fas fa-file-alt text-white text-xl"></i>
+          <i class="fas fa-box text-white text-xl"></i>
         </div>
-        <div class="text-2xl font-bold text-indigo-600 font-akira mb-1">{{ reportStatistics.totalReports }}</div>
-        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Total Reports</div>
+        <div class="text-2xl font-bold text-indigo-600 font-akira mb-1">
+          {{ (weeklyData || monthlyData) ? getFilteredStockCount() : reportStatistics.totalReports }}
+        </div>
+        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">
+          {{ (weeklyData || monthlyData) ? 'STOCKS' : 'Total Reports' }}
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-trash text-white text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-red-600 font-akira mb-1">
+          {{ (weeklyData || monthlyData) ? getFilteredDisposalCount() : '0' }}
+        </div>
+        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">DISPOSALS</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-desktop text-white text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-blue-600 font-akira mb-1">
+          {{ (weeklyData || monthlyData) ? getFilteredPCCount() : '0' }}
+        </div>
+        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">PCS</div>
       </div>
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-3">
           <i class="fas fa-dollar-sign text-white text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-green-600 font-akira mb-1">
+          ${{ (weeklyData || monthlyData) ? formatNumber(getFilteredTotalValue(), 0) : formatNumber(reportStatistics.totalValue, 0) }}
+        </div>
+        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">VALUE</div>
       </div>
-        <div class="text-2xl font-bold text-green-600 font-akira mb-1">${{ formatNumber(reportStatistics.totalValue, 0) }}</div>
-        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Total Value</div>
-      </div>
-      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <i class="fas fa-calendar-alt text-white text-xl"></i>
-      </div>
-        <div class="text-2xl font-bold text-blue-600 font-akira mb-1">{{ reportStatistics.mostRecentReport?.generatedDate | date:'MMM dd' || 'N/A' }}</div>
-        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">Latest Report</div>
     </div>
-  </div>
 
   <!-- Report Generation Cards -->
   <div class="report-cards">
