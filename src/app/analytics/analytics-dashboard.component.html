@@ -231,7 +231,7 @@
   </div>
 
   <!-- Automated Report Scheduling -->
-  <div class="automated-schedule-section" *ngIf="automatedSchedule">
+  <div class="automated-schedule-section" *ngIf="automatedSchedule && isSuperAdmin()">
     <div class="schedule-header">
       <div class="schedule-title">
         <i class="fas fa-calendar-alt"></i>

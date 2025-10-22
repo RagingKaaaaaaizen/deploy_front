@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ArchiveService } from '../_services/archive.service';
 import { AlertService } from '../_services/alert.service';
+import { AccountService } from '../_services/account.service';
+import { Role } from '../_models';
 import { first } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -348,17 +350,22 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
   advancedAnalytics: any = null;
   automatedSchedule: any = null;
   scheduleForm: any = {};
+  Role = Role;
   
   private destroy$ = new Subject<void>();
 
   constructor(
     private archiveService: ArchiveService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
     this.loadAdvancedAnalytics();
-    this.loadAutomatedSchedule();
+    // Only load automated schedule for SuperAdmin users
+    if (this.isSuperAdmin()) {
+      this.loadAutomatedSchedule();
+    }
   }
 
   ngOnDestroy(): void {
@@ -391,7 +398,10 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           this.scheduleForm = { ...data };
         },
         error: (error) => {
-          this.alertService.error('Error loading automated schedule: ' + (error.error?.message || error.message || 'Unknown error'));
+          // Don't show error for 401/403 - user just doesn't have permission
+          if (error.status !== 401 && error.status !== 403) {
+            this.alertService.error('Error loading automated schedule: ' + (error.error?.message || error.message || 'Unknown error'));
+          }
         }
       });
   }
@@ -415,6 +425,11 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
 
   refreshAnalytics(): void {
     this.loadAdvancedAnalytics();
+  }
+
+  isSuperAdmin(): boolean {
+    const account = this.accountService.accountValue;
+    return account && account.role === Role.SuperAdmin;
   }
 
   formatNumber(value: any, decimals: number = 0): string {

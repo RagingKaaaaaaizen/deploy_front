@@ -12,8 +12,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            if ([401, 403].includes(err.status) && this.accountService.accountValue) {
-                // auto logout if 401 or 403 response returned from api
+            // Don't auto-logout for analytics automated-schedule endpoint (SuperAdmin only)
+            const isAnalyticsAutomatedSchedule = request.url.includes('/analytics/automated-schedule');
+            
+            if ([401, 403].includes(err.status) && this.accountService.accountValue && !isAnalyticsAutomatedSchedule) {
+                // auto logout if 401 or 403 response returned from api (except for analytics automated-schedule)
                 this.accountService.logout();
             }
 
