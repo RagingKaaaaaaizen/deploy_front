@@ -443,7 +443,7 @@
 </div>
 
 <!-- Confirmation Modal -->
-<app-confirmation-modal
+<app-confirmation-modal-new
   [isVisible]="showConfirmationModalFlag"
   [title]="'Confirm Stock Addition'"
   [message]="'Please review the items you are about to add:'"
@@ -455,7 +455,7 @@
   [isLoading]="stockLoading"
   (confirmed)="proceedWithSave()"
   (cancelled)="hideConfirmationModal()">
-</app-confirmation-modal>
+</app-confirmation-modal-new>
 
 <!-- View Stock Modal -->
 <div class="modal-overlay" *ngIf="showViewStockModal" (click)="closeViewStockModal()">

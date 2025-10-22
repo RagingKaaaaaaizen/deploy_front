@@ -1968,6 +1968,8 @@ export class StockListComponent implements OnInit {
 
     if (this.validStockEntries.length === 0) {
       console.log('No valid entries found - showing error');
+      console.log('Raw stock entries:', this.stockEntries);
+      console.log('First entry details:', this.stockEntries[0]);
       this.alertService.error('Please fill in at least one complete stock entry');
       return;
     }

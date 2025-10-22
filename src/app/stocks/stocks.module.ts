@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { StockListComponent } from './stock-list.component';
 import { StockEditComponent } from './stock-edit.component';
-import { ConfirmationModalComponent } from '../_components/confirmation-modal.component';
+import { ConfirmationModalNewComponent } from '../_components/confirmation-modal-new.component';
 
 const routes: Routes = [
   { path: '', component: StockListComponent },        // /stocks
@@ -18,7 +18,7 @@ const routes: Routes = [
   declarations: [
     StockListComponent,
     StockEditComponent,
-    ConfirmationModalComponent
+    ConfirmationModalNewComponent
   ],
   imports: [
     CommonModule,
