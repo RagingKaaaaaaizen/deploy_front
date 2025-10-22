@@ -263,22 +263,21 @@ export class ArchiveService {
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
     
-    // Create PDF in landscape orientation for wider format
-    const doc = new jsPDF('landscape', 'mm', 'a4');
+    // Create PDF in portrait orientation
+    const doc = new jsPDF('portrait', 'mm', 'a4');
     
-    // Add Benedicto College logo and header
-    this.addSchoolHeader(doc, reportType);
+    // Add simple header without logo
+    this.addSimpleHeader(doc, reportType);
     
     let yPosition = 50;
     
-    // Executive Summary section with professional formatting
-    doc.setFontSize(16);
+    // Simple Executive Summary
+    doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0, 51, 102); // School blue
     doc.text('Executive Summary', 20, yPosition);
-    yPosition += 15;
+    yPosition += 10;
     
-    // Create summary boxes
+    // Filter active data
     const summaryActiveStocks = reportData.stocks.filter(stock => 
       stock && !stock.deleted && stock.quantity > 0
     );
@@ -286,25 +285,22 @@ export class ArchiveService {
       disposal && !disposal.deleted && disposal.quantity > 0
     );
     
-    // Summary boxes in landscape format
-    const boxWidth = 80;
-    const boxHeight = 25;
-    const boxSpacing = 10;
-    const startX = 20;
-    
-    // First row of summary boxes
-    this.createSummaryBox(doc, 'Total Stocks', summaryActiveStocks.length.toString(), startX, yPosition, boxWidth, boxHeight);
-    this.createSummaryBox(doc, 'Total Disposals', summaryActiveDisposals.length.toString(), startX + boxWidth + boxSpacing, yPosition, boxWidth, boxHeight);
-    this.createSummaryBox(doc, 'Total PCs', reportData.summary.totalPCs.toString(), startX + (boxWidth + boxSpacing) * 2, yPosition, boxWidth, boxHeight);
-    
-    yPosition += boxHeight + 15;
-    
-    // Second row of summary boxes
-    this.createSummaryBox(doc, 'Stock Value', `₱${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, startX, yPosition, boxWidth, boxHeight);
-    this.createSummaryBox(doc, 'Disposal Value', `₱${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, startX + boxWidth + boxSpacing, yPosition, boxWidth, boxHeight);
-    this.createSummaryBox(doc, 'Total Value', `₱${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, startX + (boxWidth + boxSpacing) * 2, yPosition, boxWidth, boxHeight);
-    
-    yPosition += boxHeight + 20;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Total Stocks: ${summaryActiveStocks.length}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`Total Disposals: ${summaryActiveDisposals.length}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`Total PCs: ${reportData.summary.totalPCs}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`Total Value: $${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`Stock Value: $${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`Disposal Value: $${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`PC Value: $${(typeof reportData.summary.pcValue === 'number' ? reportData.summary.pcValue.toFixed(2) : '0.00')}`, 20, yPosition);
+    yPosition += 15;
 
     // Detailed Analysis section
     if (reportData.summary.stockCategories && Object.keys(reportData.summary.stockCategories).length > 0) {
@@ -384,7 +380,7 @@ export class ArchiveService {
       doc.text('Detailed Stocks Report', 20, yPosition);
       yPosition += 15;
       
-      // Create professional table with proper spacing
+      // Create simple table with proper spacing
       this.createStocksTable(doc, tableActiveStocks, yPosition);
       yPosition += (Math.ceil(tableActiveStocks.length / 8) * 8) + 20; // Calculate space needed
     }
@@ -405,48 +401,26 @@ export class ArchiveService {
       doc.text('Detailed Disposals Report', 20, yPosition);
       yPosition += 15;
       
-      // Create professional disposals table
+      // Create simple disposals table
       this.createDisposalsTable(doc, tableActiveDisposals, yPosition);
       yPosition += (Math.ceil(tableActiveDisposals.length / 8) * 8) + 20;
     }
     
-    // PCs section
+    // PCs section with precise data
     if (reportData.pcs.length > 0) {
-      if (yPosition > 250) {
+      if (yPosition > 180) {
         doc.addPage();
-        yPosition = 20;
+        yPosition = 50;
       }
       
       doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
       doc.text('Detailed PC Management Report', 20, yPosition);
-      yPosition += 10;
+      yPosition += 15;
       
-      doc.setFontSize(8);
-      const pcHeaders = ['PC Name', 'Location', 'Status', 'Components', 'Last Updated'];
-      let xPosition = 20;
-      pcHeaders.forEach(header => {
-        doc.text(header, xPosition, yPosition);
-        xPosition += 35;
-      });
-      yPosition += 7;
-      
-      reportData.pcs.forEach(pc => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        xPosition = 20;
-        doc.text(pc.name || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(pc.roomLocationName || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(pc.status || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(pc.componentsCount?.toString() || '0', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(new Date(pc.updatedAt || pc.createdAt).toLocaleDateString(), xPosition, yPosition);
-        yPosition += 5;
-      });
+      // Create PC table
+      this.createPCTable(doc, reportData.pcs, yPosition);
+      yPosition += (Math.ceil(reportData.pcs.length / 8) * 8) + 20;
     }
 
     // Receipt Images section
@@ -522,38 +496,32 @@ export class ArchiveService {
     return doc.output('blob');
   }
 
-  // Add professional school header with Benedicto College logo
-  private addSchoolHeader(doc: jsPDF, reportType: string): void {
-    // School colors: Blue and Orange
-    const schoolBlue = [0, 51, 102]; // Dark blue
-    const schoolOrange = [255, 140, 0]; // Orange
-    
-    // Add header background
-    doc.setFillColor(schoolBlue[0], schoolBlue[1], schoolBlue[2]);
-    doc.rect(0, 0, 297, 40, 'F'); // Full width header
-    
-    // Add Benedicto College logo (simplified version)
-    this.addSchoolLogo(doc);
-    
-    // School name and title
-    doc.setTextColor(255, 255, 255); // White text
-    doc.setFontSize(18);
+  // Add simple header without logo
+  private addSimpleHeader(doc: jsPDF, reportType: string): void {
+    // Simple header
+    doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.text('BENEDICTO COLLEGE', 150, 15, { align: 'center' });
+    doc.text('Computer Lab Inventory System', 105, 20, { align: 'center' });
     
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Computer Lab Inventory System', 150, 22, { align: 'center' });
+    doc.setFontSize(16);
+    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 105, 30, { align: 'center' });
     
-    doc.setFontSize(12);
-    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 150, 28, { align: 'center' });
+    // Precise date formatting
+    const now = new Date();
+    const preciseDate = now.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    const preciseTime = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      second: '2-digit',
+      hour12: true 
+    });
     
-    // Generation info
-    doc.setFontSize(8);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 150, 35, { align: 'center' });
-    
-    // Reset text color
-    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 105, 40, { align: 'center' });
   }
 
   // Add simplified Benedicto College logo
@@ -585,35 +553,35 @@ export class ArchiveService {
     doc.text('2000', logoX + logoSize/2, logoY + logoSize/2 + 8, { align: 'center' });
   }
 
-  // Create professional stocks table with proper spacing
+  // Create simple stocks table for portrait format
   private createStocksTable(doc: jsPDF, stocks: any[], startY: number): void {
-    const pageWidth = 297; // Landscape A4 width
+    const pageWidth = 210; // Portrait A4 width
     const margin = 20;
     const tableWidth = pageWidth - (margin * 2);
     
-    // Column widths for landscape format
-    const colWidths = [80, 25, 40, 35, 30]; // Item, Quantity, Location, Value, Category
-    const rowHeight = 8;
+    // Column widths for portrait format
+    const colWidths = [60, 20, 30, 25, 25]; // Item, Quantity, Location, Value, Category
+    const rowHeight = 6;
     
     // Table headers
     doc.setFillColor(240, 240, 240);
     doc.rect(margin, startY, tableWidth, rowHeight, 'F');
     
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
     
     let xPos = margin;
-    const headers = ['Item', 'Qty', 'Location', 'Value', 'Category'];
+    const headers = ['Item', 'Quantity', 'Location', 'Value', 'Category'];
     
     headers.forEach((header, index) => {
-      doc.text(header, xPos + 2, startY + 5);
+      doc.text(header, xPos + 2, startY + 4);
       xPos += colWidths[index];
     });
     
     // Table rows
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     
     stocks.forEach((stock, index) => {
       const currentY = startY + (index + 1) * rowHeight;
@@ -621,7 +589,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addSchoolHeader(doc, '');
+        this.addSimpleHeader(doc, '');
         return this.createStocksTable(doc, stocks.slice(index), 50);
       }
       
@@ -662,35 +630,35 @@ export class ArchiveService {
     });
   }
 
-  // Create professional disposals table with proper spacing
+  // Create simple disposals table for portrait format
   private createDisposalsTable(doc: jsPDF, disposals: any[], startY: number): void {
-    const pageWidth = 297; // Landscape A4 width
+    const pageWidth = 210; // Portrait A4 width
     const margin = 20;
     const tableWidth = pageWidth - (margin * 2);
     
-    // Column widths for landscape format
-    const colWidths = [60, 25, 50, 30, 35]; // Item, Quantity, Reason, Date, Value
-    const rowHeight = 8;
+    // Column widths for portrait format
+    const colWidths = [45, 20, 40, 25, 30]; // Item, Quantity, Reason, Date, Value
+    const rowHeight = 6;
     
     // Table headers
     doc.setFillColor(240, 240, 240);
     doc.rect(margin, startY, tableWidth, rowHeight, 'F');
     
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
     
     let xPos = margin;
-    const headers = ['Item', 'Qty', 'Reason', 'Date', 'Value'];
+    const headers = ['Item', 'Quantity', 'Reason', 'Date', 'Value'];
     
     headers.forEach((header, index) => {
-      doc.text(header, xPos + 2, startY + 5);
+      doc.text(header, xPos + 2, startY + 4);
       xPos += colWidths[index];
     });
     
     // Table rows
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     
     disposals.forEach((disposal, index) => {
       const currentY = startY + (index + 1) * rowHeight;
@@ -698,7 +666,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addSchoolHeader(doc, '');
+        this.addSimpleHeader(doc, '');
         return this.createDisposalsTable(doc, disposals.slice(index), 50);
       }
       
@@ -740,28 +708,91 @@ export class ArchiveService {
     });
   }
 
-  // Create professional summary boxes
-  private createSummaryBox(doc: jsPDF, title: string, value: string, x: number, y: number, width: number, height: number): void {
-    // Box background
-    doc.setFillColor(248, 249, 250);
-    doc.rect(x, y, width, height, 'F');
+  // Create simple PC table for portrait format
+  private createPCTable(doc: jsPDF, pcs: any[], startY: number): void {
+    const pageWidth = 210; // Portrait A4 width
+    const margin = 20;
+    const tableWidth = pageWidth - (margin * 2);
     
-    // Box border
-    doc.setDrawColor(0, 51, 102);
-    doc.setLineWidth(0.5);
-    doc.rect(x, y, width, height);
+    // Column widths for portrait format
+    const colWidths = [50, 40, 30, 25, 35]; // PC Name, Location, Status, Components, Last Updated
+    const rowHeight = 6;
     
-    // Title
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0, 51, 102);
-    doc.text(title, x + 5, y + 8);
+    // Table headers
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, startY, tableWidth, rowHeight, 'F');
     
-    // Value
-    doc.setFontSize(12);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
-    doc.text(value, x + 5, y + 18);
+    
+    let xPos = margin;
+    const headers = ['PC Name', 'Location', 'Status', 'Components', 'Last Updated'];
+    
+    headers.forEach((header, index) => {
+      doc.text(header, xPos + 2, startY + 4);
+      xPos += colWidths[index];
+    });
+    
+    // Table rows
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    
+    pcs.forEach((pc, index) => {
+      const currentY = startY + (index + 1) * rowHeight;
+      
+      // Check if we need a new page
+      if (currentY > 200) {
+        doc.addPage();
+        this.addSimpleHeader(doc, '');
+        return this.createPCTable(doc, pcs.slice(index), 50);
+      }
+      
+      // Alternate row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(248, 249, 250);
+        doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
+      }
+      
+      xPos = margin;
+      
+      // PC Name (truncate if too long)
+      const pcName = (pc.name || 'N/A').length > 20 ? 
+        (pc.name || 'N/A').substring(0, 17) + '...' : 
+        (pc.name || 'N/A');
+      doc.text(pcName, xPos + 2, currentY + 5);
+      xPos += colWidths[0];
+      
+      // Location (truncate if too long)
+      const location = (pc.roomLocationName || 'N/A').length > 15 ? 
+        (pc.roomLocationName || 'N/A').substring(0, 12) + '...' : 
+        (pc.roomLocationName || 'N/A');
+      doc.text(location, xPos + 2, currentY + 5);
+      xPos += colWidths[1];
+      
+      // Status
+      doc.text(pc.status || 'N/A', xPos + 2, currentY + 5);
+      xPos += colWidths[2];
+      
+      // Components
+      doc.text(pc.componentsCount?.toString() || '0', xPos + 2, currentY + 5);
+      xPos += colWidths[3];
+      
+      // Last Updated (precise date)
+      const lastUpdated = new Date(pc.updatedAt || pc.createdAt);
+      const preciseDate = lastUpdated.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      const preciseTime = lastUpdated.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      doc.text(`${preciseDate}`, xPos + 2, currentY + 5);
+      doc.text(`${preciseTime}`, xPos + 2, currentY + 8);
+    });
   }
 
   downloadPDF(reportData: ReportData, reportType: string): void {
