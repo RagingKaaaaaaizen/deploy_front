@@ -258,7 +258,7 @@ export class ArchiveService {
   }
 
   // Generate PDF and return as blob for preview
-  generatePDFBlob(reportData: ReportData, reportType: string): Blob {
+  generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date): Blob {
     console.log('Generating PDF for report type:', reportType);
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
@@ -269,6 +269,31 @@ export class ArchiveService {
     // Add simple header without logo
     this.addSimpleHeader(doc, reportType);
     
+    // Filter data by date range if provided
+    let filteredStocks = reportData.stocks;
+    let filteredDisposals = reportData.disposals;
+    let filteredPCs = reportData.pcs;
+    
+    if (startDate && endDate) {
+      // Filter stocks by date range
+      filteredStocks = reportData.stocks.filter(stock => {
+        const stockDate = new Date(stock.createdAt || stock.updatedAt);
+        return stockDate >= startDate && stockDate <= endDate;
+      });
+      
+      // Filter disposals by date range
+      filteredDisposals = reportData.disposals.filter(disposal => {
+        const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
+        return disposalDate >= startDate && disposalDate <= endDate;
+      });
+      
+      // Filter PCs by date range
+      filteredPCs = reportData.pcs.filter(pc => {
+        const pcDate = new Date(pc.createdAt || pc.updatedAt);
+        return pcDate >= startDate && pcDate <= endDate;
+      });
+    }
+    
     let yPosition = 50;
     
     // Simple Executive Summary
@@ -277,14 +302,14 @@ export class ArchiveService {
     doc.text('Executive Summary', 20, yPosition);
     yPosition += 10;
     
-    // Use same data as tables to prevent duplicates
+    // Use filtered data for precise date reporting
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Total Stocks: ${reportData.stocks.length}`, 20, yPosition);
+    doc.text(`Total Stocks: ${filteredStocks.length}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total Disposals: ${reportData.disposals.length}`, 20, yPosition);
+    doc.text(`Total Disposals: ${filteredDisposals.length}`, 20, yPosition);
     yPosition += 7;
-    doc.text(`Total PCs: ${reportData.summary.totalPCs}`, 20, yPosition);
+    doc.text(`Total PCs: ${filteredPCs.length}`, 20, yPosition);
     yPosition += 7;
     doc.text(`Total Value: ₱${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 7;
@@ -357,8 +382,8 @@ export class ArchiveService {
       yPosition += 10;
     }
     
-    // Stocks section - show all stocks without duplicate filtering
-    if (reportData.stocks.length > 0) {
+    // Stocks section - show filtered stocks for specific date range
+    if (filteredStocks.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -369,13 +394,13 @@ export class ArchiveService {
       doc.text('Detailed Stocks Report', 20, yPosition);
       yPosition += 15;
       
-      // Create simple table with all stocks
-      this.createStocksTable(doc, reportData.stocks, yPosition);
-      yPosition += (Math.ceil(reportData.stocks.length / 8) * 8) + 20; // Calculate space needed
+      // Create simple table with filtered stocks
+      this.createStocksTable(doc, filteredStocks, yPosition);
+      yPosition += (Math.ceil(filteredStocks.length / 8) * 8) + 20; // Calculate space needed
     }
     
-    // Disposals section - show all disposals without duplicate filtering
-    if (reportData.disposals.length > 0) {
+    // Disposals section - show filtered disposals for specific date range
+    if (filteredDisposals.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -386,13 +411,13 @@ export class ArchiveService {
       doc.text('Detailed Disposals Report', 20, yPosition);
       yPosition += 15;
       
-      // Create simple disposals table with all disposals
-      this.createDisposalsTable(doc, reportData.disposals, yPosition);
-      yPosition += (Math.ceil(reportData.disposals.length / 8) * 8) + 20;
+      // Create simple disposals table with filtered disposals
+      this.createDisposalsTable(doc, filteredDisposals, yPosition);
+      yPosition += (Math.ceil(filteredDisposals.length / 8) * 8) + 20;
     }
     
-    // PCs section with precise data
-    if (reportData.pcs.length > 0) {
+    // PCs section with filtered data for specific date range
+    if (filteredPCs.length > 0) {
       if (yPosition > 180) {
         doc.addPage();
         yPosition = 50;
@@ -403,15 +428,15 @@ export class ArchiveService {
       doc.text('Detailed PC Management Report', 20, yPosition);
       yPosition += 15;
       
-      // Create PC table
-      this.createPCTable(doc, reportData.pcs, yPosition);
-      yPosition += (Math.ceil(reportData.pcs.length / 8) * 8) + 20;
+      // Create PC table with filtered PCs
+      this.createPCTable(doc, filteredPCs, yPosition);
+      yPosition += (Math.ceil(filteredPCs.length / 8) * 8) + 20;
     }
 
-    // Receipt Images section
+    // Receipt Images section - use filtered data
     const receiptsWithImages = [
-      ...reportData.stocks.filter(stock => stock.receiptAttachment),
-      ...reportData.disposals.filter(disposal => disposal.receiptAttachment)
+      ...filteredStocks.filter(stock => stock.receiptAttachment),
+      ...filteredDisposals.filter(disposal => disposal.receiptAttachment)
     ];
 
     if (receiptsWithImages.length > 0) {
@@ -780,11 +805,11 @@ export class ArchiveService {
     });
   }
 
-  downloadPDF(reportData: ReportData, reportType: string): void {
+  downloadPDF(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date): void {
     try {
       console.log('Downloading PDF for report type:', reportType);
       console.log('Report data:', reportData);
-      const blob = this.generatePDFBlob(reportData, reportType);
+      const blob = this.generatePDFBlob(reportData, reportType, startDate, endDate);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -801,7 +826,7 @@ export class ArchiveService {
     try {
       console.log('Downloading PDF for report:', report);
       console.log('Report data:', report.data);
-      this.downloadPDF(report.data, report.type);
+      this.downloadPDF(report.data, report.type, report.period.startDate, report.period.endDate);
     } catch (error) {
       console.error('Error generating PDF for download:', error);
       alert('Error generating PDF download. Please check the console for details.');
@@ -813,7 +838,7 @@ export class ArchiveService {
     try {
       console.log('Previewing PDF for report:', report);
       console.log('Report data:', report.data);
-      const blob = this.generatePDFBlob(report.data, report.type);
+      const blob = this.generatePDFBlob(report.data, report.type, report.period.startDate, report.period.endDate);
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
       // Clean up after a delay
