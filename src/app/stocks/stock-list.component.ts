@@ -1375,6 +1375,13 @@ export class StockListComponent implements OnInit {
   currentUserRole = '';
   confirmButtonText = 'Confirm';
 
+  // Method to check if button should be enabled
+  get isButtonEnabled(): boolean {
+    const isEnabled = !this.stockLoading && !this.showConfirmationModalFlag;
+    console.log('Button enabled check - stockLoading:', this.stockLoading, 'showConfirmationModalFlag:', this.showConfirmationModalFlag, 'result:', isEnabled);
+    return isEnabled;
+  }
+
   // Delete Modal Properties
   showDeleteStockModal = false;
   stockToDelete: any = null;
@@ -1867,6 +1874,7 @@ export class StockListComponent implements OnInit {
     console.log('Event:', event);
     console.log('Stock entries:', this.stockEntries);
     console.log('Form validity:', event.target);
+    console.log('Button disabled state - stockLoading:', this.stockLoading, 'showConfirmationModalFlag:', this.showConfirmationModalFlag);
     
     // Prevent default form submission
     event.preventDefault();
@@ -1888,6 +1896,17 @@ export class StockListComponent implements OnInit {
     console.log('Stock entries at button click:', this.stockEntries);
     console.log('Button disabled state:', this.stockLoading);
     // Don't prevent default here - let the form submission proceed
+  }
+
+  // Debug button click method
+  debugButtonClick(event: Event) {
+    console.log('=== BUTTON CLICK DEBUG ===');
+    console.log('Event:', event);
+    console.log('Button enabled:', this.isButtonEnabled);
+    console.log('Stock loading:', this.stockLoading);
+    console.log('Show confirmation modal flag:', this.showConfirmationModalFlag);
+    console.log('Stock entries:', this.stockEntries);
+    console.log('Stock entries length:', this.stockEntries.length);
   }
 
   // Add Stock button click handler - shows confirmation modal first
