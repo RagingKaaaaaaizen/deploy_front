@@ -35,7 +35,9 @@ export class ActivityTimelineComponent implements OnInit, OnChanges {
   }
 
   processLogs(): void {
+    console.log('ActivityTimeline: Processing logs:', this.logs);
     if (!this.logs || this.logs.length === 0) {
+      console.log('ActivityTimeline: No logs to process');
       this.groupedLogs = [];
       return;
     }
@@ -69,6 +71,8 @@ export class ActivityTimelineComponent implements OnInit, OnChanges {
           logs: groups[dateKey].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Sort logs within group by time descending
         };
       });
+    
+    console.log('ActivityTimeline: Grouped logs result:', this.groupedLogs);
   }
 
   /**

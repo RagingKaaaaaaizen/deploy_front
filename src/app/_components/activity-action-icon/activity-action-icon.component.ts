@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { ActivityActionService, ActionConfig } from '@app/_services/activity-action.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { ActivityActionService, ActionConfig } from '@app/_services/activity-act
   templateUrl: './activity-action-icon.component.html',
   styleUrls: ['./activity-action-icon.component.css']
 })
-export class ActivityActionIconComponent implements OnInit {
+export class ActivityActionIconComponent implements OnInit, OnChanges {
   @Input() action: string = '';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() showLabel: boolean = false;
