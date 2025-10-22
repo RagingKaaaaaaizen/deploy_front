@@ -1822,6 +1822,8 @@ export class StockListComponent implements OnInit {
   }
 
   saveStock() {
+    console.log('=== SAVE STOCK METHOD CALLED ===');
+    console.log('This should only be called after confirmation modal');
     this.stockSubmitted = true;
 
     // Validate all entries
@@ -1834,6 +1836,7 @@ export class StockListComponent implements OnInit {
       return;
     }
 
+    console.log('Making API call to create bulk stock...');
     this.stockLoading = true;
 
     // Prepare stock entries data
@@ -1872,12 +1875,15 @@ export class StockListComponent implements OnInit {
   onFormSubmit(event: Event) {
     console.log('=== FORM SUBMIT EVENT ===');
     console.log('Event:', event);
+    console.log('Event target:', event.target);
+    console.log('Event type:', event.type);
     console.log('Stock entries:', this.stockEntries);
     console.log('Form validity:', event.target);
     console.log('Button disabled state - stockLoading:', this.stockLoading, 'showConfirmationModalFlag:', this.showConfirmationModalFlag);
     
     // Prevent default form submission
     event.preventDefault();
+    event.stopPropagation();
     
     // Prevent multiple submissions
     if (this.stockLoading || this.showConfirmationModalFlag) {
