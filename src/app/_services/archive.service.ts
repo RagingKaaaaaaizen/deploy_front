@@ -263,38 +263,48 @@ export class ArchiveService {
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
     
-    const doc = new jsPDF();
+    // Create PDF in landscape orientation for wider format
+    const doc = new jsPDF('landscape', 'mm', 'a4');
     
-    // Add header
-    doc.setFontSize(20);
-    doc.text('Computer Lab Inventory System', 105, 20, { align: 'center' });
+    // Add Benedicto College logo and header
+    this.addSchoolHeader(doc, reportType);
+    
+    let yPosition = 50;
+    
+    // Executive Summary section with professional formatting
     doc.setFontSize(16);
-    doc.text(`${reportType} Report`, 105, 35, { align: 'center' });
-    doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 105, 45, { align: 'center' });
-    
-    let yPosition = 60;
-    
-    // Executive Summary section
-    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 51, 102); // School blue
     doc.text('Executive Summary', 20, yPosition);
-    yPosition += 10;
-    
-    doc.setFontSize(10);
-    doc.text(`Total Stocks: ${reportData.summary.totalStocks}`, 20, yPosition);
-    yPosition += 7;
-    doc.text(`Total Disposals: ${reportData.summary.totalDisposals}`, 20, yPosition);
-    yPosition += 7;
-    doc.text(`Total PCs: ${reportData.summary.totalPCs}`, 20, yPosition);
-    yPosition += 7;
-    doc.text(`Total Value: $${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, 20, yPosition);
-    yPosition += 7;
-    doc.text(`Stock Value: $${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, 20, yPosition);
-    yPosition += 7;
-    doc.text(`Disposal Value: $${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, 20, yPosition);
-    yPosition += 7;
-    doc.text(`PC Value: $${(typeof reportData.summary.pcValue === 'number' ? reportData.summary.pcValue.toFixed(2) : '0.00')}`, 20, yPosition);
     yPosition += 15;
+    
+    // Create summary boxes
+    const summaryActiveStocks = reportData.stocks.filter(stock => 
+      stock && !stock.deleted && stock.quantity > 0
+    );
+    const summaryActiveDisposals = reportData.disposals.filter(disposal => 
+      disposal && !disposal.deleted && disposal.quantity > 0
+    );
+    
+    // Summary boxes in landscape format
+    const boxWidth = 80;
+    const boxHeight = 25;
+    const boxSpacing = 10;
+    const startX = 20;
+    
+    // First row of summary boxes
+    this.createSummaryBox(doc, 'Total Stocks', summaryActiveStocks.length.toString(), startX, yPosition, boxWidth, boxHeight);
+    this.createSummaryBox(doc, 'Total Disposals', summaryActiveDisposals.length.toString(), startX + boxWidth + boxSpacing, yPosition, boxWidth, boxHeight);
+    this.createSummaryBox(doc, 'Total PCs', reportData.summary.totalPCs.toString(), startX + (boxWidth + boxSpacing) * 2, yPosition, boxWidth, boxHeight);
+    
+    yPosition += boxHeight + 15;
+    
+    // Second row of summary boxes
+    this.createSummaryBox(doc, 'Stock Value', `₱${(typeof reportData.summary.stockValue === 'number' ? reportData.summary.stockValue.toFixed(2) : '0.00')}`, startX, yPosition, boxWidth, boxHeight);
+    this.createSummaryBox(doc, 'Disposal Value', `₱${(typeof reportData.summary.disposalValue === 'number' ? reportData.summary.disposalValue.toFixed(2) : '0.00')}`, startX + boxWidth + boxSpacing, yPosition, boxWidth, boxHeight);
+    this.createSummaryBox(doc, 'Total Value', `₱${(typeof reportData.summary.totalValue === 'number' ? reportData.summary.totalValue.toFixed(2) : '0.00')}`, startX + (boxWidth + boxSpacing) * 2, yPosition, boxWidth, boxHeight);
+    
+    yPosition += boxHeight + 20;
 
     // Detailed Analysis section
     if (reportData.summary.stockCategories && Object.keys(reportData.summary.stockCategories).length > 0) {
@@ -358,84 +368,46 @@ export class ArchiveService {
       yPosition += 10;
     }
     
-    // Stocks section
-    if (reportData.stocks.length > 0) {
-      if (yPosition > 250) {
+    // Stocks section with improved table formatting (exclude deleted data)
+    const tableActiveStocks = reportData.stocks.filter(stock => 
+      stock && !stock.deleted && stock.quantity > 0
+    );
+    
+    if (tableActiveStocks.length > 0) {
+      if (yPosition > 180) {
         doc.addPage();
-        yPosition = 20;
+        yPosition = 50;
       }
       
       doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
       doc.text('Detailed Stocks Report', 20, yPosition);
-      yPosition += 10;
+      yPosition += 15;
       
-      doc.setFontSize(8);
-      const stockHeaders = ['Item', 'Quantity', 'Location', 'Value', 'Category'];
-      let xPosition = 20;
-      stockHeaders.forEach(header => {
-        doc.text(header, xPosition, yPosition);
-        xPosition += 35;
-      });
-      yPosition += 7;
-      
-      reportData.stocks.forEach(stock => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        xPosition = 20;
-        doc.text(stock.itemName || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(stock.quantity?.toString() || '0', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(stock.locationName || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(`$${(typeof stock.totalPrice === 'number' ? stock.totalPrice.toFixed(2) : '0.00')}`, xPosition, yPosition);
-        xPosition += 35;
-        doc.text(stock.categoryName || 'N/A', xPosition, yPosition);
-        yPosition += 5;
-      });
-      yPosition += 10;
+      // Create professional table with proper spacing
+      this.createStocksTable(doc, tableActiveStocks, yPosition);
+      yPosition += (Math.ceil(tableActiveStocks.length / 8) * 8) + 20; // Calculate space needed
     }
     
-    // Disposals section
-    if (reportData.disposals.length > 0) {
-      if (yPosition > 250) {
+    // Disposals section (only show if there are disposals and they're not deleted)
+    const tableActiveDisposals = reportData.disposals.filter(disposal => 
+      disposal && !disposal.deleted && disposal.quantity > 0
+    );
+    
+    if (tableActiveDisposals.length > 0) {
+      if (yPosition > 180) {
         doc.addPage();
-        yPosition = 20;
+        yPosition = 50;
       }
       
       doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
       doc.text('Detailed Disposals Report', 20, yPosition);
-      yPosition += 10;
+      yPosition += 15;
       
-      doc.setFontSize(8);
-      const disposalHeaders = ['Item', 'Quantity', 'Reason', 'Date', 'Value'];
-      let xPosition = 20;
-      disposalHeaders.forEach(header => {
-        doc.text(header, xPosition, yPosition);
-        xPosition += 35;
-      });
-      yPosition += 7;
-      
-      reportData.disposals.forEach(disposal => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        xPosition = 20;
-        doc.text(disposal.itemName || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(disposal.quantity?.toString() || '0', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(disposal.reason || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        doc.text(new Date(disposal.disposalDate).toLocaleDateString(), xPosition, yPosition);
-        xPosition += 35;
-        doc.text(`$${(typeof disposal.totalValue === 'number' ? disposal.totalValue.toFixed(2) : '0.00')}`, xPosition, yPosition);
-        yPosition += 5;
-      });
-      yPosition += 10;
+      // Create professional disposals table
+      this.createDisposalsTable(doc, tableActiveDisposals, yPosition);
+      yPosition += (Math.ceil(tableActiveDisposals.length / 8) * 8) + 20;
     }
     
     // PCs section
@@ -548,6 +520,248 @@ export class ArchiveService {
     }
     
     return doc.output('blob');
+  }
+
+  // Add professional school header with Benedicto College logo
+  private addSchoolHeader(doc: jsPDF, reportType: string): void {
+    // School colors: Blue and Orange
+    const schoolBlue = [0, 51, 102]; // Dark blue
+    const schoolOrange = [255, 140, 0]; // Orange
+    
+    // Add header background
+    doc.setFillColor(schoolBlue[0], schoolBlue[1], schoolBlue[2]);
+    doc.rect(0, 0, 297, 40, 'F'); // Full width header
+    
+    // Add Benedicto College logo (simplified version)
+    this.addSchoolLogo(doc);
+    
+    // School name and title
+    doc.setTextColor(255, 255, 255); // White text
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('BENEDICTO COLLEGE', 150, 15, { align: 'center' });
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Computer Lab Inventory System', 150, 22, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 150, 28, { align: 'center' });
+    
+    // Generation info
+    doc.setFontSize(8);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 150, 35, { align: 'center' });
+    
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+  }
+
+  // Add simplified Benedicto College logo
+  private addSchoolLogo(doc: jsPDF): void {
+    const logoX = 20;
+    const logoY = 8;
+    const logoSize = 25;
+    
+    // Draw circular logo background
+    doc.setFillColor(255, 255, 255); // White background
+    doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2, 'F');
+    
+    // Draw outer ring (blue)
+    doc.setFillColor(0, 51, 102);
+    doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2, 'F');
+    
+    // Draw inner circle (white)
+    doc.setFillColor(255, 255, 255);
+    doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/3, 'F');
+    
+    // Add "BC" text
+    doc.setTextColor(0, 51, 102);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
+    
+    // Add year
+    doc.setFontSize(6);
+    doc.text('2000', logoX + logoSize/2, logoY + logoSize/2 + 8, { align: 'center' });
+  }
+
+  // Create professional stocks table with proper spacing
+  private createStocksTable(doc: jsPDF, stocks: any[], startY: number): void {
+    const pageWidth = 297; // Landscape A4 width
+    const margin = 20;
+    const tableWidth = pageWidth - (margin * 2);
+    
+    // Column widths for landscape format
+    const colWidths = [80, 25, 40, 35, 30]; // Item, Quantity, Location, Value, Category
+    const rowHeight = 8;
+    
+    // Table headers
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, startY, tableWidth, rowHeight, 'F');
+    
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    
+    let xPos = margin;
+    const headers = ['Item', 'Qty', 'Location', 'Value', 'Category'];
+    
+    headers.forEach((header, index) => {
+      doc.text(header, xPos + 2, startY + 5);
+      xPos += colWidths[index];
+    });
+    
+    // Table rows
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    
+    stocks.forEach((stock, index) => {
+      const currentY = startY + (index + 1) * rowHeight;
+      
+      // Check if we need a new page
+      if (currentY > 200) {
+        doc.addPage();
+        this.addSchoolHeader(doc, '');
+        return this.createStocksTable(doc, stocks.slice(index), 50);
+      }
+      
+      // Alternate row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(248, 249, 250);
+        doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
+      }
+      
+      xPos = margin;
+      
+      // Item name (truncate if too long)
+      const itemName = (stock.itemName || 'N/A').length > 25 ? 
+        (stock.itemName || 'N/A').substring(0, 22) + '...' : 
+        (stock.itemName || 'N/A');
+      doc.text(itemName, xPos + 2, currentY + 5);
+      xPos += colWidths[0];
+      
+      // Quantity
+      doc.text(stock.quantity?.toString() || '0', xPos + 2, currentY + 5);
+      xPos += colWidths[1];
+      
+      // Location (truncate if too long)
+      const location = (stock.locationName || 'N/A').length > 15 ? 
+        (stock.locationName || 'N/A').substring(0, 12) + '...' : 
+        (stock.locationName || 'N/A');
+      doc.text(location, xPos + 2, currentY + 5);
+      xPos += colWidths[2];
+      
+      // Value
+      const value = typeof stock.totalPrice === 'number' ? 
+        `₱${stock.totalPrice.toFixed(2)}` : '₱0.00';
+      doc.text(value, xPos + 2, currentY + 5);
+      xPos += colWidths[3];
+      
+      // Category
+      doc.text(stock.categoryName || 'N/A', xPos + 2, currentY + 5);
+    });
+  }
+
+  // Create professional disposals table with proper spacing
+  private createDisposalsTable(doc: jsPDF, disposals: any[], startY: number): void {
+    const pageWidth = 297; // Landscape A4 width
+    const margin = 20;
+    const tableWidth = pageWidth - (margin * 2);
+    
+    // Column widths for landscape format
+    const colWidths = [60, 25, 50, 30, 35]; // Item, Quantity, Reason, Date, Value
+    const rowHeight = 8;
+    
+    // Table headers
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, startY, tableWidth, rowHeight, 'F');
+    
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    
+    let xPos = margin;
+    const headers = ['Item', 'Qty', 'Reason', 'Date', 'Value'];
+    
+    headers.forEach((header, index) => {
+      doc.text(header, xPos + 2, startY + 5);
+      xPos += colWidths[index];
+    });
+    
+    // Table rows
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    
+    disposals.forEach((disposal, index) => {
+      const currentY = startY + (index + 1) * rowHeight;
+      
+      // Check if we need a new page
+      if (currentY > 200) {
+        doc.addPage();
+        this.addSchoolHeader(doc, '');
+        return this.createDisposalsTable(doc, disposals.slice(index), 50);
+      }
+      
+      // Alternate row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(248, 249, 250);
+        doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
+      }
+      
+      xPos = margin;
+      
+      // Item name (truncate if too long)
+      const itemName = (disposal.itemName || 'N/A').length > 20 ? 
+        (disposal.itemName || 'N/A').substring(0, 17) + '...' : 
+        (disposal.itemName || 'N/A');
+      doc.text(itemName, xPos + 2, currentY + 5);
+      xPos += colWidths[0];
+      
+      // Quantity
+      doc.text(disposal.quantity?.toString() || '0', xPos + 2, currentY + 5);
+      xPos += colWidths[1];
+      
+      // Reason (truncate if too long)
+      const reason = (disposal.reason || 'N/A').length > 20 ? 
+        (disposal.reason || 'N/A').substring(0, 17) + '...' : 
+        (disposal.reason || 'N/A');
+      doc.text(reason, xPos + 2, currentY + 5);
+      xPos += colWidths[2];
+      
+      // Date
+      const date = new Date(disposal.disposalDate).toLocaleDateString();
+      doc.text(date, xPos + 2, currentY + 5);
+      xPos += colWidths[3];
+      
+      // Value
+      const value = typeof disposal.totalValue === 'number' ? 
+        `₱${disposal.totalValue.toFixed(2)}` : '₱0.00';
+      doc.text(value, xPos + 2, currentY + 5);
+    });
+  }
+
+  // Create professional summary boxes
+  private createSummaryBox(doc: jsPDF, title: string, value: string, x: number, y: number, width: number, height: number): void {
+    // Box background
+    doc.setFillColor(248, 249, 250);
+    doc.rect(x, y, width, height, 'F');
+    
+    // Box border
+    doc.setDrawColor(0, 51, 102);
+    doc.setLineWidth(0.5);
+    doc.rect(x, y, width, height);
+    
+    // Title
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 51, 102);
+    doc.text(title, x + 5, y + 8);
+    
+    // Value
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text(value, x + 5, y + 18);
   }
 
   downloadPDF(reportData: ReportData, reportType: string): void {
