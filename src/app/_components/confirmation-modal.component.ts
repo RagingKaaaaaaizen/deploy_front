@@ -75,8 +75,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
             <button type="button" 
                     class="btn" 
                     [ngClass]="confirmButtonClass"
+                    [disabled]="isLoading"
                     (click)="onConfirm()">
-              <i [class]="confirmIcon"></i> {{ confirmText }}
+              <div *ngIf="isLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+              <i *ngIf="!isLoading" [class]="confirmIcon"></i> 
+              <span *ngIf="!isLoading">{{ confirmText }}</span>
+              <span *ngIf="isLoading">Processing...</span>
             </button>
           </div>
         </div>
@@ -87,7 +91,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     <div class="modal-backdrop fade" 
          [class.show]="isVisible" 
          *ngIf="isVisible"
-         (click)="onCancel()">
+         (click)="!isLoading && onCancel()">
     </div>
   `,
   styles: [`
@@ -160,6 +164,7 @@ export class ConfirmationModalComponent {
   @Input() userRole = '';
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
+  @Input() isLoading = false;
   
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
@@ -228,6 +233,10 @@ export class ConfirmationModalComponent {
   }
 
   onCancel() {
+    // Prevent closing while loading
+    if (this.isLoading) {
+      return;
+    }
     this.cancelled.emit();
   }
 }

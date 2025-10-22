@@ -1879,7 +1879,7 @@ export class StockListComponent implements OnInit {
     // Don't prevent default here - let the form submission proceed
   }
 
-  // Add Stock button click handler with loading animation
+  // Add Stock button click handler - shows confirmation modal first
   onAddStockClick(event: Event) {
     console.log('=== ADD STOCK BUTTON CLICKED ===');
     console.log('Event:', event);
@@ -1889,25 +1889,8 @@ export class StockListComponent implements OnInit {
       return;
     }
     
-    // Set loading state immediately
-    this.stockLoading = true;
-    
-    // Start 5-second loading animation
-    setTimeout(() => {
-      if (this.stockLoading) {
-        console.log('5-second loading completed');
-        this.stockLoading = false;
-        
-        // Show success popup
-        this.alertService.success(`${this.stockEntries.length} stock item(s) added successfully!`);
-        
-        // Close modal after success
-        this.closeAddStockModal();
-        
-        // Refresh data
-        this.loadData();
-      }
-    }, 5000);
+    // Show confirmation modal instead of directly saving
+    this.showConfirmationModal();
   }
 
   // New confirmation modal methods
@@ -1951,6 +1934,11 @@ export class StockListComponent implements OnInit {
   }
 
   proceedWithSave() {
+    // Prevent multiple clicks
+    if (this.stockLoading) {
+      return;
+    }
+    
     this.hideConfirmationModal();
     this.saveStock();
   }
