@@ -251,12 +251,6 @@
                   <i class="fas fa-exclamation-triangle text-warning mr-2"></i>
                     <strong>Stock Deduction:</strong> Adding components will deduct from stock quantities, just like disposal.
                   </div>
-                <div class="p-4 rounded-lg border-l-4 border-info bg-blue-50">
-                  <i class="fas fa-info-circle text-info mr-2"></i>
-                    <strong>Debug Info:</strong> 
-                    Stock data: {{ allStocks.length > 0 ? 'Loaded' : 'Not loaded' }} | 
-                    Items: {{ items.length > 0 ? 'Loaded' : 'Not loaded' }}
-                </div>
               </div>
             </div>
           </div>
@@ -338,15 +332,6 @@
                         </div>
                       </div>
                       
-                      <!-- Debug Information -->
-                      <div class="mt-2 p-3 bg-gray-100 border border-gray-200 rounded">
-                        <small class="text-gray-600">
-                          <strong>Debug Info:</strong><br>
-                          Stock entries: {{ getStockDebugInfo(newComponent.itemId).matchingStocks }} | 
-                          Available stocks: {{ getStockDebugInfo(newComponent.itemId).availableStocks }} | 
-                          Total stocks loaded: {{ getStockDebugInfo(newComponent.itemId).totalStocks }}
-                        </small>
-                      </div>
                       </div>
                     </div>
                   </div>
