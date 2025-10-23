@@ -998,14 +998,26 @@ export class ArchiveComponent implements OnInit {
     }
   }
 
-  downloadStoredReport(report: StoredReport): void {
-    this.archiveService.downloadStoredReportPDF(report);
-    this.alertService.success('Stored report downloaded successfully!');
+  previewStoredReport(report: StoredReport): void {
+    try {
+      this.archiveService.previewPDF(report);
+    } catch (error) {
+      console.error('Error previewing report:', error);
+      this.alertService.error('Error generating PDF preview. Please check the console for details.');
+    }
   }
 
-  previewStoredReport(report: StoredReport): void {
-    this.archiveService.previewPDF(report);
+  downloadStoredReport(report: StoredReport): void {
+    try {
+      this.archiveService.downloadStoredReportPDF(report);
+      this.alertService.success('Report downloaded successfully!');
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      this.alertService.error('Error generating PDF. Please check the console for details.');
+    }
   }
+
+
 
   deleteStoredReport(report: StoredReport): void {
     if (confirm(`Are you sure you want to delete "${report.title}"?`)) {
