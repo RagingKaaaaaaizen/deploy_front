@@ -344,15 +344,17 @@ export class ArchiveService {
     console.log('Summary data:', reportData.summary);
     console.log('Currency symbol test: ₱ (peso) vs ± (plus-minus)');
     
-    // Create PDF in portrait orientation
-    const doc = new jsPDF('portrait', 'mm', 'a4');
+    // Create PDF in LANDSCAPE orientation for better table display
+    const doc = new jsPDF('landscape', 'mm', 'a4');
+    console.log('PDF created in LANDSCAPE orientation');
     
-    // Set font to Times New Roman immediately
+    // Set font to Times New Roman immediately and ensure it's applied
     doc.setFont('times', 'normal');
-    console.log('Font set to Times New Roman');
+    doc.setFontSize(12);
+    console.log('Font set to Times New Roman, size 12');
     
-    // Add simple header without logo
-    this.addSimpleHeader(doc, reportType);
+    // Add professional header with logo and school name
+    this.addProfessionalHeader(doc, reportType);
     
     // Filter data by date range and inclusion flags
     let filteredStocks = includeStocks ? reportData.stocks : [];
@@ -418,21 +420,33 @@ export class ArchiveService {
     
     // Calculate total value based on included data types
     let totalValue = 0;
+    // Ensure font is set for currency display
+    doc.setFont('times', 'normal');
+    doc.setFontSize(12);
+    
     if (includeStocks) {
       const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
       const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
-      const currencyText = `Stock Value: ₱${safeStockValue.toFixed(2)}`;
+      const pesoSymbol = '₱'; // Explicit peso symbol
+      const currencyText = `Stock Value: ${pesoSymbol}${safeStockValue.toFixed(2)}`;
       console.log('Stock Value text:', currencyText);
+      console.log('Peso symbol used:', pesoSymbol);
       doc.text(currencyText, 20, yPosition);
     yPosition += 7;
       totalValue += safeStockValue;
     }
     
     if (includeDisposals) {
-      const disposalValue = filteredDisposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
+      // Fix disposal value calculation - use actual disposal values
+      const disposalValue = filteredDisposals.reduce((sum, disposal) => {
+        const value = disposal.disposalValue || disposal.totalValue || disposal.price || 0;
+        return sum + (typeof value === 'number' ? value : 0);
+      }, 0);
       const safeDisposalValue = typeof disposalValue === 'number' && !isNaN(disposalValue) ? disposalValue : 0;
-      const currencyText = `Disposal Value: ₱${safeDisposalValue.toFixed(2)}`;
+      const pesoSymbol = '₱'; // Explicit peso symbol
+      const currencyText = `Disposal Value: ${pesoSymbol}${safeDisposalValue.toFixed(2)}`;
       console.log('Disposal Value text:', currencyText);
+      console.log('Disposal value calculation:', disposalValue);
       doc.text(currencyText, 20, yPosition);
     yPosition += 7;
       totalValue += safeDisposalValue;
@@ -441,7 +455,8 @@ export class ArchiveService {
     if (includePCs) {
       const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
       const safePcValue = typeof pcValue === 'number' && !isNaN(pcValue) ? pcValue : 0;
-      const currencyText = `PC Value: ₱${safePcValue.toFixed(2)}`;
+      const pesoSymbol = '₱'; // Explicit peso symbol
+      const currencyText = `PC Value: ${pesoSymbol}${safePcValue.toFixed(2)}`;
       console.log('PC Value text:', currencyText);
       doc.text(currencyText, 20, yPosition);
     yPosition += 7;
@@ -449,7 +464,8 @@ export class ArchiveService {
     }
     
     const safeTotalValue = typeof totalValue === 'number' && !isNaN(totalValue) ? totalValue : 0;
-    const totalCurrencyText = `Total Value: ₱${safeTotalValue.toFixed(2)}`;
+    const pesoSymbol = '₱'; // Explicit peso symbol
+    const totalCurrencyText = `Total Value: ${pesoSymbol}${safeTotalValue.toFixed(2)}`;
     console.log('Total Value text:', totalCurrencyText);
     doc.text(totalCurrencyText, 20, yPosition);
     yPosition += 15;
@@ -649,22 +665,27 @@ export class ArchiveService {
   }
 
   // Add header with Benedicto College logo and name
-  private addSimpleHeader(doc: jsPDF, reportType: string): void {
+  private addProfessionalHeader(doc: jsPDF, reportType: string): void {
+    console.log('Adding professional header...');
+    
     // Add Benedicto College logo in top left
     this.addSchoolLogo(doc);
     
     // School name in top right
     doc.setFontSize(14);
     doc.setFont('times', 'bold');
-    doc.text('Benedicto College', 150, 15);
+    doc.text('Benedicto College', 200, 15);
+    console.log('School name added');
     
     // Main header text
     doc.setFontSize(20);
-    doc.setFont('times', 'bold'); // Change to Times New Roman
-    doc.text('Computer Lab Inventory System', 105, 25, { align: 'center' });
+    doc.setFont('times', 'bold');
+    doc.text('Computer Lab Inventory System', 148, 25, { align: 'center' });
+    console.log('Main title added');
     
     doc.setFontSize(16);
-    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 105, 35, { align: 'center' });
+    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 148, 35, { align: 'center' });
+    console.log('Report type added');
     
     // Precise date formatting
     const now = new Date();
@@ -681,7 +702,8 @@ export class ArchiveService {
     });
     
     doc.setFontSize(10);
-    doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 105, 45, { align: 'center' });
+    doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 148, 45, { align: 'center' });
+    console.log('Date and time added');
   }
 
   // Add Benedicto College logo (text-based for reliability)
@@ -716,7 +738,7 @@ export class ArchiveService {
     doc.text('Your Education... Our Mission', logoX + logoSize + 5, logoY + 15);
   }
 
-  // Create simple stocks table for portrait format
+  // Create stocks table for LANDSCAPE format
   private createStocksTable(doc: jsPDF, stocks: any[], startY: number): void {
     // Filter out stocks with quantity 0
     const filteredStocks = stocks.filter(stock => (stock.quantity || 0) > 0);
@@ -726,13 +748,13 @@ export class ArchiveService {
       return;
     }
     
-    const pageWidth = 210; // Portrait A4 width
+    const pageWidth = 297; // Landscape A4 width
     const margin = 20;
     const tableWidth = pageWidth - (margin * 2);
     
-    // Column widths for portrait format
-    const colWidths = [60, 20, 30, 25, 25]; // Item, Quantity, Location, Value, Category
-    const rowHeight = 6;
+    // Column widths for landscape format - more space for better display
+    const colWidths = [80, 30, 50, 40, 40]; // Item, Quantity, Location, Value, Category
+    const rowHeight = 8;
     
     // Table headers
     doc.setFillColor(240, 240, 240);
@@ -760,7 +782,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addSimpleHeader(doc, '');
+        this.addProfessionalHeader(doc, '');
         return this.createStocksTable(doc, filteredStocks.slice(index), 50);
       }
       
@@ -796,8 +818,10 @@ export class ArchiveService {
         (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
           stock.price * stock.quantity : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      const currencyText = `₱${safeValue.toFixed(2)}`;
+      const pesoSymbol = '₱'; // Explicit peso symbol
+      const currencyText = `${pesoSymbol}${safeValue.toFixed(2)}`;
       console.log('Stock table currency text:', currencyText);
+      console.log('Peso symbol in table:', pesoSymbol);
       doc.text(currencyText, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
@@ -808,13 +832,13 @@ export class ArchiveService {
 
   // Create simple disposals table for portrait format
   private createDisposalsTable(doc: jsPDF, disposals: any[], startY: number): void {
-    const pageWidth = 210; // Portrait A4 width
+    const pageWidth = 297; // Landscape A4 width
     const margin = 20;
     const tableWidth = pageWidth - (margin * 2);
     
-    // Column widths for portrait format
-    const colWidths = [45, 20, 40, 25, 30]; // Item, Quantity, Reason, Date, Value
-    const rowHeight = 6;
+    // Column widths for landscape format - more space for better display
+    const colWidths = [70, 30, 50, 40, 40]; // Item, Quantity, Reason, Date, Value
+    const rowHeight = 8;
     
     // Table headers
     doc.setFillColor(240, 240, 240);
@@ -842,7 +866,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addSimpleHeader(doc, '');
+        this.addProfessionalHeader(doc, '');
         return this.createDisposalsTable(doc, disposals.slice(index), 50);
       }
       
@@ -883,19 +907,23 @@ export class ArchiveService {
         (typeof disposal.disposalValue === 'number' ? 
           disposal.disposalValue : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      doc.text(`₱${safeValue.toFixed(2)}`, xPos + 2, currentY + 5);
+      const pesoSymbol = '₱'; // Explicit peso symbol
+      const currencyText = `${pesoSymbol}${safeValue.toFixed(2)}`;
+      console.log('Disposal table currency text:', currencyText);
+      console.log('Peso symbol in disposal table:', pesoSymbol);
+      doc.text(currencyText, xPos + 2, currentY + 5);
     });
   }
 
-  // Create simple PC table for portrait format
+  // Create PC table for LANDSCAPE format
   private createPCTable(doc: jsPDF, pcs: any[], startY: number): void {
-    const pageWidth = 210; // Portrait A4 width
+    const pageWidth = 297; // Landscape A4 width
     const margin = 20;
     const tableWidth = pageWidth - (margin * 2);
     
-    // Column widths for portrait format
-    const colWidths = [50, 40, 30, 25, 35]; // PC Name, Location, Status, Components, Last Updated
-    const rowHeight = 6;
+    // Column widths for landscape format - more space for better display
+    const colWidths = [80, 60, 40, 50, 50]; // PC Name, Location, Status, Components, Last Updated
+    const rowHeight = 8;
     
     // Table headers
     doc.setFillColor(240, 240, 240);
@@ -923,7 +951,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addSimpleHeader(doc, '');
+        this.addProfessionalHeader(doc, '');
         return this.createPCTable(doc, pcs.slice(index), 50);
       }
       
