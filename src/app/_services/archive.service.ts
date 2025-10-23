@@ -414,26 +414,30 @@ export class ArchiveService {
     let totalValue = 0;
     if (includeStocks) {
       const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
-      doc.text(`Stock Value: ₱${stockValue.toFixed(2)}`, 20, yPosition);
+      const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
+      doc.text(`Stock Value: ₱${safeStockValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
-      totalValue += stockValue;
+      totalValue += safeStockValue;
     }
     
     if (includeDisposals) {
       const disposalValue = filteredDisposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
-      doc.text(`Disposal Value: ₱${disposalValue.toFixed(2)}`, 20, yPosition);
+      const safeDisposalValue = typeof disposalValue === 'number' && !isNaN(disposalValue) ? disposalValue : 0;
+      doc.text(`Disposal Value: ₱${safeDisposalValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
-      totalValue += disposalValue;
+      totalValue += safeDisposalValue;
     }
     
     if (includePCs) {
       const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
-      doc.text(`PC Value: ₱${pcValue.toFixed(2)}`, 20, yPosition);
+      const safePcValue = typeof pcValue === 'number' && !isNaN(pcValue) ? pcValue : 0;
+      doc.text(`PC Value: ₱${safePcValue.toFixed(2)}`, 20, yPosition);
     yPosition += 7;
-      totalValue += pcValue;
+      totalValue += safePcValue;
     }
     
-    doc.text(`Total Value: ₱${totalValue.toFixed(2)}`, 20, yPosition);
+    const safeTotalValue = typeof totalValue === 'number' && !isNaN(totalValue) ? totalValue : 0;
+    doc.text(`Total Value: ₱${safeTotalValue.toFixed(2)}`, 20, yPosition);
     yPosition += 15;
 
     // Detailed Analysis section
@@ -605,7 +609,8 @@ export class ArchiveService {
         xPosition += 35;
         
         const value = isStock ? receipt.totalPrice : receipt.totalValue;
-        doc.text(`₱${(typeof value === 'number' ? value.toFixed(2) : '0.00')}`, xPosition, yPosition);
+        const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
+        doc.text(`₱${safeValue.toFixed(2)}`, xPosition, yPosition);
         yPosition += 8;
       });
     }
@@ -750,7 +755,8 @@ export class ArchiveService {
         stock.totalPrice : 
         (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
           stock.price * stock.quantity : 0);
-      doc.text(`₱${value.toFixed(2)}`, xPos + 2, currentY + 5);
+      const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
+      doc.text(`₱${safeValue.toFixed(2)}`, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
       // Category
@@ -834,7 +840,8 @@ export class ArchiveService {
         disposal.totalValue : 
         (typeof disposal.disposalValue === 'number' ? 
           disposal.disposalValue : 0);
-      doc.text(`₱${value.toFixed(2)}`, xPos + 2, currentY + 5);
+      const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
+      doc.text(`₱${safeValue.toFixed(2)}`, xPos + 2, currentY + 5);
     });
   }
 
