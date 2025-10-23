@@ -338,12 +338,18 @@ export class ArchiveService {
 
   // Generate PDF and return as blob for preview
   generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
+    console.log('=== PDF GENERATION DEBUG ===');
     console.log('Generating PDF for report type:', reportType);
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
+    console.log('Currency symbol test: ₱ (peso) vs ± (plus-minus)');
     
     // Create PDF in portrait orientation
     const doc = new jsPDF('portrait', 'mm', 'a4');
+    
+    // Set font to Times New Roman immediately
+    doc.setFont('times', 'normal');
+    console.log('Font set to Times New Roman');
     
     // Add simple header without logo
     this.addSimpleHeader(doc, reportType);
@@ -415,7 +421,9 @@ export class ArchiveService {
     if (includeStocks) {
       const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
       const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
-      doc.text(`Stock Value: ₱${safeStockValue.toFixed(2)}`, 20, yPosition);
+      const currencyText = `Stock Value: ₱${safeStockValue.toFixed(2)}`;
+      console.log('Stock Value text:', currencyText);
+      doc.text(currencyText, 20, yPosition);
     yPosition += 7;
       totalValue += safeStockValue;
     }
@@ -423,7 +431,9 @@ export class ArchiveService {
     if (includeDisposals) {
       const disposalValue = filteredDisposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
       const safeDisposalValue = typeof disposalValue === 'number' && !isNaN(disposalValue) ? disposalValue : 0;
-      doc.text(`Disposal Value: ₱${safeDisposalValue.toFixed(2)}`, 20, yPosition);
+      const currencyText = `Disposal Value: ₱${safeDisposalValue.toFixed(2)}`;
+      console.log('Disposal Value text:', currencyText);
+      doc.text(currencyText, 20, yPosition);
     yPosition += 7;
       totalValue += safeDisposalValue;
     }
@@ -431,13 +441,17 @@ export class ArchiveService {
     if (includePCs) {
       const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
       const safePcValue = typeof pcValue === 'number' && !isNaN(pcValue) ? pcValue : 0;
-      doc.text(`PC Value: ₱${safePcValue.toFixed(2)}`, 20, yPosition);
+      const currencyText = `PC Value: ₱${safePcValue.toFixed(2)}`;
+      console.log('PC Value text:', currencyText);
+      doc.text(currencyText, 20, yPosition);
     yPosition += 7;
       totalValue += safePcValue;
     }
     
     const safeTotalValue = typeof totalValue === 'number' && !isNaN(totalValue) ? totalValue : 0;
-    doc.text(`Total Value: ₱${safeTotalValue.toFixed(2)}`, 20, yPosition);
+    const totalCurrencyText = `Total Value: ₱${safeTotalValue.toFixed(2)}`;
+    console.log('Total Value text:', totalCurrencyText);
+    doc.text(totalCurrencyText, 20, yPosition);
     yPosition += 15;
 
     // Reset font to times for subsequent sections
@@ -782,7 +796,9 @@ export class ArchiveService {
         (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
           stock.price * stock.quantity : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      doc.text(`₱${safeValue.toFixed(2)}`, xPos + 2, currentY + 5);
+      const currencyText = `₱${safeValue.toFixed(2)}`;
+      console.log('Stock table currency text:', currencyText);
+      doc.text(currencyText, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
       // Category
