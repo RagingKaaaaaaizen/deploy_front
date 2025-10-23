@@ -33,6 +33,11 @@ export interface TimelineData {
   pcCount: number;
 }
 
+export interface MonthlyStockData {
+  month: string;
+  count: number;
+}
+
 export interface StockTimelineData {
   date: string;
   category: string;
@@ -76,6 +81,10 @@ export class AnalyticsService {
 
   getStockAdditionsOverTime(days: number = 30): Observable<TimelineData[]> {
     return this.http.get<TimelineData[]>(`${this.baseUrl}/analytics/stock-timeline?days=${days}`);
+  }
+
+  getMonthlyStockAdditions(months: number = 12): Observable<MonthlyStockData[]> {
+    return this.http.get<MonthlyStockData[]>(`${this.baseUrl}/analytics/monthly-stock-additions?months=${months}`);
   }
 
   getStockDisposalsOverTime(days: number = 30): Observable<TimelineData[]> {

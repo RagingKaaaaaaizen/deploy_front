@@ -66,6 +66,38 @@
     <div class="spinner"></div>
   </div>
 
+  <!-- Monthly Stock Chart -->
+  <div class="analytics-card" *ngIf="!chartLoading">
+    <div class="card-header">
+      <div class="card-icon" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div>
+        <div class="card-title">Monthly Stock Entries</div>
+        <div class="card-description">Stock entries added by month over the last 12 months</div>
+      </div>
+    </div>
+    <div class="chart-container" style="height: 400px; position: relative;">
+      <canvas #monthlyStockChart></canvas>
+    </div>
+  </div>
+
+  <!-- Chart Loading State -->
+  <div class="analytics-card" *ngIf="chartLoading">
+    <div class="card-header">
+      <div class="card-icon" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div>
+        <div class="card-title">Monthly Stock Entries</div>
+        <div class="card-description">Loading chart data...</div>
+      </div>
+    </div>
+    <div class="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
   <!-- Analytics Grid -->
   <div class="analytics-grid" *ngIf="advancedAnalytics && !loading">
     <!-- Top Used Categories -->

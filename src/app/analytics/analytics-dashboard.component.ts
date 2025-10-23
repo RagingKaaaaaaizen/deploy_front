@@ -1,11 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ArchiveService } from '../_services/archive.service';
+import { AnalyticsService, MonthlyStockData } from '../_services/analytics.service';
 import { AlertService } from '../_services/alert.service';
 import { AccountService } from '../_services/account.service';
 import { Role } from '../_models';
 import { first } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Chart, registerables } from 'chart.js';
 
 @Component({
   selector: 'app-analytics-dashboard',
@@ -345,27 +347,89 @@ import { takeUntil } from 'rxjs/operators';
     }
   `]
 })
-export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
+export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   advancedAnalytics: any = null;
   automatedSchedule: any = null;
   scheduleForm: any = {};
   Role = Role;
   
+  // Monthly stock chart properties
+  monthlyStockData: MonthlyStockData[] = [];
+  chartLoading = false;
+  @ViewChild('monthlyStockChart') monthlyStockChart: any;
+  chart: Chart | null = null;
+  
+  // Chart configuration
+  chartData = {
+    labels: [],
+    datasets: [{
+      label: 'Stock Entries',
+      data: [],
+      borderColor: '#007bff',
+      backgroundColor: 'rgba(0, 123, 255, 0.1)',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#007bff',
+      pointBorderColor: '#ffffff',
+      pointBorderWidth: 2,
+      pointRadius: 6,
+      pointHoverRadius: 8
+    }]
+  };
+
+  chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top' as const
+      },
+      title: {
+        display: true,
+        text: 'Monthly Stock Entries'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Number of Stock Entries'
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Month'
+        }
+      }
+    }
+  };
+  
   private destroy$ = new Subject<void>();
 
   constructor(
     private archiveService: ArchiveService,
+    private analyticsService: AnalyticsService,
     private alertService: AlertService,
     private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
     this.loadAdvancedAnalytics();
+    this.loadMonthlyStockData();
     // Only load automated schedule for SuperAdmin users
     if (this.isSuperAdmin()) {
       this.loadAutomatedSchedule();
     }
+  }
+
+  ngAfterViewInit(): void {
+    Chart.register(...registerables);
+    this.initializeChart();
   }
 
   ngOnDestroy(): void {
@@ -387,6 +451,50 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           this.alertService.error('Error loading advanced analytics: ' + (error.error?.message || error.message || 'Unknown error'));
         }
       });
+  }
+
+  loadMonthlyStockData(): void {
+    this.chartLoading = true;
+    this.analyticsService.getMonthlyStockAdditions(12)
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.monthlyStockData = data;
+          this.updateChartData();
+          this.chartLoading = false;
+        },
+        error: (error) => {
+          this.chartLoading = false;
+          this.alertService.error('Error loading monthly stock data: ' + (error.error?.message || error.message || 'Unknown error'));
+        }
+      });
+  }
+
+  initializeChart(): void {
+    if (this.monthlyStockChart && this.monthlyStockChart.nativeElement) {
+      const ctx = this.monthlyStockChart.nativeElement.getContext('2d');
+      this.chart = new Chart(ctx, {
+        type: 'line',
+        data: this.chartData,
+        options: this.chartOptions
+      });
+    }
+  }
+
+  updateChartData(): void {
+    if (this.monthlyStockData && this.monthlyStockData.length > 0) {
+      this.chartData.labels = this.monthlyStockData.map(item => {
+        const [year, month] = item.month.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1);
+        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      });
+      this.chartData.datasets[0].data = this.monthlyStockData.map(item => item.count);
+      
+      // Update the chart if it exists
+      if (this.chart) {
+        this.chart.update();
+      }
+    }
   }
 
   loadAutomatedSchedule(): void {
