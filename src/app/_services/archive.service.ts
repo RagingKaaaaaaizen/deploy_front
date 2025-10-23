@@ -421,26 +421,27 @@ export class ArchiveService {
     yPosition += 7;
     }
     
-    // Executive Summary - CLEAN FORMATTING
+    // Executive Summary - ALL VALUES IN ONE SECTION
     doc.setFont('times', 'bold');
     doc.setFontSize(14);
-    doc.text('Summary', 20, yPosition);
-
+    doc.text('Executive Summary', 20, yPosition);
     yPosition += 10;
     
     // Reset font for values
     doc.setFont('times', 'normal');
     doc.setFontSize(11);
     
-    // Calculate values with proper formatting
+    // Calculate values with proper formatting - ALL IN EXECUTIVE SUMMARY
     let totalValue = 0;
     
     if (includeStocks) {
       const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
       const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
-      // Use proper peso symbol - NO SPACING ISSUES
-      const stockText = `Stock Value: ₱${safeStockValue.toFixed(2)}`;
+      // Use proper peso symbol - EXPLICIT METHOD
+      const peso = '₱';
+      const stockText = 'Stock Value: ' + peso + safeStockValue.toFixed(2);
       console.log('Stock Value text:', stockText);
+      console.log('Peso symbol test:', peso);
       doc.text(stockText, 20, yPosition);
       yPosition += 6;
       totalValue += safeStockValue;
@@ -453,9 +454,11 @@ export class ArchiveService {
         return sum + (typeof value === 'number' ? value : 0);
       }, 0);
       const safeDisposalValue = typeof disposalValue === 'number' && !isNaN(disposalValue) ? disposalValue : 0;
-      // Use proper peso symbol - NO SPACING ISSUES
-      const disposalText = `Disposal Value: ₱${safeDisposalValue.toFixed(2)}`;
+      // Use proper peso symbol - EXPLICIT METHOD
+      const peso = '₱';
+      const disposalText = 'Disposal Value: ' + peso + safeDisposalValue.toFixed(2);
       console.log('Disposal Value text:', disposalText);
+      console.log('Peso symbol test:', peso);
       doc.text(disposalText, 20, yPosition);
       yPosition += 6;
       totalValue += safeDisposalValue;
@@ -464,9 +467,11 @@ export class ArchiveService {
     if (includePCs) {
       const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
       const safePcValue = typeof pcValue === 'number' && !isNaN(pcValue) ? pcValue : 0;
-      // Use proper peso symbol - NO SPACING ISSUES
-      const pcText = `PC Value: ₱${safePcValue.toFixed(2)}`;
+      // Use proper peso symbol - EXPLICIT METHOD
+      const peso = '₱';
+      const pcText = 'PC Value: ' + peso + safePcValue.toFixed(2);
       console.log('PC Value text:', pcText);
+      console.log('Peso symbol test:', peso);
       doc.text(pcText, 20, yPosition);
       yPosition += 6;
       totalValue += safePcValue;
@@ -474,10 +479,11 @@ export class ArchiveService {
     
     // Total value with proper formatting
     const safeTotalValue = typeof totalValue === 'number' && !isNaN(totalValue) ? totalValue : 0;
-    const totalText = `Total Value: ₱${safeTotalValue.toFixed(2)}`;
+    const peso = '₱';
+    const totalText = 'Total Value: ' + peso + safeTotalValue.toFixed(2);
     console.log('Total Value text:', totalText);
+    console.log('Peso symbol test:', peso);
     doc.text(totalText, 20, yPosition);
-    yPosition += 15;
     yPosition += 15;
 
     // Reset font to times for subsequent sections
@@ -836,9 +842,11 @@ export class ArchiveService {
         (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
           stock.price * stock.quantity : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      // Use proper peso symbol - NO TEMPLATE LITERALS
-      const currencyText = '₱' + safeValue.toFixed(2);
+      // Use proper peso symbol - EXPLICIT METHOD
+      const peso = '₱';
+      const currencyText = peso + safeValue.toFixed(2);
       console.log('Stock table currency text:', currencyText);
+      console.log('Peso symbol in table:', peso);
       doc.text(currencyText, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
@@ -924,9 +932,11 @@ export class ArchiveService {
         (typeof disposal.disposalValue === 'number' ? 
           disposal.disposalValue : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      // Use proper peso symbol - NO TEMPLATE LITERALS
-      const currencyText = '₱' + safeValue.toFixed(2);
+      // Use proper peso symbol - EXPLICIT METHOD
+      const peso = '₱';
+      const currencyText = peso + safeValue.toFixed(2);
       console.log('Disposal table currency text:', currencyText);
+      console.log('Peso symbol in disposal table:', peso);
       doc.text(currencyText, xPos + 2, currentY + 5);
     });
   }
