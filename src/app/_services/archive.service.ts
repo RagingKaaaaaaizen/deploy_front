@@ -338,26 +338,22 @@ export class ArchiveService {
 
   // Generate PDF and return as blob for preview
   generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
-    console.log('=== COMPLETE PDF REWRITE ===');
+    console.log('=== DEEP REVIEW PDF GENERATION ===');
     console.log('Generating PDF for report type:', reportType);
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
     
-    // Create PDF in LANDSCAPE orientation - FORCE landscape
-    const doc = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: 'a4'
-    });
-    console.log('PDF created in LANDSCAPE orientation with new constructor');
+    // Create PDF in LANDSCAPE orientation - ULTRA CLEAN
+    const doc = new jsPDF('landscape', 'mm', 'a4');
+    console.log('PDF created in LANDSCAPE orientation');
     
-    // Force Times New Roman font from the start
+    // Force Times New Roman font IMMEDIATELY
     doc.setFont('times', 'normal');
-    doc.setFontSize(10);
-    console.log('Font forced to Times New Roman');
+    doc.setFontSize(12);
+    console.log('Font set to Times New Roman, size 12');
     
-    // Add clean professional header
-    this.addCleanHeader(doc, reportType);
+    // Add ultra-clean header
+    this.addUltraCleanHeader(doc, reportType);
     
     // Filter data by date range and inclusion flags
     let filteredStocks = includeStocks ? reportData.stocks : [];
@@ -421,70 +417,61 @@ export class ArchiveService {
     yPosition += 7;
     }
     
-    // Executive Summary - ALL VALUES IN ONE SECTION
+    // Executive Summary - ULTRA CLEAN FORMATTING
     doc.setFont('times', 'bold');
-    doc.setFontSize(14);
+    doc.setFontSize(12);
     doc.text('Executive Summary', 20, yPosition);
-    yPosition += 10;
+    yPosition += 8;
     
     // Reset font for values
     doc.setFont('times', 'normal');
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     
-    // Calculate values with proper formatting - ALL IN EXECUTIVE SUMMARY
+    // Calculate values with ULTRA CLEAN formatting
     let totalValue = 0;
     
     if (includeStocks) {
       const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
       const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
-      // Use proper peso symbol - EXPLICIT METHOD
-      const peso = '₱';
-      const stockText = 'Stock Value: ' + peso + safeStockValue.toFixed(2);
+      // Use direct peso symbol - NO VARIABLES
+      const stockText = 'Stock Value: ₱' + safeStockValue.toFixed(2);
       console.log('Stock Value text:', stockText);
-      console.log('Peso symbol test:', peso);
       doc.text(stockText, 20, yPosition);
-      yPosition += 6;
+      yPosition += 5;
       totalValue += safeStockValue;
     }
     
     if (includeDisposals) {
-      // Calculate disposal value properly
       const disposalValue = filteredDisposals.reduce((sum, disposal) => {
         const value = disposal.disposalValue || disposal.totalValue || disposal.price || 0;
         return sum + (typeof value === 'number' ? value : 0);
       }, 0);
       const safeDisposalValue = typeof disposalValue === 'number' && !isNaN(disposalValue) ? disposalValue : 0;
-      // Use proper peso symbol - EXPLICIT METHOD
-      const peso = '₱';
-      const disposalText = 'Disposal Value: ' + peso + safeDisposalValue.toFixed(2);
+      // Use direct peso symbol - NO VARIABLES
+      const disposalText = 'Disposal Value: ₱' + safeDisposalValue.toFixed(2);
       console.log('Disposal Value text:', disposalText);
-      console.log('Peso symbol test:', peso);
       doc.text(disposalText, 20, yPosition);
-      yPosition += 6;
+      yPosition += 5;
       totalValue += safeDisposalValue;
     }
     
     if (includePCs) {
       const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
       const safePcValue = typeof pcValue === 'number' && !isNaN(pcValue) ? pcValue : 0;
-      // Use proper peso symbol - EXPLICIT METHOD
-      const peso = '₱';
-      const pcText = 'PC Value: ' + peso + safePcValue.toFixed(2);
+      // Use direct peso symbol - NO VARIABLES
+      const pcText = 'PC Value: ₱' + safePcValue.toFixed(2);
       console.log('PC Value text:', pcText);
-      console.log('Peso symbol test:', peso);
       doc.text(pcText, 20, yPosition);
-      yPosition += 6;
+      yPosition += 5;
       totalValue += safePcValue;
     }
     
-    // Total value with proper formatting
+    // Total value with ULTRA CLEAN formatting
     const safeTotalValue = typeof totalValue === 'number' && !isNaN(totalValue) ? totalValue : 0;
-    const peso = '₱';
-    const totalText = 'Total Value: ' + peso + safeTotalValue.toFixed(2);
+    const totalText = 'Total Value: ₱' + safeTotalValue.toFixed(2);
     console.log('Total Value text:', totalText);
-    console.log('Peso symbol test:', peso);
     doc.text(totalText, 20, yPosition);
-    yPosition += 15;
+    yPosition += 10;
 
     // Reset font to times for subsequent sections
     doc.setFont('times', 'normal');
@@ -680,35 +667,35 @@ export class ArchiveService {
     return doc.output('blob');
   }
 
-  // Add clean professional header - NO OVERLAPS
-  private addCleanHeader(doc: jsPDF, reportType: string): void {
-    console.log('Adding clean professional header...');
+  // Add ultra-clean header - MINIMAL SPACING
+  private addUltraCleanHeader(doc: jsPDF, reportType: string): void {
+    console.log('Adding ultra-clean header...');
     
     // Force font to Times New Roman
     doc.setFont('times', 'normal');
     
-    // Simple logo in top left (no overlap)
+    // Simple logo in top left
     doc.setFillColor(0, 51, 102);
-    doc.rect(15, 10, 20, 20, 'F');
+    doc.rect(15, 8, 18, 18, 'F');
     doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont('times', 'bold');
+    doc.text('BC', 24, 18, { align: 'center' });
+    
+    // School name next to logo
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(12);
     doc.setFont('times', 'bold');
-    doc.text('BC', 25, 22, { align: 'center' });
-    
-    // School name next to logo (no overlap)
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(14);
-    doc.setFont('times', 'bold');
-    doc.text('Benedicto College', 40, 20);
+    doc.text('Benedicto College', 38, 16);
     
     // Main title centered
-    doc.setFontSize(18);
+    doc.setFontSize(16);
     doc.setFont('times', 'bold');
-    doc.text('Computer Lab Inventory System', 148, 20, { align: 'center' });
+    doc.text('Computer Lab Inventory System', 148, 16, { align: 'center' });
     
     // Report type
-    doc.setFontSize(14);
-    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 148, 28, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 148, 22, { align: 'center' });
     
     // Date and time
     const now = new Date();
@@ -724,10 +711,10 @@ export class ArchiveService {
       hour12: true 
     });
     
-    doc.setFontSize(10);
-    doc.text(`Generated: ${dateStr} at ${timeStr}`, 148, 35, { align: 'center' });
+    doc.setFontSize(9);
+    doc.text(`Generated: ${dateStr} at ${timeStr}`, 148, 28, { align: 'center' });
     
-    console.log('Clean header added successfully');
+    console.log('Ultra-clean header added successfully');
   }
 
   // Add Benedicto College logo (text-based for reliability)
@@ -806,7 +793,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addCleanHeader(doc, '');
+        this.addUltraCleanHeader(doc, '');
         return this.createStocksTable(doc, filteredStocks.slice(index), 50);
       }
       
@@ -842,11 +829,9 @@ export class ArchiveService {
         (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
           stock.price * stock.quantity : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      // Use proper peso symbol - EXPLICIT METHOD
-      const peso = '₱';
-      const currencyText = peso + safeValue.toFixed(2);
+      // Use direct peso symbol - ULTRA CLEAN
+      const currencyText = '₱' + safeValue.toFixed(2);
       console.log('Stock table currency text:', currencyText);
-      console.log('Peso symbol in table:', peso);
       doc.text(currencyText, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
@@ -891,7 +876,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addCleanHeader(doc, '');
+        this.addUltraCleanHeader(doc, '');
         return this.createDisposalsTable(doc, disposals.slice(index), 50);
       }
       
@@ -932,11 +917,9 @@ export class ArchiveService {
         (typeof disposal.disposalValue === 'number' ? 
           disposal.disposalValue : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      // Use proper peso symbol - EXPLICIT METHOD
-      const peso = '₱';
-      const currencyText = peso + safeValue.toFixed(2);
+      // Use direct peso symbol - ULTRA CLEAN
+      const currencyText = '₱' + safeValue.toFixed(2);
       console.log('Disposal table currency text:', currencyText);
-      console.log('Peso symbol in disposal table:', peso);
       doc.text(currencyText, xPos + 2, currentY + 5);
     });
   }
@@ -977,7 +960,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addCleanHeader(doc, '');
+        this.addUltraCleanHeader(doc, '');
         return this.createPCTable(doc, pcs.slice(index), 50);
       }
       
