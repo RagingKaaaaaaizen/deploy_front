@@ -202,6 +202,73 @@ export class ArchiveService {
     const weekNumber = this.getWeekNumber(startDate);
     const monthYear = this.getMonthYear(startDate);
     
+    // Calculate filtered summary based on inclusion settings and date range
+    const includeStocks = inclusionSettings?.includeStocks ?? true;
+    const includeDisposals = inclusionSettings?.includeDisposals ?? true;
+    const includePCs = inclusionSettings?.includePCs ?? true;
+    
+    // Filter data by date range and inclusion flags
+    let filteredStocks = includeStocks ? reportData.stocks : [];
+    let filteredDisposals = includeDisposals ? reportData.disposals : [];
+    let filteredPCs = includePCs ? reportData.pcs : [];
+    
+    if (startDate && endDate) {
+      // Filter stocks by date range (only if included)
+      if (includeStocks) {
+        filteredStocks = reportData.stocks.filter(stock => {
+          const stockDate = new Date(stock.createdAt || stock.updatedAt);
+          return stockDate >= startDate && stockDate <= endDate;
+        });
+      }
+      
+      // Filter disposals by date range (only if included)
+      if (includeDisposals) {
+        filteredDisposals = reportData.disposals.filter(disposal => {
+          const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
+          return disposalDate >= startDate && disposalDate <= endDate;
+        });
+      }
+      
+      // Filter PCs by date range (only if included)
+      if (includePCs) {
+        filteredPCs = reportData.pcs.filter(pc => {
+          const pcDate = new Date(pc.createdAt || pc.updatedAt);
+          return pcDate >= startDate && pcDate <= endDate;
+        });
+      }
+    }
+    
+    // Calculate correct summary from filtered data
+    const totalStocks = filteredStocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
+    const totalDisposals = filteredDisposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
+    const totalPCs = filteredPCs.length;
+    
+    // Calculate values from filtered data
+    const stockValue = filteredStocks.reduce((sum, stock) => 
+      sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
+    const disposalValue = filteredDisposals.reduce((sum, disposal) => 
+      sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
+    const pcValue = filteredPCs.reduce((sum, pc) => 
+      sum + (pc.totalValue || pc.value || 0), 0);
+    const totalValue = stockValue + disposalValue + pcValue;
+    
+    const filteredSummary = {
+      totalStocks,
+      totalDisposals,
+      totalPCs,
+      totalValue,
+      stockValue,
+      disposalValue,
+      pcValue,
+      averageStockValue: totalStocks > 0 ? stockValue / totalStocks : 0,
+      averageDisposalValue: totalDisposals > 0 ? disposalValue / totalDisposals : 0,
+      stockCategories: {},
+      disposalReasons: {},
+      pcStatuses: {},
+      topItems: [],
+      topLocations: []
+    };
+    
     const report: StoredReport = {
       id: this.generateReportId(),
       type: reportType,
@@ -211,7 +278,7 @@ export class ArchiveService {
         startDate: startDate,
         endDate: endDate
       },
-      summary: reportData.summary,
+      summary: filteredSummary, // Use filtered summary instead of raw summary
       data: reportData,
       fileName: `inventory-report-${reportType}-${new Date().toISOString().split('T')[0]}.pdf`,
       weekNumber: reportType === 'weekly' ? weekNumber : undefined,
@@ -221,15 +288,15 @@ export class ArchiveService {
         generationTime: new Date(),
         dataSource: 'Computer Lab Inventory System',
         filters: {
-          includeStocks: inclusionSettings?.includeStocks ?? true,
-          includeDisposals: inclusionSettings?.includeDisposals ?? true,
-          includePCs: inclusionSettings?.includePCs ?? true,
+          includeStocks: includeStocks,
+          includeDisposals: includeDisposals,
+          includePCs: includePCs,
           detailedAnalysis: inclusionSettings?.includeDetailedAnalysis ?? true
         },
         version: '2.0.0',
-        includeStocks: inclusionSettings?.includeStocks ?? true,
-        includeDisposals: inclusionSettings?.includeDisposals ?? true,
-        includePCs: inclusionSettings?.includePCs ?? true,
+        includeStocks: includeStocks,
+        includeDisposals: includeDisposals,
+        includePCs: includePCs,
         includeDetailedAnalysis: inclusionSettings?.includeDetailedAnalysis ?? true
       }
     };
