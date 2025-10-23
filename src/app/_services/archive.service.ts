@@ -634,9 +634,12 @@ export class ArchiveService {
     return doc.output('blob');
   }
 
-  // Add simple header without logo
+  // Add header with Benedicto College logo
   private addSimpleHeader(doc: jsPDF, reportType: string): void {
-    // Simple header
+    // Add Benedicto College logo in top left
+    this.addSchoolLogo(doc);
+    
+    // Main header text
     doc.setFontSize(20);
     doc.setFont('times', 'bold'); // Change to Times New Roman
     doc.text('Computer Lab Inventory System', 105, 20, { align: 'center' });
@@ -662,33 +665,35 @@ export class ArchiveService {
     doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 105, 40, { align: 'center' });
   }
 
-  // Add simplified Benedicto College logo
+  // Add Benedicto College logo from image file
   private addSchoolLogo(doc: jsPDF): void {
     const logoX = 20;
     const logoY = 8;
     const logoSize = 25;
     
-    // Draw circular logo background
-    doc.setFillColor(255, 255, 255); // White background
-    doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2, 'F');
-    
-    // Draw outer ring (blue)
-    doc.setFillColor(0, 51, 102);
-    doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2, 'F');
-    
-    // Draw inner circle (white)
-    doc.setFillColor(255, 255, 255);
-    doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/3, 'F');
-    
-    // Add "BC" text
-    doc.setTextColor(0, 51, 102);
-    doc.setFontSize(12);
-    doc.setFont('times', 'bold');
-    doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
-    
-    // Add year
-    doc.setFontSize(6);
-    doc.text('2000', logoX + logoSize/2, logoY + logoSize/2 + 8, { align: 'center' });
+    try {
+      // Load the Benedicto College logo image
+      const logoPath = 'assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp';
+      
+      // Add the logo image to the PDF
+      doc.addImage(logoPath, 'WEBP', logoX, logoY, logoSize, logoSize);
+    } catch (error) {
+      console.warn('Could not load logo image, using fallback text logo:', error);
+      
+      // Fallback: Create a simple text-based logo
+      doc.setFillColor(0, 51, 102); // Blue background
+      doc.rect(logoX, logoY, logoSize, logoSize, 'F');
+      
+      // Add "BC" text
+      doc.setTextColor(255, 255, 255); // White text
+      doc.setFontSize(12);
+      doc.setFont('times', 'bold');
+      doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
+      
+      // Add year
+      doc.setFontSize(6);
+      doc.text('2000', logoX + logoSize/2, logoY + logoSize - 2, { align: 'center' });
+    }
   }
 
   // Create simple stocks table for portrait format
