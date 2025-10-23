@@ -25,7 +25,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                 request.url.includes('/most-replaced-components') ||
                 request.url.includes('/average-lifespan') ||
                 request.url.includes('/replacement-patterns') ||
-                request.url.includes('/advanced-analytics')
+                request.url.includes('/advanced-analytics') ||
+                request.url.includes('/dashboard')
             );
             
             if ([401, 403].includes(err.status) && this.accountService.accountValue && !isAnalyticsRestrictedEndpoint) {

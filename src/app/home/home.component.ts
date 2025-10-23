@@ -392,6 +392,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     loadAnalytics() {
+        // Only load analytics for Admin and SuperAdmin users
+        if (!this.hasRole([Role.Admin, Role.SuperAdmin])) {
+            console.log('Skipping analytics load for Viewer/Staff user');
+            return;
+        }
+        
         this.loading = true;
         this.analyticsService.getDashboardAnalytics().subscribe({
             next: (data) => {
@@ -443,6 +449,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     loadCategoryDistribution() {
+        // Only load analytics for Admin and SuperAdmin users
+        if (!this.hasRole([Role.Admin, Role.SuperAdmin])) {
+            console.log('Skipping category distribution load for Viewer/Staff user');
+            return;
+        }
+        
         this.analyticsService.getCategoryDistribution().subscribe({
             next: (distribution) => {
                 this.categoryDistribution = distribution;
@@ -455,6 +467,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     loadStockTimelineData() {
+        // Only load analytics for Admin and SuperAdmin users
+        if (!this.hasRole([Role.Admin, Role.SuperAdmin])) {
+            console.log('Skipping stock timeline load for Viewer/Staff user');
+            return;
+        }
+        
         this.analyticsService.getStockAdditionsOverTime(this.selectedTimePeriod).subscribe({
             next: (stockTimeline) => {
                 // Process timeline data to show stock additions over time
