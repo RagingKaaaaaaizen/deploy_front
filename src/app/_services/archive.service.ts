@@ -338,23 +338,26 @@ export class ArchiveService {
 
   // Generate PDF and return as blob for preview
   generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
-    console.log('=== PDF GENERATION DEBUG ===');
+    console.log('=== COMPLETE PDF REWRITE ===');
     console.log('Generating PDF for report type:', reportType);
     console.log('Report data structure:', reportData);
     console.log('Summary data:', reportData.summary);
-    console.log('Currency symbol test: ₱ (peso) vs ± (plus-minus)');
     
-    // Create PDF in LANDSCAPE orientation for better table display
-    const doc = new jsPDF('landscape', 'mm', 'a4');
-    console.log('PDF created in LANDSCAPE orientation');
+    // Create PDF in LANDSCAPE orientation - FORCE landscape
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+    console.log('PDF created in LANDSCAPE orientation with new constructor');
     
-    // Set font to Times New Roman immediately and ensure it's applied
+    // Force Times New Roman font from the start
     doc.setFont('times', 'normal');
-    doc.setFontSize(12);
-    console.log('Font set to Times New Roman, size 12');
+    doc.setFontSize(10);
+    console.log('Font forced to Times New Roman');
     
-    // Add professional header with logo and school name
-    this.addProfessionalHeader(doc, reportType);
+    // Add clean professional header
+    this.addCleanHeader(doc, reportType);
     
     // Filter data by date range and inclusion flags
     let filteredStocks = includeStocks ? reportData.stocks : [];
@@ -418,56 +421,63 @@ export class ArchiveService {
     yPosition += 7;
     }
     
-    // Calculate total value based on included data types
-    let totalValue = 0;
-    // Ensure font is set for currency display
+    // Executive Summary - CLEAN FORMATTING
+    doc.setFont('times', 'bold');
+    doc.setFontSize(14);
+    doc.text('Summary', 20, yPosition);
+
+    yPosition += 10;
+    
+    // Reset font for values
     doc.setFont('times', 'normal');
-    doc.setFontSize(12);
+    doc.setFontSize(11);
+    
+    // Calculate values with proper formatting
+    let totalValue = 0;
     
     if (includeStocks) {
       const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
       const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
-      const pesoSymbol = '₱'; // Explicit peso symbol
-      const currencyText = `Stock Value: ${pesoSymbol}${safeStockValue.toFixed(2)}`;
-      console.log('Stock Value text:', currencyText);
-      console.log('Peso symbol used:', pesoSymbol);
-      doc.text(currencyText, 20, yPosition);
-    yPosition += 7;
+      // Use proper peso symbol - NO SPACING ISSUES
+      const stockText = `Stock Value: ₱${safeStockValue.toFixed(2)}`;
+      console.log('Stock Value text:', stockText);
+      doc.text(stockText, 20, yPosition);
+      yPosition += 6;
       totalValue += safeStockValue;
     }
     
     if (includeDisposals) {
-      // Fix disposal value calculation - use actual disposal values
+      // Calculate disposal value properly
       const disposalValue = filteredDisposals.reduce((sum, disposal) => {
         const value = disposal.disposalValue || disposal.totalValue || disposal.price || 0;
         return sum + (typeof value === 'number' ? value : 0);
       }, 0);
       const safeDisposalValue = typeof disposalValue === 'number' && !isNaN(disposalValue) ? disposalValue : 0;
-      const pesoSymbol = '₱'; // Explicit peso symbol
-      const currencyText = `Disposal Value: ${pesoSymbol}${safeDisposalValue.toFixed(2)}`;
-      console.log('Disposal Value text:', currencyText);
-      console.log('Disposal value calculation:', disposalValue);
-      doc.text(currencyText, 20, yPosition);
-    yPosition += 7;
+      // Use proper peso symbol - NO SPACING ISSUES
+      const disposalText = `Disposal Value: ₱${safeDisposalValue.toFixed(2)}`;
+      console.log('Disposal Value text:', disposalText);
+      doc.text(disposalText, 20, yPosition);
+      yPosition += 6;
       totalValue += safeDisposalValue;
     }
     
     if (includePCs) {
       const pcValue = filteredPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
       const safePcValue = typeof pcValue === 'number' && !isNaN(pcValue) ? pcValue : 0;
-      const pesoSymbol = '₱'; // Explicit peso symbol
-      const currencyText = `PC Value: ${pesoSymbol}${safePcValue.toFixed(2)}`;
-      console.log('PC Value text:', currencyText);
-      doc.text(currencyText, 20, yPosition);
-    yPosition += 7;
+      // Use proper peso symbol - NO SPACING ISSUES
+      const pcText = `PC Value: ₱${safePcValue.toFixed(2)}`;
+      console.log('PC Value text:', pcText);
+      doc.text(pcText, 20, yPosition);
+      yPosition += 6;
       totalValue += safePcValue;
     }
     
+    // Total value with proper formatting
     const safeTotalValue = typeof totalValue === 'number' && !isNaN(totalValue) ? totalValue : 0;
-    const pesoSymbol = '₱'; // Explicit peso symbol
-    const totalCurrencyText = `Total Value: ${pesoSymbol}${safeTotalValue.toFixed(2)}`;
-    console.log('Total Value text:', totalCurrencyText);
-    doc.text(totalCurrencyText, 20, yPosition);
+    const totalText = `Total Value: ₱${safeTotalValue.toFixed(2)}`;
+    console.log('Total Value text:', totalText);
+    doc.text(totalText, 20, yPosition);
+    yPosition += 15;
     yPosition += 15;
 
     // Reset font to times for subsequent sections
@@ -664,37 +674,44 @@ export class ArchiveService {
     return doc.output('blob');
   }
 
-  // Add header with Benedicto College logo and name
-  private addProfessionalHeader(doc: jsPDF, reportType: string): void {
-    console.log('Adding professional header...');
+  // Add clean professional header - NO OVERLAPS
+  private addCleanHeader(doc: jsPDF, reportType: string): void {
+    console.log('Adding clean professional header...');
     
-    // Add Benedicto College logo in top left
-    this.addSchoolLogo(doc);
+    // Force font to Times New Roman
+    doc.setFont('times', 'normal');
     
-    // School name in top right
+    // Simple logo in top left (no overlap)
+    doc.setFillColor(0, 51, 102);
+    doc.rect(15, 10, 20, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12);
+    doc.setFont('times', 'bold');
+    doc.text('BC', 25, 22, { align: 'center' });
+    
+    // School name next to logo (no overlap)
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(14);
     doc.setFont('times', 'bold');
-    doc.text('Benedicto College', 200, 15);
-    console.log('School name added');
+    doc.text('Benedicto College', 40, 20);
     
-    // Main header text
-    doc.setFontSize(20);
+    // Main title centered
+    doc.setFontSize(18);
     doc.setFont('times', 'bold');
-    doc.text('Computer Lab Inventory System', 148, 25, { align: 'center' });
-    console.log('Main title added');
+    doc.text('Computer Lab Inventory System', 148, 20, { align: 'center' });
     
-    doc.setFontSize(16);
-    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 148, 35, { align: 'center' });
-    console.log('Report type added');
+    // Report type
+    doc.setFontSize(14);
+    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 148, 28, { align: 'center' });
     
-    // Precise date formatting
+    // Date and time
     const now = new Date();
-    const preciseDate = now.toLocaleDateString('en-US', { 
+    const dateStr = now.toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
-    const preciseTime = now.toLocaleTimeString('en-US', { 
+    const timeStr = now.toLocaleTimeString('en-US', { 
       hour: '2-digit', 
       minute: '2-digit', 
       second: '2-digit',
@@ -702,8 +719,9 @@ export class ArchiveService {
     });
     
     doc.setFontSize(10);
-    doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 148, 45, { align: 'center' });
-    console.log('Date and time added');
+    doc.text(`Generated: ${dateStr} at ${timeStr}`, 148, 35, { align: 'center' });
+    
+    console.log('Clean header added successfully');
   }
 
   // Add Benedicto College logo (text-based for reliability)
@@ -782,7 +800,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addProfessionalHeader(doc, '');
+        this.addCleanHeader(doc, '');
         return this.createStocksTable(doc, filteredStocks.slice(index), 50);
       }
       
@@ -818,10 +836,9 @@ export class ArchiveService {
         (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
           stock.price * stock.quantity : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      const pesoSymbol = '₱'; // Explicit peso symbol
-      const currencyText = `${pesoSymbol}${safeValue.toFixed(2)}`;
+      // Use proper peso symbol - NO TEMPLATE LITERALS
+      const currencyText = '₱' + safeValue.toFixed(2);
       console.log('Stock table currency text:', currencyText);
-      console.log('Peso symbol in table:', pesoSymbol);
       doc.text(currencyText, xPos + 2, currentY + 5);
       xPos += colWidths[3];
       
@@ -866,7 +883,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addProfessionalHeader(doc, '');
+        this.addCleanHeader(doc, '');
         return this.createDisposalsTable(doc, disposals.slice(index), 50);
       }
       
@@ -907,10 +924,9 @@ export class ArchiveService {
         (typeof disposal.disposalValue === 'number' ? 
           disposal.disposalValue : 0);
       const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      const pesoSymbol = '₱'; // Explicit peso symbol
-      const currencyText = `${pesoSymbol}${safeValue.toFixed(2)}`;
+      // Use proper peso symbol - NO TEMPLATE LITERALS
+      const currencyText = '₱' + safeValue.toFixed(2);
       console.log('Disposal table currency text:', currencyText);
-      console.log('Peso symbol in disposal table:', pesoSymbol);
       doc.text(currencyText, xPos + 2, currentY + 5);
     });
   }
@@ -951,7 +967,7 @@ export class ArchiveService {
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
-        this.addProfessionalHeader(doc, '');
+        this.addCleanHeader(doc, '');
         return this.createPCTable(doc, pcs.slice(index), 50);
       }
       
