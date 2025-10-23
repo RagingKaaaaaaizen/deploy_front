@@ -12,7 +12,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            // Don't auto-logout for analytics endpoints that require admin role
+            // Don't auto-logout for analytics endpoints that require admin role or are accessible to all roles
             const isAnalyticsRestrictedEndpoint = request.url.includes('/analytics/') && (
                 request.url.includes('/automated-schedule') ||
                 request.url.includes('/low-stock-items') ||
@@ -26,7 +26,9 @@ export class ErrorInterceptor implements HttpInterceptor {
                 request.url.includes('/average-lifespan') ||
                 request.url.includes('/replacement-patterns') ||
                 request.url.includes('/advanced-analytics') ||
-                request.url.includes('/dashboard')
+                request.url.includes('/dashboard') ||
+                request.url.includes('/generate-report') ||
+                request.url.includes('/test')
             );
             
             if ([401, 403].includes(err.status) && this.accountService.accountValue && !isAnalyticsRestrictedEndpoint) {
