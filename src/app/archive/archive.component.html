@@ -275,31 +275,6 @@
     <span>Generating report...</span>
   </div>
 
-  <!-- Report Preview -->
-  <div class="preview-section" *ngIf="(hasWeeklyData || hasMonthlyData) && !loading">
-    <div class="preview-header">
-      <h3 class="preview-title">Report Preview</h3>
-    </div>
-
-    <div class="summary-cards">
-      <div class="summary-card">
-        <div class="summary-number">{{ (weeklyData || monthlyData)?.summary.totalStocks || 0 }}</div>
-        <div class="summary-label">Total Stocks</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-number">{{ (weeklyData || monthlyData)?.summary.totalDisposals || 0 }}</div>
-        <div class="summary-label">Total Disposals</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-number">{{ (weeklyData || monthlyData)?.summary.totalPCs || 0 }}</div>
-        <div class="summary-label">Total PCs</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-number">${{ formatCurrency((weeklyData || monthlyData)?.summary?.totalValue, 2) }}</div>
-        <div class="summary-label">Total Value</div>
-      </div>
-    </div>
-  </div>
 
   <!-- Stored Reports Section -->
   <div class="stored-reports-section" *ngIf="hasStoredReports">
