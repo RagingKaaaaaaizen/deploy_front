@@ -383,13 +383,13 @@ export class ArchiveService {
     
     // Simple Executive Summary
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('times', 'bold'); // Change to Times New Roman
     doc.text('Executive Summary', 20, yPosition);
     yPosition += 10;
     
     // Use filtered data for precise date reporting - only show included data types
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('times', 'normal'); // Change to Times New Roman
     
     if (includeStocks) {
       // Calculate total quantity of stock items, not just count of entries
@@ -440,9 +440,13 @@ export class ArchiveService {
     doc.text(`Total Value: ₱${safeTotalValue.toFixed(2)}`, 20, yPosition);
     yPosition += 15;
 
+    // Reset font to times for subsequent sections
+    doc.setFont('times', 'normal');
+
     // Detailed Analysis section
     if (reportData.summary.stockCategories && Object.keys(reportData.summary.stockCategories).length > 0) {
       doc.setFontSize(14);
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Stock Categories Analysis', 20, yPosition);
       yPosition += 10;
       
@@ -465,6 +469,7 @@ export class ArchiveService {
       }
       
       doc.setFontSize(14);
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Disposal Reasons Analysis', 20, yPosition);
       yPosition += 10;
       
@@ -487,6 +492,7 @@ export class ArchiveService {
       }
       
       doc.setFontSize(14);
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Top Items by Quantity', 20, yPosition);
       yPosition += 10;
       
@@ -510,7 +516,7 @@ export class ArchiveService {
       }
       
       doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Detailed Stocks Report', 20, yPosition);
       yPosition += 15;
       
@@ -527,7 +533,7 @@ export class ArchiveService {
       }
       
       doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Detailed Disposals Report', 20, yPosition);
       yPosition += 15;
       
@@ -544,7 +550,7 @@ export class ArchiveService {
       }
       
       doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Detailed PC Management Report', 20, yPosition);
       yPosition += 15;
       
@@ -566,6 +572,7 @@ export class ArchiveService {
       }
       
       doc.setFontSize(14);
+      doc.setFont('times', 'bold'); // Change to Times New Roman
       doc.text('Receipt Images', 20, yPosition);
       yPosition += 10;
       
@@ -631,7 +638,7 @@ export class ArchiveService {
   private addSimpleHeader(doc: jsPDF, reportType: string): void {
     // Simple header
     doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('times', 'bold'); // Change to Times New Roman
     doc.text('Computer Lab Inventory System', 105, 20, { align: 'center' });
     
     doc.setFontSize(16);
@@ -676,7 +683,7 @@ export class ArchiveService {
     // Add "BC" text
     doc.setTextColor(0, 51, 102);
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('times', 'bold');
     doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
     
     // Add year
@@ -686,6 +693,14 @@ export class ArchiveService {
 
   // Create simple stocks table for portrait format
   private createStocksTable(doc: jsPDF, stocks: any[], startY: number): void {
+    // Filter out stocks with quantity 0
+    const filteredStocks = stocks.filter(stock => (stock.quantity || 0) > 0);
+    
+    if (filteredStocks.length === 0) {
+      // If no stocks to display after filtering, just return
+      return;
+    }
+    
     const pageWidth = 210; // Portrait A4 width
     const margin = 20;
     const tableWidth = pageWidth - (margin * 2);
@@ -699,7 +714,7 @@ export class ArchiveService {
     doc.rect(margin, startY, tableWidth, rowHeight, 'F');
     
     doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('times', 'bold');
     doc.setTextColor(0, 0, 0);
     
     let xPos = margin;
@@ -711,17 +726,17 @@ export class ArchiveService {
     });
     
     // Table rows
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('times', 'normal');
     doc.setFontSize(7);
     
-    stocks.forEach((stock, index) => {
+    filteredStocks.forEach((stock, index) => {
       const currentY = startY + (index + 1) * rowHeight;
       
       // Check if we need a new page
       if (currentY > 200) {
         doc.addPage();
         this.addSimpleHeader(doc, '');
-        return this.createStocksTable(doc, stocks.slice(index), 50);
+        return this.createStocksTable(doc, filteredStocks.slice(index), 50);
       }
       
       // Alternate row colors
@@ -779,7 +794,7 @@ export class ArchiveService {
     doc.rect(margin, startY, tableWidth, rowHeight, 'F');
     
     doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('times', 'bold');
     doc.setTextColor(0, 0, 0);
     
     let xPos = margin;
@@ -791,7 +806,7 @@ export class ArchiveService {
     });
     
     // Table rows
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('times', 'normal');
     doc.setFontSize(7);
     
     disposals.forEach((disposal, index) => {
@@ -860,7 +875,7 @@ export class ArchiveService {
     doc.rect(margin, startY, tableWidth, rowHeight, 'F');
     
     doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('times', 'bold');
     doc.setTextColor(0, 0, 0);
     
     let xPos = margin;
@@ -872,7 +887,7 @@ export class ArchiveService {
     });
     
     // Table rows
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('times', 'normal');
     doc.setFontSize(7);
     
     pcs.forEach((pc, index) => {
