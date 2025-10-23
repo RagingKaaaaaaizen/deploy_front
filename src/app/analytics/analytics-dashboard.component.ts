@@ -433,6 +433,11 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngOnDestroy(): void {
+    // Destroy chart to prevent memory leaks
+    if (this.chart) {
+      this.chart.destroy();
+      this.chart = null;
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -462,45 +467,48 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
           console.log('Received monthly stock data:', data);
           this.monthlyStockData = data;
           
-          // If no data, create sample data for demonstration
-          if (!data || data.length === 0) {
-            this.createSampleData();
-          }
-          
-          this.updateChartData();
+          // Always create complete 12-month data structure
+          this.createCompleteMonthlyData(data);
           this.chartLoading = false;
-          // Initialize chart after data is loaded
-          setTimeout(() => {
-            this.initializeChart();
-          }, 100);
+          
+          // Initialize chart immediately after data is ready
+          this.initializeChart();
         },
         error: (error) => {
           console.error('Error loading monthly stock data:', error);
           this.chartLoading = false;
-          // Create sample data on error for demonstration
-          this.createSampleData();
-          this.updateChartData();
-          setTimeout(() => {
-            this.initializeChart();
-          }, 100);
+          // Create complete sample data on error
+          this.createCompleteMonthlyData([]);
+          this.initializeChart();
         }
       });
   }
 
-  createSampleData(): void {
-    // Create sample data for the last 12 months
-    const sampleData = [];
-    const now = new Date();
+  createCompleteMonthlyData(apiData: any[]): void {
+    // Create complete 12-month data structure for current year
+    const currentYear = new Date().getFullYear();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
-    for (let i = 11; i >= 0; i--) {
-      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      const count = Math.floor(Math.random() * 50) + 10; // Random count between 10-60
-      sampleData.push({ month: monthKey, count: count });
+    const completeData = [];
+    
+    for (let month = 0; month < 12; month++) {
+      const monthKey = `${currentYear}-${String(month + 1).padStart(2, '0')}`;
+      const monthName = monthNames[month];
+      
+      // Find data for this month from API
+      const monthData = apiData?.find(item => item.month === monthKey);
+      const count = monthData ? monthData.count : 0;
+      
+      completeData.push({
+        month: monthKey,
+        monthName: monthName,
+        count: count
+      });
     }
     
-    this.monthlyStockData = sampleData;
-    console.log('Created sample data:', this.monthlyStockData);
+    this.monthlyStockData = completeData;
+    console.log('Created complete monthly data:', this.monthlyStockData);
   }
 
   initializeChart(): void {
@@ -508,32 +516,78 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
       // Destroy existing chart if it exists
       if (this.chart) {
         this.chart.destroy();
+        this.chart = null;
       }
       
+      // Update chart data before creating chart
+      this.updateChartData();
+      
       const ctx = this.monthlyStockChart.nativeElement.getContext('2d');
+      
+      // Create new chart with updated data
       this.chart = new Chart(ctx, {
         type: 'line',
-        data: this.chartData,
-        options: this.chartOptions
+        data: {
+          labels: this.chartData.labels,
+          datasets: [{
+            label: 'Stock Entries',
+            data: this.chartData.datasets[0].data,
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#007bff',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top' as const
+            },
+            title: {
+              display: true,
+              text: 'Monthly Stock Entries'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Number of Stock Entries'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Month'
+              }
+            }
+          }
+        }
       });
+      
+      console.log('Chart initialized successfully');
     }
   }
 
   updateChartData(): void {
     if (this.monthlyStockData && this.monthlyStockData.length > 0) {
-      // Sort data by month to ensure proper chronological order
-      const sortedData = [...this.monthlyStockData].sort((a, b) => {
-        return new Date(a.month).getTime() - new Date(b.month).getTime();
-      });
-      
-      this.chartData.labels = sortedData.map(item => {
-        const [year, month] = item.month.split('-');
-        const date = new Date(parseInt(year), parseInt(month) - 1);
-        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-      });
-      this.chartData.datasets[0].data = sortedData.map(item => item.count);
+      // Use the pre-sorted complete data
+      this.chartData.labels = this.monthlyStockData.map(item => item.monthName);
+      this.chartData.datasets[0].data = this.monthlyStockData.map(item => item.count);
       
       console.log('Chart data updated:', this.chartData);
+      console.log('Labels:', this.chartData.labels);
+      console.log('Data:', this.chartData.datasets[0].data);
     } else {
       console.log('No monthly stock data available');
     }

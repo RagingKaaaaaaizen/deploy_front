@@ -35,6 +35,7 @@ export interface TimelineData {
 
 export interface MonthlyStockData {
   month: string;
+  monthName?: string;
   count: number;
 }
 
