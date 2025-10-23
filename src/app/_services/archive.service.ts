@@ -634,18 +634,23 @@ export class ArchiveService {
     return doc.output('blob');
   }
 
-  // Add header with Benedicto College logo
+  // Add header with Benedicto College logo and name
   private addSimpleHeader(doc: jsPDF, reportType: string): void {
     // Add Benedicto College logo in top left
     this.addSchoolLogo(doc);
     
+    // School name in top right
+    doc.setFontSize(14);
+    doc.setFont('times', 'bold');
+    doc.text('Benedicto College', 150, 15);
+    
     // Main header text
     doc.setFontSize(20);
     doc.setFont('times', 'bold'); // Change to Times New Roman
-    doc.text('Computer Lab Inventory System', 105, 20, { align: 'center' });
+    doc.text('Computer Lab Inventory System', 105, 25, { align: 'center' });
     
     doc.setFontSize(16);
-    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 105, 30, { align: 'center' });
+    doc.text(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report`, 105, 35, { align: 'center' });
     
     // Precise date formatting
     const now = new Date();
@@ -662,38 +667,39 @@ export class ArchiveService {
     });
     
     doc.setFontSize(10);
-    doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 105, 40, { align: 'center' });
+    doc.text(`Generated on: ${preciseDate} at ${preciseTime}`, 105, 45, { align: 'center' });
   }
 
-  // Add Benedicto College logo from image file
+  // Add Benedicto College logo (text-based for reliability)
   private addSchoolLogo(doc: jsPDF): void {
     const logoX = 20;
     const logoY = 8;
     const logoSize = 25;
     
-    try {
-      // Load the Benedicto College logo image
-      const logoPath = 'assets/images/f612338c-ee0d-46c4-a988-dd2f38d542a2.webp';
-      
-      // Add the logo image to the PDF
-      doc.addImage(logoPath, 'WEBP', logoX, logoY, logoSize, logoSize);
-    } catch (error) {
-      console.warn('Could not load logo image, using fallback text logo:', error);
-      
-      // Fallback: Create a simple text-based logo
-      doc.setFillColor(0, 51, 102); // Blue background
-      doc.rect(logoX, logoY, logoSize, logoSize, 'F');
-      
-      // Add "BC" text
-      doc.setTextColor(255, 255, 255); // White text
-      doc.setFontSize(12);
-      doc.setFont('times', 'bold');
-      doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
-      
-      // Add year
-      doc.setFontSize(6);
-      doc.text('2000', logoX + logoSize/2, logoY + logoSize - 2, { align: 'center' });
-    }
+    // Create a professional text-based logo
+    doc.setFillColor(0, 51, 102); // Blue background
+    doc.rect(logoX, logoY, logoSize, logoSize, 'F');
+    
+    // Add "BC" text in white
+    doc.setTextColor(255, 255, 255); // White text
+    doc.setFontSize(14);
+    doc.setFont('times', 'bold');
+    doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
+    
+    // Add year below
+    doc.setFontSize(8);
+    doc.text('2000', logoX + logoSize/2, logoY + logoSize - 3, { align: 'center' });
+    
+    // Add "Benedicto College" text next to logo
+    doc.setTextColor(0, 0, 0); // Black text
+    doc.setFontSize(10);
+    doc.setFont('times', 'bold');
+    doc.text('Benedicto College', logoX + logoSize + 5, logoY + 8);
+    
+    // Add tagline
+    doc.setFontSize(8);
+    doc.setFont('times', 'normal');
+    doc.text('Your Education... Our Mission', logoX + logoSize + 5, logoY + 15);
   }
 
   // Create simple stocks table for portrait format
