@@ -649,27 +649,56 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
 
     // Flatten all individual disposal records
     const allDisposals: any[] = [];
+    const itemCounts = new Map<string, number>();
+    
     data.forEach(item => {
-      item.lifespans.forEach((lifespan: any, index: number) => {
+      item.lifespans.forEach((lifespan: any) => {
+        const count = (itemCounts.get(item.itemName) || 0) + 1;
+        itemCounts.set(item.itemName, count);
+        
         allDisposals.push({
           itemName: item.itemName,
           lifespanDays: lifespan.lifespanDays,
           disposalDate: new Date(lifespan.disposalDate).toLocaleDateString(),
           quantity: lifespan.quantity,
-          label: `${item.itemName} #${index + 1}`
+          label: `${item.itemName} (${count})`,
+          sortKey: `${item.itemName}_${count}`
         });
       });
     });
 
-    // Sort by lifespan descending
-    allDisposals.sort((a, b) => b.lifespanDays - a.lifespanDays);
+    // Sort by item name first, then by disposal number
+    allDisposals.sort((a, b) => {
+      if (a.itemName === b.itemName) {
+        return a.sortKey.localeCompare(b.sortKey);
+      }
+      return a.itemName.localeCompare(b.itemName);
+    });
 
-    // Generate random colors
-    const colors = this.generateRandomColors(allDisposals.length);
+    // Generate colors - same color for same item
+    const itemColors = new Map<string, string>();
+    const baseColors = [
+      '#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8',
+      '#6f42c1', '#e83e8c', '#fd7e14', '#20c997', '#6c757d'
+    ];
+    
+    let colorIndex = 0;
+    allDisposals.forEach(disposal => {
+      if (!itemColors.has(disposal.itemName)) {
+        if (colorIndex < baseColors.length) {
+          itemColors.set(disposal.itemName, baseColors[colorIndex]);
+        } else {
+          const hue = (colorIndex * 137.508) % 360;
+          itemColors.set(disposal.itemName, `hsl(${hue}, 70%, 50%)`);
+        }
+        colorIndex++;
+      }
+    });
 
     // Prepare bar chart data
     const labels = allDisposals.map(d => d.label);
     const lifespanValues = allDisposals.map(d => d.lifespanDays);
+    const colors = allDisposals.map(d => itemColors.get(d.itemName) || '#007bff');
 
     this.lifespanChartOption = {
       tooltip: {
@@ -689,7 +718,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
       grid: {
         left: '3%',
         right: '4%',
-        bottom: '3%',
+        bottom: '10%',
         containLabel: true
       },
       xAxis: {
@@ -700,7 +729,8 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
         nameGap: 50,
         axisLabel: {
           rotate: 45,
-          interval: 0
+          interval: 0,
+          fontSize: 10
         }
       },
       yAxis: {
@@ -716,13 +746,14 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           data: lifespanValues,
           itemStyle: {
             color: (params: any) => {
-              return colors[params.dataIndex % colors.length];
+              return colors[params.dataIndex];
             }
           },
           label: {
             show: true,
             position: 'top',
-            formatter: '{c} days'
+            formatter: '{c}d',
+            fontSize: 10
           },
           emphasis: {
             itemStyle: {
@@ -818,4 +849,5 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
     return obj ? Object.entries(obj) : [];
   }
 }
+
 
