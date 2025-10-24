@@ -647,15 +647,29 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Sort by average lifespan descending
-    const sortedData = data.sort((a, b) => b.averageLifespanDays - a.averageLifespanDays);
+    // Flatten all individual disposal records
+    const allDisposals: any[] = [];
+    data.forEach(item => {
+      item.lifespans.forEach((lifespan: any, index: number) => {
+        allDisposals.push({
+          itemName: item.itemName,
+          lifespanDays: lifespan.lifespanDays,
+          disposalDate: new Date(lifespan.disposalDate).toLocaleDateString(),
+          quantity: lifespan.quantity,
+          label: `${item.itemName} #${index + 1}`
+        });
+      });
+    });
 
-    // Generate random colors for each item bar
-    const colors = this.generateRandomColors(sortedData.length);
+    // Sort by lifespan descending
+    allDisposals.sort((a, b) => b.lifespanDays - a.lifespanDays);
+
+    // Generate random colors
+    const colors = this.generateRandomColors(allDisposals.length);
 
     // Prepare bar chart data
-    const itemNames = sortedData.map(item => item.itemName);
-    const lifespanValues = sortedData.map(item => item.averageLifespanDays);
+    const labels = allDisposals.map(d => d.label);
+    const lifespanValues = allDisposals.map(d => d.lifespanDays);
 
     this.lifespanChartOption = {
       tooltip: {
@@ -664,10 +678,11 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           type: 'shadow'
         },
         formatter: (params: any) => {
-          const item = sortedData[params[0].dataIndex];
-          let result = `<strong>${params[0].name}</strong><br/>`;
-          result += `Average Lifespan: <strong>${params[0].value} days</strong><br/>`;
-          result += `Total Disposals: ${item.totalDisposals}<br/>`;
+          const disposal = allDisposals[params[0].dataIndex];
+          let result = `<strong>${disposal.itemName}</strong><br/>`;
+          result += `Lifespan: <strong>${disposal.lifespanDays} days</strong><br/>`;
+          result += `Disposed: ${disposal.disposalDate}<br/>`;
+          result += `Quantity: ${disposal.quantity}<br/>`;
           return result;
         }
       },
@@ -679,7 +694,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
       },
       xAxis: {
         type: 'category',
-        data: itemNames,
+        data: labels,
         name: 'Disposed Items',
         nameLocation: 'middle',
         nameGap: 50,
@@ -690,13 +705,13 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
       },
       yAxis: {
         type: 'value',
-        name: 'Average Lifespan (Days)',
+        name: 'Lifespan (Days)',
         nameLocation: 'middle',
         nameGap: 50
       },
       series: [
         {
-          name: 'Average Lifespan',
+          name: 'Lifespan',
           type: 'bar' as const,
           data: lifespanValues,
           itemStyle: {
