@@ -13,7 +13,9 @@ const routes: Routes = [
     { path: 'add', component: PCAddEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
     { path: 'templates', component: PCBuildTemplateListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     { path: 'templates/add', component: PCBuildTemplateEditorComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+    { path: 'templates/:id/view', component: PCBuildTemplateEditorComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     { path: 'templates/:id/edit', component: PCBuildTemplateEditorComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+    { path: 'templates/:id', component: PCBuildTemplateEditorComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     { path: 'edit/:id', component: PCAddEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff] } },
     { path: ':id/components', component: PCComponentsComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } },
     { path: ':id', component: PCAddEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin, Role.Staff, Role.Viewer] } }
