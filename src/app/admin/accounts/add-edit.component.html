@@ -176,47 +176,17 @@
 
                     <!-- Password Info (View Mode Only) -->
                     <div class="bg-blue-50 rounded-lg p-4 border border-blue-200" *ngIf="isViewMode">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-info-circle text-blue-600"></i>
-                                </div>
-                                <div>
-                                    <h6 class="text-base font-semibold text-blue-900 mb-1">Password Information</h6>
-                                    <p class="text-sm text-blue-800 mb-3">
-                                        For security reasons, passwords are encrypted and cannot be displayed. 
-                                        As a SuperAdmin, you can generate a temporary password below.
-                                    </p>
-                                    
-                                    <!-- Temporary Password Display -->
-                                    <div *ngIf="temporaryPassword" class="bg-white border-2 border-green-500 rounded-lg p-4 mt-3">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <p class="text-sm font-semibold text-gray-700 mb-1">Temporary Password Generated:</p>
-                                                <div class="flex items-center gap-2">
-                                                    <code class="text-lg font-bold text-green-600 bg-green-50 px-3 py-1 rounded">{{ temporaryPassword }}</code>
-                                                    <button type="button" 
-                                                            (click)="copyPassword()" 
-                                                            class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm">
-                                                        <i class="fas fa-copy mr-1"></i> Copy
-                                                    </button>
-                                                </div>
-                                                <p class="text-xs text-orange-600 mt-2">
-                                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                    Save this password now! It will not be shown again.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-info-circle text-blue-600"></i>
                             </div>
-                            <button type="button" 
-                                    (click)="generateTemporaryPassword()" 
-                                    [disabled]="generatingPassword"
-                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-semibold whitespace-nowrap disabled:bg-gray-400">
-                                <i class="fas fa-key mr-2"></i>
-                                {{ generatingPassword ? 'Generating...' : 'Generate Temp Password' }}
-                            </button>
+                            <div>
+                                <h6 class="text-base font-semibold text-blue-900 mb-1">Password Information</h6>
+                                <p class="text-sm text-blue-800">
+                                    For security reasons, passwords are encrypted and cannot be displayed. 
+                                    To change this user's password, click the <strong>Edit</strong> button.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
