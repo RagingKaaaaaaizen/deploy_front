@@ -1299,6 +1299,7 @@ export class DisposeListComponent implements OnInit {
         next: (result) => {
           console.log('Return to stock successful:', result);
           this.alertService.success('Items returned to stock successfully!');
+          this.loading = false;
           this.closeReturnToStockModal();
           this.loadData(); // Refresh the disposal list
         },
@@ -1786,11 +1787,13 @@ export class DisposeListComponent implements OnInit {
       reason: typeof disposalData.reason
     });
     
+    this.loading = true;
     this.disposeService.create(disposalData)
       .pipe(first())
       .subscribe({
         next: () => {
           this.alertService.success('Disposal created successfully');
+          this.loading = false;
           this.closeAddDisposalModal();
           this.loadDisposals();
           
@@ -1805,6 +1808,7 @@ export class DisposeListComponent implements OnInit {
         },
         error: error => {
           console.error('Error creating disposal:', error);
+          this.loading = false;
           this.alertService.error('Error creating disposal record: ' + (error.error?.message || error.message || 'Unknown error'));
         }
       });
