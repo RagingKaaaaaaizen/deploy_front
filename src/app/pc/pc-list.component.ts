@@ -1222,8 +1222,13 @@ export class PCListComponent implements OnInit {
           if (errorMsg.toLowerCase().includes('room location') || 
               errorMsg.toLowerCase().includes('foreign key') ||
               error?.status === 500) {
-            errorMessage = 'The selected room location is no longer valid. Refreshing locations...';
+            const selectedId = this.pcForm.get('roomLocationId')?.value;
+            errorMessage = `Room location (ID: ${selectedId}) is invalid. Refreshing available locations...`;
             shouldRefresh = true;
+            
+            console.error('📍 Room location validation failed!');
+            console.error('📍 Attempted to use location ID:', selectedId);
+            console.error('📍 Loaded locations:', this.roomLocations.map(loc => ({ id: loc.id, name: loc.name })));
             
             // Refresh room locations
             this.loadRoomLocations();
@@ -1239,10 +1244,15 @@ export class PCListComponent implements OnInit {
           this.alertService.error(errorMessage, { autoClose: !shouldRefresh });
           
           if (shouldRefresh) {
-            // Show additional help message
+            // Show additional help message with available locations
             setTimeout(() => {
-              this.alertService.info('Room locations have been refreshed. Please select a valid location from the dropdown and try again.', { autoClose: false });
-            }, 1500);
+              const locationNames = this.roomLocations.map(loc => loc.name).join(', ');
+              if (this.roomLocations.length > 0) {
+                this.alertService.info(`Room locations refreshed. Available locations: ${locationNames}. Please select one and try again.`, { autoClose: false });
+              } else {
+                this.alertService.warn('No room locations are available! Please contact admin to add room locations first.', { autoClose: false });
+              }
+            }, 2000);
           }
         },
         complete: () => {
