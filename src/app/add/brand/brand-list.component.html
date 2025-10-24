@@ -105,7 +105,6 @@
                             <tr>
                                 <th><i class="fas fa-tag"></i> Name</th>
                                 <th><i class="fas fa-align-left"></i> Description</th>
-                                <th><i class="fas fa-box"></i> Items Count</th>
                                 <th><i class="fas fa-cogs"></i> Actions</th>
                             </tr>
                         </thead>
@@ -120,11 +119,6 @@
                                 <td>
                                     <span class="description-text" [title]="brand.description || 'No description'">
                                         {{ (brand.description || 'No description') | slice:0:50 }}{{ (brand.description || '').length > 50 ? '...' : '' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="items-count-badge">
-                                        {{ getBrandItemCount(brand.id) }}
                                     </span>
                                 </td>
                                 <td>
@@ -147,7 +141,7 @@
                                 </td>
                             </tr>
                             <tr *ngIf="filteredBrands.length === 0">
-                                <td colspan="4" class="text-center py-4">
+                                <td colspan="3" class="text-center py-4">
                                     <div class="empty-state">
                                         <i class="fas fa-trademark"></i>
                                         <h4>No brands found</h4>

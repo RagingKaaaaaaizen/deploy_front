@@ -116,7 +116,6 @@
                                 <th><i class="fas fa-tag"></i> Name</th>
                                 <th><i class="fas fa-layer-group"></i> Type</th>
                                 <th><i class="fas fa-align-left"></i> Description</th>
-                                <th><i class="fas fa-box"></i> Items Count</th>
                                 <th><i class="fas fa-cogs"></i> Actions</th>
                             </tr>
                         </thead>
@@ -143,11 +142,6 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="items-count-badge">
-                                        {{ getLocationItemCount(loc.id) }}
-                                    </span>
-                                </td>
-                                <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-sm btn-outline-primary"
                                                 (click)="viewLocation(loc.id)" title="View Details">
@@ -167,7 +161,7 @@
                                 </td>
                             </tr>
                             <tr *ngIf="filteredLocations.length === 0">
-                                <td colspan="6" class="text-center py-4">
+                                <td colspan="5" class="text-center py-4">
                                     <div class="empty-state">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <h4>No storage locations found</h4>
