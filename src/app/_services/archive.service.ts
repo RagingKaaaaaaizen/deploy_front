@@ -642,7 +642,8 @@ export class ArchiveService {
       x = 20;
       doc.text((pc.name || 'N/A').substring(0, 28), x, y);
       x += mainColWidths[0];
-      const locationName = pc.roomLocation?.name || 'N/A';
+      // Backend returns roomLocationName directly, not nested in roomLocation object
+      const locationName = pc.roomLocationName || pc.roomLocation?.name || 'N/A';
       doc.text(locationName.substring(0, 22), x, y);
       x += mainColWidths[1];
       doc.text((pc.status || 'N/A').substring(0, 18), x, y);
