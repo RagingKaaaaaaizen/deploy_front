@@ -42,10 +42,11 @@ export class AddEditComponent implements OnInit {
             : [];
 
         this.form = this.formBuilder.group({
+            title: ['Mr', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            role: [Role.Viewer, Validators.required],   
+            role: [Role.Viewer, Validators.required],    
             status: ['Active', Validators.required], 
             password: ['', passwordValidators],
             confirmPassword: ['', confirmPasswordValidators]
@@ -70,18 +71,6 @@ export class AddEditComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
-
-    // Debug helper to check form validity
-    getFormValidationErrors() {
-        const errors: any = {};
-        Object.keys(this.form.controls).forEach(key => {
-            const controlErrors = this.form.get(key)?.errors;
-            if (controlErrors) {
-                errors[key] = controlErrors;
-            }
-        });
-        return errors;
-    }
 
     onSubmit() {
         this.submitted = true;
