@@ -482,7 +482,7 @@ export class ArchiveService {
     
     disposals.forEach((disposal, index) => {
       if (y > 185) {
-          doc.addPage();
+        doc.addPage();
         this.addHeader(doc, '', undefined, undefined);
         y = 50;
       }
@@ -574,6 +574,14 @@ export class ArchiveService {
     doc.setFont('times', 'normal');
     doc.setFontSize(9);
     
+    // If no PCs, show a clear message for the section
+    if (!pcs || pcs.length === 0) {
+      y += 6;
+      doc.setFont('times', 'italic');
+      doc.text('No PC Management records available.', 20, y);
+      return y + 8;
+    }
+    
     pcs.forEach((pc, pcIndex) => {
       if (y > 185) {
           doc.addPage();
@@ -601,7 +609,7 @@ export class ArchiveService {
       if (pc.components && pc.components.length > 0) {
         // If approaching page end, create new page before printing sub-report to avoid truncation
         if (y > 170) {
-          doc.addPage();
+        doc.addPage();
           this.addHeader(doc, '', undefined, undefined);
           y = 50;
         }
@@ -615,7 +623,7 @@ export class ArchiveService {
         
         // Component table headers
         doc.setFont('times', 'bold');
-        doc.setFontSize(8);
+      doc.setFontSize(8);
         const compColWidths = [55, 20, 25, 25, 30]; // Item, Quantity, Price, Total, Status
         let cx = 35;
         
@@ -641,7 +649,7 @@ export class ArchiveService {
         pc.components.forEach((comp: any, compIndex: number) => {
           if (y > 190) {
             // New page for remaining components of this PC
-            doc.addPage();
+          doc.addPage();
             this.addHeader(doc, '', undefined, undefined);
             y = 50;
             // Reprint subheader for continuity on new page
