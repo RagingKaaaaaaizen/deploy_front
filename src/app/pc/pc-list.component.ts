@@ -672,8 +672,10 @@ export class PCListComponent implements OnInit {
   ) { 
     this.pcForm = this.formBuilder.group({
       name: ['', Validators.required],
+      serialNumber: [''],  // Optional field
       roomLocationId: ['', Validators.required],
       status: ['Active'],
+      assignedTo: [''],  // Optional field
       notes: ['']
     });
   }
@@ -1176,13 +1178,18 @@ export class PCListComponent implements OnInit {
 
     this.pcLoading = true;
 
-    // Prepare PC data - only send fields that the backend expects
-    const pcData = {
+    // Prepare PC data - ensure all fields are properly formatted
+    const pcData: any = {
       name: this.pcForm.value.name.trim(),
-      roomLocationId: selectedRoomLocationId,
+      roomLocationId: selectedRoomLocationId, // Already converted to number
       status: this.pcForm.value.status,
       notes: this.pcForm.value.notes ? this.pcForm.value.notes.trim() : ''
     };
+
+    // Include serialNumber and assignedTo as empty strings if not provided
+    // Backend expects these fields to be present (even if empty)
+    pcData.serialNumber = this.pcForm.value.serialNumber ? this.pcForm.value.serialNumber.trim() : '';
+    pcData.assignedTo = this.pcForm.value.assignedTo ? this.pcForm.value.assignedTo.trim() : '';
 
     console.log('Creating PC with validated data:', pcData);
     console.log('Selected room location details:', roomLocationExists);
