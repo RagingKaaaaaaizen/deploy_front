@@ -1211,16 +1211,39 @@ export class PCListComponent implements OnInit {
           console.error('Error status:', error?.status);
           console.error('Full error object:', error);
           
-          let errorMessage = 'Error creating PC. ';
-          if (error?.error?.message) {
-            errorMessage += error.error.message;
-          } else if (error?.message) {
-            errorMessage += error.message;
+          this.pcLoading = false;
+          
+          let errorMessage = 'Error creating PC: ';
+          let shouldRefresh = false;
+          
+          const errorMsg = error?.error?.message || error?.message || '';
+          
+          // Check if it's a foreign key / room location error
+          if (errorMsg.toLowerCase().includes('room location') || 
+              errorMsg.toLowerCase().includes('foreign key') ||
+              error?.status === 500) {
+            errorMessage = 'The selected room location is no longer valid. Refreshing locations...';
+            shouldRefresh = true;
+            
+            // Refresh room locations
+            this.loadRoomLocations();
+            
+            // Reset the form field
+            this.pcForm.patchValue({ roomLocationId: '' });
+          } else if (errorMsg) {
+            errorMessage += errorMsg;
           } else {
-            errorMessage += 'Please try again.';
+            errorMessage += 'Unknown error. Please try again or contact support.';
           }
           
-          this.alertService.error(errorMessage, { autoClose: false });
+          this.alertService.error(errorMessage, { autoClose: !shouldRefresh });
+          
+          if (shouldRefresh) {
+            // Show additional help message
+            setTimeout(() => {
+              this.alertService.info('Room locations have been refreshed. Please select a valid location from the dropdown and try again.', { autoClose: false });
+            }, 1500);
+          }
         },
         complete: () => {
           this.pcLoading = false;
