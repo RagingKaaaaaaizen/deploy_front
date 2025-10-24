@@ -45,6 +45,19 @@ export interface MonthlyDisposalData {
   count: number;
 }
 
+export interface ItemLifespanData {
+  itemId: number;
+  itemName: string;
+  averageLifespanDays: number;
+  totalDisposals: number;
+  lifespans: {
+    disposalDate: Date;
+    stockDate: Date;
+    lifespanDays: number;
+    quantity: number;
+  }[];
+}
+
 export interface StockTimelineData {
   date: string;
   category: string;
@@ -116,6 +129,10 @@ export class AnalyticsService {
       }),
       catchError(() => of([]))
     );
+  }
+
+  getItemLifespans(months: number = 12): Observable<ItemLifespanData[]> {
+    return this.http.get<ItemLifespanData[]>(`${this.baseUrl}/analytics/item-lifespans?months=${months}`);
   }
 
   getStockDisposalsOverTime(days: number = 30): Observable<TimelineData[]> {

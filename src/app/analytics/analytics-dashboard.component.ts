@@ -367,6 +367,10 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
   categoryPieOption: EChartsOption = {};
   categoryPieLoading = false;
   
+  // Item lifespan chart properties
+  lifespanChartOption: EChartsOption = {};
+  lifespanChartLoading = false;
+  
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -381,6 +385,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
     this.loadMonthlyStockData();
     this.loadMonthlyDisposalData();
     this.loadCategoryPieData();
+    this.loadItemLifespanData();
     // Only load automated schedule for SuperAdmin users
     if (this.isSuperAdmin()) {
       this.loadAutomatedSchedule();
@@ -618,6 +623,122 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
         }
       ]
     };
+  }
+
+  loadItemLifespanData(): void {
+    this.lifespanChartLoading = true;
+    this.analyticsService.getItemLifespans(12)
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.updateLifespanChart(data);
+          this.lifespanChartLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading item lifespans:', error);
+          this.lifespanChartLoading = false;
+        }
+      });
+  }
+
+  updateLifespanChart(data: any[]): void {
+    if (!data || data.length === 0) {
+      this.lifespanChartOption = {};
+      return;
+    }
+
+    // Generate random colors for each item line
+    const colors = this.generateRandomColors(data.length);
+
+    // Prepare series data for each item
+    const series = data.map((item, index) => ({
+      name: item.itemName,
+      type: 'line' as const,
+      smooth: true,
+      data: item.lifespans.map((lifespan: any) => ({
+        value: lifespan.lifespanDays,
+        date: new Date(lifespan.disposalDate).toLocaleDateString()
+      })),
+      itemStyle: {
+        color: colors[index]
+      },
+      lineStyle: {
+        width: 2,
+        color: colors[index]
+      }
+    }));
+
+    // Get all unique dates for x-axis
+    const allDates = new Set<string>();
+    data.forEach(item => {
+      item.lifespans.forEach((lifespan: any) => {
+        allDates.add(new Date(lifespan.disposalDate).toLocaleDateString());
+      });
+    });
+    const sortedDates = Array.from(allDates).sort((a, b) => 
+      new Date(a).getTime() - new Date(b).getTime()
+    );
+
+    this.lifespanChartOption = {
+      tooltip: {
+        trigger: 'axis',
+        formatter: (params: any) => {
+          let result = `<strong>${params[0].axisValue}</strong><br/>`;
+          params.forEach((param: any) => {
+            result += `${param.marker} ${param.seriesName}: ${param.data.value} days<br/>`;
+          });
+          return result;
+        }
+      },
+      legend: {
+        data: data.map(item => item.itemName),
+        type: 'scroll',
+        bottom: 0
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data: sortedDates,
+        name: 'Disposal Date',
+        nameLocation: 'middle',
+        nameGap: 30,
+        axisLabel: {
+          rotate: 45
+        }
+      },
+      yAxis: {
+        type: 'value',
+        name: 'Lifespan (Days)',
+        nameLocation: 'middle',
+        nameGap: 50
+      },
+      series: series
+    };
+  }
+
+  generateRandomColors(count: number): string[] {
+    const colors: string[] = [];
+    const baseColors = [
+      '#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8',
+      '#6f42c1', '#e83e8c', '#fd7e14', '#20c997', '#6c757d'
+    ];
+    
+    for (let i = 0; i < count; i++) {
+      if (i < baseColors.length) {
+        colors.push(baseColors[i]);
+      } else {
+        // Generate random color
+        const hue = (i * 137.508) % 360; // Use golden angle for good distribution
+        colors.push(`hsl(${hue}, 70%, 50%)`);
+      }
+    }
+    
+    return colors;
   }
 
   loadAutomatedSchedule(): void {
