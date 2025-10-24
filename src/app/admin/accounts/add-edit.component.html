@@ -152,8 +152,25 @@
         </div>
     </div>
                     </div>
-                    <!-- Password Section -->
-                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200" *ngIf="!isAddMode">
+
+                    <!-- Password Info (View Mode Only) -->
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200" *ngIf="isViewMode">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-info-circle text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-base font-semibold text-blue-900 mb-1">Password Information</h6>
+                                <p class="text-sm text-blue-800">
+                                    For security reasons, passwords are encrypted and cannot be displayed. 
+                                    To change this user's password, click the <strong>Edit</strong> button.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Section (Edit Mode Only) -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200" *ngIf="!isAddMode && !isViewMode">
                         <h6 class="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2 font-montserrat">
                             <i class="fas fa-lock text-indigo-600"></i>
                             Change Password

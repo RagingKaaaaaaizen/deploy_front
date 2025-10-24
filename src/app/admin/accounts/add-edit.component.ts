@@ -32,14 +32,18 @@ export class AddEditComponent implements OnInit {
         this.isAddMode = !this.id;
         this.isViewMode = this.router.url.includes('/view/');
 
+        // Password is required in add mode, optional in edit mode
+        const passwordValidators = this.isAddMode 
+            ? [Validators.required, Validators.minLength(6)] 
+            : [Validators.minLength(6)];
+
         this.form = this.formBuilder.group({
-            title: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             role: [Role.Viewer, Validators.required],    
             status: ['Active', Validators.required], 
-            password: ['', [Validators.minLength(6), this.isAddMode ? Validators.required : Validators.nullValidator]],
+            password: ['', passwordValidators],
             confirmPassword: ['']
         }, {
             validator: MustMatch('password', 'confirmPassword')
@@ -48,7 +52,10 @@ export class AddEditComponent implements OnInit {
         if (!this.isAddMode) {
             this.accountService.getById(this.id)
                 .pipe(first())
-                .subscribe(x => this.form.patchValue(x));
+                .subscribe(x => {
+                    // Patch form without password fields
+                    this.form.patchValue(x);
+                });
         }
 
         // Disable form in view mode
