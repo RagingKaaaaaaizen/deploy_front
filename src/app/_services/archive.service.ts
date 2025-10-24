@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '@environments/environment';
 import { jsPDF } from 'jspdf';
+import { PCService } from '@app/_services/pc.service';
+import { PCComponentService } from '@app/_services/pc-component.service';
+import { StockService } from '@app/_services/stock.service';
 
 const baseUrl = `${environment.apiUrl}/api/analytics`;
 
@@ -95,7 +98,10 @@ export class ArchiveService {
   private storedReports = new BehaviorSubject<StoredReport[]>([]);
   public storedReports$ = this.storedReports.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private pcService: PCService,
+              private pcComponentService: PCComponentService,
+              private stockService: StockService) {
     this.loadStoredReports();
   }
 
@@ -860,9 +866,68 @@ export class ArchiveService {
     return `report_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  downloadPDF(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): void {
+  // Fallback loader: if pcs are missing, build them from services
+  private async ensurePCData(reportData: ReportData, includePCs: boolean): Promise<ReportData> {
     try {
-      const blob = this.generatePDFBlob(reportData, reportType, startDate, endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
+      if (!includePCs) return reportData;
+      if (reportData.pcs && reportData.pcs.length > 0) return reportData;
+
+      const [pcs, components, stocks] = await Promise.all([
+        this.pcService.getAll().toPromise(),
+        this.pcComponentService.getAll().toPromise(),
+        this.stockService.getAll().toPromise()
+      ]);
+
+      const itemIdToPrice: { [key: number]: number } = {};
+      (stocks || []).forEach((s: any) => {
+        const itemId = Number(s.itemId);
+        const price = typeof s.price === 'number' ? s.price : Number(s.price) || 0;
+        if (!itemIdToPrice[itemId] || price > itemIdToPrice[itemId]) itemIdToPrice[itemId] = price;
+      });
+
+      const pcIdToComponents: { [key: number]: any[] } = {};
+      (components || []).forEach((c: any) => {
+        const pcId = Number(c.pcId);
+        if (!pcIdToComponents[pcId]) pcIdToComponents[pcId] = [];
+        const price = itemIdToPrice[Number(c.itemId)] || 0;
+        pcIdToComponents[pcId].push({
+          id: c.id,
+          itemId: c.itemId,
+          itemName: (c as any).item?.name || 'Unknown Item',
+          quantity: c.quantity || 1,
+          price,
+          totalValue: price * (c.quantity || 1),
+          status: c.status || 'Active'
+        });
+      });
+
+      const mappedPCs = (pcs || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        roomLocationName: p.roomLocation?.name || 'Unknown Location',
+        status: p.status,
+        components: pcIdToComponents[p.id] || [],
+        componentsCount: (pcIdToComponents[p.id] || []).length,
+        totalValue: Number(p.totalValue) || 0,
+        value: Number(p.value) || 0,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt
+      }));
+
+      reportData.pcs = mappedPCs;
+      reportData.summary.totalPCs = mappedPCs.length;
+      reportData.summary.pcValue = mappedPCs.reduce((sum, pc) => sum + (pc.totalValue || pc.value || 0), 0);
+      return reportData;
+    } catch (err) {
+      console.error('PC fallback load failed:', err);
+      return reportData;
+    }
+  }
+
+  async downloadPDF(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Promise<void> {
+    try {
+      const ensured = await this.ensurePCData(reportData, includePCs);
+      const blob = this.generatePDFBlob(ensured, reportType, startDate, endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -889,14 +954,14 @@ export class ArchiveService {
     }
   }
 
-  previewPDF(report: StoredReport): void {
+  async previewPDF(report: StoredReport): Promise<void> {
     try {
       const includeStocks = report.metadata?.includeStocks !== false;
       const includeDisposals = report.metadata?.includeDisposals !== false;
       const includePCs = report.metadata?.includePCs !== false;
       const includeDetailedAnalysis = report.metadata?.includeDetailedAnalysis === true;
-      
-      const blob = this.generatePDFBlob(report.data, report.type, report.period.startDate, report.period.endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
+      const ensured = await this.ensurePCData(report.data, includePCs);
+      const blob = this.generatePDFBlob(ensured, report.type, report.period.startDate, report.period.endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
       setTimeout(() => window.URL.revokeObjectURL(url), 1000);
