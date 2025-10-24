@@ -32,19 +32,23 @@ export class AddEditComponent implements OnInit {
         this.isAddMode = !this.id;
         this.isViewMode = this.router.url.includes('/view/');
 
-        // Password is required in add mode, optional in edit mode
+        // Password and confirmPassword are required in add mode, optional in edit mode
         const passwordValidators = this.isAddMode 
             ? [Validators.required, Validators.minLength(6)] 
             : [Validators.minLength(6)];
+        
+        const confirmPasswordValidators = this.isAddMode 
+            ? [Validators.required] 
+            : [];
 
         this.form = this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            role: [Role.Viewer, Validators.required],    
+            role: [Role.Viewer, Validators.required],   
             status: ['Active', Validators.required], 
             password: ['', passwordValidators],
-            confirmPassword: ['']
+            confirmPassword: ['', confirmPasswordValidators]
         }, {
             validator: MustMatch('password', 'confirmPassword')
         });
@@ -66,6 +70,18 @@ export class AddEditComponent implements OnInit {
 
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
+
+    // Debug helper to check form validity
+    getFormValidationErrors() {
+        const errors: any = {};
+        Object.keys(this.form.controls).forEach(key => {
+            const controlErrors = this.form.get(key)?.errors;
+            if (controlErrors) {
+                errors[key] = controlErrors;
+            }
+        });
+        return errors;
+    }
 
     onSubmit() {
         this.submitted = true;
