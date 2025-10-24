@@ -550,8 +550,8 @@ export class ArchiveService {
     doc.text('PC REPORTS', 20, y);
     y += 8;
     
-    // Main PC table setup
-    const mainColWidths = [85, 60, 92]; // PC Name, Status, Number of Components
+    // Main PC table setup (PC Name | Status | Number of Components)
+    const mainColWidths = [85, 60, 92];
     const rowHeight = 7;
     let x = 20;
     
@@ -598,7 +598,13 @@ export class ArchiveService {
       y += rowHeight;
       
       // SUB-REPORT: Components inside this PC
-      if (pc.components && pc.components.length > 0 && y < 175) {
+      if (pc.components && pc.components.length > 0) {
+        // If approaching page end, create new page before printing sub-report to avoid truncation
+        if (y > 170) {
+          doc.addPage();
+          this.addHeader(doc, '', undefined, undefined);
+          y = 50;
+        }
         y += 3;
         
         // Sub-report title
@@ -633,7 +639,36 @@ export class ArchiveService {
         doc.setFontSize(7);
         
         pc.components.forEach((comp: any, compIndex: number) => {
-          if (y > 185) return; // Skip if page is full
+          if (y > 190) {
+            // New page for remaining components of this PC
+            doc.addPage();
+            this.addHeader(doc, '', undefined, undefined);
+            y = 50;
+            // Reprint subheader for continuity on new page
+            doc.setFont('times', 'italic');
+            doc.setFontSize(8);
+            doc.text('Components:', 30, y);
+            y += 5;
+            doc.setFont('times', 'bold');
+            doc.setFontSize(8);
+            const compColWidths = [55, 20, 25, 25, 30];
+            let cx = 35;
+            doc.setFillColor(235, 235, 235);
+            doc.rect(35, y - 3, 200, 5, 'F');
+            doc.text('Item', cx, y);
+            cx += compColWidths[0];
+            doc.text('Quantity', cx, y);
+            cx += compColWidths[1];
+            doc.text('Price', cx, y);
+            cx += compColWidths[2];
+            doc.text('Total', cx, y);
+            cx += compColWidths[3];
+            doc.text('Status', cx, y);
+            y += 5;
+            // restore normal font
+            doc.setFont('times', 'normal');
+            doc.setFontSize(7);
+          }
           
           // Alternating component rows
           if (compIndex % 2 === 0) {
@@ -648,12 +683,12 @@ export class ArchiveService {
           cx += compColWidths[1];
           
           // Safe price formatting - use PHP for easier display
-          const compPrice = typeof comp.price === 'number' ? comp.price : 0;
+          const compPrice = typeof comp.price === 'number' ? comp.price : Number(comp.price) || 0;
           doc.text('PHP ' + compPrice.toFixed(2), cx, y);
           cx += compColWidths[2];
           
           // Safe total formatting - use PHP for easier display
-          const compTotal = (typeof comp.price === 'number' ? comp.price : 0) * (comp.quantity || 1);
+          const compTotal = (compPrice) * (comp.quantity || 1);
           const safeCompTotal = typeof compTotal === 'number' && !isNaN(compTotal) ? compTotal : 0;
           doc.text('PHP ' + safeCompTotal.toFixed(2), cx, y);
           cx += compColWidths[3];
@@ -720,11 +755,9 @@ export class ArchiveService {
         });
       }
       
+      // PC Management: NO DATE FILTERING - Always include all PCs regardless of date
       if (includePCs) {
-        filteredPCs = reportData.pcs.filter(pc => {
-          const pcDate = new Date(pc.createdAt || pc.updatedAt);
-          return pcDate >= startDate && pcDate <= endDate;
-        });
+        filteredPCs = reportData.pcs;
       }
     }
     
