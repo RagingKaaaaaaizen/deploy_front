@@ -363,6 +363,10 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
   disposalChartLoading = false;
   disposalChartOption: EChartsOption = {};
   
+  // Category pie chart properties
+  categoryPieOption: EChartsOption = {};
+  categoryPieLoading = false;
+  
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -376,6 +380,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
     this.loadAdvancedAnalytics();
     this.loadMonthlyStockData();
     this.loadMonthlyDisposalData();
+    this.loadCategoryPieData();
     // Only load automated schedule for SuperAdmin users
     if (this.isSuperAdmin()) {
       this.loadAutomatedSchedule();
@@ -543,6 +548,75 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           width: 3
         }
       }]
+    };
+  }
+
+  loadCategoryPieData(): void {
+    this.categoryPieLoading = true;
+    this.analyticsService.getCategoryDistribution()
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          this.updateCategoryPieChart(data);
+          this.categoryPieLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading category distribution:', error);
+          this.categoryPieLoading = false;
+        }
+      });
+  }
+
+  updateCategoryPieChart(data: any[]): void {
+    // Transform data for pie chart
+    const pieData = data.map(item => ({
+      name: item.category || item.name || 'Unknown',
+      value: item.count || item.total || item.quantity || 0
+    }));
+
+    // Sort by value descending and take top 10
+    const topCategories = pieData
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 10);
+
+    this.categoryPieOption = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: topCategories.map(d => d.name)
+      },
+      series: [
+        {
+          name: 'Stock by Category',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: true,
+            formatter: '{b}: {d}%'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 16,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: true
+          },
+          data: topCategories
+        }
+      ]
     };
   }
 

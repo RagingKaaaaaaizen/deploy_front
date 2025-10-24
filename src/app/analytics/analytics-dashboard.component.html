@@ -126,6 +126,36 @@
     </div>
   </div>
 
+  <!-- Category Pie Chart -->
+  <div class="analytics-card" *ngIf="!categoryPieLoading">
+    <div class="card-header">
+      <div class="card-icon categories-icon">
+        <i class="fas fa-chart-pie"></i>
+      </div>
+      <div>
+        <div class="card-title">Top Used Categories</div>
+        <div class="card-description">Stock distribution by category (Top 10)</div>
+      </div>
+    </div>
+    <div echarts [options]="categoryPieOption" style="height: 400px;"></div>
+  </div>
+
+  <!-- Category Pie Loading State -->
+  <div class="analytics-card" *ngIf="categoryPieLoading">
+    <div class="card-header">
+      <div class="card-icon categories-icon">
+        <i class="fas fa-chart-pie"></i>
+      </div>
+      <div>
+        <div class="card-title">Top Used Categories</div>
+        <div class="card-description">Loading chart data...</div>
+      </div>
+    </div>
+    <div class="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
   <!-- Analytics Grid -->
   <div class="analytics-grid" *ngIf="advancedAnalytics && !loading">
     <!-- Top Used Categories -->
