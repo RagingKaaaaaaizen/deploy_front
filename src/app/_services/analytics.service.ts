@@ -39,6 +39,12 @@ export interface MonthlyStockData {
   count: number;
 }
 
+export interface MonthlyDisposalData {
+  month: string;
+  monthName?: string;
+  count: number;
+}
+
 export interface StockTimelineData {
   date: string;
   category: string;
@@ -86,6 +92,30 @@ export class AnalyticsService {
 
   getMonthlyStockAdditions(months: number = 12): Observable<MonthlyStockData[]> {
     return this.http.get<MonthlyStockData[]>(`${this.baseUrl}/analytics/monthly-stock-additions?months=${months}`);
+  }
+
+  getMonthlyDisposals(months: number = 12): Observable<MonthlyDisposalData[]> {
+    return this.disposeService.getAll().pipe(
+      map((disposals: any[]) => {
+        const monthMap = new Map<string, number>();
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1);
+        disposals.forEach(d => {
+          const date = d.disposalDate ? new Date(d.disposalDate) : (d.createdAt ? new Date(d.createdAt) : null);
+          if (!date) return;
+          if (date < start || date > now) return;
+          const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+          const qty = typeof d.quantity === 'number' && !isNaN(d.quantity) ? d.quantity : 1;
+          monthMap.set(key, (monthMap.get(key) || 0) + qty);
+        });
+        // Convert to list
+        const results: MonthlyDisposalData[] = Array.from(monthMap.entries()).map(([month, count]) => ({ month, count }));
+        // Sort ascending by month key
+        results.sort((a, b) => a.month.localeCompare(b.month));
+        return results;
+      }),
+      catchError(() => of([]))
+    );
   }
 
   getStockDisposalsOverTime(days: number = 30): Observable<TimelineData[]> {

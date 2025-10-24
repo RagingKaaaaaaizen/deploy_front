@@ -82,6 +82,38 @@
     </div>
   </div>
 
+  <!-- Monthly Disposal Chart -->
+  <div class="analytics-card" *ngIf="!disposalChartLoading">
+    <div class="card-header">
+      <div class="card-icon" style="background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);">
+        <i class="fas fa-trash"></i>
+      </div>
+      <div>
+        <div class="card-title">Monthly Disposals</div>
+        <div class="card-description">Disposed quantities over the last 12 months</div>
+      </div>
+    </div>
+    <div class="chart-container" style="height: 400px; position: relative;">
+      <canvas #monthlyDisposalChart></canvas>
+    </div>
+  </div>
+
+  <!-- Disposal Chart Loading State -->
+  <div class="analytics-card" *ngIf="disposalChartLoading">
+    <div class="card-header">
+      <div class="card-icon" style="background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);">
+        <i class="fas fa-trash"></i>
+      </div>
+      <div>
+        <div class="card-title">Monthly Disposals</div>
+        <div class="card-description">Loading chart data...</div>
+      </div>
+    </div>
+    <div class="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
   <!-- Chart Loading State -->
   <div class="analytics-card" *ngIf="chartLoading">
     <div class="card-header">

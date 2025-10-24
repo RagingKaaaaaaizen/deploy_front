@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ArchiveService } from '../_services/archive.service';
-import { AnalyticsService, MonthlyStockData } from '../_services/analytics.service';
+import { AnalyticsService, MonthlyStockData, MonthlyDisposalData } from '../_services/analytics.service';
 import { AlertService } from '../_services/alert.service';
 import { AccountService } from '../_services/account.service';
 import { Role } from '../_models';
@@ -359,6 +359,11 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
   chartLoading = false;
   @ViewChild('monthlyStockChart') monthlyStockChart: any;
   chart: Chart | null = null;
+  // Monthly disposal chart properties
+  monthlyDisposalData: MonthlyDisposalData[] = [];
+  disposalChartLoading = false;
+  @ViewChild('monthlyDisposalChart') monthlyDisposalChart: any;
+  disposalChart: Chart | null = null;
   
   // Chart configuration
   chartData = {
@@ -421,6 +426,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
   ngOnInit(): void {
     this.loadAdvancedAnalytics();
     this.loadMonthlyStockData();
+    this.loadMonthlyDisposalData();
     // Only load automated schedule for SuperAdmin users
     if (this.isSuperAdmin()) {
       this.loadAutomatedSchedule();
@@ -437,6 +443,10 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
     if (this.chart) {
       this.chart.destroy();
       this.chart = null;
+    }
+    if (this.disposalChart) {
+      this.disposalChart.destroy();
+      this.disposalChart = null;
     }
     this.destroy$.next();
     this.destroy$.complete();
@@ -480,6 +490,33 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
           // Create complete sample data on error
           this.createCompleteMonthlyData([]);
           this.initializeChart();
+        }
+      });
+  }
+
+  loadMonthlyDisposalData(): void {
+    this.disposalChartLoading = true;
+    this.analyticsService.getMonthlyDisposals(12)
+      .pipe(first())
+      .subscribe({
+        next: (data) => {
+          const currentYear = new Date().getFullYear();
+          const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          // Build complete 12-month structure
+          const complete = [] as MonthlyDisposalData[];
+          for (let m = 0; m < 12; m++) {
+            const key = `${currentYear}-${String(m + 1).padStart(2,'0')}`;
+            const found = data.find(d => d.month === key);
+            complete.push({ month: key, monthName: monthNames[m], count: found ? found.count : 0 });
+          }
+          this.monthlyDisposalData = complete;
+          this.disposalChartLoading = false;
+          this.initializeDisposalChart();
+        },
+        error: () => {
+          this.disposalChartLoading = false;
+          this.monthlyDisposalData = [];
+          this.initializeDisposalChart();
         }
       });
   }
@@ -576,6 +613,50 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
       });
       
       console.log('Chart initialized successfully');
+    }
+  }
+
+  initializeDisposalChart(): void {
+    if (this.monthlyDisposalChart && this.monthlyDisposalChart.nativeElement) {
+      if (this.disposalChart) {
+        this.disposalChart.destroy();
+        this.disposalChart = null;
+      }
+      const labels = this.monthlyDisposalData.map(d => d.monthName);
+      const data = this.monthlyDisposalData.map(d => d.count);
+      const ctx = this.monthlyDisposalChart.nativeElement.getContext('2d');
+      this.disposalChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Disposals',
+            data,
+            borderColor: '#dc3545',
+            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#dc3545',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, position: 'top' as const },
+            title: { display: true, text: 'Monthly Disposals' }
+          },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'Disposed Quantity' } },
+            x: { title: { display: true, text: 'Month' } }
+          }
+        }
+      });
     }
   }
 
