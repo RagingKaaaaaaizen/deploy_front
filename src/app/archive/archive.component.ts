@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ArchiveService, ReportData, StoredReport } from '../_services/archive.service';
 import { AlertService } from '../_services/alert.service';
+import { AccountService } from '../_services/account.service';
+import { Role } from '../_models/role';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -785,7 +787,8 @@ export class ArchiveComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private archiveService: ArchiveService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private accountService: AccountService
   ) {
     this.weeklyForm = this.formBuilder.group({
       includeStocks: [true],
@@ -1248,5 +1251,18 @@ export class ArchiveComponent implements OnInit {
     }
     
     return totalValue;
+  }
+
+  // Role checking methods
+  canGenerateReports(): boolean {
+    const account = this.accountService.accountValue;
+    // Only SuperAdmin, Admin, and Staff can generate reports
+    return account && (account.role === Role.SuperAdmin || account.role === Role.Admin || account.role === Role.Staff);
+  }
+
+  canDeleteReports(): boolean {
+    const account = this.accountService.accountValue;
+    // Only SuperAdmin, Admin, and Staff can delete reports
+    return account && (account.role === Role.SuperAdmin || account.role === Role.Admin || account.role === Role.Staff);
   }
 }

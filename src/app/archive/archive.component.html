@@ -123,6 +123,7 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
           <button 
+            *ngIf="canGenerateReports()"
             class="btn btn-primary" 
             (click)="generateWeeklyReport()"
             [disabled]="loading || (!selectedWeeklyPeriod && !customWeeklyPeriod) || (selectedWeeklyPeriod?.exists || customWeeklyPeriod?.exists)">
@@ -223,6 +224,7 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
           <button 
+            *ngIf="canGenerateReports()"
             class="btn btn-primary" 
             (click)="generateMonthlyReport()"
             [disabled]="loading || (!selectedMonthlyPeriod && !customMonthlyPeriod) || (selectedMonthlyPeriod?.exists || customMonthlyPeriod?.exists)">
@@ -335,6 +337,7 @@
             Download
           </button>
           <button 
+            *ngIf="canDeleteReports()"
             class="btn btn-danger" 
             (click)="deleteStoredReport(report)"
             title="Delete Report">
