@@ -647,77 +647,77 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Generate random colors for each item line
-    const colors = this.generateRandomColors(data.length);
+    // Sort by average lifespan descending
+    const sortedData = data.sort((a, b) => b.averageLifespanDays - a.averageLifespanDays);
 
-    // Prepare series data for each item
-    const series = data.map((item, index) => ({
-      name: item.itemName,
-      type: 'line' as const,
-      smooth: true,
-      data: item.lifespans.map((lifespan: any) => ({
-        value: lifespan.lifespanDays,
-        date: new Date(lifespan.disposalDate).toLocaleDateString()
-      })),
-      itemStyle: {
-        color: colors[index]
-      },
-      lineStyle: {
-        width: 2,
-        color: colors[index]
-      }
-    }));
+    // Generate random colors for each item bar
+    const colors = this.generateRandomColors(sortedData.length);
 
-    // Get all unique dates for x-axis
-    const allDates = new Set<string>();
-    data.forEach(item => {
-      item.lifespans.forEach((lifespan: any) => {
-        allDates.add(new Date(lifespan.disposalDate).toLocaleDateString());
-      });
-    });
-    const sortedDates = Array.from(allDates).sort((a, b) => 
-      new Date(a).getTime() - new Date(b).getTime()
-    );
+    // Prepare bar chart data
+    const itemNames = sortedData.map(item => item.itemName);
+    const lifespanValues = sortedData.map(item => item.averageLifespanDays);
 
     this.lifespanChartOption = {
       tooltip: {
         trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
         formatter: (params: any) => {
-          let result = `<strong>${params[0].axisValue}</strong><br/>`;
-          params.forEach((param: any) => {
-            result += `${param.marker} ${param.seriesName}: ${param.data.value} days<br/>`;
-          });
+          const item = sortedData[params[0].dataIndex];
+          let result = `<strong>${params[0].name}</strong><br/>`;
+          result += `Average Lifespan: <strong>${params[0].value} days</strong><br/>`;
+          result += `Total Disposals: ${item.totalDisposals}<br/>`;
           return result;
         }
-      },
-      legend: {
-        data: data.map(item => item.itemName),
-        type: 'scroll',
-        bottom: 0
       },
       grid: {
         left: '3%',
         right: '4%',
-        bottom: '15%',
+        bottom: '3%',
         containLabel: true
       },
       xAxis: {
         type: 'category',
-        data: sortedDates,
-        name: 'Disposal Date',
+        data: itemNames,
+        name: 'Disposed Items',
         nameLocation: 'middle',
-        nameGap: 30,
+        nameGap: 50,
         axisLabel: {
-          rotate: 45
+          rotate: 45,
+          interval: 0
         }
       },
       yAxis: {
         type: 'value',
-        name: 'Lifespan (Days)',
+        name: 'Average Lifespan (Days)',
         nameLocation: 'middle',
         nameGap: 50
       },
-      series: series
+      series: [
+        {
+          name: 'Average Lifespan',
+          type: 'bar' as const,
+          data: lifespanValues,
+          itemStyle: {
+            color: (params: any) => {
+              return colors[params.dataIndex % colors.length];
+            }
+          },
+          label: {
+            show: true,
+            position: 'top',
+            formatter: '{c} days'
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
     };
   }
 
