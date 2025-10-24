@@ -1186,10 +1186,14 @@ export class PCListComponent implements OnInit {
       notes: this.pcForm.value.notes ? this.pcForm.value.notes.trim() : ''
     };
 
-    // Include serialNumber and assignedTo as empty strings if not provided
-    // Backend expects these fields to be present (even if empty)
-    pcData.serialNumber = this.pcForm.value.serialNumber ? this.pcForm.value.serialNumber.trim() : '';
-    pcData.assignedTo = this.pcForm.value.assignedTo ? this.pcForm.value.assignedTo.trim() : '';
+    // Include serialNumber and assignedTo - send NULL if empty to avoid unique constraint issues
+    // serialNumber has a UNIQUE constraint in DB, so empty strings would conflict
+    pcData.serialNumber = this.pcForm.value.serialNumber && this.pcForm.value.serialNumber.trim() 
+      ? this.pcForm.value.serialNumber.trim() 
+      : null;
+    pcData.assignedTo = this.pcForm.value.assignedTo && this.pcForm.value.assignedTo.trim() 
+      ? this.pcForm.value.assignedTo.trim() 
+      : null;
 
     console.log('Creating PC with validated data:', pcData);
     console.log('Selected room location details:', roomLocationExists);
