@@ -117,10 +117,6 @@
               <input type="checkbox" id="weekly-pcs" formControlName="includePCs">
               <label for="weekly-pcs">PC Management</label>
             </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="weekly-detailed" formControlName="detailedAnalysis">
-              <label for="weekly-detailed">Detailed Analysis</label>
-            </div>
           </div>
         </div>
 
@@ -220,10 +216,6 @@
             <div class="checkbox-item">
               <input type="checkbox" id="monthly-pcs" formControlName="includePCs">
               <label for="monthly-pcs">PC Management</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="monthly-detailed" formControlName="detailedAnalysis">
-              <label for="monthly-detailed">Detailed Analysis</label>
             </div>
           </div>
         </div>
@@ -358,31 +350,6 @@
       <i class="fas fa-search"></i>
       <h3>No Reports Found</h3>
       <p>No reports match your search criteria.</p>
-    </div>
-  </div>
-
-  <!-- Export/Import Section -->
-  <div class="export-import-section" *ngIf="hasStoredReports">
-    <div class="export-import-header">
-      <h3 class="export-import-title">Data Management</h3>
-      <div class="export-import-actions">
-        <button 
-          class="btn btn-info" 
-          (click)="exportAllReports()"
-          title="Export all reports as JSON">
-          <i class="fas fa-download"></i>
-          Export All Reports
-        </button>
-        <label class="btn btn-warning">
-          <i class="fas fa-upload"></i>
-          Import Reports
-          <input 
-            type="file" 
-            accept=".json"
-            (change)="importReports($event)"
-            style="display: none;">
-        </label>
-      </div>
     </div>
   </div>
 
