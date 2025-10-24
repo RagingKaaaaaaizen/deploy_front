@@ -989,10 +989,10 @@ export class PCListComponent implements OnInit {
     const pc = this.pcs.find(p => p.id === pcId);
     if (!pc) return;
 
-    // Create a copy of the PC object with updated status
-    const updatedPC = { ...pc, status: newStatus };
+    // Only send the status field being updated (avoid validation errors for null fields)
+    const updateData = { status: newStatus as 'Active' | 'Inactive' | 'Maintenance' };
     
-    this.pcService.update(pcId, updatedPC)
+    this.pcService.update(pcId, updateData)
       .pipe(first())
       .subscribe({
         next: () => {

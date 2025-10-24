@@ -26,7 +26,7 @@ export class PCService {
         return this.http.post<PC>(this.baseUrl, pc);
     }
 
-    update(id: number, pc: PC): Observable<PC> {
+    update(id: number, pc: Partial<PC>): Observable<PC> {
         return this.http.put<PC>(`${this.baseUrl}/${id}`, pc);
     }
 
