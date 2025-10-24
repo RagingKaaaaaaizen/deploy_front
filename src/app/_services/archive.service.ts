@@ -301,8 +301,21 @@ export class ArchiveService {
     const totalStocks = stocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
     const stockValue = stocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
     const totalDispose = disposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
-    const disposeValue = disposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
+    // Use totalValue (not disposalValue) for dispose value summary
+    const disposeValue = disposals.reduce((sum, disposal) => {
+      const value = typeof disposal.totalValue === 'number' ? disposal.totalValue : 0;
+      console.log(`Disposal ${disposal.itemName || 'Unknown'}: adding ${value} to total`);
+      return sum + value;
+    }, 0);
     const totalPC = pcs.length;
+    
+    console.log('Summary calculations:', {
+      totalStocks,
+      stockValue,
+      totalDispose,
+      disposeValue,
+      totalPC
+    });
     
     // Safe number formatting
     const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
@@ -489,18 +502,18 @@ export class ArchiveService {
       x += colWidths[2];
       
       // Safe price formatting - use PHP for easier display
-      // Calculate unit price from disposalValue
-      const unitPrice = typeof disposal.disposalValue === 'number' && disposal.quantity > 0 ? 
-                        disposal.disposalValue : 0;
+      // Use price field from backend (already calculated)
+      const unitPrice = typeof disposal.price === 'number' ? disposal.price :
+                        (typeof disposal.disposalValue === 'number' ? disposal.disposalValue : 0);
+      console.log(`Disposal ${disposal.itemName}: price=${disposal.price}, disposalValue=${disposal.disposalValue}, totalValue=${disposal.totalValue}`);
       doc.text('PHP ' + unitPrice.toFixed(2), x, y);
       x += colWidths[3];
       
       // Safe total formatting - use PHP for easier display
-      // Use totalValue if available, otherwise calculate from disposalValue * quantity
-      const total = typeof disposal.totalValue === 'number' ? disposal.totalValue :
-                    (typeof disposal.disposalValue === 'number' && typeof disposal.quantity === 'number' ?
-                    disposal.disposalValue * disposal.quantity : 0);
+      // Use totalValue from backend (already calculated)
+      const total = typeof disposal.totalValue === 'number' ? disposal.totalValue : 0;
       const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
+      console.log(`Disposal ${disposal.itemName}: calculated total=${safeTotal}`);
       doc.text('PHP ' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
