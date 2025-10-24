@@ -359,11 +359,15 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
   chartLoading = false;
   @ViewChild('monthlyStockChart') monthlyStockChart: any;
   chart: Chart | null = null;
+  private stockChartInitialized = false;
+  private stockInitRetries = 0;
   // Monthly disposal chart properties
   monthlyDisposalData: MonthlyDisposalData[] = [];
   disposalChartLoading = false;
   @ViewChild('monthlyDisposalChart') monthlyDisposalChart: any;
   disposalChart: Chart | null = null;
+  private disposalChartInitialized = false;
+  private disposalInitRetries = 0;
   
   // Chart configuration
   chartData = {
@@ -553,6 +557,9 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
   }
 
   initializeChart(): void {
+    if (this.stockChartInitialized) {
+      return;
+    }
     if (this.monthlyStockChart && this.monthlyStockChart.nativeElement) {
       // Destroy existing chart if it exists
       if (this.chart) {
@@ -588,6 +595,9 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: false,
+          parsing: false,
+          normalized: true,
           plugins: {
             legend: {
               display: true,
@@ -617,14 +627,21 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
       });
       
       console.log('Chart initialized successfully');
+      this.stockChartInitialized = true;
     }
     else {
       // Canvas might not be ready yet; retry shortly
-      setTimeout(() => this.initializeChart(), 150);
+      if (this.stockInitRetries < 20) {
+        this.stockInitRetries++;
+        setTimeout(() => this.initializeChart(), 150);
+      }
     }
   }
 
   initializeDisposalChart(): void {
+    if (this.disposalChartInitialized) {
+      return;
+    }
     if (this.monthlyDisposalChart && this.monthlyDisposalChart.nativeElement) {
       if (this.disposalChart) {
         this.disposalChart.destroy();
@@ -655,6 +672,9 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: false,
+          parsing: false,
+          normalized: true,
           plugins: {
             legend: { display: true, position: 'top' as const },
             title: { display: true, text: 'Monthly Disposals' }
@@ -665,9 +685,13 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
           }
         }
       });
+      this.disposalChartInitialized = true;
     }
     else {
-      setTimeout(() => this.initializeDisposalChart(), 150);
+      if (this.disposalInitRetries < 20) {
+        this.disposalInitRetries++;
+        setTimeout(() => this.initializeDisposalChart(), 150);
+      }
     }
   }
 
