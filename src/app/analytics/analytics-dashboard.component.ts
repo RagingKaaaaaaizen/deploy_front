@@ -659,6 +659,7 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
         allDisposals.push({
           itemName: item.itemName,
           lifespanDays: lifespan.lifespanDays,
+          stockDate: new Date(lifespan.stockDate).toLocaleDateString(),
           disposalDate: new Date(lifespan.disposalDate).toLocaleDateString(),
           quantity: lifespan.quantity,
           label: `${item.itemName} (${count})`,
@@ -710,7 +711,8 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           const disposal = allDisposals[params[0].dataIndex];
           let result = `<strong>${disposal.itemName}</strong><br/>`;
           result += `Lifespan: <strong>${disposal.lifespanDays} days</strong><br/>`;
-          result += `Disposed: ${disposal.disposalDate}<br/>`;
+          result += `Stock Date: ${disposal.stockDate}<br/>`;
+          result += `Disposal Date: ${disposal.disposalDate}<br/>`;
           result += `Quantity: ${disposal.quantity}<br/>`;
           return result;
         }
