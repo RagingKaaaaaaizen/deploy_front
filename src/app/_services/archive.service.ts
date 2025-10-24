@@ -211,19 +211,28 @@ export class ArchiveService {
     // Add summary section
     let yPos = this.addSummary(doc, filteredStocks, filteredDisposals, filteredPCs);
     
-    // Add stocks report
+    // Each section on its own page (separate papers)
+    const sectionTop = 50; // consistent top after header
+
+    // Stocks
     if (includeStocks && filteredStocks.length > 0) {
-      yPos = this.addStocksReport(doc, filteredStocks, yPos);
+      doc.addPage();
+      this.addHeader(doc, reportType, startDate, endDate);
+      yPos = this.addStocksReport(doc, filteredStocks, sectionTop);
     }
-    
-    // Add dispose report
+
+    // Disposals
     if (includeDisposals && filteredDisposals.length > 0) {
-      yPos = this.addDisposeReport(doc, filteredDisposals, yPos);
+      doc.addPage();
+      this.addHeader(doc, reportType, startDate, endDate);
+      yPos = this.addDisposeReport(doc, filteredDisposals, sectionTop);
     }
-    
-    // Add PC report
-    if (includePCs && filteredPCs.length > 0) {
-      yPos = this.addPCReport(doc, filteredPCs, yPos);
+
+    // PCs
+    if (includePCs) {
+      doc.addPage();
+      this.addHeader(doc, reportType, startDate, endDate);
+      yPos = this.addPCReport(doc, filteredPCs, sectionTop);
     }
     
       // Add footer
