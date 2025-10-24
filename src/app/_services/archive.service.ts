@@ -104,7 +104,6 @@ export class ArchiveService {
     if (stored) {
       try {
         const reports: StoredReport[] = JSON.parse(stored);
-        // Convert date strings back to Date objects
         reports.forEach(report => {
           report.generatedDate = new Date(report.generatedDate);
           report.period.startDate = new Date(report.period.startDate);
@@ -139,20 +138,8 @@ export class ArchiveService {
     return this.http.get<any[]>(`${baseUrl}/most-replaced-components?limit=${limit}`);
   }
 
-  getAverageComponentLifespan(): Observable<any[]> {
-    return this.http.get<any[]>(`${baseUrl}/average-lifespan`);
-  }
-
-  getComponentReplacementPatterns(): Observable<any> {
-    return this.http.get<any>(`${baseUrl}/replacement-patterns`);
-  }
-
   getAdvancedAnalytics(): Observable<any> {
     return this.http.get<any>(`${baseUrl}/advanced-analytics`);
-  }
-
-  getPendingRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${baseUrl}/pending-requests`);
   }
 
   getAutomatedReportSchedule(): Observable<any> {
@@ -163,57 +150,36 @@ export class ArchiveService {
     return this.http.post<any>(`${baseUrl}/automated-schedule`, schedule);
   }
 
-  // Test method to verify analytics API connection
-  testAnalyticsConnection(): Observable<any> {
-    return this.http.get<any>(`${baseUrl}/test`);
+  getStoredReports(): StoredReport[] {
+    return this.storedReports.value;
   }
 
-  // Check if report already exists for the given period
-  checkReportExists(type: 'weekly' | 'monthly', startDate: Date, endDate: Date): StoredReport | null {
-    const reports = this.storedReports.value;
-    return reports.find(report => 
-      report.type === type && 
-      report.period.startDate.getTime() === startDate.getTime() &&
-      report.period.endDate.getTime() === endDate.getTime()
-    ) || null;
+  getStoredReportById(id: string): StoredReport | undefined {
+    return this.storedReports.value.find(report => report.id === id);
   }
 
-  // Generate custom date range report
-  generateCustomReport(type: 'weekly' | 'monthly', startDate: Date, endDate: Date, options: {
-    includeStocks: boolean;
-    includeDisposals: boolean;
-    includePCs: boolean;
-    detailedAnalysis?: boolean;
-  }): Observable<ReportData> {
-    const request: ReportRequest = {
-      type,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      includeStocks: options.includeStocks,
-      includeDisposals: options.includeDisposals,
-      includePCs: options.includePCs,
-      detailedAnalysis: options.detailedAnalysis || true
-    };
-    
-    return this.generateReport(request);
+  deleteStoredReport(id: string): void {
+    const currentReports = this.storedReports.value;
+    const updatedReports = currentReports.filter(report => report.id !== id);
+    this.saveStoredReports(updatedReports);
   }
 
-  storeReport(reportData: ReportData, reportType: 'weekly' | 'monthly', startDate: Date, endDate: Date, inclusionSettings?: { includeStocks?: boolean; includeDisposals?: boolean; includePCs?: boolean; includeDetailedAnalysis?: boolean }): StoredReport {
-    const weekNumber = this.getWeekNumber(startDate);
-    const monthYear = this.getMonthYear(startDate);
+  // ===== NEW CLEAN PDF GENERATION =====
+  generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
+    console.log('=== GENERATING NEW FORMAT PDF ===');
     
-    // Calculate filtered summary based on inclusion settings and date range
-    const includeStocks = inclusionSettings?.includeStocks ?? true;
-    const includeDisposals = inclusionSettings?.includeDisposals ?? true;
-    const includePCs = inclusionSettings?.includePCs ?? true;
+    // Create PDF in LANDSCAPE orientation
+    const doc = new jsPDF('landscape', 'mm', 'a4');
     
-    // Filter data by date range and inclusion flags
+    // Set Times New Roman font
+    doc.setFont('times', 'normal');
+    
+    // Filter data by date range
     let filteredStocks = includeStocks ? reportData.stocks : [];
     let filteredDisposals = includeDisposals ? reportData.disposals : [];
     let filteredPCs = includePCs ? reportData.pcs : [];
     
     if (startDate && endDate) {
-      // Filter stocks by date range (only if included)
       if (includeStocks) {
         filteredStocks = reportData.stocks.filter(stock => {
           const stockDate = new Date(stock.createdAt || stock.updatedAt);
@@ -221,7 +187,6 @@ export class ArchiveService {
         });
       }
       
-      // Filter disposals by date range (only if included)
       if (includeDisposals) {
         filteredDisposals = reportData.disposals.filter(disposal => {
           const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
@@ -229,7 +194,6 @@ export class ArchiveService {
         });
       }
       
-      // Filter PCs by date range (only if included)
       if (includePCs) {
         filteredPCs = reportData.pcs.filter(pc => {
           const pcDate = new Date(pc.createdAt || pc.updatedAt);
@@ -238,12 +202,483 @@ export class ArchiveService {
       }
     }
     
-    // Calculate correct summary from filtered data
+    // Filter out stocks with quantity 0
+    filteredStocks = filteredStocks.filter(stock => (stock.quantity || 0) > 0);
+    
+    // Add header
+    this.addHeader(doc, reportType, startDate, endDate);
+    
+    // Add summary section
+    let yPos = this.addSummary(doc, filteredStocks, filteredDisposals, filteredPCs);
+    
+    // Add stocks report
+    if (includeStocks && filteredStocks.length > 0) {
+      yPos = this.addStocksReport(doc, filteredStocks, yPos);
+    }
+    
+    // Add dispose report
+    if (includeDisposals && filteredDisposals.length > 0) {
+      yPos = this.addDisposeReport(doc, filteredDisposals, yPos);
+    }
+    
+    // Add PC report
+    if (includePCs && filteredPCs.length > 0) {
+      yPos = this.addPCReport(doc, filteredPCs, yPos);
+    }
+    
+    // Add footer
+    this.addFooter(doc);
+    
+    return doc.output('blob');
+  }
+
+  // HEADER SECTION
+  private addHeader(doc: jsPDF, reportType: string, startDate?: Date, endDate?: Date): void {
+    doc.setFont('times', 'bold');
+    doc.setTextColor(0, 0, 0);
+    
+    // Line 1: Benedicto College Computer Lab Inventory System
+    doc.setFontSize(16);
+    doc.text('Benedicto College Computer Lab Inventory System', 148.5, 15, { align: 'center' });
+    
+    // Line 2: Report Type (Weekly or Monthly)
+    doc.setFontSize(13);
+    const reportTitle = reportType.charAt(0).toUpperCase() + reportType.slice(1) + ' Report';
+    doc.text(reportTitle, 148.5, 23, { align: 'center' });
+    
+    // Line 3: What week or monthly that data gets
+    doc.setFont('times', 'normal');
+    doc.setFontSize(11);
+    if (startDate && endDate) {
+      const startStr = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      const endStr = endDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      doc.text(`Report Period: ${startStr} - ${endStr}`, 148.5, 30, { align: 'center' });
+    } else {
+      doc.text('Report Period: All Time', 148.5, 30, { align: 'center' });
+    }
+    
+    // Line 4: What day that the report generate
+    const now = new Date();
+    const generatedDate = now.toLocaleDateString('en-US', { 
+      weekday: 'long',
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    const generatedTime = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${generatedDate} at ${generatedTime}`, 148.5, 36, { align: 'center' });
+    
+    // Draw separator line
+    doc.setLineWidth(0.5);
+    doc.line(20, 40, 277, 40);
+  }
+
+  // SUMMARY SECTION
+  private addSummary(doc: jsPDF, stocks: any[], disposals: any[], pcs: any[]): number {
+    let y = 48;
+    
+    // Section title
+    doc.setFont('times', 'bold');
+    doc.setFontSize(13);
+    doc.text('SUMMARY', 20, y);
+    y += 10;
+    
+    // Calculate totals
+    doc.setFont('times', 'normal');
+    doc.setFontSize(11);
+    
+    const totalStocks = stocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
+    const stockValue = stocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
+    const totalDispose = disposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
+    const disposeValue = disposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
+    const totalPC = pcs.length;
+    
+    // Two-column layout - NO OVERLAPPING
+    const leftCol = 20;
+    const rightCol = 165;
+    
+    // Left column
+    doc.text('Total Stocks: ' + totalStocks, leftCol, y);
+    doc.text('Stock Value: ₱' + stockValue.toFixed(2), leftCol, y + 6);
+    doc.text('Total PC: ' + totalPC, leftCol, y + 12);
+    
+    // Right column
+    doc.text('Total Dispose: ' + totalDispose, rightCol, y);
+    doc.text('Dispose Value: ₱' + disposeValue.toFixed(2), rightCol, y + 6);
+    
+    y += 20;
+    
+    // Draw separator line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 277, y);
+    
+    return y + 8;
+  }
+
+  // STOCKS REPORT TABLE
+  private addStocksReport(doc: jsPDF, stocks: any[], startY: number): number {
+    let y = startY;
+    
+    // Section title
+    doc.setFont('times', 'bold');
+    doc.setFontSize(13);
+    doc.text('STOCKS REPORT', 20, y);
+    y += 8;
+    
+    // Table setup - LANDSCAPE FORMAT
+    const colWidths = [65, 45, 30, 35, 35, 47]; // Item, Category, Quantity, Price, Total, Date/Time
+    const rowHeight = 7;
+    let x = 20;
+    
+    // Table header background
+    doc.setFillColor(220, 220, 220);
+    doc.rect(20, y - 4, 257, rowHeight, 'F');
+    
+    // Table headers
+    doc.setFontSize(10);
+    doc.setFont('times', 'bold');
+    doc.text('Item', x, y);
+    x += colWidths[0];
+    doc.text('Category', x, y);
+    x += colWidths[1];
+    doc.text('Quantity', x, y);
+    x += colWidths[2];
+    doc.text('Price', x, y);
+    x += colWidths[3];
+    doc.text('Total', x, y);
+    x += colWidths[4];
+    doc.text('Date/Time', x, y);
+    
+    y += rowHeight;
+    
+    // Table data
+    doc.setFont('times', 'normal');
+    doc.setFontSize(9);
+    
+    stocks.forEach((stock, index) => {
+      if (y > 185) {
+        doc.addPage();
+        this.addHeader(doc, '', undefined, undefined);
+        y = 50;
+      }
+      
+      // Alternating row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(245, 245, 245);
+        doc.rect(20, y - 4, 257, rowHeight, 'F');
+      }
+      
+      x = 20;
+      doc.text((stock.itemName || 'N/A').substring(0, 28), x, y);
+      x += colWidths[0];
+      doc.text((stock.categoryName || 'N/A').substring(0, 18), x, y);
+      x += colWidths[1];
+      doc.text(String(stock.quantity || 0), x, y);
+      x += colWidths[2];
+      doc.text('₱' + (stock.price || 0).toFixed(2), x, y);
+      x += colWidths[3];
+      const total = stock.totalPrice || (stock.price * stock.quantity) || 0;
+      doc.text('₱' + total.toFixed(2), x, y);
+      x += colWidths[4];
+      
+      // Date/Time formatting
+      const dateTime = stock.createdAt ? 
+        new Date(stock.createdAt).toLocaleString('en-US', { 
+          month: '2-digit', 
+          day: '2-digit', 
+          year: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }) : 'N/A';
+      doc.text(dateTime, x, y);
+      
+      y += rowHeight;
+    });
+    
+    y += 6;
+    
+    // Draw separator line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 277, y);
+    
+    return y + 8;
+  }
+
+  // DISPOSE REPORT TABLE
+  private addDisposeReport(doc: jsPDF, disposals: any[], startY: number): number {
+    let y = startY;
+    
+    // Section title
+    doc.setFont('times', 'bold');
+    doc.setFontSize(13);
+    doc.text('DISPOSE REPORT', 20, y);
+    y += 8;
+    
+    // Table setup - LANDSCAPE FORMAT
+    const colWidths = [65, 45, 30, 35, 35, 47]; // Item, Category, Quantity, Price, Total, Date/Time
+    const rowHeight = 7;
+    let x = 20;
+    
+    // Table header background
+    doc.setFillColor(220, 220, 220);
+    doc.rect(20, y - 4, 257, rowHeight, 'F');
+    
+    // Table headers
+    doc.setFontSize(10);
+    doc.setFont('times', 'bold');
+    doc.text('Item', x, y);
+    x += colWidths[0];
+    doc.text('Category', x, y);
+    x += colWidths[1];
+    doc.text('Quantity', x, y);
+    x += colWidths[2];
+    doc.text('Price', x, y);
+    x += colWidths[3];
+    doc.text('Total', x, y);
+    x += colWidths[4];
+    doc.text('Date/Time', x, y);
+    
+    y += rowHeight;
+    
+    // Table data
+    doc.setFont('times', 'normal');
+    doc.setFontSize(9);
+    
+    disposals.forEach((disposal, index) => {
+      if (y > 185) {
+        doc.addPage();
+        this.addHeader(doc, '', undefined, undefined);
+        y = 50;
+      }
+      
+      // Alternating row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(245, 245, 245);
+        doc.rect(20, y - 4, 257, rowHeight, 'F');
+      }
+      
+      x = 20;
+      doc.text((disposal.itemName || 'N/A').substring(0, 28), x, y);
+      x += colWidths[0];
+      doc.text((disposal.categoryName || 'N/A').substring(0, 18), x, y);
+      x += colWidths[1];
+      doc.text(String(disposal.quantity || 0), x, y);
+      x += colWidths[2];
+      doc.text('₱' + (disposal.price || 0).toFixed(2), x, y);
+      x += colWidths[3];
+      const total = disposal.totalValue || disposal.disposalValue || 0;
+      doc.text('₱' + total.toFixed(2), x, y);
+      x += colWidths[4];
+      
+      // Date/Time formatting
+      const dateTime = disposal.disposalDate ? 
+        new Date(disposal.disposalDate).toLocaleString('en-US', { 
+          month: '2-digit', 
+          day: '2-digit', 
+          year: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }) : 'N/A';
+      doc.text(dateTime, x, y);
+      
+      y += rowHeight;
+    });
+    
+    y += 6;
+    
+    // Draw separator line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 277, y);
+    
+    return y + 8;
+  }
+
+  // PC REPORTS TABLE WITH SUB-REPORTS
+  private addPCReport(doc: jsPDF, pcs: any[], startY: number): number {
+    let y = startY;
+    
+    // Section title
+    doc.setFont('times', 'bold');
+    doc.setFontSize(13);
+    doc.text('PC REPORTS', 20, y);
+    y += 8;
+    
+    // Main PC table setup
+    const mainColWidths = [85, 60, 92]; // PC Name, Status, Number of Components
+    const rowHeight = 7;
+    let x = 20;
+    
+    // Table header background
+    doc.setFillColor(220, 220, 220);
+    doc.rect(20, y - 4, 237, rowHeight, 'F');
+    
+    // Table headers
+    doc.setFontSize(10);
+    doc.setFont('times', 'bold');
+    doc.text('PC Name', x, y);
+    x += mainColWidths[0];
+    doc.text('Status', x, y);
+    x += mainColWidths[1];
+    doc.text('Number of Components', x, y);
+    
+    y += rowHeight;
+    
+    // Table data
+    doc.setFont('times', 'normal');
+    doc.setFontSize(9);
+    
+    pcs.forEach((pc, pcIndex) => {
+      if (y > 185) {
+        doc.addPage();
+        this.addHeader(doc, '', undefined, undefined);
+        y = 50;
+      }
+      
+      // Alternating row colors
+      if (pcIndex % 2 === 0) {
+        doc.setFillColor(245, 245, 245);
+        doc.rect(20, y - 4, 237, rowHeight, 'F');
+      }
+      
+      x = 20;
+      doc.text((pc.name || 'N/A').substring(0, 36), x, y);
+      x += mainColWidths[0];
+      doc.text((pc.status || 'N/A').substring(0, 25), x, y);
+      x += mainColWidths[1];
+      const componentCount = pc.components ? pc.components.length : 0;
+      doc.text(componentCount + ' components', x, y);
+      
+      y += rowHeight;
+      
+      // SUB-REPORT: Components inside this PC
+      if (pc.components && pc.components.length > 0 && y < 175) {
+        y += 3;
+        
+        // Sub-report title
+        doc.setFontSize(8);
+        doc.setFont('times', 'italic');
+        doc.text('Components:', 30, y);
+        y += 5;
+        
+        // Component table headers
+        doc.setFont('times', 'bold');
+        doc.setFontSize(8);
+        const compColWidths = [55, 20, 25, 25, 30]; // Item, Quantity, Price, Total, Status
+        let cx = 35;
+        
+        doc.setFillColor(235, 235, 235);
+        doc.rect(35, y - 3, 200, 5, 'F');
+        
+        doc.text('Item', cx, y);
+        cx += compColWidths[0];
+        doc.text('Quantity', cx, y);
+        cx += compColWidths[1];
+        doc.text('Price', cx, y);
+        cx += compColWidths[2];
+        doc.text('Total', cx, y);
+        cx += compColWidths[3];
+        doc.text('Status', cx, y);
+        
+        y += 5;
+        
+        // Component data
+        doc.setFont('times', 'normal');
+        doc.setFontSize(7);
+        
+        pc.components.forEach((comp: any, compIndex: number) => {
+          if (y > 185) return; // Skip if page is full
+          
+          // Alternating component rows
+          if (compIndex % 2 === 0) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(35, y - 3, 200, 4.5, 'F');
+          }
+          
+          cx = 35;
+          doc.text((comp.itemName || 'N/A').substring(0, 24), cx, y);
+          cx += compColWidths[0];
+          doc.text(String(comp.quantity || 1), cx, y);
+          cx += compColWidths[1];
+          doc.text('₱' + (comp.price || 0).toFixed(2), cx, y);
+          cx += compColWidths[2];
+          const compTotal = (comp.price || 0) * (comp.quantity || 1);
+          doc.text('₱' + compTotal.toFixed(2), cx, y);
+          cx += compColWidths[3];
+          doc.text((comp.status || 'Active').substring(0, 12), cx, y);
+          
+          y += 4.5;
+        });
+        
+        y += 4;
+      }
+    });
+    
+    y += 6;
+    
+    // Draw separator line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 277, y);
+    
+    return y + 8;
+  }
+
+  // FOOTER SECTION
+  private addFooter(doc: jsPDF): void {
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFont('times', 'normal');
+      doc.setFontSize(9);
+      doc.text('Page ' + i + ' of ' + pageCount, 148.5, 205, { align: 'center' });
+    }
+  }
+
+  // ===== UTILITY METHODS =====
+  
+  storeReport(reportData: ReportData, reportType: 'weekly' | 'monthly', startDate: Date, endDate: Date, inclusionSettings?: { includeStocks?: boolean; includeDisposals?: boolean; includePCs?: boolean; includeDetailedAnalysis?: boolean }): StoredReport {
+    const weekNumber = this.getWeekNumber(startDate);
+    const monthYear = this.getMonthYear(startDate);
+    
+    const includeStocks = inclusionSettings?.includeStocks ?? true;
+    const includeDisposals = inclusionSettings?.includeDisposals ?? true;
+    const includePCs = inclusionSettings?.includePCs ?? true;
+    
+    let filteredStocks = includeStocks ? reportData.stocks : [];
+    let filteredDisposals = includeDisposals ? reportData.disposals : [];
+    let filteredPCs = includePCs ? reportData.pcs : [];
+    
+    if (startDate && endDate) {
+      if (includeStocks) {
+        filteredStocks = reportData.stocks.filter(stock => {
+          const stockDate = new Date(stock.createdAt || stock.updatedAt);
+          return stockDate >= startDate && stockDate <= endDate;
+        });
+      }
+      
+      if (includeDisposals) {
+        filteredDisposals = reportData.disposals.filter(disposal => {
+          const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
+          return disposalDate >= startDate && disposalDate <= endDate;
+        });
+      }
+      
+      if (includePCs) {
+        filteredPCs = reportData.pcs.filter(pc => {
+          const pcDate = new Date(pc.createdAt || pc.updatedAt);
+          return pcDate >= startDate && pcDate <= endDate;
+        });
+      }
+    }
+    
     const totalStocks = filteredStocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
     const totalDisposals = filteredDisposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
     const totalPCs = filteredPCs.length;
     
-    // Calculate values from filtered data
     const stockValue = filteredStocks.reduce((sum, stock) => 
       sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
     const disposalValue = filteredDisposals.reduce((sum, disposal) => 
@@ -278,13 +713,13 @@ export class ArchiveService {
         startDate: startDate,
         endDate: endDate
       },
-      summary: filteredSummary, // Use filtered summary instead of raw summary
+      summary: filteredSummary,
       data: reportData,
       fileName: `inventory-report-${reportType}-${new Date().toISOString().split('T')[0]}.pdf`,
       weekNumber: reportType === 'weekly' ? weekNumber : undefined,
       monthYear: reportType === 'monthly' ? monthYear : undefined,
       metadata: {
-        generatedBy: 'System User', // This could be enhanced to get actual user
+        generatedBy: 'System User',
         generationTime: new Date(),
         dataSource: 'Computer Lab Inventory System',
         filters: {
@@ -302,7 +737,7 @@ export class ArchiveService {
     };
 
     const currentReports = this.storedReports.value;
-    const updatedReports = [report, ...currentReports].slice(0, 50); // Keep only last 50 reports
+    const updatedReports = [report, ...currentReports].slice(0, 50);
     this.saveStoredReports(updatedReports);
 
     return report;
@@ -322,639 +757,8 @@ export class ArchiveService {
     return `report_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  getStoredReports(): StoredReport[] {
-    return this.storedReports.value;
-  }
-
-  getStoredReportById(id: string): StoredReport | undefined {
-    return this.storedReports.value.find(report => report.id === id);
-  }
-
-  deleteStoredReport(id: string): void {
-    const currentReports = this.storedReports.value;
-    const updatedReports = currentReports.filter(report => report.id !== id);
-    this.saveStoredReports(updatedReports);
-  }
-
-  // Generate PDF and return as blob for preview
-  generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
-    console.log('=== NEW PDF FORMAT GENERATION ===');
-    console.log('Generating PDF for report type:', reportType);
-    console.log('Report data structure:', reportData);
-    
-    // Create PDF in LANDSCAPE orientation
-    const doc = new jsPDF('landscape', 'mm', 'a4');
-    
-    // Set Times New Roman font
-    doc.setFont('times', 'normal');
-    doc.setFontSize(10);
-    
-    // Add new format header
-    this.addNewFormatHeader(doc, reportType, startDate, endDate);
-    
-    // Filter data by date range and inclusion flags
-    let filteredStocks = includeStocks ? reportData.stocks : [];
-    let filteredDisposals = includeDisposals ? reportData.disposals : [];
-    let filteredPCs = includePCs ? reportData.pcs : [];
-    
-    if (startDate && endDate) {
-      // Filter stocks by date range (only if included)
-      if (includeStocks) {
-        filteredStocks = reportData.stocks.filter(stock => {
-          const stockDate = new Date(stock.createdAt || stock.updatedAt);
-          return stockDate >= startDate && stockDate <= endDate;
-        });
-      }
-      
-      // Filter disposals by date range (only if included)
-      if (includeDisposals) {
-        filteredDisposals = reportData.disposals.filter(disposal => {
-          const disposalDate = new Date(disposal.disposalDate || disposal.createdAt);
-          return disposalDate >= startDate && disposalDate <= endDate;
-        });
-      }
-      
-      // Filter PCs by date range (only if included)
-      if (includePCs) {
-        filteredPCs = reportData.pcs.filter(pc => {
-          const pcDate = new Date(pc.createdAt || pc.updatedAt);
-          return pcDate >= startDate && pcDate <= endDate;
-        });
-      }
-    }
-    
-    let yPosition = 43;
-    
-    // ===== NEW FORMAT SUMMARY SECTION =====
-    doc.setFontSize(14);
-    doc.setFont('times', 'bold');
-    doc.text('SUMMARY', 20, yPosition);
-    yPosition += 8;
-    
-    doc.setFontSize(10);
-    doc.setFont('times', 'normal');
-    
-    // Calculate totals
-    const totalStockQty = filteredStocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
-    const totalDisposeQty = filteredDisposals.reduce((sum, disposal) => sum + (disposal.quantity || 0), 0);
-    const totalPCs = filteredPCs.length;
-    
-    const stockValue = filteredStocks.reduce((sum, stock) => sum + (stock.totalPrice || stock.price * stock.quantity || 0), 0);
-    const disposeValue = filteredDisposals.reduce((sum, disposal) => {
-      const value = disposal.disposalValue || disposal.totalValue || disposal.price || 0;
-      return sum + (typeof value === 'number' ? value : 0);
-    }, 0);
-    
-    // Two-column layout: Left column and Right column
-    const leftCol = 20;
-    const rightCol = 160;
-    
-    // Left column
-    doc.text(`Total Stocks: ${totalStockQty}`, leftCol, yPosition);
-    doc.text(`Stock Value: ₱${stockValue.toFixed(2)}`, leftCol, yPosition + 5);
-    doc.text(`Total PC: ${totalPCs}`, leftCol, yPosition + 10);
-    
-    // Right column
-    doc.text(`Total Dispose: ${totalDisposeQty}`, rightCol, yPosition);
-    doc.text(`Dispose Value: ₱${disposeValue.toFixed(2)}`, rightCol, yPosition + 5);
-    
-    yPosition += 18;
-
-    // Reset font to times for subsequent sections
-    doc.setFont('times', 'normal');
-
-    // Detailed Analysis section
-    if (reportData.summary.stockCategories && Object.keys(reportData.summary.stockCategories).length > 0) {
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Stock Categories Analysis', 20, yPosition);
-      yPosition += 10;
-      
-      doc.setFontSize(8);
-      Object.entries(reportData.summary.stockCategories).forEach(([category, count]) => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        doc.text(`${category}: ${count} items`, 20, yPosition);
-        yPosition += 5;
-      });
-      yPosition += 10;
-    }
-
-    if (reportData.summary.disposalReasons && Object.keys(reportData.summary.disposalReasons).length > 0) {
-      if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Disposal Reasons Analysis', 20, yPosition);
-      yPosition += 10;
-      
-      doc.setFontSize(8);
-      Object.entries(reportData.summary.disposalReasons).forEach(([reason, count]) => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        doc.text(`${reason}: ${count} items`, 20, yPosition);
-        yPosition += 5;
-      });
-      yPosition += 10;
-    }
-
-    if (reportData.summary.topItems && reportData.summary.topItems.length > 0) {
-      if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Top Items by Quantity', 20, yPosition);
-      yPosition += 10;
-      
-      doc.setFontSize(8);
-      reportData.summary.topItems.slice(0, 10).forEach((item, index) => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        doc.text(`${index + 1}. ${item.name}: ${item.quantity} units`, 20, yPosition);
-        yPosition += 5;
-      });
-      yPosition += 10;
-    }
-    
-    // Stocks section - show only if included and has data
-    if (includeStocks && filteredStocks.length > 0) {
-      if (yPosition > 180) {
-        doc.addPage();
-        yPosition = 50;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Detailed Stocks Report', 20, yPosition);
-      yPosition += 15;
-      
-      // Create simple table with filtered stocks
-      this.createStocksTable(doc, filteredStocks, yPosition);
-      yPosition += (Math.ceil(filteredStocks.length / 8) * 8) + 20; // Calculate space needed
-    }
-    
-    // Disposals section - show only if included and has data
-    if (includeDisposals && filteredDisposals.length > 0) {
-      if (yPosition > 180) {
-        doc.addPage();
-        yPosition = 50;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Detailed Disposals Report', 20, yPosition);
-      yPosition += 15;
-      
-      // Create simple disposals table with filtered disposals
-      this.createDisposalsTable(doc, filteredDisposals, yPosition);
-      yPosition += (Math.ceil(filteredDisposals.length / 8) * 8) + 20;
-    }
-    
-    // PCs section - show only if included and has data
-    if (includePCs && filteredPCs.length > 0) {
-      if (yPosition > 180) {
-        doc.addPage();
-        yPosition = 50;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Detailed PC Management Report', 20, yPosition);
-      yPosition += 15;
-      
-      // Create PC table with filtered PCs
-      this.createPCTable(doc, filteredPCs, yPosition);
-      yPosition += (Math.ceil(filteredPCs.length / 8) * 8) + 20;
-    }
-
-    // Receipt Images section - use filtered data
-    const receiptsWithImages = [
-      ...filteredStocks.filter(stock => stock.receiptAttachment),
-      ...filteredDisposals.filter(disposal => disposal.receiptAttachment)
-    ];
-
-    if (receiptsWithImages.length > 0) {
-      if (yPosition > 200) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('times', 'bold'); // Change to Times New Roman
-      doc.text('Receipt Images', 20, yPosition);
-      yPosition += 10;
-      
-      doc.setFontSize(10);
-      doc.text(`Total Receipt Images: ${receiptsWithImages.length}`, 20, yPosition);
-      yPosition += 15;
-      
-      doc.setFontSize(8);
-      const receiptHeaders = ['Type', 'Item', 'Date Added', 'Receipt File', 'Value'];
-      let xPosition = 20;
-      receiptHeaders.forEach(header => {
-        doc.text(header, xPosition, yPosition);
-        xPosition += 35;
-      });
-      yPosition += 7;
-      
-      receiptsWithImages.forEach(receipt => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        xPosition = 20;
-        
-        // Determine type (Stock or Disposal)
-        const isStock = reportData.stocks.some(stock => stock.id === receipt.id);
-        doc.text(isStock ? 'Stock' : 'Disposal', xPosition, yPosition);
-        xPosition += 35;
-        
-        doc.text(receipt.itemName || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        
-        const dateAdded = new Date(receipt.createdAt).toLocaleDateString();
-        const timeAdded = new Date(receipt.createdAt).toLocaleTimeString();
-        doc.text(`${dateAdded}`, xPosition, yPosition);
-        yPosition += 4;
-        doc.text(`${timeAdded}`, xPosition, yPosition);
-        yPosition -= 4;
-        xPosition += 35;
-        
-        doc.text(receipt.receiptAttachment || 'N/A', xPosition, yPosition);
-        xPosition += 35;
-        
-        const value = isStock ? receipt.totalPrice : receipt.totalValue;
-        const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-        doc.text(`₱${safeValue.toFixed(2)}`, xPosition, yPosition);
-        yPosition += 8;
-      });
-    }
-
-    // Footer with metadata
-    const pageCount = doc.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8);
-      doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
-      doc.text(`Generated by Computer Lab Inventory System v2.0`, 105, 295, { align: 'center' });
-    }
-    
-    return doc.output('blob');
-  }
-
-  // NEW FORMAT HEADER
-  private addNewFormatHeader(doc: jsPDF, reportType: string, startDate?: Date, endDate?: Date): void {
-    doc.setFont('times', 'bold');
-    doc.setTextColor(0, 0, 0);
-    
-    // Title: Benedicto College Computer Lab Inventory System
-    doc.setFontSize(16);
-    doc.text('Benedicto College Computer Lab Inventory System', 148, 15, { align: 'center' });
-    
-    // Report Type (Weekly or Monthly)
-    doc.setFontSize(12);
-    const reportTypeText = reportType.charAt(0).toUpperCase() + reportType.slice(1) + ' Report';
-    doc.text(reportTypeText, 148, 23, { align: 'center' });
-    
-    // Date Range (what week or monthly that data gets)
-    doc.setFont('times', 'normal');
-    doc.setFontSize(10);
-    if (startDate && endDate) {
-      const startStr = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-      const endStr = endDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-      doc.text(`Data Period: ${startStr} - ${endStr}`, 148, 30, { align: 'center' });
-    } else {
-      doc.text('Data Period: All Time', 148, 30, { align: 'center' });
-    }
-    
-    // Generation Date (what day that the report generate)
-    const now = new Date();
-    const generatedDate = now.toLocaleDateString('en-US', { 
-      weekday: 'long',
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-    const generatedTime = now.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
-    });
-    doc.text(`Generated on: ${generatedDate} at ${generatedTime}`, 148, 36, { align: 'center' });
-    
-    console.log('New format header added');
-  }
-
-  // Add Benedicto College logo (text-based for reliability)
-  private addSchoolLogo(doc: jsPDF): void {
-    const logoX = 20;
-    const logoY = 8;
-    const logoSize = 25;
-    
-    // Create a professional text-based logo
-    doc.setFillColor(0, 51, 102); // Blue background
-    doc.rect(logoX, logoY, logoSize, logoSize, 'F');
-    
-    // Add "BC" text in white
-    doc.setTextColor(255, 255, 255); // White text
-    doc.setFontSize(14);
-    doc.setFont('times', 'bold');
-    doc.text('BC', logoX + logoSize/2, logoY + logoSize/2 + 2, { align: 'center' });
-    
-    // Add year below
-    doc.setFontSize(8);
-    doc.text('2000', logoX + logoSize/2, logoY + logoSize - 3, { align: 'center' });
-    
-    // Add "Benedicto College" text next to logo
-    doc.setTextColor(0, 0, 0); // Black text
-    doc.setFontSize(10);
-    doc.setFont('times', 'bold');
-    doc.text('Benedicto College', logoX + logoSize + 5, logoY + 8);
-    
-    // Add tagline
-    doc.setFontSize(8);
-    doc.setFont('times', 'normal');
-    doc.text('Your Education... Our Mission', logoX + logoSize + 5, logoY + 15);
-  }
-
-  // Create stocks table for LANDSCAPE format
-  private createStocksTable(doc: jsPDF, stocks: any[], startY: number): void {
-    // Filter out stocks with quantity 0
-    const filteredStocks = stocks.filter(stock => (stock.quantity || 0) > 0);
-    
-    if (filteredStocks.length === 0) {
-      // If no stocks to display after filtering, just return
-      return;
-    }
-    
-    const pageWidth = 297; // Landscape A4 width
-    const margin = 20;
-    const tableWidth = pageWidth - (margin * 2);
-    
-    // Column widths for landscape format - more space for better display
-    const colWidths = [80, 30, 50, 40, 40]; // Item, Quantity, Location, Value, Category
-    const rowHeight = 8;
-    
-    // Table headers
-    doc.setFillColor(240, 240, 240);
-    doc.rect(margin, startY, tableWidth, rowHeight, 'F');
-    
-    doc.setFontSize(8);
-    doc.setFont('times', 'bold');
-    doc.setTextColor(0, 0, 0);
-    
-    let xPos = margin;
-    const headers = ['Item', 'Quantity', 'Location', 'Value', 'Category'];
-    
-    headers.forEach((header, index) => {
-      doc.text(header, xPos + 2, startY + 4);
-      xPos += colWidths[index];
-    });
-    
-    // Table rows
-    doc.setFont('times', 'normal');
-    doc.setFontSize(7);
-    
-    filteredStocks.forEach((stock, index) => {
-      const currentY = startY + (index + 1) * rowHeight;
-      
-      // Check if we need a new page
-      if (currentY > 200) {
-        doc.addPage();
-        this.addNewFormatHeader(doc, '', undefined, undefined);
-        return this.createStocksTable(doc, filteredStocks.slice(index), 50);
-      }
-      
-      // Alternate row colors
-      if (index % 2 === 0) {
-        doc.setFillColor(248, 249, 250);
-        doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
-      }
-      
-      xPos = margin;
-      
-      // Item name (truncate if too long)
-      const itemName = (stock.itemName || 'N/A').length > 25 ? 
-        (stock.itemName || 'N/A').substring(0, 22) + '...' : 
-        (stock.itemName || 'N/A');
-      doc.text(itemName, xPos + 2, currentY + 5);
-      xPos += colWidths[0];
-      
-      // Quantity
-      doc.text(stock.quantity?.toString() || '0', xPos + 2, currentY + 5);
-      xPos += colWidths[1];
-      
-      // Location (truncate if too long)
-      const location = (stock.locationName || 'N/A').length > 15 ? 
-        (stock.locationName || 'N/A').substring(0, 12) + '...' : 
-        (stock.locationName || 'N/A');
-      doc.text(location, xPos + 2, currentY + 5);
-      xPos += colWidths[2];
-      
-      // Value - calculate from price and quantity if totalPrice not available
-      const value = typeof stock.totalPrice === 'number' ? 
-        stock.totalPrice : 
-        (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
-          stock.price * stock.quantity : 0);
-      const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      // Use direct peso symbol - ULTRA CLEAN
-      const currencyText = '₱' + safeValue.toFixed(2);
-      console.log('Stock table currency text:', currencyText);
-      doc.text(currencyText, xPos + 2, currentY + 5);
-      xPos += colWidths[3];
-      
-      // Category
-      doc.text(stock.categoryName || 'N/A', xPos + 2, currentY + 5);
-    });
-  }
-
-  // Create simple disposals table for portrait format
-  private createDisposalsTable(doc: jsPDF, disposals: any[], startY: number): void {
-    const pageWidth = 297; // Landscape A4 width
-    const margin = 20;
-    const tableWidth = pageWidth - (margin * 2);
-    
-    // Column widths for landscape format - more space for better display
-    const colWidths = [70, 30, 50, 40, 40]; // Item, Quantity, Reason, Date, Value
-    const rowHeight = 8;
-    
-    // Table headers
-    doc.setFillColor(240, 240, 240);
-    doc.rect(margin, startY, tableWidth, rowHeight, 'F');
-    
-    doc.setFontSize(8);
-    doc.setFont('times', 'bold');
-    doc.setTextColor(0, 0, 0);
-    
-    let xPos = margin;
-    const headers = ['Item', 'Quantity', 'Reason', 'Date', 'Value'];
-    
-    headers.forEach((header, index) => {
-      doc.text(header, xPos + 2, startY + 4);
-      xPos += colWidths[index];
-    });
-    
-    // Table rows
-    doc.setFont('times', 'normal');
-    doc.setFontSize(7);
-    
-    disposals.forEach((disposal, index) => {
-      const currentY = startY + (index + 1) * rowHeight;
-      
-      // Check if we need a new page
-      if (currentY > 200) {
-        doc.addPage();
-        this.addNewFormatHeader(doc, '', undefined, undefined);
-        return this.createDisposalsTable(doc, disposals.slice(index), 50);
-      }
-      
-      // Alternate row colors
-      if (index % 2 === 0) {
-        doc.setFillColor(248, 249, 250);
-        doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
-      }
-      
-      xPos = margin;
-      
-      // Item name (truncate if too long)
-      const itemName = (disposal.itemName || 'N/A').length > 20 ? 
-        (disposal.itemName || 'N/A').substring(0, 17) + '...' : 
-        (disposal.itemName || 'N/A');
-      doc.text(itemName, xPos + 2, currentY + 5);
-      xPos += colWidths[0];
-      
-      // Quantity
-      doc.text(disposal.quantity?.toString() || '0', xPos + 2, currentY + 5);
-      xPos += colWidths[1];
-      
-      // Reason (truncate if too long)
-      const reason = (disposal.reason || 'N/A').length > 20 ? 
-        (disposal.reason || 'N/A').substring(0, 17) + '...' : 
-        (disposal.reason || 'N/A');
-      doc.text(reason, xPos + 2, currentY + 5);
-      xPos += colWidths[2];
-      
-      // Date
-      const date = new Date(disposal.disposalDate).toLocaleDateString();
-      doc.text(date, xPos + 2, currentY + 5);
-      xPos += colWidths[3];
-      
-      // Value - calculate from disposal value and quantity if totalValue not available
-      const value = typeof disposal.totalValue === 'number' ? 
-        disposal.totalValue : 
-        (typeof disposal.disposalValue === 'number' ? 
-          disposal.disposalValue : 0);
-      const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-      // Use direct peso symbol - ULTRA CLEAN
-      const currencyText = '₱' + safeValue.toFixed(2);
-      console.log('Disposal table currency text:', currencyText);
-      doc.text(currencyText, xPos + 2, currentY + 5);
-    });
-  }
-
-  // Create PC table for LANDSCAPE format
-  private createPCTable(doc: jsPDF, pcs: any[], startY: number): void {
-    const pageWidth = 297; // Landscape A4 width
-    const margin = 20;
-    const tableWidth = pageWidth - (margin * 2);
-    
-    // Column widths for landscape format - more space for better display
-    const colWidths = [80, 60, 40, 50, 50]; // PC Name, Location, Status, Components, Last Updated
-    const rowHeight = 8;
-    
-    // Table headers
-    doc.setFillColor(240, 240, 240);
-    doc.rect(margin, startY, tableWidth, rowHeight, 'F');
-    
-    doc.setFontSize(8);
-    doc.setFont('times', 'bold');
-    doc.setTextColor(0, 0, 0);
-    
-    let xPos = margin;
-    const headers = ['PC Name', 'Location', 'Status', 'Components', 'Last Updated'];
-    
-    headers.forEach((header, index) => {
-      doc.text(header, xPos + 2, startY + 4);
-      xPos += colWidths[index];
-    });
-    
-    // Table rows
-    doc.setFont('times', 'normal');
-    doc.setFontSize(7);
-    
-    pcs.forEach((pc, index) => {
-      const currentY = startY + (index + 1) * rowHeight;
-      
-      // Check if we need a new page
-      if (currentY > 200) {
-        doc.addPage();
-        this.addNewFormatHeader(doc, '', undefined, undefined);
-        return this.createPCTable(doc, pcs.slice(index), 50);
-      }
-      
-      // Alternate row colors
-      if (index % 2 === 0) {
-        doc.setFillColor(248, 249, 250);
-        doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
-      }
-      
-      xPos = margin;
-      
-      // PC Name (truncate if too long)
-      const pcName = (pc.name || 'N/A').length > 20 ? 
-        (pc.name || 'N/A').substring(0, 17) + '...' : 
-        (pc.name || 'N/A');
-      doc.text(pcName, xPos + 2, currentY + 5);
-      xPos += colWidths[0];
-      
-      // Location (truncate if too long)
-      const location = (pc.roomLocationName || 'N/A').length > 15 ? 
-        (pc.roomLocationName || 'N/A').substring(0, 12) + '...' : 
-        (pc.roomLocationName || 'N/A');
-      doc.text(location, xPos + 2, currentY + 5);
-      xPos += colWidths[1];
-      
-      // Status
-      doc.text(pc.status || 'N/A', xPos + 2, currentY + 5);
-      xPos += colWidths[2];
-      
-      // Components
-      doc.text(pc.componentsCount?.toString() || '0', xPos + 2, currentY + 5);
-      xPos += colWidths[3];
-      
-      // Last Updated (precise date)
-      const lastUpdated = new Date(pc.updatedAt || pc.createdAt);
-      const preciseDate = lastUpdated.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
-      });
-      const preciseTime = lastUpdated.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-      });
-      doc.text(`${preciseDate}`, xPos + 2, currentY + 5);
-      doc.text(`${preciseTime}`, xPos + 2, currentY + 8);
-    });
-  }
-
   downloadPDF(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): void {
     try {
-      console.log('Downloading PDF for report type:', reportType);
-      console.log('Report data:', reportData);
       const blob = this.generatePDFBlob(reportData, reportType, startDate, endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -970,9 +774,6 @@ export class ArchiveService {
 
   downloadStoredReportPDF(report: StoredReport): void {
     try {
-      console.log('Downloading PDF for report:', report);
-      console.log('Report data:', report.data);
-      // Use stored report's inclusion settings if available, otherwise use defaults
       const includeStocks = report.metadata?.includeStocks !== false;
       const includeDisposals = report.metadata?.includeDisposals !== false;
       const includePCs = report.metadata?.includePCs !== false;
@@ -985,12 +786,8 @@ export class ArchiveService {
     }
   }
 
-  // Preview PDF in new window
   previewPDF(report: StoredReport): void {
     try {
-      console.log('Previewing PDF for report:', report);
-      console.log('Report data:', report.data);
-      // Use stored report's inclusion settings if available, otherwise use defaults
       const includeStocks = report.metadata?.includeStocks !== false;
       const includeDisposals = report.metadata?.includeDisposals !== false;
       const includePCs = report.metadata?.includePCs !== false;
@@ -999,7 +796,6 @@ export class ArchiveService {
       const blob = this.generatePDFBlob(report.data, report.type, report.period.startDate, report.period.endDate, includeStocks, includeDisposals, includePCs, includeDetailedAnalysis);
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
-      // Clean up after a delay
       setTimeout(() => window.URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error('Error generating PDF for preview:', error);
@@ -1043,17 +839,14 @@ export class ArchiveService {
     return this.generateReport(request);
   }
 
-  // Get reports by type
   getReportsByType(type: 'weekly' | 'monthly'): StoredReport[] {
     return this.storedReports.value.filter(report => report.type === type);
   }
 
-  // Get recent reports (last 10)
   getRecentReports(limit: number = 10): StoredReport[] {
     return this.storedReports.value.slice(0, limit);
   }
 
-  // Search reports by title, week number, or month
   searchReports(query: string): StoredReport[] {
     const searchTerm = query.toLowerCase();
     return this.storedReports.value.filter(report => 
@@ -1064,12 +857,10 @@ export class ArchiveService {
     );
   }
 
-  // Get available weeks for weekly reports
   getAvailableWeeks(): { weekNumber: number; startDate: Date; endDate: Date; exists: boolean }[] {
     const weeklyReports = this.getReportsByType('weekly');
     const weeks: { weekNumber: number; startDate: Date; endDate: Date; exists: boolean }[] = [];
     
-    // Generate last 24 weeks (6 months) for more flexibility
     for (let i = 0; i < 24; i++) {
       const endDate = new Date();
       endDate.setDate(endDate.getDate() - (i * 7));
@@ -1088,19 +879,17 @@ export class ArchiveService {
     return weeks;
   }
 
-  // Get available months for monthly reports
   getAvailableMonths(): { monthYear: string; startDate: Date; endDate: Date; exists: boolean }[] {
     const monthlyReports = this.getReportsByType('monthly');
     const months: { monthYear: string; startDate: Date; endDate: Date; exists: boolean }[] = [];
     
-    // Generate last 24 months (2 years) for more flexibility
     for (let i = 0; i < 24; i++) {
       const endDate = new Date();
       endDate.setMonth(endDate.getMonth() - i);
-      endDate.setDate(0); // Last day of the month
+      endDate.setDate(0);
       
       const startDate = new Date(endDate);
-      startDate.setDate(1); // First day of the month
+      startDate.setDate(1);
       
       const monthYear = this.getMonthYear(startDate);
       const exists = monthlyReports.some(report => 
@@ -1114,7 +903,6 @@ export class ArchiveService {
     return months;
   }
 
-  // Get report statistics
   getReportStatistics(): {
     totalReports: number;
     weeklyReports: number;
@@ -1143,19 +931,16 @@ export class ArchiveService {
     };
   }
 
-  // Export all reports as JSON
   exportAllReports(): string {
     return JSON.stringify(this.storedReports.value, null, 2);
   }
 
-  // Import reports from JSON
   importReports(jsonData: string): boolean {
     try {
       const reports: StoredReport[] = JSON.parse(jsonData);
       const currentReports = this.storedReports.value;
       const combinedReports = [...reports, ...currentReports];
       
-      // Remove duplicates based on ID
       const uniqueReports = combinedReports.filter((report, index, self) => 
         index === self.findIndex(r => r.id === report.id)
       );
@@ -1168,4 +953,32 @@ export class ArchiveService {
     }
   }
 
+  generateCustomReport(type: 'weekly' | 'monthly', startDate: Date, endDate: Date, options: {
+    includeStocks: boolean;
+    includeDisposals: boolean;
+    includePCs: boolean;
+    detailedAnalysis?: boolean;
+  }): Observable<ReportData> {
+    const request: ReportRequest = {
+      type,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      includeStocks: options.includeStocks,
+      includeDisposals: options.includeDisposals,
+      includePCs: options.includePCs,
+      detailedAnalysis: options.detailedAnalysis || true
+    };
+    
+    return this.generateReport(request);
+  }
+
+  checkReportExists(type: 'weekly' | 'monthly', startDate: Date, endDate: Date): StoredReport | null {
+    const reports = this.storedReports.value;
+    return reports.find(report => 
+      report.type === type && 
+      report.period.startDate.getTime() === startDate.getTime() &&
+      report.period.endDate.getTime() === endDate.getTime()
+    ) || null;
+  }
 }
+
