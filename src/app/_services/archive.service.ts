@@ -318,12 +318,12 @@ export class ArchiveService {
     
     // Left column
     doc.text('Total Stocks: ' + totalStocks, leftCol, y);
-    doc.text('Stock Value: ₱' + safeStockValue.toFixed(2), leftCol, y + 6);
+    doc.text('Stock Value: \u20B1' + safeStockValue.toFixed(2), leftCol, y + 6);
     doc.text('Total PC: ' + totalPC, leftCol, y + 12);
     
     // Right column
     doc.text('Total Dispose: ' + totalDispose, rightCol, y);
-    doc.text('Dispose Value: ₱' + safeDisposeValue.toFixed(2), rightCol, y + 6);
+    doc.text('Dispose Value: \u20B1' + safeDisposeValue.toFixed(2), rightCol, y + 6);
     
     y += 20;
     
@@ -376,7 +376,7 @@ export class ArchiveService {
     
     stocks.forEach((stock, index) => {
       if (y > 185) {
-        doc.addPage();
+          doc.addPage();
         this.addHeader(doc, '', undefined, undefined);
         y = 50;
       }
@@ -395,17 +395,17 @@ export class ArchiveService {
       doc.text(String(stock.quantity || 0), x, y);
       x += colWidths[2];
       
-      // Safe price formatting
+      // Safe price formatting - use Unicode escape for peso
       const price = typeof stock.price === 'number' ? stock.price : 0;
-      doc.text('₱' + price.toFixed(2), x, y);
+      doc.text('\u20B1' + price.toFixed(2), x, y);
       x += colWidths[3];
       
-      // Safe total formatting
+      // Safe total formatting - use Unicode escape for peso
       const total = typeof stock.totalPrice === 'number' ? stock.totalPrice : 
                     (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
                     stock.price * stock.quantity : 0);
       const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
-      doc.text('₱' + safeTotal.toFixed(2), x, y);
+      doc.text('\u20B1' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
       // Date/Time formatting
@@ -473,7 +473,7 @@ export class ArchiveService {
     
     disposals.forEach((disposal, index) => {
       if (y > 185) {
-        doc.addPage();
+          doc.addPage();
         this.addHeader(doc, '', undefined, undefined);
         y = 50;
       }
@@ -492,15 +492,20 @@ export class ArchiveService {
       doc.text(String(disposal.quantity || 0), x, y);
       x += colWidths[2];
       
-      // Safe price formatting
-      const price = typeof disposal.price === 'number' ? disposal.price : 0;
-      doc.text('₱' + price.toFixed(2), x, y);
+      // Safe price formatting - use Unicode escape for peso
+      // Calculate unit price from disposalValue
+      const unitPrice = typeof disposal.disposalValue === 'number' && disposal.quantity > 0 ? 
+                        disposal.disposalValue : 0;
+      doc.text('\u20B1' + unitPrice.toFixed(2), x, y);
       x += colWidths[3];
       
-      // Safe total formatting
-      const total = disposal.totalValue || disposal.disposalValue || 0;
+      // Safe total formatting - use Unicode escape for peso
+      // Use totalValue if available, otherwise calculate from disposalValue * quantity
+      const total = typeof disposal.totalValue === 'number' ? disposal.totalValue :
+                    (typeof disposal.disposalValue === 'number' && typeof disposal.quantity === 'number' ?
+                    disposal.disposalValue * disposal.quantity : 0);
       const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
-      doc.text('₱' + safeTotal.toFixed(2), x, y);
+      doc.text('\u20B1' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
       // Date/Time formatting
@@ -562,7 +567,7 @@ export class ArchiveService {
     
     pcs.forEach((pc, pcIndex) => {
       if (y > 185) {
-        doc.addPage();
+          doc.addPage();
         this.addHeader(doc, '', undefined, undefined);
         y = 50;
       }
@@ -588,7 +593,7 @@ export class ArchiveService {
         y += 3;
         
         // Sub-report title
-        doc.setFontSize(8);
+      doc.setFontSize(8);
         doc.setFont('times', 'italic');
         doc.text('Components:', 30, y);
         y += 5;
@@ -633,15 +638,15 @@ export class ArchiveService {
           doc.text(String(comp.quantity || 1), cx, y);
           cx += compColWidths[1];
           
-          // Safe price formatting
+          // Safe price formatting - use Unicode escape for peso
           const compPrice = typeof comp.price === 'number' ? comp.price : 0;
-          doc.text('₱' + compPrice.toFixed(2), cx, y);
+          doc.text('\u20B1' + compPrice.toFixed(2), cx, y);
           cx += compColWidths[2];
           
-          // Safe total formatting
+          // Safe total formatting - use Unicode escape for peso
           const compTotal = (typeof comp.price === 'number' ? comp.price : 0) * (comp.quantity || 1);
           const safeCompTotal = typeof compTotal === 'number' && !isNaN(compTotal) ? compTotal : 0;
-          doc.text('₱' + safeCompTotal.toFixed(2), cx, y);
+          doc.text('\u20B1' + safeCompTotal.toFixed(2), cx, y);
           cx += compColWidths[3];
           doc.text((comp.status || 'Active').substring(0, 12), cx, y);
           
