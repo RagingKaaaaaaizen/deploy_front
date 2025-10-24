@@ -16,6 +16,8 @@ export class AddEditComponent implements OnInit {
     loading = false;
     submitted = false;
     Role = Role;
+    showPassword = false;
+    showConfirmPassword = false;
 
     constructor(
         private formBuilder: UntypedFormBuilder,
@@ -105,5 +107,13 @@ export class AddEditComponent implements OnInit {
                     this.loading = false;
                 }
             });
+    }
+
+    togglePasswordVisibility() {
+        this.showPassword = !this.showPassword;
+    }
+
+    toggleConfirmPasswordVisibility() {
+        this.showConfirmPassword = !this.showConfirmPassword;
     }
 }
