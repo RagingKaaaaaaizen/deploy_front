@@ -4,8 +4,8 @@ import { AnalyticsService, MonthlyStockData, MonthlyDisposalData } from '../_ser
 import { AlertService } from '../_services/alert.service';
 import { AccountService } from '../_services/account.service';
 import { Role } from '../_models';
-import { first } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { first, catchError } from 'rxjs/operators';
+import { Subject, forkJoin, of } from 'rxjs';
 import { EChartsOption } from 'echarts';
 
 @Component({
@@ -371,6 +371,14 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
   lifespanChartOption: EChartsOption = {};
   lifespanChartLoading = false;
   
+  // Most stock items pie chart properties
+  mostStockPieOption: EChartsOption = {};
+  mostStockPieLoading = false;
+  
+  // Most dispose items pie chart properties
+  mostDisposePieOption: EChartsOption = {};
+  mostDisposePieLoading = false;
+  
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -386,6 +394,8 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
     this.loadMonthlyDisposalData();
     this.loadCategoryPieData();
     this.loadItemLifespanData();
+    this.loadMostStockItems();
+    this.loadMostDisposeItems();
     // Only load automated schedule for SuperAdmin users
     if (this.isSuperAdmin()) {
       this.loadAutomatedSchedule();
@@ -764,6 +774,172 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
               shadowColor: 'rgba(0, 0, 0, 0.5)'
             }
           }
+        }
+      ]
+    };
+  }
+
+  loadMostStockItems(): void {
+    this.mostStockPieLoading = true;
+    // Fetch all stocks and aggregate by item
+    forkJoin({
+      stocks: this.analyticsService['stockService'].getAll().pipe(catchError(() => of([]))),
+      items: this.analyticsService['itemService'].getAll().pipe(catchError(() => of([])))
+    }).pipe(first())
+      .subscribe({
+        next: (data) => {
+          const itemQuantities = new Map<string, number>();
+          
+          // Aggregate quantities by item
+          data.stocks.forEach((stock: any) => {
+            const item = data.items.find((i: any) => i.id === stock.itemId);
+            if (item && stock.quantity > 0) {
+              const itemName = item.name;
+              itemQuantities.set(itemName, (itemQuantities.get(itemName) || 0) + stock.quantity);
+            }
+          });
+          
+          // Convert to array and sort
+          const stockData = Array.from(itemQuantities.entries())
+            .map(([name, quantity]) => ({ name, value: quantity }))
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 10); // Top 10
+          
+          this.updateMostStockPieChart(stockData);
+          this.mostStockPieLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading most stock items:', error);
+          this.mostStockPieLoading = false;
+        }
+      });
+  }
+
+  loadMostDisposeItems(): void {
+    this.mostDisposePieLoading = true;
+    // Fetch all disposals and aggregate by item
+    forkJoin({
+      disposals: this.analyticsService['disposeService'].getAll().pipe(catchError(() => of([]))),
+      items: this.analyticsService['itemService'].getAll().pipe(catchError(() => of([])))
+    }).pipe(first())
+      .subscribe({
+        next: (data) => {
+          const itemQuantities = new Map<string, number>();
+          
+          // Aggregate quantities by item
+          data.disposals.forEach((disposal: any) => {
+            const item = data.items.find((i: any) => i.id === disposal.itemId);
+            if (item && disposal.quantity > 0) {
+              const itemName = item.name || disposal.itemName || 'Unknown';
+              itemQuantities.set(itemName, (itemQuantities.get(itemName) || 0) + disposal.quantity);
+            }
+          });
+          
+          // Convert to array and sort
+          const disposeData = Array.from(itemQuantities.entries())
+            .map(([name, quantity]) => ({ name, value: quantity }))
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 10); // Top 10
+          
+          this.updateMostDisposePieChart(disposeData);
+          this.mostDisposePieLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading most dispose items:', error);
+          this.mostDisposePieLoading = false;
+        }
+      });
+  }
+
+  updateMostStockPieChart(data: any[]): void {
+    if (!data || data.length === 0) {
+      this.mostStockPieOption = {};
+      return;
+    }
+
+    this.mostStockPieOption = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} units ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: data.map(d => d.name)
+      },
+      series: [
+        {
+          name: 'Stock Quantity',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: true,
+            formatter: '{b}: {d}%'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 16,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: true
+          },
+          data: data
+        }
+      ]
+    };
+  }
+
+  updateMostDisposePieChart(data: any[]): void {
+    if (!data || data.length === 0) {
+      this.mostDisposePieOption = {};
+      return;
+    }
+
+    this.mostDisposePieOption = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} units ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: data.map(d => d.name)
+      },
+      series: [
+        {
+          name: 'Disposed Quantity',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: true,
+            formatter: '{b}: {d}%'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 16,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: true
+          },
+          data: data
         }
       ]
     };
