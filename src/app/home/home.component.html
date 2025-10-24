@@ -1,113 +1,168 @@
-﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+﻿<div class="min-h-screen bg-gray-50 py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Welcome Banner -->
-        <div class="mb-8">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-8 shadow-lg">
-                <h1 class="text-4xl font-bold mb-2">
+        <div class="mb-6">
+            <div class="bg-white border-l-4 border-indigo-600 rounded-lg p-6 shadow-sm">
+                <h1 class="text-3xl font-bold text-gray-900 mb-1">
                     Welcome back, {{account?.firstName || 'User'}}
                 </h1>
-                <p class="text-lg text-blue-100">
+                <p class="text-gray-600">
                     Manage your computer lab inventory efficiently
                 </p>
             </div>
         </div>
 
-        <!-- Main Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Total Stock Items -->
-            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Stock Items</p>
-                        <p class="text-4xl font-bold text-gray-900 mt-2">{{stats.totalStock}}</p>
-                        <p class="text-sm text-gray-500 mt-1">Items in inventory</p>
+        <!-- Role Permission Guide -->
+        <div class="mb-6" *ngIf="account">
+            <div class="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-user-shield text-indigo-600"></i>
                     </div>
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-boxes text-blue-600 text-2xl"></i>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Your Role: {{account.role}}</h3>
+                        <p class="text-sm text-gray-600">Access permissions and capabilities</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg border border-green-200">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-sm text-gray-700 font-medium">View inventory</span>
+                    </div>
+                    <div class="flex items-center p-3" [class]="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff]) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'" [class.border]="true" [class.rounded-lg]="true">
+                        <i class="mr-2" [class]="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff]) ? 'fas fa-check-circle text-green-600' : 'fas fa-times-circle text-gray-400'"></i>
+                        <span class="text-sm font-medium" [class]="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff]) ? 'text-gray-700' : 'text-gray-400'">Add/Edit items</span>
+                    </div>
+                    <div class="flex items-center p-3" [class]="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff]) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'" [class.border]="true" [class.rounded-lg]="true">
+                        <i class="mr-2" [class]="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff]) ? 'fas fa-check-circle text-green-600' : 'fas fa-times-circle text-gray-400'"></i>
+                        <span class="text-sm font-medium" [class]="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff]) ? 'text-gray-700' : 'text-gray-400'">Dispose items</span>
+                    </div>
+                    <div class="flex items-center p-3" [class]="hasRole([Role.SuperAdmin, Role.Admin]) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'" [class.border]="true" [class.rounded-lg]="true">
+                        <i class="mr-2" [class]="hasRole([Role.SuperAdmin, Role.Admin]) ? 'fas fa-check-circle text-green-600' : 'fas fa-times-circle text-gray-400'"></i>
+                        <span class="text-sm font-medium" [class]="hasRole([Role.SuperAdmin, Role.Admin]) ? 'text-gray-700' : 'text-gray-400'">Approve requests</span>
+                    </div>
+                    <div class="flex items-center p-3" [class]="hasRole([Role.SuperAdmin, Role.Admin]) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'" [class.border]="true" [class.rounded-lg]="true">
+                        <i class="mr-2" [class]="hasRole([Role.SuperAdmin, Role.Admin]) ? 'fas fa-check-circle text-green-600' : 'fas fa-times-circle text-gray-400'"></i>
+                        <span class="text-sm font-medium" [class]="hasRole([Role.SuperAdmin, Role.Admin]) ? 'text-gray-700' : 'text-gray-400'">View analytics</span>
+                    </div>
+                    <div class="flex items-center p-3" [class]="hasRole([Role.SuperAdmin]) ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'" [class.border]="true" [class.rounded-lg]="true">
+                        <i class="mr-2" [class]="hasRole([Role.SuperAdmin]) ? 'fas fa-check-circle text-green-600' : 'fas fa-times-circle text-gray-400'"></i>
+                        <span class="text-sm font-medium" [class]="hasRole([Role.SuperAdmin]) ? 'text-gray-700' : 'text-gray-400'">Manage users</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Total Stock Items -->
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-boxes text-blue-600 text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Stock Items</p>
+                        </div>
+                        <p class="text-4xl font-bold text-gray-900 ml-13">{{stats.totalStock}}</p>
+                        <p class="text-sm text-gray-500 mt-1 ml-13">Items in inventory</p>
                     </div>
                 </div>
             </div>
 
             <!-- Total PCs -->
-            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6">
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total PCs</p>
-                        <p class="text-4xl font-bold text-gray-900 mt-2">{{stats.totalPCs}}</p>
-                        <p class="text-sm text-gray-500 mt-1">Computers managed</p>
-                    </div>
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-desktop text-green-600 text-2xl"></i>
+                    <div class="flex-1">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-desktop text-green-600 text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total PCs</p>
+                        </div>
+                        <p class="text-4xl font-bold text-gray-900 ml-13">{{stats.totalPCs}}</p>
+                        <p class="text-sm text-gray-500 mt-1 ml-13">Computers managed</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Stock Overview -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <i class="fas fa-chart-bar text-blue-600 mr-3"></i>
-                Stock Overview
-            </h3>
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
+            <div class="flex items-center mb-5">
+                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-chart-bar text-indigo-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900">Stock Overview</h3>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-5">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-blue-800">Total Quantity</p>
-                            <p class="text-3xl font-bold text-blue-900 mt-1">{{stats.totalQuantity}}</p>
+                            <p class="text-sm font-medium text-blue-900 mb-1">Total Quantity</p>
+                            <p class="text-3xl font-bold text-blue-600">{{stats.totalQuantity}}</p>
                         </div>
-                        <i class="fas fa-cubes text-blue-400 text-3xl"></i>
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cubes text-blue-600 text-xl"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-5">
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-5">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-yellow-800">Low Stock</p>
-                            <p class="text-3xl font-bold text-yellow-900 mt-1">{{stats.lowStock}}</p>
+                            <p class="text-sm font-medium text-yellow-900 mb-1">Low Stock</p>
+                            <p class="text-3xl font-bold text-yellow-600">{{stats.lowStock}}</p>
                         </div>
-                        <i class="fas fa-exclamation-triangle text-yellow-400 text-3xl"></i>
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-5">
+                <div class="bg-red-50 border border-red-200 rounded-lg p-5">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-red-800">Out of Stock</p>
-                            <p class="text-3xl font-bold text-red-900 mt-1">{{stats.outOfStock}}</p>
+                            <p class="text-sm font-medium text-red-900 mb-1">Out of Stock</p>
+                            <p class="text-3xl font-bold text-red-600">{{stats.outOfStock}}</p>
                         </div>
-                        <i class="fas fa-times-circle text-red-400 text-3xl"></i>
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <i class="fas fa-bolt text-yellow-500 mr-3"></i>
-                Quick Actions
-            </h3>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <div class="flex items-center mb-5">
+                <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-bolt text-yellow-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900">Quick Actions</h3>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button routerLink="/stocks" class="flex flex-col items-center justify-center p-6 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors cursor-pointer group">
-                    <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <button routerLink="/stocks" class="flex flex-col items-center justify-center p-6 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-all cursor-pointer group">
+                    <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fas fa-boxes text-white text-xl"></i>
                     </div>
                     <p class="text-sm font-semibold text-gray-900">View Stock</p>
                 </button>
-                <button routerLink="/add" class="flex flex-col items-center justify-center p-6 bg-green-50 hover:bg-green-100 rounded-xl transition-colors cursor-pointer group">
-                    <div class="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <button routerLink="/add" class="flex flex-col items-center justify-center p-6 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all cursor-pointer group" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
+                    <div class="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fas fa-plus text-white text-xl"></i>
                     </div>
                     <p class="text-sm font-semibold text-gray-900">Add Item</p>
                 </button>
-                <button routerLink="/pc" class="flex flex-col items-center justify-center p-6 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors cursor-pointer group">
-                    <div class="w-14 h-14 bg-purple-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <button routerLink="/pc" class="flex flex-col items-center justify-center p-6 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-all cursor-pointer group">
+                    <div class="w-14 h-14 bg-purple-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fas fa-desktop text-white text-xl"></i>
                     </div>
                     <p class="text-sm font-semibold text-gray-900">PC Management</p>
                 </button>
-                <button routerLink="/archive" class="flex flex-col items-center justify-center p-6 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors cursor-pointer group">
-                    <div class="w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <button routerLink="/archive" class="flex flex-col items-center justify-center p-6 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-lg transition-all cursor-pointer group">
+                    <div class="w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fas fa-file-alt text-white text-xl"></i>
                     </div>
                     <p class="text-sm font-semibold text-gray-900">Reports</p>

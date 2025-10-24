@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
             .subscribe({
                 next: (stocks: any[]) => {
                     // Count total stock entries
-                    this.stats.totalStock = stocks.length;
+                this.stats.totalStock = stocks.length;
                     
                     // Calculate total quantity across all stocks
                     this.stats.totalQuantity = stocks.reduce((sum, stock) => sum + (stock.quantity || 0), 0);
@@ -46,8 +46,8 @@ export class HomeComponent implements OnInit {
                     
                     // Count out of stock items (quantity = 0)
                     this.stats.outOfStock = stocks.filter(s => s.quantity === 0).length;
-                },
-                error: (error) => {
+            },
+            error: (error) => {
                     console.error('Error loading stock data:', error);
                 }
             });
@@ -63,5 +63,9 @@ export class HomeComponent implements OnInit {
                     console.error('Error loading PC data:', error);
                 }
             });
+    }
+
+    hasRole(roles: Role[]): boolean {
+        return this.account && roles.includes(this.account.role as Role);
     }
 }
