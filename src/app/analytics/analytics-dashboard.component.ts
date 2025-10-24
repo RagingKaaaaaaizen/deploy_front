@@ -435,7 +435,11 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
 
   ngAfterViewInit(): void {
     Chart.register(...registerables);
-    // Don't initialize chart here - wait for data to load
+    // Initialize charts in case data already loaded before view init
+    setTimeout(() => {
+      this.initializeChart();
+      this.initializeDisposalChart();
+    }, 0);
   }
 
   ngOnDestroy(): void {
@@ -614,6 +618,10 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
       
       console.log('Chart initialized successfully');
     }
+    else {
+      // Canvas might not be ready yet; retry shortly
+      setTimeout(() => this.initializeChart(), 150);
+    }
   }
 
   initializeDisposalChart(): void {
@@ -657,6 +665,9 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy, AfterView
           }
         }
       });
+    }
+    else {
+      setTimeout(() => this.initializeDisposalChart(), 150);
     }
   }
 
