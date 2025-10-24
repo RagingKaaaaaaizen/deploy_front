@@ -1045,6 +1045,9 @@ export class PCListComponent implements OnInit {
     console.log('🔄 Loading room locations...');
     console.log('🔗 Room location service URL:', `${environment.apiUrl}/api/room-locations`);
     
+    // Clear existing locations to force refresh
+    this.roomLocations = [];
+    
     this.locationService.getAll()
       .pipe(first())
       .subscribe({
@@ -1062,9 +1065,18 @@ export class PCListComponent implements OnInit {
           
           if (locations.length === 0) {
             console.warn('⚠️  No room locations found! This will cause foreign key constraint errors.');
-            this.alertService.warn('No room locations available. Please add room locations first.', { autoClose: true });
+            this.alertService.warn('No room locations available. Please contact admin to add room locations.', { autoClose: false });
           } else {
             console.log('✅ Room locations ready for use');
+            // Reset the form's roomLocationId if it doesn't exist in the new list
+            const currentValue = this.pcForm.get('roomLocationId')?.value;
+            if (currentValue) {
+              const exists = locations.find(loc => loc.id == currentValue);
+              if (!exists) {
+                console.log('⚠️ Previously selected location no longer exists, resetting selection');
+                this.pcForm.patchValue({ roomLocationId: '' });
+              }
+            }
           }
         },
         error: (error) => {
@@ -1139,15 +1151,28 @@ export class PCListComponent implements OnInit {
 
     // Validate roomLocationId exists in our loaded data
     const selectedRoomLocationId = parseInt(this.pcForm.value.roomLocationId);
+    
+    // Check if the value is a valid number
+    if (isNaN(selectedRoomLocationId) || !this.pcForm.value.roomLocationId) {
+      console.error('Invalid room location ID provided');
+      this.alertService.error('Please select a valid room location.', { autoClose: true });
+      return;
+    }
+    
     const roomLocationExists = this.roomLocations.find(loc => loc.id === selectedRoomLocationId);
     
     if (!roomLocationExists) {
-      console.error('Selected room location not found in available locations');
-      console.log('Selected ID:', selectedRoomLocationId);
-      console.log('Available locations:', this.roomLocations.map(loc => ({ id: loc.id, name: loc.name })));
-      this.alertService.error('Invalid room location selected. Please refresh the page and try again.', { autoClose: true });
+      console.error('❌ Selected room location not found in available locations');
+      console.log('📍 Selected ID:', selectedRoomLocationId);
+      console.log('📍 Available locations:', this.roomLocations.map(loc => ({ id: loc.id, name: loc.name })));
+      
+      // Refresh room locations and show error
+      this.alertService.error(`The selected room location (ID: ${selectedRoomLocationId}) does not exist. Refreshing available locations...`, { autoClose: false });
+      this.loadRoomLocations();
       return;
     }
+    
+    console.log('✅ Room location validation passed:', roomLocationExists.name);
 
     this.pcLoading = true;
 
