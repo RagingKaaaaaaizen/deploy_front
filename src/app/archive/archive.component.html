@@ -38,24 +38,6 @@
         </div>
         <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">DISPOSALS</div>
       </div>
-      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <i class="fas fa-desktop text-white text-xl"></i>
-        </div>
-        <div class="text-2xl font-bold text-blue-600 font-akira mb-1">
-          {{ (weeklyData || monthlyData) ? getFilteredPCCount() : '0' }}
-        </div>
-        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">PCS</div>
-      </div>
-      <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-          <i class="fas fa-dollar-sign text-white text-xl"></i>
-        </div>
-        <div class="text-2xl font-bold text-green-600 font-akira mb-1">
-          ${{ (weeklyData || monthlyData) ? formatNumber(getFilteredTotalValue(), 0) : formatNumber(reportStatistics.totalValue, 0) }}
-        </div>
-        <div class="text-xs text-gray-600 font-inter uppercase tracking-wide">VALUE</div>
-      </div>
     </div>
 
   <!-- Report Generation Cards -->
@@ -342,14 +324,6 @@
           <div class="stored-summary-item">
             <div class="stored-summary-number">{{ report.summary.totalDisposals }}</div>
             <div class="stored-summary-label">DISPOSALS</div>
-          </div>
-          <div class="stored-summary-item">
-            <div class="stored-summary-number">{{ report.summary.totalPCs }}</div>
-            <div class="stored-summary-label">PCS</div>
-          </div>
-          <div class="stored-summary-item">
-            <div class="stored-summary-number">${{ formatNumber(report.summary.totalValue, 0) }}</div>
-            <div class="stored-summary-label">VALUE</div>
           </div>
         </div>
 
