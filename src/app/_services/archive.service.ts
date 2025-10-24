@@ -167,12 +167,16 @@ export class ArchiveService {
   // ===== NEW CLEAN PDF GENERATION =====
   generatePDFBlob(reportData: ReportData, reportType: string, startDate?: Date, endDate?: Date, includeStocks: boolean = true, includeDisposals: boolean = true, includePCs: boolean = true, includeDetailedAnalysis: boolean = false): Blob {
     console.log('=== GENERATING NEW FORMAT PDF ===');
+    console.log('Report Data:', reportData);
+    console.log('Report Type:', reportType);
+    console.log('Date Range:', startDate, endDate);
     
-    // Create PDF in LANDSCAPE orientation
-    const doc = new jsPDF('landscape', 'mm', 'a4');
-    
-    // Set Times New Roman font
-    doc.setFont('times', 'normal');
+    try {
+      // Create PDF in LANDSCAPE orientation
+      const doc = new jsPDF('landscape', 'mm', 'a4');
+      
+      // Set Times New Roman font
+      doc.setFont('times', 'normal');
     
     // Filter data by date range
     let filteredStocks = includeStocks ? reportData.stocks : [];
@@ -226,10 +230,16 @@ export class ArchiveService {
       yPos = this.addPCReport(doc, filteredPCs, yPos);
     }
     
-    // Add footer
-    this.addFooter(doc);
-    
-    return doc.output('blob');
+      // Add footer
+      this.addFooter(doc);
+      
+      console.log('PDF generated successfully');
+      return doc.output('blob');
+    } catch (error) {
+      console.error('ERROR GENERATING PDF:', error);
+      console.error('Error details:', error.message, error.stack);
+      throw error;
+    }
   }
 
   // HEADER SECTION
@@ -298,18 +308,22 @@ export class ArchiveService {
     const disposeValue = disposals.reduce((sum, disposal) => sum + (disposal.disposalValue || disposal.totalValue || 0), 0);
     const totalPC = pcs.length;
     
+    // Safe number formatting
+    const safeStockValue = typeof stockValue === 'number' && !isNaN(stockValue) ? stockValue : 0;
+    const safeDisposeValue = typeof disposeValue === 'number' && !isNaN(disposeValue) ? disposeValue : 0;
+    
     // Two-column layout - NO OVERLAPPING
     const leftCol = 20;
     const rightCol = 165;
     
     // Left column
     doc.text('Total Stocks: ' + totalStocks, leftCol, y);
-    doc.text('Stock Value: ₱' + stockValue.toFixed(2), leftCol, y + 6);
+    doc.text('Stock Value: ₱' + safeStockValue.toFixed(2), leftCol, y + 6);
     doc.text('Total PC: ' + totalPC, leftCol, y + 12);
     
     // Right column
     doc.text('Total Dispose: ' + totalDispose, rightCol, y);
-    doc.text('Dispose Value: ₱' + disposeValue.toFixed(2), rightCol, y + 6);
+    doc.text('Dispose Value: ₱' + safeDisposeValue.toFixed(2), rightCol, y + 6);
     
     y += 20;
     
@@ -380,10 +394,18 @@ export class ArchiveService {
       x += colWidths[1];
       doc.text(String(stock.quantity || 0), x, y);
       x += colWidths[2];
-      doc.text('₱' + (stock.price || 0).toFixed(2), x, y);
+      
+      // Safe price formatting
+      const price = typeof stock.price === 'number' ? stock.price : 0;
+      doc.text('₱' + price.toFixed(2), x, y);
       x += colWidths[3];
-      const total = stock.totalPrice || (stock.price * stock.quantity) || 0;
-      doc.text('₱' + total.toFixed(2), x, y);
+      
+      // Safe total formatting
+      const total = typeof stock.totalPrice === 'number' ? stock.totalPrice : 
+                    (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
+                    stock.price * stock.quantity : 0);
+      const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
+      doc.text('₱' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
       // Date/Time formatting
@@ -469,10 +491,16 @@ export class ArchiveService {
       x += colWidths[1];
       doc.text(String(disposal.quantity || 0), x, y);
       x += colWidths[2];
-      doc.text('₱' + (disposal.price || 0).toFixed(2), x, y);
+      
+      // Safe price formatting
+      const price = typeof disposal.price === 'number' ? disposal.price : 0;
+      doc.text('₱' + price.toFixed(2), x, y);
       x += colWidths[3];
+      
+      // Safe total formatting
       const total = disposal.totalValue || disposal.disposalValue || 0;
-      doc.text('₱' + total.toFixed(2), x, y);
+      const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
+      doc.text('₱' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
       // Date/Time formatting
@@ -604,10 +632,16 @@ export class ArchiveService {
           cx += compColWidths[0];
           doc.text(String(comp.quantity || 1), cx, y);
           cx += compColWidths[1];
-          doc.text('₱' + (comp.price || 0).toFixed(2), cx, y);
+          
+          // Safe price formatting
+          const compPrice = typeof comp.price === 'number' ? comp.price : 0;
+          doc.text('₱' + compPrice.toFixed(2), cx, y);
           cx += compColWidths[2];
-          const compTotal = (comp.price || 0) * (comp.quantity || 1);
-          doc.text('₱' + compTotal.toFixed(2), cx, y);
+          
+          // Safe total formatting
+          const compTotal = (typeof comp.price === 'number' ? comp.price : 0) * (comp.quantity || 1);
+          const safeCompTotal = typeof compTotal === 'number' && !isNaN(compTotal) ? compTotal : 0;
+          doc.text('₱' + safeCompTotal.toFixed(2), cx, y);
           cx += compColWidths[3];
           doc.text((comp.status || 'Active').substring(0, 12), cx, y);
           
