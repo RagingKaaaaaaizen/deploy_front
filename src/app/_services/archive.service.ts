@@ -756,17 +756,9 @@ export class ArchiveService {
         y += 4;
       }
       
-      // Draw separator line after each PC
-      doc.setLineWidth(0.3);
-      doc.line(20, y + 2, 277, y + 2);
-      y += 5;
+      // Add spacing between PCs (removed separator line for cleaner look)
+      y += 7;
     });
-    
-    y += 3;
-    
-    // Draw final separator line
-    doc.setLineWidth(0.5);
-    doc.line(20, y, 277, y);
     
     return y + 8;
   }
