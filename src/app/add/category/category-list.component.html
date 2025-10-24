@@ -106,7 +106,6 @@
                                 <th><i class="fas fa-tag"></i> Name</th>
                                 <th><i class="fas fa-align-left"></i> Description</th>
                                 <th><i class="fas fa-box"></i> Items Count</th>
-                                <th><i class="fas fa-calendar"></i> Created</th>
                                 <th><i class="fas fa-cogs"></i> Actions</th>
                             </tr>
                         </thead>
@@ -129,21 +128,18 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="date-badge">
-                                        {{ category.createdAt | date: 'MMM dd, yyyy' }}
-                                    </span>
-                                </td>
-                                <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-sm btn-outline-primary"
                                                 (click)="viewCategory(category.id)" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <a [routerLink]="['/add/category/edit', category.id]" 
+                                        <a *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
+                                            [routerLink]="['/add/category/edit', category.id]" 
                                             class="btn btn-sm btn-outline-warning" title="Edit Category">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger"
+                                        <button *ngIf="hasRole([Role.SuperAdmin, Role.Admin])" 
+                                                class="btn btn-sm btn-outline-danger"
                                                 (click)="deleteCategory(category.id)" title="Delete Category">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -151,7 +147,7 @@
                                 </td>
                             </tr>
                             <tr *ngIf="filteredCategories.length === 0">
-                                <td colspan="5" class="text-center py-4">
+                                <td colspan="4" class="text-center py-4">
                                     <div class="empty-state">
                                         <i class="fas fa-folder-open"></i>
                                         <h4>No categories found</h4>
