@@ -62,45 +62,6 @@
             </div>
         </div>
 
-        <!-- PC Export Section -->
-        <div class="rounded-lg bg-white shadow-card mb-4">
-            <div class="border-b border-gray-200 px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50">
-                <h5 class="text-base font-semibold text-gray-800"><i class="fas fa-download text-primary mr-2 text-sm"></i> Export PC Reports</h5>
-            </div>
-            <div class="p-4">
-                <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <h6 class="text-primary font-semibold mb-2 text-sm">
-                            <i class="fas fa-file-word text-primary mr-2"></i>PC Analysis Reports (Word)
-                        </h6>
-                        <div class="flex flex-col gap-2">
-                            <button 
-                                class="inline-flex items-center justify-center rounded-md px-3 py-2 text-xs font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white" 
-                                (click)="downloadWeeklyPCAnalysis()">
-                                <i class="fas fa-file-word mr-2"></i>
-                                Weekly Analysis
-                            </button>
-                            <button 
-                                class="inline-flex items-center justify-center rounded-md px-3 py-2 text-xs font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white" 
-                                (click)="downloadMonthlyPCAnalysis()">
-                                <i class="fas fa-file-word mr-2"></i>
-                                Monthly Analysis
-                            </button>
-                            <button 
-                                class="inline-flex items-center justify-center rounded-md px-3 py-2 text-xs font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white" 
-                                (click)="downloadYearlyPCAnalysis()">
-                                <i class="fas fa-file-word mr-2"></i>
-                                Yearly Analysis
-                            </button>
-                        </div>
-                        <small class="text-gray-600 block mt-1 text-xs">
-                            Exports detailed PC analysis with maintenance information in Word format
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Filters and Search -->
         <div class="bg-white rounded-2xl p-4 mb-4 shadow-card border border-gray-100">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -1014,43 +1014,6 @@ export class PCListComponent implements OnInit {
     this.loadPCComponents(); // This will trigger autoUpdatePCStatus
   }
 
-  // PC Export Methods
-  downloadWeeklyPCAnalysis() {
-    this.analyticsService.downloadWeeklyPCAnalysis().subscribe({
-      next: () => {
-        this.alertService.success('Weekly PC analysis (Word) downloaded successfully!', { autoClose: true });
-      },
-      error: (error) => {
-        this.alertService.error('Error downloading weekly PC analysis. Please try again.', { autoClose: true });
-        console.error('Error downloading weekly PC analysis:', error);
-      }
-    });
-  }
-
-  downloadMonthlyPCAnalysis() {
-    this.analyticsService.downloadMonthlyPCAnalysis().subscribe({
-      next: () => {
-        this.alertService.success('Monthly PC analysis (Word) downloaded successfully!', { autoClose: true });
-      },
-      error: (error) => {
-        this.alertService.error('Error downloading monthly PC analysis. Please try again.', { autoClose: true });
-        console.error('Error downloading monthly PC analysis:', error);
-      }
-    });
-  }
-
-  downloadYearlyPCAnalysis() {
-    this.analyticsService.downloadYearlyPCAnalysis().subscribe({
-      next: () => {
-        this.alertService.success('Yearly PC analysis (Word) downloaded successfully!', { autoClose: true });
-      },
-      error: (error) => {
-        this.alertService.error('Error downloading yearly PC analysis. Please try again.', { autoClose: true });
-        console.error('Error downloading yearly PC analysis:', error);
-      }
-    });
-  }
-
   // New methods for modal and default components functionality
   loadCategories() {
     this.categoryService.getAll()
