@@ -1015,18 +1015,6 @@ export class PCListComponent implements OnInit {
   }
 
   // PC Export Methods
-  downloadPCList() {
-    this.analyticsService.downloadPCListExcel().subscribe({
-      next: () => {
-        this.alertService.success('PC list downloaded successfully!', { autoClose: true });
-      },
-      error: (error) => {
-        this.alertService.error('Error downloading PC list. Please try again.', { autoClose: true });
-        console.error('Error downloading PC list:', error);
-      }
-    });
-  }
-
   downloadWeeklyPCAnalysis() {
     this.analyticsService.downloadWeeklyPCAnalysis().subscribe({
       next: () => {
