@@ -7,10 +7,10 @@ import { ListComponent } from './list.component';
 import { AddEditComponent } from './add-edit.component';
 
 const routes: Routes = [
-    { path: '', component: ListComponent, canActivate: [SuperAdminGuard] },
-    { path: 'add', component: AddEditComponent, canActivate: [SuperAdminGuard] },
-    { path: 'edit/:id', component: AddEditComponent, canActivate: [SuperAdminGuard] },
-    { path: 'view/:id', component: AddEditComponent, canActivate: [SuperAdminGuard] },
+    { path: '', component: ListComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+    { path: 'add', component: AddEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+    { path: 'edit/:id', component: AddEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
+    { path: 'view/:id', component: AddEditComponent, canActivate: [AuthGuard], data: { roles: [Role.SuperAdmin, Role.Admin] } },
 ];
 
 @NgModule({
