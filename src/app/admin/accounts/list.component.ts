@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { AccountService } from '@app/_services';
-import { Account } from '@app/_models';
+import { Account, Role } from '@app/_models';
 
 @Component({ templateUrl: 'list.component.html' })
 export class ListComponent implements OnInit {
@@ -34,5 +34,11 @@ export class ListComponent implements OnInit {
             .subscribe(() => {
                 this.accounts = this.accounts.filter(x => x.id !== id) 
             });
+    }
+
+    // Check if current user is SuperAdmin
+    isSuperAdmin(): boolean {
+        const account = this.accountService.accountValue;
+        return account && account.role === Role.SuperAdmin;
     }
 }

@@ -56,7 +56,7 @@
                         <a routerLink="edit/{{account.id}}" class="inline-flex items-center justify-center rounded px-2 py-1 font-medium transition bg-indigo-600 text-white hover:bg-indigo-700 text-xs">
                             <i class="fas fa-edit mr-1"></i> Edit
                         </a>
-                        <button (click)="deleteAccount(account.id)" class="inline-flex items-center justify-center rounded px-2 py-1 font-medium transition bg-red-600 text-white hover:bg-red-700 text-xs" [disabled]="account.isDeleting">
+                        <button *ngIf="isSuperAdmin()" (click)="deleteAccount(account.id)" class="inline-flex items-center justify-center rounded px-2 py-1 font-medium transition bg-red-600 text-white hover:bg-red-700 text-xs" [disabled]="account.isDeleting">
                             <span *ngIf="account.isDeleting" class="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-1"></span>
                             <i *ngIf="!account.isDeleting" class="fas fa-trash mr-1"></i>
                     <span *ngIf="!account.isDeleting">Delete</span>
