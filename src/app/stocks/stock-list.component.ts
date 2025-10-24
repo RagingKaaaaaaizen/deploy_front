@@ -2312,6 +2312,12 @@ export class StockListComponent implements OnInit {
     return this.stocks.filter(stock => stock.disposeId && stock.disposal && stock.disposal.returnedToStock).length;
   }
 
+  getTotalStocksQuantity(): number {
+    return this.stocks.reduce((total, stock) => {
+      return total + (stock.quantity || 0);
+    }, 0);
+  }
+
   getTotalValue(): number {
     return this.stocks.reduce((total, stock) => {
       if (stock.disposeId && stock.disposal) {
