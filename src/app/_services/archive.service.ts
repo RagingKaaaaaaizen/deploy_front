@@ -566,8 +566,8 @@ export class ArchiveService {
     doc.text('PC REPORTS', 20, y);
     y += 8;
     
-    // Main PC table setup (PC Name | Status | Number of Components)
-    const mainColWidths = [85, 60, 92];
+    // Main PC table setup (Name | Location | Status | Number of Components)
+    const mainColWidths = [65, 55, 50, 67];
     const rowHeight = 7;
     let x = 20;
     
@@ -578,10 +578,12 @@ export class ArchiveService {
     // Table headers
     doc.setFontSize(10);
     doc.setFont('times', 'bold');
-    doc.text('PC Name', x, y);
+    doc.text('Name', x, y);
     x += mainColWidths[0];
-    doc.text('Status', x, y);
+    doc.text('Location', x, y);
     x += mainColWidths[1];
+    doc.text('Status', x, y);
+    x += mainColWidths[2];
     doc.text('Number of Components', x, y);
     
     y += rowHeight;
@@ -618,10 +620,12 @@ export class ArchiveService {
         doc.setFontSize(10);
         doc.setFont('times', 'bold');
         let hx = 20;
-        doc.text('PC Name', hx, y);
+        doc.text('Name', hx, y);
         hx += mainColWidths[0];
-        doc.text('Status', hx, y);
+        doc.text('Location', hx, y);
         hx += mainColWidths[1];
+        doc.text('Status', hx, y);
+        hx += mainColWidths[2];
         doc.text('Number of Components', hx, y);
         y += rowHeight;
         // Restore normal font for rows
@@ -636,10 +640,13 @@ export class ArchiveService {
       }
       
       x = 20;
-      doc.text((pc.name || 'N/A').substring(0, 36), x, y);
+      doc.text((pc.name || 'N/A').substring(0, 28), x, y);
       x += mainColWidths[0];
-      doc.text((pc.status || 'N/A').substring(0, 25), x, y);
+      const locationName = pc.roomLocation?.name || 'N/A';
+      doc.text(locationName.substring(0, 22), x, y);
       x += mainColWidths[1];
+      doc.text((pc.status || 'N/A').substring(0, 18), x, y);
+      x += mainColWidths[2];
       const componentCount = pc.components ? pc.components.length : 0;
       doc.text(componentCount + ' components', x, y);
       
