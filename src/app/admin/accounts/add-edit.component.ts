@@ -18,6 +18,8 @@ export class AddEditComponent implements OnInit {
     Role = Role;
     showPassword = false;
     showConfirmPassword = false;
+    temporaryPassword: string | null = null;
+    generatingPassword = false;
 
     constructor(
         private formBuilder: UntypedFormBuilder,
@@ -127,5 +129,43 @@ export class AddEditComponent implements OnInit {
 
     toggleConfirmPasswordVisibility() {
         this.showConfirmPassword = !this.showConfirmPassword;
+    }
+
+    generateTemporaryPassword() {
+        this.generatingPassword = true;
+        
+        // Generate a random password (8-12 characters, mix of letters and numbers)
+        const length = 10;
+        const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
+        let password = '';
+        for (let i = 0; i < length; i++) {
+            password += charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        
+        // Update the user's password
+        const updateData = { password: password };
+        this.accountService.update(this.id, updateData)
+            .pipe(first())
+            .subscribe({
+                next: () => {
+                    this.temporaryPassword = password;
+                    this.generatingPassword = false;
+                    this.alertService.success('Temporary password generated successfully!', { autoClose: true });
+                },
+                error: error => {
+                    this.alertService.error('Error generating password: ' + error);
+                    this.generatingPassword = false;
+                }
+            });
+    }
+
+    copyPassword() {
+        if (this.temporaryPassword) {
+            navigator.clipboard.writeText(this.temporaryPassword).then(() => {
+                this.alertService.success('Password copied to clipboard!', { autoClose: true });
+            }).catch(() => {
+                this.alertService.error('Failed to copy password');
+            });
+        }
     }
 }
