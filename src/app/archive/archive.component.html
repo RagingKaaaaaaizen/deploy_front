@@ -40,8 +40,8 @@
       </div>
     </div>
 
-  <!-- Report Generation Cards -->
-  <div class="report-cards">
+  <!-- Report Generation Cards (Hidden from Viewer role) -->
+  <div class="report-cards" *ngIf="canGenerateReports()">
     <!-- Weekly Report Card -->
     <div class="report-card">
       <div class="report-card-header">
