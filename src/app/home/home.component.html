@@ -1,176 +1,119 @@
-﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 py-6">
-    <div class="max-w-7xl mx-auto px-4">
-        <!-- Welcome Section -->
-        <div class="mb-4">
-            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl p-6 shadow-xl">
-                <div class="text-center">
-                    <h1 class="text-3xl font-bold mb-2">
-                        <i class="fas fa-tachometer-alt mr-2 text-lg"></i>
-                        Welcome to Inventory Pro
-                    </h1>
-                    <p class="text-lg text-white/90 mb-4">
-                        Manage your computer lab inventory efficiently and effectively
-                    </p>
-                    <div class="flex justify-center gap-6 flex-wrap">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-boxes text-xl"></i>
-                            <span class="text-base font-semibold">{{stats?.totalItems || 0}} Items</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-desktop text-xl"></i>
-                            <span class="text-base font-semibold">{{stats?.totalPCs || 0}} PCs</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-users text-xl"></i>
-                            <span class="text-base font-semibold">{{stats?.totalUsers || 0}} Users</span>
-                        </div>
-                    </div>
-                </div>
+﻿<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Welcome Banner -->
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-8 shadow-lg">
+                <h1 class="text-4xl font-bold mb-2">
+                    Welcome back, {{account?.firstName || 'User'}}
+                </h1>
+                <p class="text-lg text-blue-100">
+                    Manage your computer lab inventory efficiently
+                </p>
             </div>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div *ngFor="let stat of quickStats" class="bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl mr-3">
-                            <i [class]="stat.icon"></i>
-                        </div>
+        <!-- Main Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Total Stock Items -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6">
+                <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-2xl font-bold text-gray-800">{{stat.value}}</div>
-                        <div class="text-xs text-gray-600 uppercase tracking-wide">{{stat.label}}</div>
+                        <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Stock Items</p>
+                        <p class="text-4xl font-bold text-gray-900 mt-2">{{stats.totalStock}}</p>
+                        <p class="text-sm text-gray-500 mt-1">Items in inventory</p>
+                    </div>
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-boxes text-blue-600 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total PCs -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total PCs</p>
+                        <p class="text-4xl font-bold text-gray-900 mt-2">{{stats.totalPCs}}</p>
+                        <p class="text-sm text-gray-500 mt-1">Computers managed</p>
+                    </div>
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-desktop text-green-600 text-2xl"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Summary Metrics -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-white rounded-xl shadow-md p-4">
-                <div class="border-b border-gray-200 pb-2 mb-3">
-                    <h5 class="text-base font-semibold text-gray-800"><i class="fas fa-chart-pie text-primary mr-2 text-sm"></i> Stock Overview</h5>
+        <!-- Stock Overview -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-chart-bar text-blue-600 mr-3"></i>
+                Stock Overview
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-blue-800">Total Quantity</p>
+                            <p class="text-3xl font-bold text-blue-900 mt-1">{{stats.totalQuantity}}</p>
                         </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                        <span class="text-gray-700 font-medium text-sm">Total Stock:</span>
-                        <span class="text-xl font-bold text-gray-800">{{stats?.totalStock || 0}}</span>
-                            </div>
-                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                        <span class="text-gray-700 font-medium text-sm">In Use:</span>
-                        <span class="text-xl font-bold text-gray-800">{{stats?.inUse || 0}}</span>
-                            </div>
-                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                        <span class="text-gray-700 font-medium text-sm">Available:</span>
-                        <span class="text-xl font-bold text-gray-800">{{stats?.available || 0}}</span>
+                        <i class="fas fa-cubes text-blue-400 text-3xl"></i>
                     </div>
                 </div>
+                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-yellow-800">Low Stock</p>
+                            <p class="text-3xl font-bold text-yellow-900 mt-1">{{stats.lowStock}}</p>
                         </div>
-            <div class="bg-white rounded-xl shadow-md p-4">
-                <div class="border-b border-gray-200 pb-2 mb-3">
-                    <h5 class="text-base font-semibold text-gray-800"><i class="fas fa-exclamation-triangle text-warning mr-2 text-sm"></i> Alerts</h5>
-                            </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center p-2 bg-yellow-50 rounded-lg">
-                        <span class="text-gray-700 font-medium text-sm">Low Stock Items:</span>
-                        <span class="text-xl font-bold text-warning">{{stats?.lowStock || 0}}</span>
-                            </div>
-                    <div class="flex justify-between items-center p-2 bg-red-50 rounded-lg">
-                        <span class="text-gray-700 font-medium text-sm">Out of Stock:</span>
-                        <span class="text-xl font-bold text-danger">{{stats?.outOfStock || 0}}</span>
-                            </div>
-                    <div class="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
-                        <span class="text-gray-700 font-medium text-sm">Pending Requests:</span>
-                        <span class="text-xl font-bold text-info">{{stats?.pendingRequests || 0}}</span>
+                        <i class="fas fa-exclamation-triangle text-yellow-400 text-3xl"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Analytics Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-xl shadow-md p-4">
-                    <div class="border-b border-gray-200 pb-2 mb-3">
-                        <h5 class="text-base font-semibold text-gray-800"><i class="fas fa-chart-line text-primary mr-2 text-sm"></i> Recent Activity</h5>
+                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-red-800">Out of Stock</p>
+                            <p class="text-3xl font-bold text-red-900 mt-1">{{stats.outOfStock}}</p>
                         </div>
-                    <div class="space-y-2">
-                        <div *ngFor="let activity of recentActivity" class="flex items-start p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mr-3 flex-shrink-0">
-                                        <i [class]="activity.icon"></i>
-                                    </div>
-                            <div class="flex-grow">
-                                <div class="text-gray-800 font-medium text-sm">{{activity.message}}</div>
-                                <div class="text-xs text-gray-500 mt-1">{{activity.timestamp | date:'medium'}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="bg-white rounded-xl shadow-md p-4">
-                    <div class="border-b border-gray-200 pb-2 mb-3">
-                        <h5 class="text-base font-semibold text-gray-800"><i class="fas fa-clock text-info mr-2 text-sm"></i> Quick Actions</h5>
-                        </div>
-                    <div class="flex flex-col gap-2">
-                        <button class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition bg-primary text-white hover:bg-primary-600 shadow-sm w-full text-sm" routerLink="/add">
-                            <i class="fas fa-plus mr-1"></i>Add Item
-                                </button>
-                        <button class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white w-full text-sm" routerLink="/stocks">
-                            <i class="fas fa-boxes mr-1"></i>View Stock
-                                </button>
-                        <button class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition border border-success text-green-600 hover:bg-success hover:text-white w-full text-sm" routerLink="/pc">
-                            <i class="fas fa-desktop mr-1"></i>PC Management
-                                </button>
-                        <button class="inline-flex items-center justify-center rounded-md px-3 py-2 font-semibold transition border border-info text-cyan-600 hover:bg-info hover:text-white w-full text-sm" routerLink="/archive">
-                            <i class="fas fa-chart-bar mr-1"></i>Generate Report
-                                </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Permissions Section -->
-        <div class="mb-4" *ngIf="account">
-            <div class="bg-white rounded-xl shadow-md p-4">
-                <div class="border-b border-gray-200 pb-2 mb-3">
-                    <h5 class="text-base font-semibold text-gray-800"><i class="fas fa-user-shield text-success mr-2 text-sm"></i> Your Permissions</h5>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div class="flex items-center p-2 bg-green-50 rounded-lg">
-                        <i class="fas fa-check-circle text-success mr-2 text-lg"></i>
-                        <span class="text-gray-700 font-medium text-sm">Role: {{account.role}}</span>
-                    </div>
-                    <div class="flex items-center p-2 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                        <i class="fas fa-check-circle text-success mr-2 text-lg"></i>
-                        <span class="text-gray-700 font-medium text-sm">Can manage inventory</span>
-                    </div>
-                    <div class="flex items-center p-2 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin, Role.Admin, Role.Staff])">
-                        <i class="fas fa-check-circle text-success mr-2 text-lg"></i>
-                        <span class="text-gray-700 font-medium text-sm">Can add/edit items</span>
-                    </div>
-                    <div class="flex items-center p-2 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin])">
-                        <i class="fas fa-check-circle text-success mr-2 text-lg"></i>
-                        <span class="text-gray-700 font-medium text-sm">Can manage users</span>
-                    </div>
-                    <div class="flex items-center p-2 bg-green-50 rounded-lg" *ngIf="hasRole([Role.SuperAdmin])">
-                        <i class="fas fa-check-circle text-success mr-2 text-lg"></i>
-                        <span class="text-gray-700 font-medium text-sm">Can view all reports</span>
+                        <i class="fas fa-times-circle text-red-400 text-3xl"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div *ngFor="let action of quickActions" [routerLink]="action.route" class="bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
-                <div class="flex flex-col items-center text-center">
-                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl mb-3">
-                            <i [class]="action.icon"></i>
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-bolt text-yellow-500 mr-3"></i>
+                Quick Actions
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button routerLink="/stocks" class="flex flex-col items-center justify-center p-6 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors cursor-pointer group">
+                    <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-boxes text-white text-xl"></i>
                     </div>
-                    <h6 class="text-sm font-semibold text-gray-800 mb-1">{{action.title}}</h6>
-                    <p class="text-xs text-gray-600">{{action.description}}</p>
-                </div>
+                    <p class="text-sm font-semibold text-gray-900">View Stock</p>
+                </button>
+                <button routerLink="/add" class="flex flex-col items-center justify-center p-6 bg-green-50 hover:bg-green-100 rounded-xl transition-colors cursor-pointer group">
+                    <div class="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-plus text-white text-xl"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-900">Add Item</p>
+                </button>
+                <button routerLink="/pc" class="flex flex-col items-center justify-center p-6 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors cursor-pointer group">
+                    <div class="w-14 h-14 bg-purple-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-desktop text-white text-xl"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-900">PC Management</p>
+                </button>
+                <button routerLink="/archive" class="flex flex-col items-center justify-center p-6 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors cursor-pointer group">
+                    <div class="w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-file-alt text-white text-xl"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-900">Reports</p>
+                </button>
             </div>
         </div>
+
     </div>
 </div>
