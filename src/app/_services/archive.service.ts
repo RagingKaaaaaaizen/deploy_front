@@ -208,8 +208,9 @@ export class ArchiveService {
       // PCs are not filtered by date - we want to see all PCs regardless of when they were added
     }
     
-    // Filter out stocks with quantity 0
+    // Filter out stocks/disposals with quantity 0
     filteredStocks = filteredStocks.filter(stock => (stock.quantity || 0) > 0);
+    filteredDisposals = filteredDisposals.filter(disposal => (disposal.quantity || 0) > 0);
     
     // Add header
     this.addHeader(doc, reportType, startDate, endDate);
