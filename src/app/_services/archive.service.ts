@@ -181,7 +181,7 @@ export class ArchiveService {
     // Filter data by date range
     let filteredStocks = includeStocks ? reportData.stocks : [];
     let filteredDisposals = includeDisposals ? reportData.disposals : [];
-    let filteredPCs = includePCs ? reportData.pcs : [];
+    let filteredPCs = includePCs ? reportData.pcs : []; // PCs show ALL TIME (no date filtering)
     
     if (startDate && endDate) {
       if (includeStocks) {
@@ -198,12 +198,8 @@ export class ArchiveService {
         });
       }
       
-      if (includePCs) {
-        filteredPCs = reportData.pcs.filter(pc => {
-          const pcDate = new Date(pc.createdAt || pc.updatedAt);
-          return pcDate >= startDate && pcDate <= endDate;
-        });
-      }
+      // PC Management: NO DATE FILTERING - show all PCs all time
+      // PCs are not filtered by date - we want to see all PCs regardless of when they were added
     }
     
     // Filter out stocks with quantity 0
@@ -318,12 +314,12 @@ export class ArchiveService {
     
     // Left column
     doc.text('Total Stocks: ' + totalStocks, leftCol, y);
-    doc.text('Stock Value: \u20B1' + safeStockValue.toFixed(2), leftCol, y + 6);
+    doc.text('Stock Value: PHP ' + safeStockValue.toFixed(2), leftCol, y + 6);
     doc.text('Total PC: ' + totalPC, leftCol, y + 12);
     
     // Right column
     doc.text('Total Dispose: ' + totalDispose, rightCol, y);
-    doc.text('Dispose Value: \u20B1' + safeDisposeValue.toFixed(2), rightCol, y + 6);
+    doc.text('Dispose Value: PHP ' + safeDisposeValue.toFixed(2), rightCol, y + 6);
     
     y += 20;
     
@@ -395,17 +391,17 @@ export class ArchiveService {
       doc.text(String(stock.quantity || 0), x, y);
       x += colWidths[2];
       
-      // Safe price formatting - use Unicode escape for peso
+      // Safe price formatting - use PHP for easier display
       const price = typeof stock.price === 'number' ? stock.price : 0;
-      doc.text('\u20B1' + price.toFixed(2), x, y);
+      doc.text('PHP ' + price.toFixed(2), x, y);
       x += colWidths[3];
       
-      // Safe total formatting - use Unicode escape for peso
+      // Safe total formatting - use PHP for easier display
       const total = typeof stock.totalPrice === 'number' ? stock.totalPrice : 
                     (typeof stock.price === 'number' && typeof stock.quantity === 'number' ? 
                     stock.price * stock.quantity : 0);
       const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
-      doc.text('\u20B1' + safeTotal.toFixed(2), x, y);
+      doc.text('PHP ' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
       // Date/Time formatting
@@ -492,20 +488,20 @@ export class ArchiveService {
       doc.text(String(disposal.quantity || 0), x, y);
       x += colWidths[2];
       
-      // Safe price formatting - use Unicode escape for peso
+      // Safe price formatting - use PHP for easier display
       // Calculate unit price from disposalValue
       const unitPrice = typeof disposal.disposalValue === 'number' && disposal.quantity > 0 ? 
                         disposal.disposalValue : 0;
-      doc.text('\u20B1' + unitPrice.toFixed(2), x, y);
+      doc.text('PHP ' + unitPrice.toFixed(2), x, y);
       x += colWidths[3];
       
-      // Safe total formatting - use Unicode escape for peso
+      // Safe total formatting - use PHP for easier display
       // Use totalValue if available, otherwise calculate from disposalValue * quantity
       const total = typeof disposal.totalValue === 'number' ? disposal.totalValue :
                     (typeof disposal.disposalValue === 'number' && typeof disposal.quantity === 'number' ?
                     disposal.disposalValue * disposal.quantity : 0);
       const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
-      doc.text('\u20B1' + safeTotal.toFixed(2), x, y);
+      doc.text('PHP ' + safeTotal.toFixed(2), x, y);
       x += colWidths[4];
       
       // Date/Time formatting
@@ -638,15 +634,15 @@ export class ArchiveService {
           doc.text(String(comp.quantity || 1), cx, y);
           cx += compColWidths[1];
           
-          // Safe price formatting - use Unicode escape for peso
+          // Safe price formatting - use PHP for easier display
           const compPrice = typeof comp.price === 'number' ? comp.price : 0;
-          doc.text('\u20B1' + compPrice.toFixed(2), cx, y);
+          doc.text('PHP ' + compPrice.toFixed(2), cx, y);
           cx += compColWidths[2];
           
-          // Safe total formatting - use Unicode escape for peso
+          // Safe total formatting - use PHP for easier display
           const compTotal = (typeof comp.price === 'number' ? comp.price : 0) * (comp.quantity || 1);
           const safeCompTotal = typeof compTotal === 'number' && !isNaN(compTotal) ? compTotal : 0;
-          doc.text('\u20B1' + safeCompTotal.toFixed(2), cx, y);
+          doc.text('PHP ' + safeCompTotal.toFixed(2), cx, y);
           cx += compColWidths[3];
           doc.text((comp.status || 'Active').substring(0, 12), cx, y);
           
