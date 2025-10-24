@@ -599,9 +599,33 @@ export class ArchiveService {
     
     pcs.forEach((pc, pcIndex) => {
       if (y > 185) {
-          doc.addPage();
+        // New page for next PC row
+        doc.addPage();
         this.addHeader(doc, '', undefined, undefined);
         y = 50;
+        // Reprint section title and main table headers so the new page looks the same
+        doc.setFont('times', 'bold');
+        doc.setFontSize(13);
+        doc.text('PC REPORTS', 20, y);
+        y += 8;
+
+        // Header background
+        doc.setFillColor(220, 220, 220);
+        doc.rect(20, y - 4, 237, rowHeight, 'F');
+
+        // Column headers
+        doc.setFontSize(10);
+        doc.setFont('times', 'bold');
+        let hx = 20;
+        doc.text('PC Name', hx, y);
+        hx += mainColWidths[0];
+        doc.text('Status', hx, y);
+        hx += mainColWidths[1];
+        doc.text('Number of Components', hx, y);
+        y += rowHeight;
+        // Restore normal font for rows
+        doc.setFont('times', 'normal');
+        doc.setFontSize(9);
       }
       
       // Alternating row colors
